@@ -1,0 +1,11 @@
+{
+  "title": "Ethical Scanner",
+  "menu": {
+    "home": "Home",
+    "scan": "Scan",
+    "settings": "Settings"
+  },
+  "home": {
+    "scan_barcode": "Please scan barcode"
+  }
+}

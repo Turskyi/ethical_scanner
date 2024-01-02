@@ -1,0 +1,97 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0.0'
+}
+
+def SIGNING_KEY_DEBUG_PATH = localProperties.getProperty('SIGNING_KEY_DEBUG_PATH')
+def SIGNING_KEY_DEBUG_PASSWORD = localProperties.getProperty('SIGNING_KEY_DEBUG_PASSWORD')
+def SIGNING_KEY_DEBUG_KEY = localProperties.getProperty('SIGNING_KEY_DEBUG_KEY')
+def SIGNING_KEY_DEBUG_KEY_PASSWORD = localProperties.getProperty('SIGNING_KEY_DEBUG_KEY_PASSWORD')
+def SIGNING_KEY_RELEASE_PATH = localProperties.getProperty('SIGNING_KEY_RELEASE_PATH')
+def SIGNING_KEY_RELEASE_PASSWORD = localProperties.getProperty('SIGNING_KEY_RELEASE_PASSWORD')
+def SIGNING_KEY_RELEASE_KEY = localProperties.getProperty('SIGNING_KEY_RELEASE_KEY')
+def SIGNING_KEY_RELEASE_KEY_PASSWORD = localProperties.getProperty('SIGNING_KEY_RELEASE_KEY_PASSWORD')
+
+android {
+    namespace "com.turskyi.ethical_scanner"
+    compileSdk flutter.compileSdkVersion
+    ndkVersion "25.1.8937393"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    defaultConfig {
+        applicationId "com.turskyi.ethical_scanner"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
+        minSdkVersion 21
+        targetSdkVersion flutter.targetSdkVersion
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+    }
+    signingConfigs {
+        production {
+            storeFile file(SIGNING_KEY_RELEASE_PATH)
+            storePassword SIGNING_KEY_RELEASE_PASSWORD
+            keyAlias SIGNING_KEY_RELEASE_KEY
+            keyPassword SIGNING_KEY_RELEASE_KEY_PASSWORD
+        }
+        dev {
+            storeFile file(SIGNING_KEY_DEBUG_PATH)
+            storePassword SIGNING_KEY_DEBUG_PASSWORD
+            keyAlias SIGNING_KEY_DEBUG_KEY
+            keyPassword SIGNING_KEY_DEBUG_KEY_PASSWORD
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
+            signingConfig signingConfigs.production
+        }
+        debug {
+            signingConfig signingConfigs.dev
+        }
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+dependencies {
+    implementation 'com.google.firebase:firebase-crashlytics:18.6.0'
+    implementation 'com.google.firebase:firebase-analytics:21.5.0'
+}

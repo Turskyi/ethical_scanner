@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "287990403056",
+    "project_id": "ethical-scanner",
+    "storage_bucket": "ethical-scanner.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:287990403056:android:875cbdd6210a00644ed735",
+        "android_client_info": {
+          "package_name": "com.turskyi.ethical_scanner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJKvjP4AyiHXthJLPMIKfwiME3VKsBGz8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

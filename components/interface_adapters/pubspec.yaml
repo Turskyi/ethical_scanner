@@ -1,0 +1,87 @@
+name: interface_adapters
+description: The software in the interface adapters layer is a set of adapters that convert data from the format most convenient for the use cases and entities to the format most convenient for some external agency such as the database or the web.
+  The presenters, views, and controllers all belong in the interface adapters layer.
+  No code inward of this circle should know anything at all about the database.
+version: 0.0.1
+publish_to: none
+# homepage:
+
+environment:
+  sdk: '>=3.2.3 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  # state management package that helps implement the Business Logic Component design pattern.
+  bloc: ^8.1.2
+
+  entities:
+    path: ../core/entities
+
+  flutter:
+    sdk: flutter
+
+  # Built to be used with the `bloc` state management package
+  flutter_bloc: ^8.1.3
+
+  # localization / internationalization (i18n) library
+  flutter_translate: ^4.0.4
+
+  mobile_scanner: ^3.5.5
+
+  openfoodfacts: ^3.2.1
+
+  # For launching a URL. Supports web, phone, SMS, and email schemes.
+  url_launcher: ^6.2.2
+
+  use_cases:
+    path: ../core/use_cases
+
+dev_dependencies:
+  # A build system for Dart code generation and modular compilation.
+  build_runner: 2.4.7
+
+  flutter_lints: ^3.0.1
+
+  flutter_test:
+    sdk: flutter
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/i18n/
+  #
+  # For details regarding assets in packages, see
+  # https://flutter.dev/assets-and-images/#from-packages
+  #
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware
+
+  # To add custom fonts to your package, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts in packages, see
+  # https://flutter.dev/custom-fonts/#from-packages
