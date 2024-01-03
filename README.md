@@ -35,6 +35,9 @@ new release app bundle to **Google Play** after every merge (push) to **master**
 
 • State management approach: [BLoC](https://bloclibrary.dev);
 
+• App testing platforms:
+[Firebase App Distribution](https://appdistribution.firebase.dev/i/ad57d28bed182b15);
+
 **Code Readability:** code is easily readable with no unnecessary blank lines, no unused variables
 or methods, and no commented-out code, all variables, methods, and resource IDs are descriptively
 named such that another developer reading the code can easily understand their function.
