@@ -1,5 +1,8 @@
 buildscript {
-    ext.kotlin_version = '1.9.0'
+    ext {
+        kotlin_version = '1.9.0'
+        application_id = 'com.turskyi.ethical_scanner'
+    }
     repositories {
         google()
         mavenCentral()
