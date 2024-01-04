@@ -1,8 +1,12 @@
 name: interface_adapters
-description: The software in the interface adapters layer is a set of adapters that convert data from the format most convenient for the use cases and entities to the format most convenient for some external agency such as the database or the web.
+description: The software in the interface adapters layer is a set of adapters that convert data
+  from the format most convenient for the use cases and entities to the format most convenient for
+  some external agency such as the database or the web.
   The presenters, views, and controllers all belong in the interface adapters layer.
   No code inward of this circle should know anything at all about the database.
 version: 0.0.1
+# This prevents the package from being accidentally published to pub.dev using pub publish. This is
+# preferred for private packages.
 publish_to: none
 # homepage:
 
@@ -27,8 +31,6 @@ dependencies:
   flutter_translate: ^4.0.4
 
   mobile_scanner: ^3.5.5
-
-  openfoodfacts: ^3.2.1
 
   # For launching a URL. Supports web, phone, SMS, and email schemes.
   url_launcher: ^6.2.2

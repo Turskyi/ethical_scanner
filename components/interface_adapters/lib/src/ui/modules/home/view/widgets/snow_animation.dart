@@ -22,7 +22,7 @@ class _SnowAnimationState extends State<SnowAnimation>
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations ( [
+    SystemChrome.setPreferredOrientations(<DeviceOrientation>[
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
@@ -42,7 +42,7 @@ class _SnowAnimationState extends State<SnowAnimation>
   @override
   void dispose() {
     _ticker.dispose();
-    SystemChrome.setPreferredOrientations ( [
+    SystemChrome.setPreferredOrientations(<DeviceOrientation>[
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.portraitUp,
