@@ -383,6 +383,11 @@ because we understand the dependencies between its parts.
 
 # Usage
 
-To use Ethical Scanner, you need to grant the app permission to access your camera. Then, you can 
-scan the barcode of any product by pointing your camera at it. The app will show you the product 
+To use Ethical Scanner, you need to grant the app permission to access your camera. Then, you can
+scan the barcode of any product by pointing your camera at it. The app will show you the product
 name and ethical status.
+
+• Screenshots:
+
+<!--suppress CheckImageSize -->
+<img src="screenshots/home_ios_2024_01_03.png" width="400"  alt="screenshot">
