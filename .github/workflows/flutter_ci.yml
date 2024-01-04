@@ -13,7 +13,7 @@ jobs:
 
       - name: Write key.properties file
         run: |
-          echo $KEY_PROPERTIES | base64 -d > key.properties
+          echo $KEY_PROPERTIES | base64 -d > android/key.properties
         shell: bash
         env:
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
