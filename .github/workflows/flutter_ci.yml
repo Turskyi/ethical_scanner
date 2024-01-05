@@ -53,6 +53,19 @@ jobs:
     needs: [ build_apk ]
     runs-on: ubuntu-latest
     steps:
+      - name: Fix npm cache permissions
+        run: sudo chown -R 65534:0 "/root/.npm"
+
+      - name: Checkout Repository
+        uses: actions/checkout@v1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '12'
+
+      - name: Install dependencies
+        run: npm install
       - uses: actions/checkout@v1
       - name: set up JDK 1.8
         uses: actions/setup-java@v1
@@ -62,11 +75,6 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: apk-build
-
-      - name: Update Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '14'
 
       - name: Upload APK
         uses: wzieba/Firebase-Distribution-Github-Action@v1.0.0
