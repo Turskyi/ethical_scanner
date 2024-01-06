@@ -2,14 +2,11 @@ name: entities
 description: An Entity is an object within our computer system that embodies a small set of
   critical business rules operating on Critical Business Data.
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/Turskyi/ethical_scanner/tree/master/components/core/entities
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
 
-# dependencies:
-#   path: ^1.8.0
-
 dev_dependencies:
-  lints: ^2.0.0
-  test: ^1.21.0
+  lints: ^3.0.0
+  test: ^1.25.0

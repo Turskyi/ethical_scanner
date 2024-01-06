@@ -13,7 +13,7 @@ jobs:
 
       - name: Write key.properties file
         run: |
-          echo $KEY_PROPERTIES | base64 -d > key.properties
+          echo $KEY_PROPERTIES | base64 -d > android/key.properties
         shell: bash
         env:
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
@@ -25,7 +25,7 @@ jobs:
         env:
           RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
         run: |
-          echo $RELEASE_KEYSTORE | base64 --decode > android/keystore/ethical_scanner_release.keystore  
+          echo $RELEASE_KEYSTORE | base64 --decode > android/keystore/ethical_scanner_release.keystore
 
       - name: Write ethical_scanner_debug.keystore file
         run: |
@@ -36,7 +36,7 @@ jobs:
 
       - uses: actions/setup-java@v1
         with:
-          java-version: '12.x'
+          java-version: '17'
       - uses: subosito/flutter-action@v1
         with:
           channel: 'stable'
@@ -58,14 +58,15 @@ jobs:
         with:
           java-version: 1.8
       - name: Download Artifact
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v4
         with:
           name: apk-build
-      - name: Upload APK
-        uses: wzieba/Firebase-Distribution-Github-Action@v1.0.0
+      - name: Display structure of downloaded files
+        run: ls -R
+      - name: upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{secrets.FIREBASE_ANDROID_APP_ID}}
           token: ${{secrets.FIREBASE_TOKEN}}
           groups: testers
-          releaseNotes: "Ethical Scanner Android Application Build"
           file: app-release.apk

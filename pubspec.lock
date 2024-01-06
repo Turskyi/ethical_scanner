@@ -369,7 +369,7 @@ packages:
       path: "components/core/use_cases"
       relative: true
     source: path
-    version: "1.0.0"
+    version: "0.0.1"
   vector_math:
     dependency: transitive
     description:

@@ -1,5 +1,6 @@
 name: ethical_scanner
-description: "Ethical Scanner is a Flutter project for Android and iOS mobile application that scans the barcode of a product and tells you if the product meets your ethical standards."
+description: "Ethical Scanner is a Flutter project for Android and iOS mobile application that 
+scans the barcode of a product and tells you if the product meets your ethical standards."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -11,12 +12,13 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # build by specifying --build-name and --build-number, respectively.
 # In Android, build-name is used as versionName while build-number used as versionCode.
 # Read more about Android versioning at https://developer.android.com/studio/publish/versioning
-# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as
+# CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 0.0.1+1
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
@@ -35,7 +37,7 @@ dependencies:
   # they complement each other. The `bloc` package handles the logic and state management, while
   # the `flutter_bloc` package handles the UI and presentation layer. You can think of the bloc
   # package as the engine, and the `flutter_bloc` package as the car body. You need both to make a
-  # functional car. 🚗
+  # functional car 🚗.
   bloc: ^8.1.2
 
   entities:
@@ -44,10 +46,10 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # Built to be used with the `bloc` state management package
+  # Built to be used with the `bloc` state management package.
   flutter_bloc: ^8.1.3
 
-  # localization / internationalization (i18n) library
+  # Localization / internationalization (i18n) library.
   flutter_translate: ^4.0.4
 
   interface_adapters:
