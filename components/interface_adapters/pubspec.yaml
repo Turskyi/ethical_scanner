@@ -8,7 +8,7 @@ version: 0.0.1
 # This prevents the package from being accidentally published to pub.dev using pub publish. This is
 # preferred for private packages.
 publish_to: none
-# homepage:
+homepage: https://ethical-scanner.turskyi.com
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
