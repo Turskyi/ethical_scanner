@@ -1,7 +1,6 @@
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://stand-with-ukraine.pp.ua)
-
+[![Codemagic build status](https://api.codemagic.io/apps/659998e6caf611b8969ad389/659998e6caf611b8969ad388/status_badge.svg)](https://codemagic.io/apps/659998e6caf611b8969ad389/659998e6caf611b8969ad388/latest_build)
 # Ethical Scanner
-
 Ethical Scanner is a Flutter project for Android and iOS mobile application that scans the barcode
 of a product and tells you if the product meets your ethical standards.
 
@@ -393,3 +392,5 @@ name and ethical status.
 <img src="screenshots/home_android_tablet_portrait_20240106.png" width="400"  alt="screenshot">
 <!--suppress CheckImageSize -->
 <img src="screenshots/home_android_phone_portrait_20240106.png" width="400"  alt="screenshot">
+<!--suppress CheckImageSize -->
+<img src="screenshots/scan_android_phone_portrait_20240106.png" width="400"  alt="screenshot">
