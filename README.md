@@ -390,4 +390,6 @@ name and ethical status.
 • Screenshots:
 
 <!--suppress CheckImageSize -->
-<img src="screenshots/home_ios_2024_01_03.png" width="400"  alt="screenshot">
+<img src="screenshots/home_android_tablet_portrait_20240106.png" width="400"  alt="screenshot">
+<!--suppress CheckImageSize -->
+<img src="screenshots/home_android_phone_portrait_20240106.png" width="400"  alt="screenshot">
