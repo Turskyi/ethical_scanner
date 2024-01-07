@@ -41,6 +41,7 @@ def SIGNING_KEY_RELEASE_KEY = keyProperties.getProperty('SIGNING_KEY_RELEASE_KEY
 def SIGNING_KEY_RELEASE_KEY_PASSWORD = keyProperties.getProperty('SIGNING_KEY_RELEASE_KEY_PASSWORD')
 
 android {
+    //noinspection GroovyAssignabilityCheck
     namespace rootProject.application_id
     compileSdk flutter.compileSdkVersion
     ndkVersion "25.1.8937393"
@@ -83,10 +84,17 @@ android {
             }
         }
         dev {
-            storeFile file(SIGNING_KEY_DEBUG_PATH)
-            storePassword SIGNING_KEY_DEBUG_PASSWORD
-            keyAlias SIGNING_KEY_DEBUG_KEY
-            keyPassword SIGNING_KEY_DEBUG_KEY_PASSWORD
+            if (System.getenv()["CI"]) {
+                storeFile file(System.getenv()["CM_KEYSTORE_PATH"])
+                storePassword System.getenv()["CM_KEYSTORE_PASSWORD"]
+                keyAlias System.getenv()["CM_KEY_ALIAS"]
+                keyPassword System.getenv()["CM_KEY_PASSWORD"]
+            } else {
+                storeFile file(SIGNING_KEY_DEBUG_PATH)
+                storePassword SIGNING_KEY_DEBUG_PASSWORD
+                keyAlias SIGNING_KEY_DEBUG_KEY
+                keyPassword SIGNING_KEY_DEBUG_KEY_PASSWORD
+            }
         }
     }
     buildTypes {
