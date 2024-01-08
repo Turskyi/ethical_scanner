@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/delayed_animation.dart';
-import 'package:interface_adapters/src/ui/res/color/app_colors.dart';
+import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
 
 class ProductInfoBody extends StatelessWidget {
@@ -27,16 +27,18 @@ class ProductInfoBody extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               if (index == viewModel.productInfoMap.keys.length) {
                 if (viewModel is LoadingProductInfoState) {
-                  // Return CircularProgressIndicator as the last item
-                  return const Padding(
-                    padding: EdgeInsets.all(16.0),
+                  // Return `CircularProgressIndicator` as the last item.
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
                     child: Center(
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(
-                          AppColors.cetaceanBlue,
+                          Resources.of(context).colors.cetaceanBlue,
                         ),
                         strokeWidth: 5.0,
-                        backgroundColor: AppColors.antiFlashWhite,
+                        backgroundColor: Resources.of(
+                          context,
+                        ).colors.antiFlashWhite,
                       ),
                     ),
                   );
@@ -50,8 +52,8 @@ class ProductInfoBody extends StatelessWidget {
                 return DelayedAnimation(
                   delay: index * 150,
                   child: ListTile(
-                    textColor: AppColors.cetaceanBlue,
-                    iconColor: AppColors.cetaceanBlue,
+                    textColor: Resources.of(context).colors.cetaceanBlue,
+                    iconColor: Resources.of(context).colors.cetaceanBlue,
                     leading: const Icon(
                       Icons.star,
                     ),

@@ -6,7 +6,7 @@ enum AppColor {
 }
 
 extension AppColorExtension on AppColor {
-  Color get color {
+  Color get value {
     switch (this) {
       case AppColor.cetaceanBlue:
         return const Color(0xFF000C40);

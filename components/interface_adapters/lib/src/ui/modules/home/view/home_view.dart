@@ -32,10 +32,10 @@ class HomeView extends StatelessWidget {
             Center(
               heightFactor: Dimens.bodyHeightFactor,
               child: ShaderMask(
-                shaderCallback: (Rect bounds) => const LinearGradient(
+                shaderCallback: (Rect bounds) => LinearGradient(
                   colors: <Color>[
-                    Color(0xFFC4E0E5),
-                    Color(0xFF4CA1AF),
+                    Resources.of(context).colors.columbiaBlue,
+                    Resources.of(context).colors.verdigris,
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
