@@ -70,8 +70,8 @@ android {
     }
     signingConfigs {
         production {
-            // CI=true is exported by Codemagic
-            if (System.getenv()["CI"]) {
+            // FCI_BUILD_ID is exported by Codemagic
+            if (System.getenv()["FCI_BUILD_ID"] != null) {
                 storeFile file(System.getenv()["CM_KEYSTORE_PATH"])
                 storePassword System.getenv()["CM_KEYSTORE_PASSWORD"]
                 keyAlias System.getenv()["CM_KEY_ALIAS"]
@@ -84,7 +84,8 @@ android {
             }
         }
         dev {
-            if (System.getenv()["CI"]) {
+            // FCI_BUILD_ID is exported by Codemagic
+            if (System.getenv()["FCI_BUILD_ID"] != null) {
                 storeFile file(System.getenv()["CM_KEYSTORE_PATH"])
                 storePassword System.getenv()["CM_KEYSTORE_PASSWORD"]
                 keyAlias System.getenv()["CM_KEY_ALIAS"]
