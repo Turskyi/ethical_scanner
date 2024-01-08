@@ -56,6 +56,8 @@ class AppColors {
     },
   );
 
+  static const MaterialColor columbiaBlue = getMaterialColor(Color color)
+
 // Red color
   static const MaterialColor redMaterialColor = MaterialColor(
     0xFFFF0000,
