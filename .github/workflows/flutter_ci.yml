@@ -18,6 +18,11 @@ jobs:
         env:
           ENV: ${{ secrets.ENV }}
 
+      - name: Write env.g.dart file
+        run: |
+          dart run build_runner build --delete-conflicting-outputs
+        shell: bash
+
       - name: Write key.properties file
         run: |
           echo $KEY_PROPERTIES | base64 -d > android/key.properties
