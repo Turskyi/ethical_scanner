@@ -28,9 +28,18 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
                 'a particular country.',
           );
         } else {
-          return info.copyWith(
+          ProductInfo localInfo = info.copyWith(
             origin: _localDataSource.getCountryFromBarcode(barcode),
           );
+          if (localInfo.origin.isNotEmpty) {
+            return localInfo;
+          } else {
+            return _remoteDataSource.getCountryFromAiAsFuture(barcode).then(
+                  (String country) => info.copyWith(
+                    countryAi: country,
+                  ),
+                );
+          }
         }
       });
 }

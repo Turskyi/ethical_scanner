@@ -42,3 +42,10 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /android/key.properties
+
+# files with environment variables
+.env
+/.env
+/android/.env.local
+/env.g.dart
+env.g.dart

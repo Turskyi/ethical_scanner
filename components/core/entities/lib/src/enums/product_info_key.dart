@@ -9,6 +9,8 @@ enum ProductInfoKey {
   packaging,
   ingredients,
   website,
+  countryAi,
+  error,
 }
 
 extension ProductInfoKeyExtension on ProductInfoKey {
@@ -34,6 +36,10 @@ extension ProductInfoKeyExtension on ProductInfoKey {
         return 'Ingredients: ';
       case ProductInfoKey.website:
         return 'Website: ';
+      case ProductInfoKey.countryAi:
+        return 'AI-Generated Country Information: ';
+      case ProductInfoKey.error:
+        return 'Error: ';
     }
   }
 

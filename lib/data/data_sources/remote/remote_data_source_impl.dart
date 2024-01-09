@@ -1,3 +1,4 @@
+import 'package:dart_openai/dart_openai.dart';
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/data/data_mappers/product_data_mapper.dart';
 import 'package:ethical_scanner/data/data_mappers/product_result_data_mapper.dart';
@@ -17,13 +18,15 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           version: ProductQueryVersion.v3,
         ),
       ).then((ProductResultV3 result) {
-        if (result.isNonNullProductSuccessful) {
+        if (result.product != null && result.hasSuccessfulStatus) {
           return result.product!.toProductInfo();
         } else if (result.status == ProductResultV3.statusFailure) {
           if (_isBarcode(input)) {
             return ProductInfo(barcode: input);
           } else if (_isWebsite(input)) {
             return ProductInfo(website: input);
+          } else if (_isAmazonAsin(input)) {
+            return const ProductInfo(brand: 'Amazon');
           }
         }
         throw Exception(
@@ -31,26 +34,68 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         );
       });
 
+  @override
+  Future<String> getCountryFromAiAsFuture(String barcode) =>
+      OpenAI.instance.chat.create(
+        model: 'gpt-4',
+        seed: 6,
+        temperature: 0.2,
+        maxTokens: 500,
+        stop: <String>['\n'],
+        messages: <OpenAIChatCompletionChoiceMessageModel>[
+          OpenAIChatCompletionChoiceMessageModel(
+            content: <OpenAIChatCompletionChoiceMessageContentItemModel>[
+              OpenAIChatCompletionChoiceMessageContentItemModel.text(
+                'The country encoded in the barcode $barcode is',
+              ),
+            ],
+            role: OpenAIChatMessageRole.user,
+          ),
+        ],
+      ).then((OpenAIChatCompletionModel completion) {
+        String? country = completion
+            .choices.firstOrNull?.message.content?.firstOrNull?.text
+            ?.trim();
+        return country ?? '';
+      }).onError((_, __) {
+        return '';
+      });
+
   /// Extract the ingredients of an existing product of the OpenFoodFacts
   /// database that has already ingredient image otherwise it should be added
   /// first to the server and then this can be called.
   @override
-  Future<String> getIngredientsText(String barcode) async {
-    // A registered user login for https://world.openfoodfacts.org is required.
-    const User user = User(
-      userId: 'dmytro@turskyi.com',
-      password: '',
+  Future<String> getIngredientsText(String barcode) =>
+      OpenFoodAPIClient.extractIngredients(
+        const User(
+          userId: 'dmytro@turskyi.com',
+          password: '',
+        ),
+        barcode,
+        OpenFoodFactsLanguage.ENGLISH,
+      ).then(
+        (OcrIngredientsResult response) =>
+            response.status != 0 ? '' : response.ingredientsTextFromImage ?? '',
+      );
+
+  bool _isWebsite(String input) {
+    final RegExp regex = RegExp(
+      r'^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]'
+      r'{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$',
     );
-    // Query the OpenFoodFacts API.
-    OcrIngredientsResult response = await OpenFoodAPIClient.extractIngredients(
-      user,
-      barcode,
-      OpenFoodFactsLanguage.ENGLISH,
-    );
-    if (response.status != 0) {
-      return '';
-    }
-    return response.ingredientsTextFromImage ?? '';
+    return regex.hasMatch(input);
+  }
+
+  /// Checks if the provided [barcode] is a valid Amazon ASIN.
+  ///
+  /// Amazon ASINs typically follow the pattern: A followed by 10 characters,
+  /// which are typically alphanumeric.
+  ///
+  /// Returns `true` if [barcode] is a valid Amazon ASIN, and `false` otherwise.
+  bool _isAmazonAsin(String barcode) {
+    // ASIN pattern: A followed by 10 characters, typically alphanumeric
+    RegExp asinPattern = RegExp(r'^[A-Z0-9]{10}$');
+    return asinPattern.hasMatch(barcode);
   }
 
   bool _isBarcode(String input) {
@@ -66,14 +111,5 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }
     }
     return true;
-  }
-
-  bool _isWebsite(String input) {
-    // Regular expression for URL validation
-    final RegExp regex = RegExp(
-      r'^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]'
-      r'{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$',
-    );
-    return regex.hasMatch(input);
   }
 }

@@ -18,7 +18,11 @@ extension ProductExtension on Product {
       );
 
   String get countryName {
-    if (_hasCountries) {
+    if (countries != null && countries!.isNotEmpty) {
+      if (countries!.contains(':')) {
+        String countryName = countries!.split(':')[1];
+        return countryName[0].toUpperCase() + countryName.substring(1);
+      }
       return countries!;
     } else {
       return countryNames.isNotEmpty ? countryNames.first : '';
@@ -95,10 +99,6 @@ extension ProductExtension on Product {
     }
   }
 
-  bool get _hasCountries {
-    return countries != null && countries!.isNotEmpty;
-  }
-
   bool get _isUnknownIngredients => ingredients == null || ingredients!.isEmpty;
 
   bool get _isUnknownVeganStatus => ingredients!.any(
@@ -117,16 +117,19 @@ extension ProductExtension on Product {
 
   bool get _isNonVeganStatus =>
       ingredientsAnalysisTags?.veganStatus == VeganStatus.NON_VEGAN ||
-      ingredients!.any(
-        (Ingredient ingredient) =>
-            ingredient.vegan == IngredientSpecialPropertyStatus.NEGATIVE,
-      );
+      (ingredients != null &&
+          ingredients!.any(
+            (Ingredient ingredient) =>
+                ingredient.vegan == IngredientSpecialPropertyStatus.NEGATIVE,
+          ));
 
   bool get _isNonVegetarianStatus =>
       ingredientsAnalysisTags?.vegetarianStatus ==
           VegetarianStatus.NON_VEGETARIAN ||
-      ingredients!.any(
-        (Ingredient ingredient) =>
-            ingredient.vegetarian == IngredientSpecialPropertyStatus.NEGATIVE,
-      );
+      (ingredients != null &&
+          ingredients!.any(
+            (Ingredient ingredient) =>
+                ingredient.vegetarian ==
+                IngredientSpecialPropertyStatus.NEGATIVE,
+          ));
 }

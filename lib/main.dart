@@ -1,3 +1,4 @@
+import 'package:dart_openai/dart_openai.dart';
 import 'package:ethical_scanner/di/dependencies.dart';
 import 'package:ethical_scanner/di/dependencies_scope.dart';
 import 'package:ethical_scanner/res/enums/language.dart';
@@ -7,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
+
+import 'env/env.dart';
 
 /// The [main] is the ultimate detail — the lowest-level policy.
 /// It is the initial entry point of the system.
@@ -30,6 +33,8 @@ void main() async {
   ];
 
   OpenFoodAPIConfiguration.globalCountry = OpenFoodFactsCountry.CANADA;
+
+  OpenAI.apiKey = Env.apiKey;
 
   runApp(
     LocalizedApp(
