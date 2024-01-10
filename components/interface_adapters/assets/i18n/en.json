@@ -6,6 +6,10 @@
     "settings": "Settings"
   },
   "home": {
-    "scan_barcode": "Please scan barcode"
+    "scan_barcode": "Please scan barcode",
+    "fab": "Floating action button"
+  },
+  "scan": {
+    "scan_screen": "Scan screen"
   }
 }

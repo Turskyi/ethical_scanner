@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/scanner_error_widget.dart';
 import 'package:interface_adapters/src/ui/modules/scan/scan_event.dart';
 import 'package:interface_adapters/src/ui/modules/scan/scan_presenter.dart';
@@ -24,91 +25,94 @@ class _HomeViewState extends State<ScanView> {
     );
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: AnimatedSwitcher(
-        // Set the duration property
-        duration: const Duration(milliseconds: 200),
-        child: Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            MobileScanner(
-              controller: _scannerController,
-              errorBuilder: (_, MobileScannerException error, __) {
-                _scannerController.stop().whenComplete(() {
-                  _scannerController.start();
-                });
-                return ScannerErrorWidget(error: error);
-              },
-              fit: BoxFit.fitHeight,
-              onDetect: _onBarcodeDetect,
-              // scanWindow: scanWindow,
-            ),
-            CustomPaint(
-              painter: ScannerOverlay(scanWindow),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top,
-                left: 8,
+      body: Semantics(
+        label: translate('scan.scan_screen'),
+        child: AnimatedSwitcher(
+          // Set the duration property
+          duration: const Duration(milliseconds: 200),
+          child: Stack(
+            fit: StackFit.expand,
+            children: <Widget>[
+              MobileScanner(
+                controller: _scannerController,
+                errorBuilder: (_, MobileScannerException error, __) {
+                  _scannerController.stop().whenComplete(() {
+                    _scannerController.start();
+                  });
+                  return ScannerErrorWidget(error: error);
+                },
+                fit: BoxFit.fitHeight,
+                onDetect: _onBarcodeDetect,
+                // scanWindow: scanWindow,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.white,
+              CustomPaint(
+                painter: ScannerOverlay(scanWindow),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top,
+                  left: 8,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                      ),
+                      onPressed: () => _closeCamera().whenComplete(() {
+                        Navigator.pop(context);
+                      }),
                     ),
-                    onPressed: () => _closeCamera().whenComplete(() {
-                      Navigator.pop(context);
-                    }),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(bottom: 32.0),
-                    alignment: Alignment.bottomCenter,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        ValueListenableBuilder<TorchState>(
-                          valueListenable: _scannerController.torchState,
-                          builder: (
-                            BuildContext context,
-                            TorchState value,
-                            _,
-                          ) {
-                            final IconData iconData;
-                            switch (value) {
-                              case TorchState.off:
-                                iconData = Icons.flashlight_off;
-                                break;
-                              case TorchState.on:
-                                iconData = Icons.flashlight_on;
-                                break;
-                            }
-
-                            return IconButton(
-                              onPressed: _scannerController.toggleTorch,
-                              icon: Icon(
-                                iconData,
-                                color: Colors.white,
-                              ),
-                            );
-                          },
-                        ),
-                        IconButton(
-                          onPressed: _scannerController.switchCamera,
-                          icon: const Icon(
-                            Icons.cameraswitch_rounded,
-                            color: Colors.white,
+                    Container(
+                      padding: const EdgeInsets.only(bottom: 32.0),
+                      alignment: Alignment.bottomCenter,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          ValueListenableBuilder<TorchState>(
+                            valueListenable: _scannerController.torchState,
+                            builder: (
+                              BuildContext context,
+                              TorchState value,
+                              _,
+                            ) {
+                              final IconData iconData;
+                              switch (value) {
+                                case TorchState.off:
+                                  iconData = Icons.flashlight_off;
+                                  break;
+                                case TorchState.on:
+                                  iconData = Icons.flashlight_on;
+                                  break;
+                              }
+        
+                              return IconButton(
+                                onPressed: _scannerController.toggleTorch,
+                                icon: Icon(
+                                  iconData,
+                                  color: Colors.white,
+                                ),
+                              );
+                            },
                           ),
-                        ),
-                      ],
+                          IconButton(
+                            onPressed: _scannerController.switchCamera,
+                            icon: const Icon(
+                              Icons.cameraswitch_rounded,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

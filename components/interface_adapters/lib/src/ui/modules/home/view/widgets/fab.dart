@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 
 class Fab extends StatefulWidget {
@@ -51,33 +52,36 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
             builder: (BuildContext context, Widget? child) {
               return Transform.scale(
                 scale: 1.0 + (_animation.value * 0.2),
-                child: Container(
-                  width: _size,
-                  height: _size,
-                  decoration: BoxDecoration(
-                    gradient: Resources.of(
-                      context,
-                    ).gradients.pinkSunriseGradientBackground,
-                    shape: BoxShape.circle,
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                        color: Colors.pink.shade100,
-                        blurRadius: 40.0, // blur radius
-                        spreadRadius: 0.0, // spread radius
-                        offset: const Offset(2, 8), // offset
-                      ),
-                    ],
-                  ),
-                  child: ValueListenableBuilder<bool>(
-                    valueListenable: _isEnabledNotifier,
-                    builder: (_, bool isEnabled, __) {
-                      return FloatingActionButton(
-                        elevation: 0,
-                        backgroundColor: Colors.transparent,
-                        shape: const CircleBorder(),
-                        onPressed: isEnabled ? _onPressed : null,
-                      );
-                    },
+                child: Semantics(
+                  label: translate('home.fab'),
+                  child: Container(
+                    width: _size,
+                    height: _size,
+                    decoration: BoxDecoration(
+                      gradient: Resources.of(
+                        context,
+                      ).gradients.pinkSunriseGradientBackground,
+                      shape: BoxShape.circle,
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                          color: Colors.pink.shade100,
+                          blurRadius: 40.0, // blur radius
+                          spreadRadius: 0.0, // spread radius
+                          offset: const Offset(2, 8), // offset
+                        ),
+                      ],
+                    ),
+                    child: ValueListenableBuilder<bool>(
+                      valueListenable: _isEnabledNotifier,
+                      builder: (_, bool isEnabled, __) {
+                        return FloatingActionButton(
+                          elevation: 0,
+                          backgroundColor: Colors.transparent,
+                          shape: const CircleBorder(),
+                          onPressed: isEnabled ? _onPressed : null,
+                        );
+                      },
+                    ),
                   ),
                 ),
               );
