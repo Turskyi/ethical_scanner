@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:interface_adapters/src/ui/res/color/app_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 
 class Fab extends StatefulWidget {
@@ -119,15 +118,23 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
                           child: FadeTransition(opacity: anim, child: child),
                         ),
                         child: isExpanded
-                            ? const Icon(
+                            ? Icon(
                                 Icons.close_rounded,
-                                key: ValueKey<String>('icon1'),
-                                color: AppColors.cetaceanBlue,
+                                key: const ValueKey<IconData>(
+                                  Icons.close_rounded,
+                                ),
+                                color: Resources.of(
+                                  context,
+                                ).colors.cetaceanBlue,
                               )
-                            : const Icon(
+                            : Icon(
                                 Icons.barcode_reader,
-                                key: ValueKey<String>('icon2'),
-                                color: AppColors.cetaceanBlue,
+                                key: const ValueKey<IconData>(
+                                  Icons.barcode_reader,
+                                ),
+                                color: Resources.of(
+                                  context,
+                                ).colors.cetaceanBlue,
                               ),
                       ),
                     ),

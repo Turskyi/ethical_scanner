@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.0.2+2
+version: 0.0.3+3
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
@@ -40,9 +40,15 @@ dependencies:
   # functional car 🚗.
   bloc: ^8.1.2
 
+  # Dart SDK for openAI Apis (GPT-3 & DALL-E), integrate easily the power of OpenAI's
+  # state-of-the-art AI models into their Dart applications.
+  dart_openai: ^5.0.0
   entities:
     path: ./components/core/entities
 
+  # Explicitly reads environment variables into a dart file from a .env file for more security and
+  # faster start up times.
+  envied: ^0.5.3
   flutter:
     sdk: flutter
 
@@ -55,12 +61,19 @@ dependencies:
   interface_adapters:
     path: ./components/interface_adapters
 
-  openfoodfacts: ^3.3.0
+  openfoodfacts: ^3.3.1
 
+  path: any
   use_cases:
     path: ./components/core/use_cases
 
 dev_dependencies:
+  # A build system for Dart code generation and modular compilation.
+  build_runner: ^2.4.7
+
+  # Generator for the Envied package. See https://pub.dev/packages/envied.
+  envied_generator: ^0.5.3
+
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -69,6 +82,9 @@ dev_dependencies:
   flutter_lints: ^3.0.1
   flutter_test:
     sdk: flutter
+
+  # A full featured library for writing and running Dart tests across platforms.
+  test: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

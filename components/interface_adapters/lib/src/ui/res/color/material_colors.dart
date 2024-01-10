@@ -1,9 +1,25 @@
 import 'package:flutter/material.dart';
 
-class AppColors {
-  static const MaterialColor primarySwatch = cetaceanBlue;
+class MaterialColors {
+  MaterialColors();
 
-  MaterialColor getMaterialColor(Color color) {
+  static MaterialColor primarySwatch = const MaterialColor(
+    0xFF000C40,
+    <int, Color>{
+      50: Color.fromRGBO(0, 12, 64, .1),
+      100: Color.fromRGBO(0, 12, 64, .2),
+      200: Color.fromRGBO(0, 12, 64, .3),
+      300: Color.fromRGBO(0, 12, 64, .4),
+      400: Color.fromRGBO(0, 12, 64, .5),
+      500: Color.fromRGBO(0, 12, 64, .6),
+      600: Color.fromRGBO(0, 12, 64, .7),
+      700: Color.fromRGBO(0, 12, 64, .8),
+      800: Color.fromRGBO(0, 12, 64, .9),
+      900: Color.fromRGBO(0, 12, 64, 1),
+    },
+  );
+
+  static MaterialColor getMaterialColor(Color color) {
     final int red = color.red;
     final int green = color.green;
     final int blue = color.blue;
@@ -24,7 +40,7 @@ class AppColors {
     return MaterialColor(color.value, shades);
   }
 
-  static const MaterialColor cetaceanBlue = MaterialColor(
+  MaterialColor cetaceanBlue = const MaterialColor(
     0xFF000C40,
     <int, Color>{
       50: Color.fromRGBO(0, 12, 64, .1),
@@ -40,7 +56,7 @@ class AppColors {
     },
   );
 
-  static const MaterialColor antiFlashWhite = MaterialColor(
+  MaterialColor antiFlashWhite = const MaterialColor(
     0xFFF0F2F0,
     <int, Color>{
       50: Color(0xFFF0F2F0),
@@ -56,8 +72,11 @@ class AppColors {
     },
   );
 
+  MaterialColor columbiaBlue = getMaterialColor(const Color(0xFFC4E0E5));
+  MaterialColor verdigris = getMaterialColor(const Color(0xFF4CA1AF));
+
 // Red color
-  static const MaterialColor redMaterialColor = MaterialColor(
+  MaterialColor redMaterialColor = const MaterialColor(
     0xFFFF0000,
     <int, Color>{
       50: Color(0xFFFFE6E6),
@@ -74,7 +93,7 @@ class AppColors {
   );
 
 // Blue-green color
-  static const MaterialColor blueGreenMaterialColor = MaterialColor(
+  MaterialColor blueGreenMaterialColor = const MaterialColor(
     0xFF00FFBF,
     <int, Color>{
       50: Color(0xFFE6FFF2),
@@ -90,8 +109,7 @@ class AppColors {
     },
   );
 
-
-  static const MaterialColor yellowMaterialColor = MaterialColor(
+  MaterialColor yellowMaterialColor = const MaterialColor(
     0xFFFFEB3B,
     <int, Color>{
       50: Color(0xFFFFFDE7),
@@ -107,7 +125,7 @@ class AppColors {
     },
   );
 
-  static const MaterialColor pinkMaterialColor = MaterialColor(
+  MaterialColor pinkMaterialColor = const MaterialColor(
     0xFFFF4081,
     <int, Color>{
       50: Color(0xFFFFF1F3),
@@ -123,7 +141,7 @@ class AppColors {
     },
   );
 
-  static const MaterialColor cyanMaterialColor = MaterialColor(
+  MaterialColor cyanMaterialColor = const MaterialColor(
     0xFF00BCD4,
     <int, Color>{
       50: Color(0xFFE0F7FA),
@@ -139,7 +157,7 @@ class AppColors {
     },
   );
 
-  static const MaterialColor purpleMaterialColor = MaterialColor(
+  MaterialColor purpleMaterialColor = const MaterialColor(
     0xFF6A1B9A,
     <int, Color>{
       50: Color(0xFFF3E5F5),
@@ -155,7 +173,7 @@ class AppColors {
     },
   );
 
-  static const MaterialColor orangeMaterialColor = MaterialColor(
+  MaterialColor orangeMaterialColor = const MaterialColor(
     0xFFF57C00,
     <int, Color>{
       50: Color(0xFFFFF3E0),
@@ -171,7 +189,7 @@ class AppColors {
     },
   );
 
-  static const MaterialColor greenMaterialColor = MaterialColor(
+  MaterialColor greenMaterialColor = const MaterialColor(
     0xFF388E3C,
     <int, Color>{
       50: Color(0xFFE8F5E9),
@@ -187,7 +205,7 @@ class AppColors {
     },
   );
 
-  static const MaterialColor grayMaterialColor = MaterialColor(
+  MaterialColor grayMaterialColor = const MaterialColor(
     0xFF717171,
     <int, Color>{
       50: Color(0xFFFAFAFA),

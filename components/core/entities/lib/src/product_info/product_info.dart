@@ -7,6 +7,7 @@ class ProductInfo {
     this.origin = '',
     this.countryTags = const <String>[],
     this.country = '',
+    this.countryAi = '',
     this.name = '',
     this.brand = '',
     this.categoryTags = const <String>[],
@@ -38,6 +39,7 @@ class ProductInfo {
   /// parameter over the countries parameter for filtering and sorting the
   /// products.
   final String country;
+  final String countryAi;
   final String name;
   final String brand;
 
@@ -57,6 +59,7 @@ class ProductInfo {
     String? origin,
     List<String>? countryTags,
     String? country,
+    String? countryAi,
     String? name,
     String? brand,
     List<String>? categoryTags,
@@ -71,6 +74,7 @@ class ProductInfo {
         origin: origin ?? this.origin,
         countryTags: countryTags ?? this.countryTags,
         country: country ?? this.country,
+        countryAi: countryAi ?? this.countryAi,
         name: name ?? this.name,
         brand: brand ?? this.brand,
         categoryTags: categoryTags ?? this.categoryTags,

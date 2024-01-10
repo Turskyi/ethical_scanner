@@ -1,14 +1,17 @@
 import 'package:flutter/widgets.dart';
 import 'package:interface_adapters/src/ui/app/ethical_scanner_app.dart';
 import 'package:interface_adapters/src/ui/res/color/gradients.dart';
+import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 
 class Resources extends InheritedWidget {
   const Resources({
     super.key,
+    required this.colors,
     required this.gradients,
     required super.child,
   });
 
+  final MaterialColors colors;
   final Gradients gradients;
 
   @override

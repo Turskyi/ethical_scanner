@@ -1,14 +1,19 @@
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://stand-with-ukraine.pp.ua)
 [![Codemagic build status](https://api.codemagic.io/apps/659998e6caf611b8969ad389/659998e6caf611b8969ad388/status_badge.svg)](https://codemagic.io/apps/659998e6caf611b8969ad389/659998e6caf611b8969ad388/latest_build)
+[![Build & upload to Firebase App Distribution](https://github.com/Turskyi/ethical_scanner/actions/workflows/flutter_ci.yml/badge.svg?branch=dev&event=push)](https://github.com/Turskyi/ethical_scanner/actions/workflows/flutter_ci.yml)
+[![Code Quality](https://github.com/Turskyi/ethical_scanner/actions/workflows/code-quality-tests.yml/badge.svg?branch=master&event=push)](https://github.com/Turskyi/ethical_scanner/actions/workflows/code-quality-tests.yml)
+[![style: flutter lints](https://img.shields.io/badge/style-flutter__lints-blue)](https://pub.dev/packages/flutter_lints)
 # Ethical Scanner
-Ethical Scanner is a Flutter project for Android and iOS mobile application that scans the barcode
+
+Ethical Scanner is a Flutter project for Android and iOS mobile app that scans the barcode
 of a product and tells you if the product meets your ethical standards.
 
 The app allows you to customize your preferences based on
 various criteria, such as human rights, environmental impact, animal well-being, and more.
 
 The app uses the data from various sources, such as
-[Don’t Fund War](https://dontfundwar.com/directory) and
+[Don’t Fund War](https://dontfundwar.com/directory),
+[State Sponsors of Terrorism](https://www.state.gov/state-sponsors-of-terrorism/) and
 [Global Forum Against Terrorism](https://www.gfatf.org/threats/countries-who-support-terrorism/).
 The app aims to help you shop with confidence and conscience. For more information, please visit the
 project website at [website in progress].
@@ -43,13 +48,19 @@ named such that another developer reading the code can easily understand their f
 
 # Getting Started
 
+## To create generated files, run:
+
+```
+dart run build_runner build --delete-conflicting-outputs
+```
+
 ## Contribution
 
 Ethical Scanner is an open source project and welcomes contributions from anyone who is interested.
 If you want to contribute to Ethical Scanner, you can follow these steps:
 
 - Fork this repository and clone it to your local machine.
-- Create a new branch for your feature or bug fix.
+- Create a new branch for your feature or bugfix.
 - Make your changes and commit them with a clear and descriptive message.
 - Push your branch to your forked repository and create a pull request to the main repository.
 - Wait for your pull request to be reviewed and merged.
@@ -59,10 +70,11 @@ can also use the issues and discussions tabs to report bugs, request features, o
 
 ## Installation
 
-To install Ethical Scanner, you need to have Flutter SDK and Android Studio installed on your 
+To install Ethical Scanner, you need to have Flutter SDK and Android Studio installed on your
 machine. You can follow the official documentation to set up your development environment.
-To run Ethical Scanner on your device or emulator, you need to clone this repository and open it in 
-Android Studio. Then, you can use the run button or the command line to launch the app. For more 
+To run an Ethical Scanner on your device or emulator, you need to clone this repository and open it
+in
+Android Studio. Then, you can use the run button or the command line to launch the app. For more
 information, see the Flutter documentation.
 
 ### Data flow
@@ -90,11 +102,12 @@ rules operating on Critical Business Data.
 
 #### Application Business Rules - `use_cases`
 
-The `use_cases` module defines the business logic of the application.
-It is a component that is independent of the development platform, i.e., it is written purely in the
+The `use_cases` module defines the business logic of the app.
+It is a component that is independent of the development platform, in other words, it is written
+purely in the
 programming language and does not contain any elements from the platform. In the case of `Flutter`,
 `use_cases` would be written purely in `Dart` without any `Flutter` elements. The reason for that is
-that `use_cases` should only be concerned with the business logic of the application,
+that `use_cases` should only be concerned with the business logic of the app,
 not with the implementation details.
 
 #### Interface Adapters - `interface_adapters`
@@ -108,11 +121,12 @@ never violated. Using `polymorphism`, `Interface Adapters` communicates with
 `Interface Adapters` is concerned, they are abstract. The implementation is hidden behind the
 `polymorphism`.
 
-#### Frameworks and drivers - `lib`, `android`, `ios` etc.
+#### Frameworks and drivers – `lib`, `android`, `ios` etc
 
 The `data` module, which is a part of the outermost `lib` component, is responsible for data
 retrieval. This can be in the form of API calls to a server, a local database, or even both.
-Part of the `Frameworks and drivers` layer communicates directly with the platform i.e. `android`
+Part of the `Frameworks and drivers` layer communicates directly with the platform in other
+words `android`
 and `ios`. `Frameworks and drivers` is responsible for Native functionality.
 `Frameworks and drivers` calls all Native APIs.
 
@@ -186,10 +200,10 @@ We want the code to read like a top-down narrative.
 We want every function to be followed by those at the next level of abstraction so that we can read
 the program, descending one level of abstraction at a time as we read down the list of functions.
 
-- ### Dependent Functions.
+- ### Dependent Functions
 
 If one function calls another, they should be vertically close, and the caller should be **_above_**
-the callee, if at all possible.
+the callee, if possible.
 
 - ### Use Descriptive Names
 
@@ -275,7 +289,8 @@ end. If you overuse banners, they’ll fall into the background noise and be ign
 - ### Don’t Return Null
 
 When we return `null`, we are essentially creating work for ourselves and foisting problems upon our
-callers. All it takes is one missing `null` check to send an application spinning out of control.
+callers.
+All it takes is one missing `null` check to send an app spinning out of control.
 
 - ### Don’t Pass Null
 
@@ -303,7 +318,8 @@ In general, an artificial coupling is a coupling between two modules that serves
 It is a result of putting a variable, constant, or function in a temporarily convenient, though
 inappropriate, location.
 For example, general `enum`s should not be contained within more specific classes because this
-forces the whole application to know about these more specific classes. The same goes for general
+forces the app to know about these more specific classes.
+The same goes for general
 purpose `static` functions being declared in specific classes.
 
 - ### Prefer Polymorphism to If/Else or Switch/Case
@@ -394,3 +410,9 @@ name and ethical status.
 <img src="screenshots/home_android_phone_portrait_20240106.png" width="400"  alt="screenshot">
 <!--suppress CheckImageSize -->
 <img src="screenshots/scan_android_phone_portrait_20240106.png" width="400"  alt="screenshot">
+
+## Download
+
+<a href="https://play.google.com/store/apps/details?id=com.turskyi.ethical_scanner" target="_blank">
+<img src="https://play.google.com/intl/en_gb/badges/static/images/badges/en_badge_web_generic.png" width=240  alt="google play badge"/>
+</a>

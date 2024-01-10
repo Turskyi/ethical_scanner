@@ -20,76 +20,87 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
       (ShowProductInfoEvent event, Emitter<HomeViewModel> emit) async {
         final Map<ProductInfoKey, String> modifiableProductInfo =
             Map<ProductInfoKey, String>.from(state.productInfoMap);
-        if (_isWebsite(event.code)) {
-          modifiableProductInfo[ProductInfoKey.website] = event.code;
-        } else {
-          modifiableProductInfo[ProductInfoKey.code] = event.code;
-          emit(LoadingProductInfoState(modifiableProductInfo));
-          final ProductInfo productInfo = await _getProductInfoUseCase.call(
-            event.code,
-          );
-          if (productInfo.name.isNotEmpty) {
-            modifiableProductInfo[ProductInfoKey.productName] =
-                productInfo.name;
+        try {
+          if (_isWebsite(event.code)) {
+            modifiableProductInfo[ProductInfoKey.website] = event.code;
+          } else {
+            modifiableProductInfo[ProductInfoKey.code] = event.code;
             emit(LoadingProductInfoState(modifiableProductInfo));
-          }
-          if (productInfo.origin.isNotEmpty) {
-            modifiableProductInfo[ProductInfoKey.countryOfOrigin] =
-                productInfo.origin;
-            emit(LoadingProductInfoState(modifiableProductInfo));
-          }
-          if (productInfo.country.isNotEmpty) {
-            modifiableProductInfo[ProductInfoKey.countryWhereSold] =
-                productInfo.country;
-            emit(LoadingProductInfoState(modifiableProductInfo));
-          } else if (productInfo.categoryTags.isNotEmpty) {
-            StringBuffer stringBuffer = StringBuffer();
-            for (String countryTag in productInfo.categoryTags) {
-              stringBuffer.write(countryTag);
-              if (countryTag != productInfo.categoryTags.last) {
-                stringBuffer.write(', ');
-              }
+            final ProductInfo productInfo = await _getProductInfoUseCase.call(
+              event.code,
+            );
+            if (productInfo.name.isNotEmpty) {
+              modifiableProductInfo[ProductInfoKey.productName] =
+                  productInfo.name;
+              emit(LoadingProductInfoState(modifiableProductInfo));
             }
-            modifiableProductInfo[ProductInfoKey.countryWhereSold] =
-                stringBuffer.toString();
-            emit(LoadingProductInfoState(modifiableProductInfo));
-          }
-          if (productInfo.brand.isNotEmpty) {
-            modifiableProductInfo[ProductInfoKey.brand] = productInfo.brand;
-            emit(LoadingProductInfoState(modifiableProductInfo));
-          }
-          if (productInfo.vegetarian != Vegetarian.unknown) {
-            modifiableProductInfo[ProductInfoKey.isVegetarian] =
-                productInfo.vegetarian == Vegetarian.positive ? 'Yes' : 'No';
-            emit(LoadingProductInfoState(modifiableProductInfo));
-          }
-          if (productInfo.vegan != Vegan.unknown) {
-            modifiableProductInfo[ProductInfoKey.isVegan] =
-                productInfo.vegan == Vegan.positive ? 'Yes' : 'No';
-            emit(LoadingProductInfoState(modifiableProductInfo));
-          }
-          if (productInfo.packaging.isNotEmpty) {
-            modifiableProductInfo[ProductInfoKey.packaging] =
-                productInfo.packaging;
-            emit(LoadingProductInfoState(modifiableProductInfo));
-          }
-          if (productInfo.ingredientList.isNotEmpty) {
-            StringBuffer stringBuffer = StringBuffer();
-            for (String ingredient in productInfo.ingredientList) {
-              stringBuffer.write(ingredient);
-              if (ingredient != productInfo.ingredientList.last) {
-                stringBuffer.write(', ');
-              }
+            if (productInfo.origin.isNotEmpty) {
+              modifiableProductInfo[ProductInfoKey.countryOfOrigin] =
+                  productInfo.origin;
+              emit(LoadingProductInfoState(modifiableProductInfo));
             }
-            modifiableProductInfo[ProductInfoKey.ingredients] =
-                stringBuffer.toString();
-            emit(LoadingProductInfoState(modifiableProductInfo));
+            if (productInfo.country.isNotEmpty) {
+              modifiableProductInfo[ProductInfoKey.countryWhereSold] =
+                  productInfo.country;
+              emit(LoadingProductInfoState(modifiableProductInfo));
+            } else if (productInfo.categoryTags.isNotEmpty) {
+              StringBuffer stringBuffer = StringBuffer();
+              for (String countryTag in productInfo.categoryTags) {
+                stringBuffer.write(countryTag);
+                if (countryTag != productInfo.categoryTags.last) {
+                  stringBuffer.write(', ');
+                }
+              }
+              modifiableProductInfo[ProductInfoKey.countryWhereSold] =
+                  stringBuffer.toString();
+              emit(LoadingProductInfoState(modifiableProductInfo));
+            }
+            if (productInfo.brand.isNotEmpty) {
+              modifiableProductInfo[ProductInfoKey.brand] = productInfo.brand;
+              emit(LoadingProductInfoState(modifiableProductInfo));
+            }
+            if (productInfo.vegetarian != Vegetarian.unknown) {
+              modifiableProductInfo[ProductInfoKey.isVegetarian] =
+                  productInfo.vegetarian == Vegetarian.positive ? 'Yes' : 'No';
+              emit(LoadingProductInfoState(modifiableProductInfo));
+            }
+            if (productInfo.vegan != Vegan.unknown) {
+              modifiableProductInfo[ProductInfoKey.isVegan] =
+                  productInfo.vegan == Vegan.positive ? 'Yes' : 'No';
+              emit(LoadingProductInfoState(modifiableProductInfo));
+            }
+            if (productInfo.packaging.isNotEmpty) {
+              modifiableProductInfo[ProductInfoKey.packaging] =
+                  productInfo.packaging;
+              emit(LoadingProductInfoState(modifiableProductInfo));
+            }
+            if (productInfo.ingredientList.isNotEmpty) {
+              StringBuffer stringBuffer = StringBuffer();
+              for (String ingredient in productInfo.ingredientList) {
+                stringBuffer.write(ingredient);
+                if (ingredient != productInfo.ingredientList.last) {
+                  stringBuffer.write(', ');
+                }
+              }
+              modifiableProductInfo[ProductInfoKey.ingredients] =
+                  stringBuffer.toString();
+              emit(LoadingProductInfoState(modifiableProductInfo));
+            }
+            if (productInfo.website.isNotEmpty) {
+              modifiableProductInfo[ProductInfoKey.website] =
+                  productInfo.website;
+            }
+            if (productInfo.countryAi.isNotEmpty) {
+              modifiableProductInfo[ProductInfoKey.countryAi] =
+                  productInfo.countryAi;
+            }
           }
-          if (productInfo.website.isNotEmpty) {
-            modifiableProductInfo[ProductInfoKey.website] = productInfo.website;
-          }
+        } catch (e, s) {
+          modifiableProductInfo[ProductInfoKey.error] =
+              'Error: $e,\nStacktrace: $s';
+        } finally {
+          emit(LoadedProductInfoState(modifiableProductInfo));
         }
-        emit(LoadedProductInfoState(modifiableProductInfo));
       },
     );
 

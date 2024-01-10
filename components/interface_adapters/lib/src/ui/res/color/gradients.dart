@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:interface_adapters/src/ui/res/color/app_colors.dart';
+import 'package:interface_adapters/src/ui/res/color/app_color.dart';
 
 class Gradients {
   Gradients();
+
   final LinearGradient pinkSunriseGradientBackground = LinearGradient(
     colors: <Color>[
       Colors.orange.shade200,
@@ -13,13 +14,13 @@ class Gradients {
     end: Alignment.bottomCenter,
   );
 
-  final LinearGradient unauthorizedConstructionGradient = const LinearGradient(
+  final LinearGradient unauthorizedConstructionGradient = LinearGradient(
     colors: <Color>[
-      AppColors.cetaceanBlue,
-      AppColors.antiFlashWhite,
+      AppColor.cetaceanBlue.value,
+      AppColor.antiFlashWhite.value,
     ],
     // Set the stops
-    stops: <double>[0.0, 1.0],
+    stops: const <double>[0.0, 1.0],
     // Set the begin and end points
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
