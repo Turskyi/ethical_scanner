@@ -63,6 +63,7 @@ dependencies:
 
   openfoodfacts: ^3.3.1
 
+  path: any
   use_cases:
     path: ./components/core/use_cases
 
