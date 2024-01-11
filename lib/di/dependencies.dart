@@ -1,6 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/data/data_sources/local/local_data_source_impl.dart';
 import 'package:ethical_scanner/data/data_sources/remote/remote_data_source_impl.dart';
+import 'package:ethical_scanner/data/data_sources/remote/rest/dio/logging_interceptor_impl.dart';
+import 'package:ethical_scanner/data/data_sources/remote/rest/retrofit_client/retrofit_client.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:use_cases/use_cases.dart';
 
@@ -8,11 +11,20 @@ import 'package:use_cases/use_cases.dart';
 class Dependencies {
   const Dependencies();
 
-  final UseCase<Future<ProductInfo>, String> getProductInfoUseCase =
-      const GetProductInfoUseCase(
-    ProductInfoGatewayImpl(
-      RemoteDataSourceImpl(),
-      LocalDataSourceImpl(),
-    ),
-  );
+  UseCase<Future<ProductInfo>, String> get productInfoUseCase =>
+      GetProductInfoUseCase(
+        ProductInfoGatewayImpl(
+          RemoteDataSourceImpl(restClient),
+          const LocalDataSourceImpl(),
+        ),
+      );
+
+  RestClient get restClient {
+    final Dio dio = Dio();
+    const LoggingInterceptor loggingInterceptor = LoggingInterceptorImpl();
+    if (loggingInterceptor is Interceptor) {
+      dio.interceptors.add(loggingInterceptor as Interceptor);
+    }
+    return RetrofitClient(dio);
+  }
 }

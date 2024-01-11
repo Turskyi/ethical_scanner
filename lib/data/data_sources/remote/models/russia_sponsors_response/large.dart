@@ -5,16 +5,15 @@ part 'large.g.dart';
 
 @JsonSerializable()
 class Large {
+  const Large({this.url, this.width, this.height});
+
+  factory Large.fromJson(Map<String, dynamic> json) => _$LargeFromJson(json);
   final String? url;
   final int? width;
   final int? height;
 
-  const Large({this.url, this.width, this.height});
-
   @override
   String toString() => 'Large(url: $url, width: $width, height: $height)';
-
-  factory Large.fromJson(Map<String, dynamic> json) => _$LargeFromJson(json);
 
   Map<String, dynamic> toJson() => _$LargeToJson(this);
 
@@ -34,7 +33,8 @@ class Large {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     if (other is! Large) return false;
-    final mapEquals = const DeepCollectionEquality().equals;
+    final bool Function(Object? e1, Object? e2) mapEquals =
+        const DeepCollectionEquality().equals;
     return mapEquals(other.toJson(), toJson());
   }
 

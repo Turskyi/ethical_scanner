@@ -59,6 +59,11 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
               modifiableProductInfo[ProductInfoKey.brand] = productInfo.brand;
               emit(LoadingProductInfoState(modifiableProductInfo));
             }
+            if (productInfo.isTerrorismSponsor) {
+              modifiableProductInfo[ProductInfoKey.terrorismSponsor] =
+                  productInfo.isTerrorismSponsor ? 'Yes' : 'No';
+              emit(LoadingProductInfoState(modifiableProductInfo));
+            }
             if (productInfo.vegetarian != Vegetarian.unknown) {
               modifiableProductInfo[ProductInfoKey.isVegetarian] =
                   productInfo.vegetarian == Vegetarian.positive ? 'Yes' : 'No';

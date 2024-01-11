@@ -5,16 +5,15 @@ part 'full.g.dart';
 
 @JsonSerializable()
 class Full {
+  const Full({this.url, this.width, this.height});
+
+  factory Full.fromJson(Map<String, dynamic> json) => _$FullFromJson(json);
   final String? url;
   final int? width;
   final int? height;
 
-  const Full({this.url, this.width, this.height});
-
   @override
   String toString() => 'Full(url: $url, width: $width, height: $height)';
-
-  factory Full.fromJson(Map<String, dynamic> json) => _$FullFromJson(json);
 
   Map<String, dynamic> toJson() => _$FullToJson(this);
 
@@ -34,7 +33,8 @@ class Full {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     if (other is! Full) return false;
-    final mapEquals = const DeepCollectionEquality().equals;
+    final bool Function(Object? e1, Object? e2) mapEquals =
+        const DeepCollectionEquality().equals;
     return mapEquals(other.toJson(), toJson());
   }
 

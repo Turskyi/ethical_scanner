@@ -7,15 +7,6 @@ part 'logo.g.dart';
 
 @JsonSerializable()
 class Logo {
-  final String? id;
-  final int? width;
-  final int? height;
-  final String? url;
-  final String? filename;
-  final int? size;
-  final String? type;
-  final Thumbnails? thumbnails;
-
   const Logo({
     this.id,
     this.width,
@@ -27,12 +18,22 @@ class Logo {
     this.thumbnails,
   });
 
+  factory Logo.fromJson(Map<String, dynamic> json) => _$LogoFromJson(json);
+  final String? id;
+  final int? width;
+  final int? height;
+  final String? url;
+  final String? filename;
+  final int? size;
+  final String? type;
+  final Thumbnails? thumbnails;
+
   @override
   String toString() {
-    return 'Logo(id: $id, width: $width, height: $height, url: $url, filename: $filename, size: $size, type: $type, thumbnails: $thumbnails)';
+    return 'Logo(id: $id, width: $width, height: $height, url: $url, '
+        'filename: $filename, size: $size, type: $type, '
+        'thumbnails: $thumbnails)';
   }
-
-  factory Logo.fromJson(Map<String, dynamic> json) => _$LogoFromJson(json);
 
   Map<String, dynamic> toJson() => _$LogoToJson(this);
 
@@ -62,7 +63,8 @@ class Logo {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     if (other is! Logo) return false;
-    final mapEquals = const DeepCollectionEquality().equals;
+    final bool Function(Object? e1, Object? e2) mapEquals =
+        const DeepCollectionEquality().equals;
     return mapEquals(other.toJson(), toJson());
   }
 

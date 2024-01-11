@@ -36,7 +36,7 @@ Fields _$FieldsFromJson(Map<String, dynamic> json) => Fields(
       lastModified: json['Last Modified'] == null
           ? null
           : DateTime.parse(json['Last Modified'] as String),
-      marketCapStd: json['Market Cap (Std)'] as int?,
+      marketCapStd: (json['Market Cap (Std)'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$FieldsToJson(Fields instance) => <String, dynamic>{

@@ -9,7 +9,7 @@ part of 'investor.dart';
 Investor _$InvestorFromJson(Map<String, dynamic> json) => Investor(
       symbol: json['symbol'] as String?,
       id: json['id'] as String?,
-      adjHolding: json['adjHolding'] as int?,
+      adjHolding: (json['adjHolding'] as num?)?.toDouble(),
       adjMv: json['adjMv'] as int?,
       entityProperName: json['entityProperName'] as String?,
       reportDate: json['reportDate'] as int?,

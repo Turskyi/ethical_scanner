@@ -9,19 +9,19 @@ part 'thumbnails.g.dart';
 
 @JsonSerializable()
 class Thumbnails {
+  const Thumbnails({this.small, this.large, this.full});
+
+  factory Thumbnails.fromJson(Map<String, dynamic> json) {
+    return _$ThumbnailsFromJson(json);
+  }
+
   final Small? small;
   final Large? large;
   final Full? full;
 
-  const Thumbnails({this.small, this.large, this.full});
-
   @override
   String toString() {
     return 'Thumbnails(small: $small, large: $large, full: $full)';
-  }
-
-  factory Thumbnails.fromJson(Map<String, dynamic> json) {
-    return _$ThumbnailsFromJson(json);
   }
 
   Map<String, dynamic> toJson() => _$ThumbnailsToJson(this);
@@ -42,7 +42,8 @@ class Thumbnails {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     if (other is! Thumbnails) return false;
-    final mapEquals = const DeepCollectionEquality().equals;
+    final bool Function(Object? e1, Object? e2) mapEquals =
+        const DeepCollectionEquality().equals;
     return mapEquals(other.toJson(), toJson());
   }
 

@@ -8,6 +8,37 @@ part 'fields.g.dart';
 
 @JsonSerializable()
 class Fields {
+  const Fields({
+    this.name,
+    this.action,
+    this.logo,
+    this.status,
+    this.exception,
+    this.country,
+    this.websiteUrl,
+    this.instagram,
+    this.twitter,
+    this.sector,
+    this.ticker,
+    this.notes,
+    this.marketCap,
+    this.currency,
+    this.industry,
+    this.description,
+    this.investors,
+    this.stockPrice,
+    this.facebook,
+    this.linkToAnnouncement,
+    this.cusip,
+    this.tempLogo,
+    this.lastModified,
+    this.marketCapStd,
+  });
+
+  factory Fields.fromJson(Map<String, dynamic> json) {
+    return _$FieldsFromJson(json);
+  }
+
   @JsonKey(name: 'Name')
   final String? name;
   @JsonKey(name: 'Action')
@@ -55,42 +86,19 @@ class Fields {
   @JsonKey(name: 'Last Modified')
   final DateTime? lastModified;
   @JsonKey(name: 'Market Cap (Std)')
-  final int? marketCapStd;
-
-  const Fields({
-    this.name,
-    this.action,
-    this.logo,
-    this.status,
-    this.exception,
-    this.country,
-    this.websiteUrl,
-    this.instagram,
-    this.twitter,
-    this.sector,
-    this.ticker,
-    this.notes,
-    this.marketCap,
-    this.currency,
-    this.industry,
-    this.description,
-    this.investors,
-    this.stockPrice,
-    this.facebook,
-    this.linkToAnnouncement,
-    this.cusip,
-    this.tempLogo,
-    this.lastModified,
-    this.marketCapStd,
-  });
+  final double? marketCapStd;
 
   @override
   String toString() {
-    return 'Fields(name: $name, action: $action, logo: $logo, status: $status, exception: $exception, country: $country, websiteUrl: $websiteUrl, instagram: $instagram, twitter: $twitter, sector: $sector, ticker: $ticker, notes: $notes, marketCap: $marketCap, currency: $currency, industry: $industry, description: $description, investors: $investors, stockPrice: $stockPrice, facebook: $facebook, linkToAnnouncement: $linkToAnnouncement, cusip: $cusip, tempLogo: $tempLogo, lastModified: $lastModified, marketCapStd: $marketCapStd)';
-  }
-
-  factory Fields.fromJson(Map<String, dynamic> json) {
-    return _$FieldsFromJson(json);
+    return 'Fields(name: $name, action: $action, logo: $logo, status: $status, '
+        'exception: $exception, country: $country, websiteUrl: $websiteUrl, '
+        'instagram: $instagram, twitter: $twitter, sector: $sector, '
+        'ticker: $ticker, notes: $notes, marketCap: $marketCap, '
+        'currency: $currency, industry: $industry, description: $description, '
+        'investors: $investors, stockPrice: $stockPrice, facebook: $facebook, '
+        'linkToAnnouncement: $linkToAnnouncement, cusip: $cusip, '
+        'tempLogo: $tempLogo, lastModified: $lastModified, '
+        'marketCapStd: $marketCapStd)';
   }
 
   Map<String, dynamic> toJson() => _$FieldsToJson(this);
@@ -119,7 +127,7 @@ class Fields {
     String? cusip,
     String? tempLogo,
     DateTime? lastModified,
-    int? marketCapStd,
+    double? marketCapStd,
   }) {
     return Fields(
       name: name ?? this.name,
@@ -153,7 +161,8 @@ class Fields {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     if (other is! Fields) return false;
-    final mapEquals = const DeepCollectionEquality().equals;
+    final bool Function(Object? e1, Object? e2) mapEquals =
+        const DeepCollectionEquality().equals;
     return mapEquals(other.toJson(), toJson());
   }
 

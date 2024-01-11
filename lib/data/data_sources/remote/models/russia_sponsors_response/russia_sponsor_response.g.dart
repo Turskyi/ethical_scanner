@@ -1,15 +1,15 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'russia_sponsors_response.dart';
+part of 'russia_sponsor_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-RussiaSponsorsResponse _$RussiaSponsorsResponseFromJson(
+RussiaSponsorResponse _$RussiaSponsorResponseFromJson(
         Map<String, dynamic> json) =>
-    RussiaSponsorsResponse(
-      id: json['id'] as String?,
+    RussiaSponsorResponse(
+      id: json['id'] as String,
       createdTime: json['createdTime'] == null
           ? null
           : DateTime.parse(json['createdTime'] as String),
@@ -18,8 +18,8 @@ RussiaSponsorsResponse _$RussiaSponsorsResponseFromJson(
           : Fields.fromJson(json['fields'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$RussiaSponsorsResponseToJson(
-        RussiaSponsorsResponse instance) =>
+Map<String, dynamic> _$RussiaSponsorResponseToJson(
+        RussiaSponsorResponse instance) =>
     <String, dynamic>{
       'id': instance.id,
       'createdTime': instance.createdTime?.toIso8601String(),

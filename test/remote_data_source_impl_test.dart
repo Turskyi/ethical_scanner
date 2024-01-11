@@ -1,5 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/data/data_sources/remote/remote_data_source_impl.dart';
+import 'package:ethical_scanner/data/data_sources/remote/rest/dio/logging_interceptor_impl.dart';
+import 'package:ethical_scanner/data/data_sources/remote/rest/retrofit_client/retrofit_client.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 
@@ -19,7 +22,7 @@ void main() {
       OpenFoodAPIConfiguration.globalCountry = OpenFoodFactsCountry.CANADA;
 
       // Initialize the RemoteDataSourceImpl
-      remoteDataSource = const RemoteDataSourceImpl();
+      remoteDataSource = RemoteDataSourceImpl(restClient);
     });
 
     test('getProductInfoAsFuture returns ProductInfo on success', () async {
@@ -40,4 +43,13 @@ void main() {
       expect(result.barcode, equals(expectedResult.barcode));
     });
   });
+}
+
+RestClient get restClient {
+  final Dio dio = Dio();
+  const LoggingInterceptor loggingInterceptor = LoggingInterceptorImpl();
+  if (loggingInterceptor is Interceptor) {
+    dio.interceptors.add(loggingInterceptor as Interceptor);
+  }
+  return RetrofitClient(dio);
 }

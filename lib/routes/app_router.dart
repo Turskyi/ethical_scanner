@@ -11,7 +11,7 @@ Route<String> generateRoute(RouteSettings settings) {
       pageBuilder: (BuildContext context, __, ___) =>
           BlocProvider<HomePresenter>(
         create: (BuildContext context) => HomePresenter(
-          DependenciesScope.of(context).getProductInfoUseCase,
+          DependenciesScope.of(context).productInfoUseCase,
         ),
         child: BlocListener<HomePresenter, HomeViewModel>(
           listener: (BuildContext context, HomeViewModel viewModel) {

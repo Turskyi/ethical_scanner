@@ -5,17 +5,6 @@ part 'investor.g.dart';
 
 @JsonSerializable()
 class Investor {
-  final String? symbol;
-  final String? id;
-  final int? adjHolding;
-  final int? adjMv;
-  final String? entityProperName;
-  final int? reportDate;
-  final String? filingDate;
-  final int? reportedHolding;
-  final int? date;
-  final int? updated;
-
   const Investor({
     this.symbol,
     this.id,
@@ -29,13 +18,27 @@ class Investor {
     this.updated,
   });
 
-  @override
-  String toString() {
-    return 'Investor(symbol: $symbol, id: $id, adjHolding: $adjHolding, adjMv: $adjMv, entityProperName: $entityProperName, reportDate: $reportDate, filingDate: $filingDate, reportedHolding: $reportedHolding, date: $date, updated: $updated)';
-  }
-
   factory Investor.fromJson(Map<String, dynamic> json) {
     return _$InvestorFromJson(json);
+  }
+
+  final String? symbol;
+  final String? id;
+  final double? adjHolding;
+  final int? adjMv;
+  final String? entityProperName;
+  final int? reportDate;
+  final String? filingDate;
+  final int? reportedHolding;
+  final int? date;
+  final int? updated;
+
+  @override
+  String toString() {
+    return 'Investor(symbol: $symbol, id: $id, adjHolding: $adjHolding, '
+        'adjMv: $adjMv, entityProperName: $entityProperName, '
+        'reportDate: $reportDate, filingDate: $filingDate, '
+        'reportedHolding: $reportedHolding, date: $date, updated: $updated)';
   }
 
   Map<String, dynamic> toJson() => _$InvestorToJson(this);
@@ -43,7 +46,7 @@ class Investor {
   Investor copyWith({
     String? symbol,
     String? id,
-    int? adjHolding,
+    double? adjHolding,
     int? adjMv,
     String? entityProperName,
     int? reportDate,
@@ -70,7 +73,8 @@ class Investor {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     if (other is! Investor) return false;
-    final mapEquals = const DeepCollectionEquality().equals;
+    final bool Function(Object? e1, Object? e2) mapEquals =
+        const DeepCollectionEquality().equals;
     return mapEquals(other.toJson(), toJson());
   }
 

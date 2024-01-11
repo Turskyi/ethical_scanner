@@ -1,15 +1,16 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:entities/entities.dart';
 
-class LoggingInterceptor extends Interceptor {
+class LoggingInterceptorImpl extends Interceptor implements LoggingInterceptor {
+  const LoggingInterceptorImpl();
   @override
   void onResponse(
     Response<dynamic> response,
     ResponseInterceptorHandler handler,
   ) {
     log('onResponse -------------------');
-    log('BODY: ${response.data}');
     log('-----------------------------');
     super.onResponse(response, handler);
   }

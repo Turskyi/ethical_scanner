@@ -11,7 +11,7 @@ void main() {
 
       // Act
       final UseCase<Future<ProductInfo>, String> useCase =
-          dependencies.getProductInfoUseCase;
+          dependencies.productInfoUseCase;
 
       // Assert
       expect(useCase, isNotNull);

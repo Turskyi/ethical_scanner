@@ -42,7 +42,9 @@ dependencies:
 
   # Dart SDK for openAI Apis (GPT-3 & DALL-E), integrate easily the power of OpenAI's
   # state-of-the-art AI models into their Dart applications.
+  collection: ^1.18.0
   dart_openai: ^5.0.0
+  dio: ^5.4.0
   entities:
     path: ./components/core/entities
 
@@ -61,9 +63,13 @@ dependencies:
   interface_adapters:
     path: ./components/interface_adapters
 
+  json_annotation: ^4.8.1
+  logger: ^2.0.2+1
   openfoodfacts: ^3.3.1
 
   path: any
+  retrofit: ^4.0.3
+  retrofit_generator: ^8.0.6
   use_cases:
     path: ./components/core/use_cases
 
@@ -84,6 +90,7 @@ dev_dependencies:
     sdk: flutter
 
   # A full featured library for writing and running Dart tests across platforms.
+  json_serializable: ^6.7.1
   test: any
 
 # For information on the generic Dart part of this file, see the
