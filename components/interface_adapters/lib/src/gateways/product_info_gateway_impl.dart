@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:entities/entities.dart';
 import 'package:interface_adapters/src/data_sources/local/local_data_source.dart';
 import 'package:interface_adapters/src/data_sources/remote/remote_data_source.dart';
+import 'package:interface_adapters/src/error_message_extractor.dart';
 import 'package:use_cases/use_cases.dart';
 
 class ProductInfoGatewayImpl implements ProductInfoGateway {
@@ -12,29 +14,47 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
   final LocalDataSource _localDataSource;
 
   @override
-  Future<ProductInfo> getProductInfoAsFuture(String barcode) =>
-      _remoteDataSource
-          .getProductInfoAsFuture(barcode)
-          .then((ProductInfo info) {
+  Future<ProductInfo> getProductInfoAsFuture(String input) => _remoteDataSource
+          .getProductInfoAsFuture(input)
+          .onError((Object? error, StackTrace stackTrace) {
+        if (error is FormatException && error.source is String) {
+          log('Error in $runtimeType: ${extractErrorMessage(error.source)}.'
+              '\nStacktrace: $stackTrace');
+        } else {
+          log('Error in $runtimeType: $error.\nStacktrace: $stackTrace');
+        }
+        if (_isBarcode(input)) {
+          return ProductInfo(
+            barcode: input,
+          );
+        } else if (_isWebsite(input)) {
+          return ProductInfo(website: input);
+        } else if (_isAmazonAsin(input)) {
+          return const ProductInfo(brand: 'Amazon');
+        }
+        throw Exception(
+          'Product information not found for barcode: $input.\n Error: $error',
+        );
+      }).then((ProductInfo info) {
         if (info.origin.isNotEmpty || info.country.isNotEmpty) {
           return info;
-        } else if (_localDataSource.isEnglishBook(barcode)) {
+        } else if (_localDataSource.isEnglishBook(input)) {
           return info.copyWith(
             origin:
-                'The initial ${barcode.substring(0, 3)} in this barcode is the '
+                'The initial ${input.substring(0, 3)} in this barcode is the '
                 'Book-land EAN prefix, indicating that it is a book. The '
-                '${barcode.substring(0, 3)} prefix, in this case, is '
+                '${input.substring(0, 3)} prefix, in this case, is '
                 'assigned to the English language, but it doesn\'t specify '
                 'a particular country.',
           );
         } else {
           ProductInfo localInfo = info.copyWith(
-            origin: _localDataSource.getCountryFromBarcode(barcode),
+            origin: _localDataSource.getCountryFromBarcode(input),
           );
           if (localInfo.origin.isNotEmpty) {
             return localInfo;
           } else {
-            return _remoteDataSource.getCountryFromAiAsFuture(barcode).then(
+            return _remoteDataSource.getCountryFromAiAsFuture(input).then(
                   (String country) => info.copyWith(
                     countryAi: country,
                   ),
@@ -42,4 +62,39 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
           }
         }
       });
+
+  bool _isWebsite(String input) {
+    final RegExp regex = RegExp(
+      r'^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]'
+      r'{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$',
+    );
+    return regex.hasMatch(input);
+  }
+
+  /// Checks if the provided [barcode] is a valid Amazon ASIN.
+  ///
+  /// Amazon ASINs typically follow the pattern: A followed by 10 characters,
+  /// which are typically alphanumeric.
+  ///
+  /// Returns `true` if [barcode] is a valid Amazon ASIN, and `false` otherwise.
+  bool _isAmazonAsin(String barcode) {
+    // ASIN pattern: A followed by 10 characters, typically alphanumeric
+    RegExp asinPattern = RegExp(r'^[A-Z0-9]{10}$');
+    return asinPattern.hasMatch(barcode);
+  }
+
+  bool _isBarcode(String input) {
+    // Typical barcodes are between 8 and 14 digits long
+    if (input.length < 8 || input.length > 14) {
+      return false;
+    }
+    // Check if the string contains only digits
+    for (int i = 0; i < input.length; i++) {
+      if (input.codeUnitAt(i) < '0'.codeUnitAt(0) ||
+          input.codeUnitAt(i) > '9'.codeUnitAt(0)) {
+        return false;
+      }
+    }
+    return true;
+  }
 }

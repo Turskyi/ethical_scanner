@@ -41,7 +41,7 @@ void main() async {
       localizationDelegate,
       DependenciesScope(
         dependencies: const Dependencies(),
-        child: App(generateRoute),
+        child: App.factory(generateRoute),
       ),
     ),
   );

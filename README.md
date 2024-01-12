@@ -3,6 +3,7 @@
 [![Build & upload to Firebase App Distribution](https://github.com/Turskyi/ethical_scanner/actions/workflows/flutter_ci.yml/badge.svg?branch=dev&event=push)](https://github.com/Turskyi/ethical_scanner/actions/workflows/flutter_ci.yml)
 [![Code Quality](https://github.com/Turskyi/ethical_scanner/actions/workflows/code-quality-tests.yml/badge.svg?branch=master&event=push)](https://github.com/Turskyi/ethical_scanner/actions/workflows/code-quality-tests.yml)
 [![style: flutter lints](https://img.shields.io/badge/style-flutter__lints-blue)](https://pub.dev/packages/flutter_lints)
+
 # Ethical Scanner
 
 Ethical Scanner is a Flutter project for Android and iOS mobile app that scans the barcode
@@ -13,6 +14,8 @@ various criteria, such as human rights, environmental impact, animal well-being,
 
 The app uses the data from various sources, such as
 [Don’t Fund War](https://dontfundwar.com/directory),
+[Over 1,000 Companies Have Curtailed Operations in Russia—But Some Remain](https://som.yale.edu/story/2022/over-1000-companies-have-curtailed-operations-russia-some-remain),
+[Yale CELI List of Companies Leaving and Staying in Russia](https://www.yalerussianbusinessretreat.com/),
 [State Sponsors of Terrorism](https://www.state.gov/state-sponsors-of-terrorism/) and
 [Global Forum Against Terrorism](https://www.gfatf.org/threats/countries-who-support-terrorism/).
 The app aims to help you shop with confidence and conscience. For more information, please visit the

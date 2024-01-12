@@ -4,6 +4,7 @@ enum ProductInfoKey {
   countryOfOrigin,
   countryWhereSold,
   brand,
+  terrorismSponsor,
   isVegan,
   isVegetarian,
   packaging,
@@ -26,6 +27,8 @@ extension ProductInfoKeyExtension on ProductInfoKey {
         return 'Country where the product is sold: ';
       case ProductInfoKey.brand:
         return 'Brand: ';
+      case ProductInfoKey.terrorismSponsor:
+        return 'Is company sponsor of war? ';
       case ProductInfoKey.isVegan:
         return 'Is vegan? ';
       case ProductInfoKey.isVegetarian:
@@ -44,4 +47,5 @@ extension ProductInfoKeyExtension on ProductInfoKey {
   }
 
   bool get isWebsite => this == ProductInfoKey.website;
+  bool get isWarSponsor => this == ProductInfoKey.terrorismSponsor;
 }

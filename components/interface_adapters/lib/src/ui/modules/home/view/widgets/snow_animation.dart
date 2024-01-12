@@ -16,6 +16,7 @@ class SnowAnimation extends StatefulWidget {
 
 class _SnowAnimationState extends State<SnowAnimation>
     with SingleTickerProviderStateMixin {
+  final Random _random = Random();
   List<Snowflake> _snowflakes = <Snowflake>[];
   late Ticker _ticker;
 
@@ -30,9 +31,8 @@ class _SnowAnimationState extends State<SnowAnimation>
   }
 
   @override
-  Ticker createTicker(void Function(Duration) onTick) {
-    return Ticker(onTick)..start();
-  }
+  Ticker createTicker(void Function(Duration) onTick) =>
+      Ticker(onTick)..start();
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +51,12 @@ class _SnowAnimationState extends State<SnowAnimation>
     super.dispose();
   }
 
+  @pragma('vm:never-inline')
   Future<List<Snowflake>> _initializeSnowflakesAsync() =>
       Future<List<Snowflake>>.delayed(Duration.zero, _generateSnowflakeList);
 
-  FutureOr<List<Snowflake>> _generateSnowflakeList() =>
-      List<Snowflake>.generate(
+  @pragma('vm:never-inline')
+  List<Snowflake> _generateSnowflakeList() => List<Snowflake>.generate(
         50,
         (_) => Snowflake(
           offset: _randomOffset(),
@@ -70,7 +71,7 @@ class _SnowAnimationState extends State<SnowAnimation>
         _snowflakes[i] = _snowflakes[i].copyWith(
           offset: Offset(
             _snowflakes[i].offset.dx,
-            (_snowflakes[i].offset.dy + 1) % MediaQuery.of(context).size.height,
+            (_snowflakes[i].offset.dy + 1) % MediaQuery.sizeOf(context).height,
           ),
         );
       }
@@ -78,18 +79,19 @@ class _SnowAnimationState extends State<SnowAnimation>
   }
 
   double _randomSize() {
-    return Random().nextDouble() * 30 +
+    return _random.nextDouble() * 30 +
         5; // Adjust the range (30 is the multiplier, 5 is the constant)
   }
 
   double _randomRotationAngle() {
-    return Random().nextDouble() * 0.02; // Adjust the rotation speed here
+    return _random.nextDouble() * 0.02; // Adjust the rotation speed here
   }
 
   Offset _randomOffset() {
+    Size size = MediaQuery.sizeOf(context);
     return Offset(
-      Random().nextDouble() * MediaQuery.of(context).size.width,
-      Random().nextDouble() * MediaQuery.of(context).size.height,
+      _random.nextDouble() * size.width,
+      _random.nextDouble() * size.height,
     );
   }
 

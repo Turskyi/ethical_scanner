@@ -54,8 +54,10 @@ class ProductInfoBody extends StatelessWidget {
                   child: ListTile(
                     textColor: Resources.of(context).colors.cetaceanBlue,
                     iconColor: Resources.of(context).colors.cetaceanBlue,
-                    leading: const Icon(
-                      Icons.star,
+                    leading: Icon(
+                      key == ProductInfoKey.terrorismSponsor
+                          ? Icons.question_mark
+                          : Icons.star,
                     ),
                     title: Text(
                       key.value,
@@ -67,20 +69,28 @@ class ProductInfoBody extends StatelessWidget {
                       ),
                     ),
                     subtitle: Text(
-                      value,
+                      value +
+                          (key.isWebsite || key.isWarSponsor
+                              ? ' (Click to know more)'
+                              : ''),
                       style: TextStyle(
                         fontStyle: FontStyle.italic,
                         fontSize: Theme.of(
                           context,
                         ).textTheme.bodyLarge?.fontSize,
-                        decoration:
-                            key.isWebsite ? TextDecoration.underline : null,
+                        decoration: key.isWebsite || key.isWarSponsor
+                            ? TextDecoration.underline
+                            : null,
                       ),
                     ),
-                    onTap: key.isWebsite
-                        ? () => context
-                            .read<HomePresenter>()
-                            .add(LaunchUrlEvent(value))
+                    onTap: key.isWebsite || key.isWarSponsor
+                        ? () => context.read<HomePresenter>().add(
+                              LaunchUrlEvent(
+                                key.isWarSponsor
+                                    ? 'https://sanctions.nazk.gov.ua/en/boycott/'
+                                    : value,
+                              ),
+                            )
                         : null,
                   ),
                 );

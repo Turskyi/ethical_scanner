@@ -30,6 +30,7 @@ dependencies:
   # localization / internationalization (i18n) library
   flutter_translate: ^4.0.4
 
+  html: ^0.15.4
   mobile_scanner: ^3.5.5
 
   # For launching a URL. Supports web, phone, SMS, and email schemes.

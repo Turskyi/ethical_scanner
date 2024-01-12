@@ -10,6 +10,7 @@ class ProductInfo {
     this.countryAi = '',
     this.name = '',
     this.brand = '',
+    this.isTerrorismSponsor = false,
     this.categoryTags = const <String>[],
     this.packaging = '',
     this.ingredientList = const <String>[],
@@ -42,6 +43,7 @@ class ProductInfo {
   final String countryAi;
   final String name;
   final String brand;
+  final bool isTerrorismSponsor;
 
   /// The [categoryTags] parameter is a list of strings that indicates the
   /// categories of the product. For example,
@@ -62,6 +64,7 @@ class ProductInfo {
     String? countryAi,
     String? name,
     String? brand,
+    bool? isTerrorismSponsor,
     List<String>? categoryTags,
     String? packaging,
     List<String>? ingredientList,
@@ -77,6 +80,7 @@ class ProductInfo {
         countryAi: countryAi ?? this.countryAi,
         name: name ?? this.name,
         brand: brand ?? this.brand,
+        isTerrorismSponsor: isTerrorismSponsor ?? this.isTerrorismSponsor,
         categoryTags: categoryTags ?? this.categoryTags,
         packaging: packaging ?? this.packaging,
         ingredientList: ingredientList ?? this.ingredientList,
