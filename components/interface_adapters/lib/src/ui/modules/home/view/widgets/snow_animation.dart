@@ -51,9 +51,11 @@ class _SnowAnimationState extends State<SnowAnimation>
     super.dispose();
   }
 
+  @pragma('vm:never-inline')
   Future<List<Snowflake>> _initializeSnowflakesAsync() =>
       Future<List<Snowflake>>.delayed(Duration.zero, _generateSnowflakeList);
 
+  @pragma('vm:never-inline')
   List<Snowflake> _generateSnowflakeList() => List<Snowflake>.generate(
         50,
         (_) => Snowflake(
