@@ -16,6 +16,7 @@ class SnowAnimation extends StatefulWidget {
 
 class _SnowAnimationState extends State<SnowAnimation>
     with SingleTickerProviderStateMixin {
+  final Random _random = Random();
   List<Snowflake> _snowflakes = <Snowflake>[];
   late Ticker _ticker;
 
@@ -26,9 +27,7 @@ class _SnowAnimationState extends State<SnowAnimation>
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initializeSnowflakesAsync().then(_startSnowfallAnimation);
-    });
+    _initializeSnowflakesAsync().then(_startSnowfallAnimation);
   }
 
   @override
@@ -79,19 +78,19 @@ class _SnowAnimationState extends State<SnowAnimation>
   }
 
   double _randomSize() {
-    return Random().nextDouble() * 30 +
+    return _random.nextDouble() * 30 +
         5; // Adjust the range (30 is the multiplier, 5 is the constant)
   }
 
   double _randomRotationAngle() {
-    return Random().nextDouble() * 0.02; // Adjust the rotation speed here
+    return _random.nextDouble() * 0.02; // Adjust the rotation speed here
   }
 
   Offset _randomOffset() {
     Size size = MediaQuery.sizeOf(context);
     return Offset(
-      Random().nextDouble() * size.width,
-      Random().nextDouble() * size.height,
+      _random.nextDouble() * size.width,
+      _random.nextDouble() * size.height,
     );
   }
 
