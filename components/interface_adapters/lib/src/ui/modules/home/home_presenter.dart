@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:entities/entities.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_event.dart';
+import 'package:interface_adapters/src/util.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:use_cases/use_cases.dart';
 
@@ -100,9 +101,13 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
                   productInfo.countryAi;
             }
           }
-        } catch (e, s) {
-          modifiableProductInfo[ProductInfoKey.error] =
-              'Error: $e,\nStacktrace: $s';
+        } catch (exception) {
+          if (exception is FormatException && exception.source is String) {
+            modifiableProductInfo[ProductInfoKey.error] =
+                extractDowntimeMessage(exception.source);
+          } else {
+            modifiableProductInfo[ProductInfoKey.error] = '$exception';
+          }
         } finally {
           emit(LoadedProductInfoState(modifiableProductInfo));
         }

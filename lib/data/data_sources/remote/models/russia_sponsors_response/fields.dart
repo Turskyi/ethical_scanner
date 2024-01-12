@@ -9,7 +9,8 @@ part 'fields.g.dart';
 @JsonSerializable()
 class Fields {
   const Fields({
-    this.name,
+    required this.name,
+    this.brands = '',
     this.action,
     this.logo,
     this.status,
@@ -40,7 +41,9 @@ class Fields {
   }
 
   @JsonKey(name: 'Name')
-  final String? name;
+  final String name;
+  @JsonKey(name: 'Brands')
+  final String brands;
   @JsonKey(name: 'Action')
   final String? action;
   @JsonKey(name: 'Logo')
@@ -90,7 +93,8 @@ class Fields {
 
   @override
   String toString() {
-    return 'Fields(name: $name, action: $action, logo: $logo, status: $status, '
+    return 'Fields(name: $name, brands: $brands, action: $action, logo: $logo, '
+        'status: $status, '
         'exception: $exception, country: $country, websiteUrl: $websiteUrl, '
         'instagram: $instagram, twitter: $twitter, sector: $sector, '
         'ticker: $ticker, notes: $notes, marketCap: $marketCap, '
@@ -105,6 +109,7 @@ class Fields {
 
   Fields copyWith({
     String? name,
+    String? brands,
     String? action,
     List<Logo>? logo,
     String? status,
@@ -131,6 +136,7 @@ class Fields {
   }) {
     return Fields(
       name: name ?? this.name,
+      brands: brands ?? this.brands,
       action: action ?? this.action,
       logo: logo ?? this.logo,
       status: status ?? this.status,
@@ -169,6 +175,7 @@ class Fields {
   @override
   int get hashCode =>
       name.hashCode ^
+      brands.hashCode ^
       action.hashCode ^
       logo.hashCode ^
       status.hashCode ^

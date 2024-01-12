@@ -30,7 +30,6 @@ class LoggingInterceptorImpl extends Interceptor implements LoggingInterceptor {
     log('URI: ${options.uri.toString()}');
     log('PARAMS: ${options.queryParameters.toString()}');
     log('HEADERS: ${options.headers.toString()}');
-    log('DATA: ${options.data.toString()}');
     log('-----------------------------');
     super.onRequest(options, handler);
   }

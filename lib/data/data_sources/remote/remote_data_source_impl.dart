@@ -12,53 +12,52 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   final RestClient _restClient;
 
   @override
-  Future<ProductInfo> getProductInfoAsFuture(String input) {
-    return OpenFoodAPIClient.getProductV3(
-      ProductQueryConfiguration(
-        input,
-        language: OpenFoodFactsLanguage.ENGLISH,
-        fields: <ProductField>[ProductField.ALL],
-        version: ProductQueryVersion.v3,
-      ),
-    ).then((ProductResultV3 result) {
-      if (result.product != null && result.hasSuccessfulStatus) {
-        ProductInfo productInfo = result.product!.toProductInfo();
-        if (productInfo.brand.isNotEmpty) {
-          return _restClient
-              .getTerrorismSponsors()
-              .then((List<TerrorismSponsor> terrorismSponsors) {
-            return productInfo.copyWith(
-              isTerrorismSponsor:
-                  terrorismSponsors is List<RussiaSponsorResponse> &&
-                      terrorismSponsors.any((RussiaSponsorResponse response) {
-                        return response.fields != null &&
-                            response.fields!.name != null &&
-                            response.fields!.name!.isNotEmpty &&
-                            productInfo.brand
-                                .toLowerCase()
-                                .contains(response.fields!.name!.toLowerCase());
-                      }),
-            );
-          }).onError((_, __) {
+  Future<ProductInfo> getProductInfoAsFuture(String input) =>
+      OpenFoodAPIClient.getProductV3(
+        ProductQueryConfiguration(
+          input,
+          language: OpenFoodFactsLanguage.ENGLISH,
+          fields: <ProductField>[ProductField.ALL],
+          version: ProductQueryVersion.v3,
+        ),
+      ).then((ProductResultV3 result) {
+        if (result.product != null && result.hasSuccessfulStatus) {
+          ProductInfo productInfo = result.product!.toProductInfo();
+          if (productInfo.brand.isNotEmpty) {
+            return _restClient
+                .getTerrorismSponsors()
+                .then((List<TerrorismSponsor> terrorismSponsors) {
+              return productInfo.copyWith(
+                isTerrorismSponsor: terrorismSponsors
+                        is List<RussiaSponsorResponse> &&
+                    terrorismSponsors.any((RussiaSponsorResponse response) {
+                      return (response.fields.name.isNotEmpty &&
+                              productInfo.brand.toLowerCase().contains(
+                                    response.fields.name.toLowerCase(),
+                                  )) ||
+                          (response.fields.brands.isNotEmpty &&
+                              response.fields.brands
+                                  .toLowerCase()
+                                  .contains(productInfo.brand.toLowerCase()));
+                    }),
+              );
+            }).onError((Object? e, StackTrace s) => productInfo);
+          } else {
             return productInfo;
-          });
-        } else {
-          return productInfo;
+          }
+        } else if (result.status == ProductResultV3.statusFailure) {
+          if (_isBarcode(input)) {
+            return ProductInfo(barcode: input);
+          } else if (_isWebsite(input)) {
+            return ProductInfo(website: input);
+          } else if (_isAmazonAsin(input)) {
+            return const ProductInfo(brand: 'Amazon');
+          }
         }
-      } else if (result.status == ProductResultV3.statusFailure) {
-        if (_isBarcode(input)) {
-          return ProductInfo(barcode: input);
-        } else if (_isWebsite(input)) {
-          return ProductInfo(website: input);
-        } else if (_isAmazonAsin(input)) {
-          return const ProductInfo(brand: 'Amazon');
-        }
-      }
-      throw Exception(
-        'Product information not found for barcode: $input',
-      );
-    });
-  }
+        throw Exception(
+          'Product information not found for barcode: $input.',
+        );
+      });
 
   @override
   Future<String> getCountryFromAiAsFuture(String barcode) =>

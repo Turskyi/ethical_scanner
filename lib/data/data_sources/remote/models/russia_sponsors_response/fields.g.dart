@@ -7,7 +7,8 @@ part of 'fields.dart';
 // **************************************************************************
 
 Fields _$FieldsFromJson(Map<String, dynamic> json) => Fields(
-      name: json['Name'] as String?,
+      name: json['Name'] as String,
+      brands: json['Brands'] as String? ?? '',
       action: json['Action'] as String?,
       logo: (json['Logo'] as List<dynamic>?)
           ?.map((e) => Logo.fromJson(e as Map<String, dynamic>))
@@ -41,6 +42,7 @@ Fields _$FieldsFromJson(Map<String, dynamic> json) => Fields(
 
 Map<String, dynamic> _$FieldsToJson(Fields instance) => <String, dynamic>{
       'Name': instance.name,
+      'Brands': instance.brands,
       'Action': instance.action,
       'Logo': instance.logo,
       'Status': instance.status,

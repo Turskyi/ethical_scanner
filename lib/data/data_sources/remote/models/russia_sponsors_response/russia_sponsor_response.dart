@@ -10,8 +10,8 @@ part 'russia_sponsor_response.g.dart';
 class RussiaSponsorResponse implements TerrorismSponsor {
   const RussiaSponsorResponse({
     required this.id,
+    required this.fields,
     this.createdTime,
-    this.fields,
   });
 
   factory RussiaSponsorResponse.fromJson(Map<String, dynamic> json) {
@@ -21,7 +21,7 @@ class RussiaSponsorResponse implements TerrorismSponsor {
   @override
   final String id;
   final DateTime? createdTime;
-  final Fields? fields;
+  final Fields fields;
 
   @override
   String toString() {

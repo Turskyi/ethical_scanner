@@ -10,12 +10,10 @@ RussiaSponsorResponse _$RussiaSponsorResponseFromJson(
         Map<String, dynamic> json) =>
     RussiaSponsorResponse(
       id: json['id'] as String,
+      fields: Fields.fromJson(json['fields'] as Map<String, dynamic>),
       createdTime: json['createdTime'] == null
           ? null
           : DateTime.parse(json['createdTime'] as String),
-      fields: json['fields'] == null
-          ? null
-          : Fields.fromJson(json['fields'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$RussiaSponsorResponseToJson(
