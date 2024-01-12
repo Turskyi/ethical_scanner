@@ -31,9 +31,8 @@ class _SnowAnimationState extends State<SnowAnimation>
   }
 
   @override
-  Ticker createTicker(void Function(Duration) onTick) {
-    return Ticker(onTick)..start();
-  }
+  Ticker createTicker(void Function(Duration) onTick) =>
+      Ticker(onTick)..start();
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +69,7 @@ class _SnowAnimationState extends State<SnowAnimation>
         _snowflakes[i] = _snowflakes[i].copyWith(
           offset: Offset(
             _snowflakes[i].offset.dx,
-            (_snowflakes[i].offset.dy + 1) % MediaQuery.of(context).size.height,
+            (_snowflakes[i].offset.dy + 1) % MediaQuery.sizeOf(context).height,
           ),
         );
       }
