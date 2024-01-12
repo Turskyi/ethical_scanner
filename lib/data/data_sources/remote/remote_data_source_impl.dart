@@ -28,18 +28,18 @@ class RemoteDataSourceImpl implements RemoteDataSource {
                 .getTerrorismSponsors()
                 .then((List<TerrorismSponsor> terrorismSponsors) {
               return productInfo.copyWith(
-                isTerrorismSponsor: terrorismSponsors
-                        is List<RussiaSponsorResponse> &&
-                    terrorismSponsors.any((RussiaSponsorResponse response) {
-                      return (response.fields.name.isNotEmpty &&
-                              productInfo.brand.toLowerCase().contains(
-                                    response.fields.name.toLowerCase(),
-                                  )) ||
-                          (response.fields.brands.isNotEmpty &&
-                              response.fields.brands
-                                  .toLowerCase()
-                                  .contains(productInfo.brand.toLowerCase()));
-                    }),
+                isTerrorismSponsor: productInfo.brand.toLowerCase() == 'twix' ||
+                    terrorismSponsors is List<RussiaSponsorResponse> &&
+                        terrorismSponsors.any((RussiaSponsorResponse response) {
+                          return (response.fields.name.isNotEmpty &&
+                                  productInfo.brand.toLowerCase().contains(
+                                        response.fields.name.toLowerCase(),
+                                      )) ||
+                              (response.fields.brands.isNotEmpty &&
+                                  response.fields.brands.toLowerCase().contains(
+                                        productInfo.brand.toLowerCase(),
+                                      ));
+                        }),
               );
             }).onError((Object? e, StackTrace s) => productInfo);
           } else {

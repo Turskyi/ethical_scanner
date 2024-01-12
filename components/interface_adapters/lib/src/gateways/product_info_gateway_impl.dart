@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:entities/entities.dart';
 import 'package:interface_adapters/src/data_sources/local/local_data_source.dart';
 import 'package:interface_adapters/src/data_sources/remote/remote_data_source.dart';
-import 'package:interface_adapters/src/util.dart';
+import 'package:interface_adapters/src/error_message_extractor.dart';
 import 'package:use_cases/use_cases.dart';
 
 class ProductInfoGatewayImpl implements ProductInfoGateway {
@@ -18,7 +18,7 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
           .getProductInfoAsFuture(input)
           .onError((Object? error, StackTrace stackTrace) {
         if (error is FormatException && error.source is String) {
-          log('Error in $runtimeType: ${extractDowntimeMessage(error.source)}.'
+          log('Error in $runtimeType: ${extractErrorMessage(error.source)}.'
               '\nStacktrace: $stackTrace');
         } else {
           log('Error in $runtimeType: $error.\nStacktrace: $stackTrace');

@@ -28,7 +28,7 @@ extension ProductInfoKeyExtension on ProductInfoKey {
       case ProductInfoKey.brand:
         return 'Brand: ';
       case ProductInfoKey.terrorismSponsor:
-        return 'Is sponsor of Terrorism? ';
+        return 'Is company sponsor of war? ';
       case ProductInfoKey.isVegan:
         return 'Is vegan? ';
       case ProductInfoKey.isVegetarian:
@@ -47,4 +47,5 @@ extension ProductInfoKeyExtension on ProductInfoKey {
   }
 
   bool get isWebsite => this == ProductInfoKey.website;
+  bool get isWarSponsor => this == ProductInfoKey.terrorismSponsor;
 }

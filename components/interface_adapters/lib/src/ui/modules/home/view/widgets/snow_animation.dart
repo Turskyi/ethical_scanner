@@ -26,7 +26,9 @@ class _SnowAnimationState extends State<SnowAnimation>
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    _initializeSnowflakesAsync().then(_startSnowfallAnimation);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeSnowflakesAsync().then(_startSnowfallAnimation);
+    });
   }
 
   @override
@@ -54,8 +56,7 @@ class _SnowAnimationState extends State<SnowAnimation>
   Future<List<Snowflake>> _initializeSnowflakesAsync() =>
       Future<List<Snowflake>>.delayed(Duration.zero, _generateSnowflakeList);
 
-  FutureOr<List<Snowflake>> _generateSnowflakeList() =>
-      List<Snowflake>.generate(
+  List<Snowflake> _generateSnowflakeList() => List<Snowflake>.generate(
         50,
         (_) => Snowflake(
           offset: _randomOffset(),
@@ -87,9 +88,10 @@ class _SnowAnimationState extends State<SnowAnimation>
   }
 
   Offset _randomOffset() {
+    Size size = MediaQuery.sizeOf(context);
     return Offset(
-      Random().nextDouble() * MediaQuery.of(context).size.width,
-      Random().nextDouble() * MediaQuery.of(context).size.height,
+      Random().nextDouble() * size.width,
+      Random().nextDouble() * size.height,
     );
   }
 

@@ -2,7 +2,7 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
 /// Extract the downtime message from the HTML response
-String extractDowntimeMessage(String exceptionSource) {
+String extractErrorMessage(String exceptionSource) {
   final Document document = parse(exceptionSource);
 
   // Extract the text content within the <div class="main-content"> element
