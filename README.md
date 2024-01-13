@@ -15,7 +15,7 @@ various criteria, such as human rights, environmental impact, animal well-being,
 The app uses the data from various sources, such as
 [Don’t Fund War](https://dontfundwar.com/directory), [NATIONAL AGENCY
 ON CORRUPTION PREVENTION | INTERNATIONAL
-SPONSORS OF WAR](https://sanctions.nazk.gov.ua/en/boycott/)
+SPONSORS OF WAR](https://sanctions.nazk.gov.ua/en/boycott/),
 [Over 1,000 Companies Have Curtailed Operations in Russia—But Some Remain](https://som.yale.edu/story/2022/over-1000-companies-have-curtailed-operations-russia-some-remain),
 [Yale CELI List of Companies Leaving and Staying in Russia](https://www.yalerussianbusinessretreat.com/),
 [State Sponsors of Terrorism](https://www.state.gov/state-sponsors-of-terrorism/) and
