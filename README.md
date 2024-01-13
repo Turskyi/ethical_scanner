@@ -13,7 +13,9 @@ The app allows you to customize your preferences based on
 various criteria, such as human rights, environmental impact, animal well-being, and more.
 
 The app uses the data from various sources, such as
-[Don’t Fund War](https://dontfundwar.com/directory),
+[Don’t Fund War](https://dontfundwar.com/directory), [NATIONAL AGENCY
+ON CORRUPTION PREVENTION | INTERNATIONAL
+SPONSORS OF WAR](https://sanctions.nazk.gov.ua/en/boycott/)
 [Over 1,000 Companies Have Curtailed Operations in Russia—But Some Remain](https://som.yale.edu/story/2022/over-1000-companies-have-curtailed-operations-russia-some-remain),
 [Yale CELI List of Companies Leaving and Staying in Russia](https://www.yalerussianbusinessretreat.com/),
 [State Sponsors of Terrorism](https://www.state.gov/state-sponsors-of-terrorism/) and
@@ -106,10 +108,12 @@ rules operating on Critical Business Data.
 #### Application Business Rules - `use_cases`
 
 The `use_cases` module defines the business logic of the app.
-It is a component that is independent of the development platform, in other words, it is written
+It is a part that is independent of the development platform, in other words, it is written
 purely in the
-programming language and does not contain any elements from the platform. In the case of `Flutter`,
-`use_cases` would be written purely in `Dart` without any `Flutter` elements. The reason for that is
+programming language and doesn't contain any elements from the platform.
+In the case of `Flutter`,
+`use_cases` would be written purely in `Dart` without any `Flutter` elements.
+The reason for that is
 that `use_cases` should only be concerned with the business logic of the app,
 not with the implementation details.
 
@@ -392,11 +396,17 @@ fields. This makes them very powerful tools that allow much more expression and 
 
 ## Additional information
 
-When it is time to release the whole system, the process proceeds from the bottom up. First the
-`Entities` component is compiled, tested, and released. Then the same is done for interactors from
-the `use_cases`. These components are followed by `interface_adapters` (
-Presenters, View and ViewModels). `Frameworks & drivers` (`data` and `main`) go last. This process
-is very clear to deal with. We know how to build the system
+When it is time to release the system, the process proceeds from the bottom up.
+First the
+`Entities` component is compiled, tested, and released.
+Then the same is done for interactors from
+the `use_cases`.
+These components are followed by `interface_adapters` (
+Presenters, View and ViewModels).
+(`data` and `main`) go last.
+This process
+is very clear to deal with.
+We know how to build the system
 because we understand the dependencies between its parts.
 
 # Usage
