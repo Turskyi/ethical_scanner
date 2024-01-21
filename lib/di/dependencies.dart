@@ -14,12 +14,12 @@ class Dependencies {
   UseCase<Future<ProductInfo>, String> get productInfoUseCase =>
       GetProductInfoUseCase(
         ProductInfoGatewayImpl(
-          RemoteDataSourceImpl(restClient),
+          RemoteDataSourceImpl(_restClient),
           const LocalDataSourceImpl(),
         ),
       );
 
-  RestClient get restClient {
+  RestClient get _restClient {
     final Dio dio = Dio();
     const LoggingInterceptor loggingInterceptor = LoggingInterceptorImpl();
     if (loggingInterceptor is Interceptor) {

@@ -31,42 +31,59 @@ class HomeView extends StatelessWidget {
           children: <Widget>[
             Center(
               heightFactor: Dimens.bodyHeightFactor,
-              child: ShaderMask(
-                shaderCallback: (Rect bounds) => LinearGradient(
-                  colors: <Color>[
-                    Resources.of(context).colors.columbiaBlue,
-                    Resources.of(context).colors.verdigris,
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ).createShader(bounds),
-                child: BlocBuilder<HomePresenter, HomeViewModel>(
-                  builder: (BuildContext context, HomeViewModel viewModel) {
-                    return Text(
-                      viewModel is HomeErrorState
-                          ? viewModel.errorMessage
-                          : translate('home.scan_barcode'),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: Theme.of(
-                          context,
-                        ).textTheme.headlineLarge?.fontSize,
-                        fontWeight: FontWeight.bold,
-                        shadows: const <Shadow>[
-                          Shadow(
-                            blurRadius: Dimens.bodyBlurRadius,
-                            color: Colors.black,
-                            offset: Offsets.bodyTitleOffset,
-                          ),
-                        ],
-                        color: Colors.white,
-                      ),
-                    );
-                  },
+              child: GestureDetector(
+                onHorizontalDragEnd: (DragEndDetails details) {
+                  if (details.primaryVelocity! > 0) {
+                    context
+                        .read<HomePresenter>()
+                        .add(const SnowfallToggleEvent());
+                  }
+                },
+                child: ShaderMask(
+                  shaderCallback: (Rect bounds) => LinearGradient(
+                    colors: <Color>[
+                      Resources.of(context).colors.columbiaBlue,
+                      Resources.of(context).colors.verdigris,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ).createShader(bounds),
+                  child: BlocBuilder<HomePresenter, HomeViewModel>(
+                    builder: (BuildContext context, HomeViewModel viewModel) {
+                      return Text(
+                        viewModel is HomeErrorState
+                            ? viewModel.errorMessage
+                            : translate('home.scan_barcode'),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: Theme.of(
+                            context,
+                          ).textTheme.headlineLarge?.fontSize,
+                          fontWeight: FontWeight.bold,
+                          shadows: const <Shadow>[
+                            Shadow(
+                              blurRadius: Dimens.bodyBlurRadius,
+                              color: Colors.black,
+                              offset: Offsets.bodyTitleOffset,
+                            ),
+                          ],
+                          color: Colors.white,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
-            const SnowAnimation(),
+            BlocBuilder<HomePresenter, HomeViewModel>(
+              builder: (BuildContext context, HomeViewModel viewModel) {
+                if (viewModel is ReadyToScanState &&
+                    viewModel.isPrecipitationFalls) {
+                  return const SnowAnimation();
+                }
+                return const SizedBox();
+              },
+            ),
           ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

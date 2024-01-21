@@ -7,7 +7,12 @@ abstract class HomeViewModel {
 }
 
 class ReadyToScanState extends HomeViewModel {
-  const ReadyToScanState({super.productInfoMap});
+  const ReadyToScanState({
+    super.productInfoMap,
+    this.isPrecipitationFalls = true,
+  });
+
+  final bool isPrecipitationFalls;
 }
 
 class ScanState extends HomeViewModel {

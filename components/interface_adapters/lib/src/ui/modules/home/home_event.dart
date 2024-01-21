@@ -25,3 +25,7 @@ class LaunchUrlEvent extends HomeEvent {
 class ShowHomeEvent extends HomeEvent {
   const ShowHomeEvent();
 }
+
+class SnowfallToggleEvent extends HomeEvent {
+  const SnowfallToggleEvent();
+}

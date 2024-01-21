@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:entities/entities.dart';
-import 'package:interface_adapters/src/ui/modules/home/home_event.dart';
 import 'package:interface_adapters/src/error_message_extractor.dart';
+import 'package:interface_adapters/src/ui/modules/home/home_event.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:use_cases/use_cases.dart';
 
@@ -128,6 +128,20 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
         emit(const ReadyToScanState());
       },
     );
+
+    on<SnowfallToggleEvent>((
+      SnowfallToggleEvent event,
+      Emitter<HomeViewModel> emit,
+    ) {
+      if (state is ReadyToScanState) {
+        emit(
+          ReadyToScanState(
+            isPrecipitationFalls:
+                !(state as ReadyToScanState).isPrecipitationFalls,
+          ),
+        );
+      }
+    });
   }
 
   final UseCase<Future<ProductInfo>, String> _getProductInfoUseCase;
