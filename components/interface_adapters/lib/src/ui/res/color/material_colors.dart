@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class MaterialColors {
   MaterialColors();
 
-  static MaterialColor primarySwatch = const MaterialColor(
+  static const MaterialColor primarySwatch = MaterialColor(
     0xFF000C40,
     <int, Color>{
       50: Color.fromRGBO(0, 12, 64, .1),
@@ -40,7 +40,7 @@ class MaterialColors {
     return MaterialColor(color.value, shades);
   }
 
-  MaterialColor cetaceanBlue = const MaterialColor(
+  final MaterialColor cetaceanBlue = const MaterialColor(
     0xFF000C40,
     <int, Color>{
       50: Color.fromRGBO(0, 12, 64, .1),
@@ -56,7 +56,7 @@ class MaterialColors {
     },
   );
 
-  MaterialColor antiFlashWhite = const MaterialColor(
+  final MaterialColor antiFlashWhite = const MaterialColor(
     0xFFF0F2F0,
     <int, Color>{
       50: Color(0xFFF0F2F0),
@@ -72,11 +72,11 @@ class MaterialColors {
     },
   );
 
-  MaterialColor columbiaBlue = getMaterialColor(const Color(0xFFC4E0E5));
-  MaterialColor verdigris = getMaterialColor(const Color(0xFF4CA1AF));
+  final MaterialColor columbiaBlue = getMaterialColor(const Color(0xFFC4E0E5));
+  final MaterialColor verdigris = getMaterialColor(const Color(0xFF4CA1AF));
 
 // Red color
-  MaterialColor redMaterialColor = const MaterialColor(
+  final MaterialColor redMaterialColor = const MaterialColor(
     0xFFFF0000,
     <int, Color>{
       50: Color(0xFFFFE6E6),
@@ -93,7 +93,7 @@ class MaterialColors {
   );
 
 // Blue-green color
-  MaterialColor blueGreenMaterialColor = const MaterialColor(
+  final MaterialColor blueGreenMaterialColor = const MaterialColor(
     0xFF00FFBF,
     <int, Color>{
       50: Color(0xFFE6FFF2),
@@ -109,7 +109,7 @@ class MaterialColors {
     },
   );
 
-  MaterialColor yellowMaterialColor = const MaterialColor(
+  final MaterialColor yellowMaterialColor = const MaterialColor(
     0xFFFFEB3B,
     <int, Color>{
       50: Color(0xFFFFFDE7),
@@ -125,7 +125,7 @@ class MaterialColors {
     },
   );
 
-  MaterialColor pinkMaterialColor = const MaterialColor(
+  final MaterialColor pinkMaterialColor = const MaterialColor(
     0xFFFF4081,
     <int, Color>{
       50: Color(0xFFFFF1F3),
@@ -141,7 +141,7 @@ class MaterialColors {
     },
   );
 
-  MaterialColor cyanMaterialColor = const MaterialColor(
+  final MaterialColor cyanMaterialColor = const MaterialColor(
     0xFF00BCD4,
     <int, Color>{
       50: Color(0xFFE0F7FA),
@@ -157,7 +157,7 @@ class MaterialColors {
     },
   );
 
-  MaterialColor purpleMaterialColor = const MaterialColor(
+  final MaterialColor purpleMaterialColor = const MaterialColor(
     0xFF6A1B9A,
     <int, Color>{
       50: Color(0xFFF3E5F5),
@@ -173,7 +173,7 @@ class MaterialColors {
     },
   );
 
-  MaterialColor orangeMaterialColor = const MaterialColor(
+  final MaterialColor orangeMaterialColor = const MaterialColor(
     0xFFF57C00,
     <int, Color>{
       50: Color(0xFFFFF3E0),
@@ -189,7 +189,7 @@ class MaterialColors {
     },
   );
 
-  MaterialColor greenMaterialColor = const MaterialColor(
+  final MaterialColor greenMaterialColor = const MaterialColor(
     0xFF388E3C,
     <int, Color>{
       50: Color(0xFFE8F5E9),
@@ -205,7 +205,7 @@ class MaterialColors {
     },
   );
 
-  MaterialColor grayMaterialColor = const MaterialColor(
+  final MaterialColor grayMaterialColor = const MaterialColor(
     0xFF717171,
     <int, Color>{
       50: Color(0xFFFAFAFA),

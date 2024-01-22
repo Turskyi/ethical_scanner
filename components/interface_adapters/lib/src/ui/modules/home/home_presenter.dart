@@ -129,8 +129,8 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
       },
     );
 
-    on<SnowfallToggleEvent>((
-      SnowfallToggleEvent event,
+    on<PrecipitationToggleEvent>((
+      PrecipitationToggleEvent event,
       Emitter<HomeViewModel> emit,
     ) {
       if (state is ReadyToScanState) {

@@ -26,6 +26,6 @@ class ShowHomeEvent extends HomeEvent {
   const ShowHomeEvent();
 }
 
-class SnowfallToggleEvent extends HomeEvent {
-  const SnowfallToggleEvent();
+class PrecipitationToggleEvent extends HomeEvent {
+  const PrecipitationToggleEvent();
 }

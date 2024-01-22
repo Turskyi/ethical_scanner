@@ -4,6 +4,7 @@ import 'package:interface_adapters/interface_adapters.dart';
 import 'package:interface_adapters/src/ui/res/color/gradients.dart';
 import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
+import 'package:interface_adapters/src/ui/res/values/dimens.dart';
 
 class EthicalScannerApp extends StatelessWidget implements App {
   const EthicalScannerApp({super.key, required this.routeFactory});
@@ -16,6 +17,7 @@ class EthicalScannerApp extends StatelessWidget implements App {
     return Resources(
       colors: MaterialColors(),
       gradients: Gradients(),
+      dimens: Dimens(),
       child: MaterialApp(
         title: translate('title'),
         onGenerateRoute: routeFactory,

@@ -13,10 +13,11 @@ class ProductInfoBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Dimens dimens = Resources.of(context).dimens;
     return Container(
-      margin: const EdgeInsets.only(
-        left: Dimens.productInfoHorizontalMargin,
-        right: Dimens.productInfoHorizontalMargin,
+      margin: EdgeInsets.only(
+        left: dimens.productInfoHorizontalMargin,
+        right: dimens.productInfoHorizontalMargin,
         top: kToolbarHeight,
       ),
       child: BlocBuilder<HomePresenter, HomeViewModel>(

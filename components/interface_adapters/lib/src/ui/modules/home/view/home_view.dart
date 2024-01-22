@@ -7,7 +7,6 @@ import 'package:interface_adapters/src/ui/modules/home/view/widgets/fab.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/product_info_body.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/snow_animation.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
-import 'package:interface_adapters/src/ui/res/values/dimens.dart';
 import 'package:interface_adapters/src/ui/res/values/offsets.dart';
 
 class HomeView extends StatelessWidget {
@@ -30,13 +29,14 @@ class HomeView extends StatelessWidget {
         body: Stack(
           children: <Widget>[
             Center(
-              heightFactor: Dimens.bodyHeightFactor,
+              heightFactor: Resources.of(context).dimens.bodyHeightFactor,
               child: GestureDetector(
                 onHorizontalDragEnd: (DragEndDetails details) {
-                  if (details.primaryVelocity! > 0) {
+                  double? primaryVelocity = details.primaryVelocity;
+                  if (primaryVelocity != null && primaryVelocity > 0) {
                     context
                         .read<HomePresenter>()
-                        .add(const SnowfallToggleEvent());
+                        .add(const PrecipitationToggleEvent());
                   }
                 },
                 child: ShaderMask(
@@ -49,28 +49,29 @@ class HomeView extends StatelessWidget {
                     end: Alignment.bottomRight,
                   ).createShader(bounds),
                   child: BlocBuilder<HomePresenter, HomeViewModel>(
-                    builder: (BuildContext context, HomeViewModel viewModel) {
-                      return Text(
-                        viewModel is HomeErrorState
-                            ? viewModel.errorMessage
-                            : translate('home.scan_barcode'),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: Theme.of(
-                            context,
-                          ).textTheme.headlineLarge?.fontSize,
-                          fontWeight: FontWeight.bold,
-                          shadows: const <Shadow>[
-                            Shadow(
-                              blurRadius: Dimens.bodyBlurRadius,
-                              color: Colors.black,
-                              offset: Offsets.bodyTitleOffset,
-                            ),
-                          ],
-                          color: Colors.white,
-                        ),
-                      );
-                    },
+                    builder: (BuildContext context, HomeViewModel viewModel) =>
+                        Text(
+                      viewModel is HomeErrorState
+                          ? viewModel.errorMessage
+                          : translate('home.scan_barcode'),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: Theme.of(
+                          context,
+                        ).textTheme.headlineLarge?.fontSize,
+                        fontWeight: FontWeight.bold,
+                        shadows: <Shadow>[
+                          Shadow(
+                            blurRadius: Resources.of(
+                              context,
+                            ).dimens.bodyBlurRadius,
+                            color: Colors.black,
+                            offset: Offsets.bodyTitleOffset,
+                          ),
+                        ],
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
               ),
