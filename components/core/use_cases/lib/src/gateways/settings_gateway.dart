@@ -1,6 +1,5 @@
-import 'package:entities/entities.dart';
-
-abstract class ProductInfoGateway {
-  const ProductInfoGateway();
-  Future<ProductInfo> getProductInfoAsFuture(String barcode);
+abstract interface class SettingsGateway {
+  const SettingsGateway();
+  Future<bool> savePrecipitationStateAsFuture(bool isPrecipitationFalling);
+  bool getPrecipitationState();
 }

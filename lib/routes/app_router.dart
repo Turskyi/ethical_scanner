@@ -12,7 +12,9 @@ Route<String> generateRoute(RouteSettings settings) {
           BlocProvider<HomePresenter>(
         create: (BuildContext context) => HomePresenter(
           DependenciesScope.of(context).productInfoUseCase,
-        ),
+          DependenciesScope.of(context).savePrecipitationStateUseCase,
+          DependenciesScope.of(context).getPrecipitationStateUseCase,
+        )..add(const LoadHomeEvent()),
         child: BlocListener<HomePresenter, HomeViewModel>(
           listener: (BuildContext context, HomeViewModel viewModel) {
             if (viewModel is ScanState) {

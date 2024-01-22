@@ -7,6 +7,6 @@ class GetProductInfoUseCase implements UseCase<Future<ProductInfo>, String> {
   final ProductInfoGateway _productInfoGateway;
 
   @override
-  Future<ProductInfo> call(String barcode) =>
+  Future<ProductInfo> call([String barcode = '']) =>
       _productInfoGateway.getProductInfoAsFuture(barcode);
 }

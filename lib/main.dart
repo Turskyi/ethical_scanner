@@ -1,8 +1,9 @@
 import 'package:dart_openai/dart_openai.dart';
+import 'package:ethical_scanner/constants.dart' as constants;
+import 'package:ethical_scanner/data/data_sources/local/local_data_source_impl.dart';
 import 'package:ethical_scanner/di/dependencies.dart';
 import 'package:ethical_scanner/di/dependencies_scope.dart';
 import 'package:ethical_scanner/res/enums/language.dart';
-import 'package:ethical_scanner/res/strings.dart';
 import 'package:ethical_scanner/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
@@ -21,11 +22,11 @@ void main() async {
   LocalizationDelegate localizationDelegate = await LocalizationDelegate.create(
     fallbackLocale: Language.en.name,
     supportedLocales: <String>[Language.en.name],
-    basePath: Strings.localePath,
+    basePath: constants.localePath,
   );
 
   OpenFoodAPIConfiguration.userAgent = UserAgent(
-    name: 'ethical_scanner',
+    name: constants.useAgentAppName,
   );
 
   OpenFoodAPIConfiguration.globalLanguages = <OpenFoodFactsLanguage>[
@@ -35,6 +36,9 @@ void main() async {
   OpenFoodAPIConfiguration.globalCountry = OpenFoodFactsCountry.CANADA;
 
   OpenAI.apiKey = Env.apiKey;
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await LocalDataSourceImpl().init();
 
   runApp(
     LocalizedApp(

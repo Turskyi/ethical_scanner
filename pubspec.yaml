@@ -70,6 +70,7 @@ dependencies:
   path: any
   retrofit: ^4.0.3
   retrofit_generator: ^8.0.6
+  shared_preferences: ^2.2.2
   use_cases:
     path: ./components/core/use_cases
 

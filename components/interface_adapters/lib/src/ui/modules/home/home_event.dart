@@ -2,6 +2,10 @@ sealed class HomeEvent {
   const HomeEvent();
 }
 
+class LoadHomeEvent extends HomeEvent{
+  const LoadHomeEvent();
+}
+
 class ShowProductInfoEvent extends HomeEvent {
   const ShowProductInfoEvent(this.code);
 

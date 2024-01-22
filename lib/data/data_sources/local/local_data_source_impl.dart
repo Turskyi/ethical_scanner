@@ -1,7 +1,18 @@
+import 'package:ethical_scanner/res/enums/settings.dart';
 import 'package:interface_adapters/interface_adapters.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalDataSourceImpl implements LocalDataSource {
-  const LocalDataSourceImpl();
+  factory LocalDataSourceImpl() => _instance;
+
+  LocalDataSourceImpl._internal();
+
+  static final LocalDataSourceImpl _instance = LocalDataSourceImpl._internal();
+  late final SharedPreferences _sharedPrefs;
+
+  @override
+  Future<void> init() => SharedPreferences.getInstance()
+      .then((SharedPreferences prefs) => _sharedPrefs = prefs);
 
   /// Function to retrieve the country from barcode.
   ///
@@ -740,4 +751,18 @@ class LocalDataSourceImpl implements LocalDataSource {
     }
     return true;
   }
+
+  @override
+  Future<bool> savePrecipitationState(bool isPrecipitationFalling) =>
+      _sharedPrefs.setBool(
+        Settings.precipitationFalling.key,
+        isPrecipitationFalling,
+      );
+
+  @override
+  bool getPrecipitationState() =>
+      _sharedPrefs.getBool(
+        Settings.precipitationFalling.key,
+      ) ??
+      true;
 }

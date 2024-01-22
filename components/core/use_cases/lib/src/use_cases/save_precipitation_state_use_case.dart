@@ -1,12 +1,11 @@
-import 'package:entities/entities.dart';
 import 'package:use_cases/use_cases.dart';
 
-class GetProductInfoUseCase implements UseCase<Future<ProductInfo>, String> {
-  const GetProductInfoUseCase(this._productInfoGateway);
+class SavePrecipitationStateUseCase implements UseCase<Future<bool>, bool> {
+  const SavePrecipitationStateUseCase(this._settingsGateway);
 
-  final ProductInfoGateway _productInfoGateway;
+  final SettingsGateway _settingsGateway;
 
   @override
-  Future<ProductInfo> call(String barcode) =>
-      _productInfoGateway.getProductInfoAsFuture(barcode);
+  Future<bool> call([bool isPrecipitationFalling = true]) =>
+      _settingsGateway.savePrecipitationStateAsFuture(isPrecipitationFalling);
 }

@@ -2,8 +2,8 @@
 /// It specifies the [Input] to be provided by the user, the [Output] to be
 /// returned to the user. A [UseCase] describes an application-specific business
 /// rules.
-abstract class UseCase<Output, Input> {
+abstract interface class UseCase<Output, Input> {
   const UseCase();
 
-  Output call(Input input);
+  Output call([Input input]);
 }

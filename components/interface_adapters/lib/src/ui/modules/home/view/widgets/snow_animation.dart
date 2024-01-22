@@ -18,7 +18,7 @@ class _SnowAnimationState extends State<SnowAnimation>
     with SingleTickerProviderStateMixin {
   final Random _random = Random();
   List<Snowflake> _snowflakes = <Snowflake>[];
-  late Ticker _ticker;
+  Ticker? _ticker;
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class _SnowAnimationState extends State<SnowAnimation>
 
   @override
   void dispose() {
-    _ticker.dispose();
+    _ticker?.dispose();
     SystemChrome.setPreferredOrientations(<DeviceOrientation>[
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
@@ -88,17 +88,23 @@ class _SnowAnimationState extends State<SnowAnimation>
   }
 
   Offset _randomOffset() {
-    Size size = MediaQuery.sizeOf(context);
-    return Offset(
-      _random.nextDouble() * size.width,
-      _random.nextDouble() * size.height,
-    );
+    if (mounted) {
+      Size size = MediaQuery.sizeOf(context);
+      return Offset(
+        _random.nextDouble() * size.width,
+        _random.nextDouble() * size.height,
+      );
+    } else {
+      return Offset.zero;
+    }
   }
 
   FutureOr<Null> _startSnowfallAnimation(List<Snowflake> snowflakes) {
-    setState(() {
-      _snowflakes = snowflakes;
-      _ticker = createTicker(_updateSnowflakes);
-    });
+    if (mounted) {
+      setState(() {
+        _snowflakes = snowflakes;
+        _ticker = createTicker(_updateSnowflakes);
+      });
+    }
   }
 }

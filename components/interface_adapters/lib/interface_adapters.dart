@@ -14,5 +14,6 @@ export 'src/ui/modules/home/view/home_view.dart';
 export 'src/ui/modules/scan/scan_presenter.dart';
 export 'src/ui/modules/scan/scan_view.dart';
 export 'src/gateways/product_info_gateway_impl.dart';
+export 'src/gateways/settings_gateway_impl.dart';
 export 'src/data_sources/remote/remote_data_source.dart';
 export 'src/data_sources/local/local_data_source.dart';

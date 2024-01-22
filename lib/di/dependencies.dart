@@ -11,11 +11,21 @@ import 'package:use_cases/use_cases.dart';
 class Dependencies {
   const Dependencies();
 
+  UseCase<bool, Null> get getPrecipitationStateUseCase =>
+      GetPrecipitationStateUseCase(
+        SettingsGatewayImpl(LocalDataSourceImpl()),
+      );
+
+  UseCase<Future<bool>, bool> get savePrecipitationStateUseCase =>
+      SavePrecipitationStateUseCase(
+        SettingsGatewayImpl(LocalDataSourceImpl()),
+      );
+
   UseCase<Future<ProductInfo>, String> get productInfoUseCase =>
       GetProductInfoUseCase(
         ProductInfoGatewayImpl(
           RemoteDataSourceImpl(_restClient),
-          const LocalDataSourceImpl(),
+          LocalDataSourceImpl(),
         ),
       );
 

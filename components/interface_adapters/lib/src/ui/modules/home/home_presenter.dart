@@ -8,7 +8,21 @@ import 'package:use_cases/use_cases.dart';
 part 'home_view_model.dart';
 
 class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
-  HomePresenter(this._getProductInfoUseCase) : super(const ReadyToScanState()) {
+  HomePresenter(
+    this._getProductInfoUseCase,
+    this._savePrecipitationStateUseCase,
+    this._getPrecipitationStateUseCase,
+  ) : super(const ReadyToScanState()) {
+    on<LoadHomeEvent>(
+      (_, Emitter<HomeViewModel> emit) {
+        emit(
+          ReadyToScanState(
+            isPrecipitationFalls: _getPrecipitationStateUseCase.call(),
+          ),
+        );
+      },
+    );
+
     on<ClearProductInfoEvent>(
       (_, Emitter<HomeViewModel> emit) => emit(const ReadyToScanState()),
     );
@@ -124,27 +138,32 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     );
 
     on<ShowHomeEvent>(
-      (ShowHomeEvent event, Emitter<HomeViewModel> emit) {
+      (_, Emitter<HomeViewModel> emit) {
         emit(const ReadyToScanState());
       },
     );
 
     on<PrecipitationToggleEvent>((
-      PrecipitationToggleEvent event,
+      _,
       Emitter<HomeViewModel> emit,
-    ) {
+    ) async {
       if (state is ReadyToScanState) {
-        emit(
-          ReadyToScanState(
-            isPrecipitationFalls:
-                !(state as ReadyToScanState).isPrecipitationFalls,
-          ),
-        );
+        bool isPrecipitationFalls =
+            !(state as ReadyToScanState).isPrecipitationFalls;
+        bool isSaved =
+            await _savePrecipitationStateUseCase.call(isPrecipitationFalls);
+        if (isSaved) {
+          emit(
+            ReadyToScanState(isPrecipitationFalls: isPrecipitationFalls),
+          );
+        }
       }
     });
   }
 
   final UseCase<Future<ProductInfo>, String> _getProductInfoUseCase;
+  final UseCase<Future<bool>, bool> _savePrecipitationStateUseCase;
+  final UseCase<bool, Null> _getPrecipitationStateUseCase;
 
   bool _isWebsite(String input) {
     // Regular expression for URL validation
