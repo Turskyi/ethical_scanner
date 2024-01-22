@@ -22,7 +22,7 @@ class _SnowAnimationState extends State<SnowAnimation>
   static const int _initialBatchSizeOfSnowflakes = 50;
   static const double _fallSpeed = 1.0;
 
-  // Constants for fallback values
+  /// Constants for fallback values
   static const double _fallbackScreenWidth = 400;
   static const double _fallbackScreenHeight = 800;
   final Random _random = Random();
