@@ -55,6 +55,7 @@ jobs:
       - name: Write env.g.dart file
         run: |
           dart run build_runner build --delete-conflicting-outputs
+          flutter pub get
         shell: bash
 
       - name: Return to the root directory
