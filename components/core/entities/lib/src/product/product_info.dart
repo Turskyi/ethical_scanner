@@ -1,3 +1,4 @@
+import 'package:entities/src/enums/language.dart';
 import 'package:entities/src/enums/vegan.dart';
 import 'package:entities/src/enums/vegetarian.dart';
 
@@ -17,6 +18,8 @@ class ProductInfo {
     this.vegan = Vegan.unknown,
     this.vegetarian = Vegetarian.unknown,
     this.website = '',
+    this.language = Language.en,
+    this.quantity = '',
   });
 
   final String barcode;
@@ -55,6 +58,8 @@ class ProductInfo {
   final Vegan vegan;
   final Vegetarian vegetarian;
   final String website;
+  final Language language;
+  final String quantity;
 
   ProductInfo copyWith({
     String? barcode,
@@ -71,6 +76,8 @@ class ProductInfo {
     Vegan? vegan,
     Vegetarian? vegetarian,
     String? website,
+    Language? language,
+    String? quantity,
   }) =>
       ProductInfo(
         barcode: barcode ?? this.barcode,
@@ -87,5 +94,18 @@ class ProductInfo {
         vegan: vegan ?? this.vegan,
         vegetarian: vegetarian ?? this.vegetarian,
         website: website ?? this.website,
+        language: language ?? this.language,
+        quantity: quantity ?? this.quantity,
       );
+
+  @override
+  String toString() {
+    return 'ProductInfo{barcode: $barcode, origin: $origin, '
+        'countryTags: $countryTags, country: $country, countryAi: $countryAi, '
+        'name: $name, brand: $brand, isTerrorismSponsor: $isTerrorismSponsor, '
+        'categoryTags: $categoryTags, packaging: $packaging, '
+        'ingredientList: $ingredientList, vegan: $vegan, '
+        'vegetarian: $vegetarian, website: $website, '
+        'language: ${language.name}, quantity: $quantity}';
+  }
 }

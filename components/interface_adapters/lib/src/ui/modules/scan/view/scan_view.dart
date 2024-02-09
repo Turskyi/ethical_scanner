@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
@@ -14,28 +16,45 @@ class ScanView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<ScanView> {
+  final double _scanWindowSize = 200.0;
+
+  /// Adjust the left padding
+  final double _leftPadding = 8.0;
+
+  /// Adjust the bottom padding
+  final double _bottomPadding = 32.0;
+  final int _animationDuration = 200;
   final MobileScannerController _scannerController = MobileScannerController();
+  late Rect _scanWindow;
+
+  @override
+  void didChangeDependencies() {
+    _scanWindow = Rect.fromCenter(
+      center: MediaQuery.sizeOf(context).center(Offset.zero),
+      width: _scanWindowSize,
+      height: _scanWindowSize,
+    );
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final Rect scanWindow = Rect.fromCenter(
-      center: MediaQuery.of(context).size.center(Offset.zero),
-      width: 200,
-      height: 200,
-    );
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Semantics(
         label: translate('scan.scan_screen'),
+        // During scenarios where something dynamically changes the child
+        // widgets within the `Stack`, the `AnimatedSwitcher` will animate the
+        // transition between them.
         child: AnimatedSwitcher(
-          // Set the duration property
-          duration: const Duration(milliseconds: 200),
+          duration: Duration(milliseconds: _animationDuration),
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[
               MobileScanner(
                 controller: _scannerController,
                 errorBuilder: (_, MobileScannerException error, __) {
+                  print('XXX scan error: ${error}');
                   _scannerController.stop().whenComplete(() {
                     _scannerController.start();
                   });
@@ -43,15 +62,19 @@ class _HomeViewState extends State<ScanView> {
                 },
                 fit: BoxFit.fitHeight,
                 onDetect: _onBarcodeDetect,
-                // scanWindow: scanWindow,
+                placeholderBuilder: (_, __) {
+                  return Container(
+                    width: 20,
+                    height: 20,
+                    color: Colors.red,
+                  );
+                },
               ),
-              CustomPaint(
-                painter: ScannerOverlay(scanWindow),
-              ),
+              CustomPaint(painter: ScannerOverlay(_scanWindow)),
               Padding(
                 padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).padding.top,
-                  left: 8,
+                  top: MediaQuery.paddingOf(context).top,
+                  left: _leftPadding,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,11 +86,13 @@ class _HomeViewState extends State<ScanView> {
                         color: Colors.white,
                       ),
                       onPressed: () => _closeCamera().whenComplete(() {
-                        Navigator.pop(context);
+                        context
+                            .read<ScanPresenter>()
+                            .add(const NavigateBackEvent());
                       }),
                     ),
                     Container(
-                      padding: const EdgeInsets.only(bottom: 32.0),
+                      padding: EdgeInsets.only(bottom: _bottomPadding),
                       alignment: Alignment.bottomCenter,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -88,7 +113,7 @@ class _HomeViewState extends State<ScanView> {
                                   iconData = Icons.flashlight_on;
                                   break;
                               }
-        
+
                               return IconButton(
                                 onPressed: _scannerController.toggleTorch,
                                 icon: Icon(
@@ -125,32 +150,45 @@ class _HomeViewState extends State<ScanView> {
   }
 
   Future<void> _onBarcodeDetect(BarcodeCapture barcodeCapture) {
-    final Barcode barcode = barcodeCapture.barcodes.last;
+    print(
+        'XXX _onBarcodeDetect barcodeCapture.barcodes.length: ${barcodeCapture.barcodes.length}');
+    Barcode barcodeBeforeClosing = barcodeCapture.barcodes.last;
+    print('XXX barcodeBeforeClosing.format: ${barcodeBeforeClosing.format}');
+    print('XXX barcodeBeforeClosing.type: ${barcodeBeforeClosing.type}');
+    print('XXX barcodeBeforeClosing.rawValue: ${barcodeBeforeClosing.rawValue}');
     return _closeCamera().whenComplete(() {
+      final Barcode barcode = barcodeCapture.barcodes.last;
+      print('XXX barcode.displayValue: ${barcode.displayValue}');
+      print('XXX barcode.rawValue: ${barcode.rawValue}');
       String? barcodeValue = barcode.displayValue ?? barcode.rawValue;
+      print('XXX barcodeValue != null: ${barcodeValue != null}'); // true
       if (barcodeValue != null) {
         context.read<ScanPresenter>().add(PopBarcodeEvent((barcodeValue)));
       } else {
+        print('XXX we do not have a barcode, what we have?');
         context.read<ScanPresenter>().add(const NavigateBackEvent());
       }
     });
   }
 
-  Future<void> _closeCamera() {
-    return _scannerController.stop().catchError((
-      Object error,
-      StackTrace stackTrace,
-    ) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Something went wrong! $error'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    });
-  }
+  Future<void> _closeCamera() => _scannerController.stop().catchError((
+        Object error,
+        StackTrace stackTrace,
+      ) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Something went wrong! $error'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else {
+          print('XXX Error in $runtimeType: $error.'
+              '\nStacktrace: $stackTrace');
+          log('Error in $runtimeType: $error.'
+              '\nStacktrace: $stackTrace');
+        }
+      });
 }
 
 class ScannerOverlay extends CustomPainter {
@@ -237,7 +275,5 @@ class ScannerOverlay extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
-  }
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
