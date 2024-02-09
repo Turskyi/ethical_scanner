@@ -11,13 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Write .env file
-        run: |
-          echo $ENV | base64 -d > .env
-        shell: bash
-        env:
-          ENV: ${{ secrets.ENV }}
-
       - name: Write key.properties file
         run: |
           echo $KEY_PROPERTIES | base64 -d > android/key.properties
@@ -66,11 +59,6 @@ jobs:
 
       - name: Return to the root directory
         run: cd ../..
-
-      - name: Write env.g.dart file
-        run: |
-          dart run build_runner build --delete-conflicting-outputs
-        shell: bash
 
       - run: flutter build apk --release
       - name: Upload APK

@@ -9,7 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/interface_adapters.dart';
-import 'package:interface_adapters/src/env/env.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/code_tile.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/delayed_animation.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/loading_indicator_widget.dart';

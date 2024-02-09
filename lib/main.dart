@@ -16,8 +16,6 @@ import 'package:interface_adapters/interface_adapters.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import 'env/env.dart';
-
 /// The [main] is the ultimate detail — the lowest-level policy.
 /// It is the initial entry point of the system.
 /// Nothing, other than the operating system, depends on it.

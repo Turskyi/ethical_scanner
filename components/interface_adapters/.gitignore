@@ -28,3 +28,10 @@ migrate_working_dir/
 .dart_tool/
 .packages
 build/
+
+# files with environment variables
+.env
+/.env
+/android/.env.local
+/env.g.dart
+env.g.dart
