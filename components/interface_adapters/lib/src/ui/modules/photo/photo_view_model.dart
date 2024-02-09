@@ -1,18 +1,42 @@
-part of 'scan_presenter.dart';
+part of 'photo_presenter.dart';
 
-sealed class ScanViewModel {
-  const ScanViewModel();
+sealed class PhotoViewModel {
+  const PhotoViewModel();
 }
 
-class ScanningState extends ScanViewModel {
-  const ScanningState() : super();
+abstract class LoadingState extends PhotoViewModel{
+  const LoadingState();
 }
 
-class ScanSuccessState extends ScanViewModel {
-  const ScanSuccessState(this.barcode) : super();
-  final String barcode;
+class PhotoMakerReadyState extends PhotoViewModel {
+  const PhotoMakerReadyState();
 }
 
-class CanceledScanningState extends ScanViewModel {
-  const CanceledScanningState() : super();
+class MakingPhotoState extends LoadingState {
+  const MakingPhotoState();
+}
+
+class TakenPhotoState extends PhotoViewModel {
+  const TakenPhotoState(this.photoPath);
+  final String photoPath;
+}
+
+class IngredientsAddedSuccessState extends PhotoViewModel {
+  const IngredientsAddedSuccessState();
+}
+
+class CanceledPhotoState extends PhotoViewModel {
+  const CanceledPhotoState();
+}
+
+class AddIngredientsErrorState extends PhotoViewModel {
+  const AddIngredientsErrorState({
+    required String barcode,
+    required this.errorMessage,
+  }):super();
+  final String errorMessage;
+}
+
+class AddingIngredientsState extends LoadingState {
+  const AddingIngredientsState();
 }

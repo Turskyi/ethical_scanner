@@ -10,4 +10,8 @@ abstract interface class LocalDataSource {
   Future<bool> savePrecipitationState(bool isPrecipitationFalling);
 
   bool getPrecipitationState();
+
+  String getLanguageIsoCode();
+
+  Future<bool> saveLanguageIsoCode(String languageIsoCode);
 }

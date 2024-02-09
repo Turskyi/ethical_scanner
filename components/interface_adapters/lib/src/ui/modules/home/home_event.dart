@@ -1,3 +1,5 @@
+import 'package:entities/entities.dart';
+
 sealed class HomeEvent {
   const HomeEvent();
 }
@@ -7,9 +9,9 @@ class LoadHomeEvent extends HomeEvent{
 }
 
 class ShowProductInfoEvent extends HomeEvent {
-  const ShowProductInfoEvent(this.code);
+  const ShowProductInfoEvent(this.productInfo);
 
-  final String code;
+  final ProductInfo productInfo;
 }
 
 class ClearProductInfoEvent extends HomeEvent {
@@ -21,9 +23,10 @@ class NavigateToScanViewEvent extends HomeEvent {
 }
 
 class LaunchUrlEvent extends HomeEvent {
-  const LaunchUrlEvent(this.uri);
+  const LaunchUrlEvent({required this.uri, required this.language});
 
   final String uri;
+  final Language language;
 }
 
 class ShowHomeEvent extends HomeEvent {
@@ -32,4 +35,13 @@ class ShowHomeEvent extends HomeEvent {
 
 class PrecipitationToggleEvent extends HomeEvent {
   const PrecipitationToggleEvent();
+}
+
+class SnapIngredientsEvent extends HomeEvent {
+  const SnapIngredientsEvent();
+}
+
+class ChangeLanguageEvent extends HomeEvent {
+  const ChangeLanguageEvent(this.language);
+  final Language language;
 }

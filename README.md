@@ -13,16 +13,15 @@ The app allows you to customize your preferences based on
 various criteria, such as human rights, environmental impact, animal well-being, and more.
 
 The app uses the data from various sources, such as
+* [Open Food Facts](https://world.openfoodfacts.org);
 * [Ukrainian national agency on corruption prevention | INTERNATIONAL SPONSORS OF WAR](https://sanctions.nazk.gov.ua/en/boycott/);
 * [Yale chief executive leadership institute| List of Companies
   Leaving and Staying in Russia](https://www.yalerussianbusinessretreat.com/);
 [U.S. bureau of counterterrorism | State Sponsors of Terrorism](https://www.state.gov/state-sponsors-of-terrorism/);
 * [Global Forum Against Terrorism](https://www.gfatf.org/threats/countries-who-support-terrorism/).
-* [Don’t Fund War](https://dontfundwar.com/directory);
 
 The app aims to help you shop with confidence and conscience.
-  For more information, please visit the
-project website at https://ethical-scanner.turskyi.com.
+For more information, please visit the project website at https://ethical-scanner.turskyi.com.
 
 ## PROJECT SPECIFICATION
 
@@ -57,6 +56,7 @@ named such that another developer reading the code can easily understand their f
 ## To create generated files, run:
 
 ```
+dart run build_runner clean
 dart run build_runner build --delete-conflicting-outputs
 ```
 

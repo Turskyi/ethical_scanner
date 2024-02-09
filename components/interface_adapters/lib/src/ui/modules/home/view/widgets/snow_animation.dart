@@ -16,15 +16,15 @@ class SnowAnimation extends StatefulWidget {
 
 class _SnowAnimationState extends State<SnowAnimation>
     with SingleTickerProviderStateMixin {
-  static const double _snowflakeSizeMultiplier = 30.0;
-  static const double _snowflakeSizeConstant = 5.0;
-  static const double _rotationSpeed = 0.02;
-  static const int _initialBatchSizeOfSnowflakes = 50;
-  static const double _fallSpeed = 1.0;
+  final double _snowflakeSizeMultiplier = 30.0;
+  final double _snowflakeSizeConstant = 5.0;
+  final double _rotationSpeed = 0.02;
+  final int _initialBatchSizeOfSnowflakes = 50;
+  final double _fallSpeed = 1.0;
 
   /// Constants for fallback values
-  static const double _fallbackScreenWidth = 400;
-  static const double _fallbackScreenHeight = 800;
+  final double _fallbackScreenWidth = 400;
+  final double _fallbackScreenHeight = 800;
   final Random _random = Random();
   List<Snowflake> _snowflakes = <Snowflake>[];
   Ticker? _ticker;

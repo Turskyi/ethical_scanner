@@ -39,10 +39,10 @@ dependencies:
   # package as the engine, and the `flutter_bloc` package as the car body. You need both to make a
   # functional car 🚗.
   bloc: ^8.1.2
-
+  camera: ^0.10.5+9
+  collection: ^1.18.0
   # Dart SDK for openAI Apis (GPT-3 & DALL-E), integrate easily the power of OpenAI's
   # state-of-the-art AI models into their Dart applications.
-  collection: ^1.18.0
   dart_openai: ^5.0.0
   dio: ^5.4.0
   entities:
@@ -51,6 +51,7 @@ dependencies:
   # Explicitly reads environment variables into a dart file from a .env file for more security and
   # faster start up times.
   envied: ^0.5.3
+  feedback: ^3.0.0
   flutter:
     sdk: flutter
 
@@ -65,8 +66,9 @@ dependencies:
 
   json_annotation: ^4.8.1
   logger: ^2.0.2+1
-  openfoodfacts: ^3.3.1
+  openfoodfacts: ^3.3.2
 
+  package_info_plus: ^5.0.1
   path: any
   retrofit: ^4.0.3
   retrofit_generator: ^8.0.6
@@ -76,7 +78,7 @@ dependencies:
 
 dev_dependencies:
   # A build system for Dart code generation and modular compilation.
-  build_runner: ^2.4.7
+  build_runner: ^2.4.8
 
   # Generator for the Envied package. See https://pub.dev/packages/envied.
   envied_generator: ^0.5.3

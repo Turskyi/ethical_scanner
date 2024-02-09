@@ -1,5 +1,5 @@
 class Dimens {
-  Dimens();
+  const Dimens();
 
   final double indent1 = 1.0;
   final double indent2 = 2.0;
@@ -19,8 +19,18 @@ class Dimens {
   final double indent48 = 48.0;
   final double indent50 = 50.0;
 
+  final int noElevation = 0;
   final double bodyLetterSpacing = 1.0;
+  final double bodyTitleOffset = 2.0;
   final double bodyBlurRadius = 3.0;
-  final double bodyHeightFactor = 12.0;
+  final double circularProgressStrokeWidth = 5.0;
+  final double productInfoListTopPadding = 8.0;
+
+  /// Adjust the left padding
+  final double leftPadding = 8.0;
   final double productInfoHorizontalMargin = 12.0;
+  final double borderRadius = 12.0;
+  final double productInfoListBottomPadding = 16.0;
+  final double circularProgressPadding = 16.0;
+  final double bodyBottomMargin = 200.0;
 }

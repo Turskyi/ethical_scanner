@@ -9,25 +9,37 @@ import 'package:use_cases/use_cases.dart';
 
 /// Dependencies container
 class Dependencies {
-  const Dependencies();
+  Dependencies() : _localDataSource = LocalDataSourceImpl() {
+    _localDataSource.init();
+  }
+
+  final LocalDataSourceImpl _localDataSource;
 
   UseCase<bool, Null> get getPrecipitationStateUseCase =>
-      GetPrecipitationStateUseCase(
-        SettingsGatewayImpl(LocalDataSourceImpl()),
-      );
+      GetPrecipitationStateUseCase(_settingsGateway);
+
+  UseCase<Language, Null> get getLanguageUseCase =>
+      GetLanguageUseCase(_settingsGateway);
 
   UseCase<Future<bool>, bool> get savePrecipitationStateUseCase =>
-      SavePrecipitationStateUseCase(
-        SettingsGatewayImpl(LocalDataSourceImpl()),
-      );
+      SavePrecipitationStateUseCase(_settingsGateway);
 
-  UseCase<Future<ProductInfo>, String> get productInfoUseCase =>
-      GetProductInfoUseCase(
-        ProductInfoGatewayImpl(
-          RemoteDataSourceImpl(_restClient),
-          LocalDataSourceImpl(),
-        ),
-      );
+  UseCase<Future<bool>, String> get saveLanguageUseCase =>
+      SaveLanguageUseCase(_settingsGateway);
+
+  UseCase<Future<ProductInfo>, Barcode> get productInfoUseCase =>
+      GetProductInfoUseCase(_productInfoGateway);
+
+  UseCase<Future<void>, ProductPhoto> get addIngredientsUseCase =>
+      AddIngredientsUseCase(_productInfoGateway);
+
+  SettingsGateway get _settingsGateway =>
+      SettingsGatewayImpl(_localDataSource);
+
+  ProductInfoGateway get _productInfoGateway => ProductInfoGatewayImpl(
+    RemoteDataSourceImpl(_restClient),
+    _localDataSource,
+  );
 
   RestClient get _restClient {
     final Dio dio = Dio();

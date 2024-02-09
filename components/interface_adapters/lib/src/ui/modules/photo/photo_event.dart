@@ -1,12 +1,28 @@
-sealed class ScanEvent {
-  const ScanEvent();
+import 'package:entities/entities.dart';
+
+sealed class PhotoEvent {
+  const PhotoEvent();
 }
 
-class PopBarcodeEvent extends ScanEvent {
-  const PopBarcodeEvent(this.barcode);
-  final String barcode;
+class AddIngredientsPhotoEvent extends PhotoEvent {
+  const AddIngredientsPhotoEvent(this.productPhoto);
+  final ProductPhoto productPhoto;
 }
 
-class NavigateBackEvent extends ScanEvent {
-  const NavigateBackEvent();
+class PhotoViewBackEvent extends PhotoEvent {
+  const PhotoViewBackEvent();
+}
+
+
+class TakePhotoEvent extends PhotoEvent {
+  const TakePhotoEvent();
+}
+
+class TakenPhotoEvent extends PhotoEvent {
+  const TakenPhotoEvent(this.imagePath);
+  final String imagePath;
+}
+
+class RemovePhotoEvent extends PhotoEvent {
+  const RemovePhotoEvent();
 }

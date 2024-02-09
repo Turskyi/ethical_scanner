@@ -10,12 +10,13 @@
 /// Critical business data.
 library entities;
 
-export 'src/product_info/product_info.dart';
-export 'src/enums/product_info_key.dart';
-export 'src/errors/api_exception.dart';
-export 'src/errors/network_error.dart';
+export 'src/barcode/barcode.dart';
+export 'src/enums/language.dart';
+export 'src/enums/product_info_type.dart';
 export 'src/enums/vegan.dart';
 export 'src/enums/vegetarian.dart';
-export 'src/rest_client/rest_client.dart';
 export 'src/logging_interceptor/logging_interceptor.dart';
+export 'src/product/product_info.dart';
+export 'src/product/product_photo.dart';
+export 'src/rest_client/rest_client.dart';
 export 'src/terrorism_sponsor/terrorism_sponsor.dart';

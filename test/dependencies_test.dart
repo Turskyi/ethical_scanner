@@ -7,10 +7,10 @@ void main() {
   group('Dependencies', () {
     test('getProductInfoUseCase should not be null', () {
       // Arrange
-      const Dependencies dependencies = Dependencies();
+      Dependencies dependencies = Dependencies();
 
       // Act
-      final UseCase<Future<ProductInfo>, String> useCase =
+      final UseCase<Future<ProductInfo>, Barcode> useCase =
           dependencies.productInfoUseCase;
 
       // Assert

@@ -5,6 +5,7 @@ import 'package:entities/entities.dart';
 
 class LoggingInterceptorImpl extends Interceptor implements LoggingInterceptor {
   const LoggingInterceptorImpl();
+
   @override
   void onResponse(
     Response<dynamic> response,

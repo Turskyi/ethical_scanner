@@ -9,10 +9,10 @@ class ScanningState extends ScanViewModel {
 }
 
 class ScanSuccessState extends ScanViewModel {
-  const ScanSuccessState(this.barcode) : super();
+  const ScanSuccessState(this.barcode);
   final String barcode;
 }
 
-class ScanFailureState extends ScanViewModel {
-  const ScanFailureState() : super();
+class CanceledScanningState extends ScanViewModel {
+  const CanceledScanningState();
 }

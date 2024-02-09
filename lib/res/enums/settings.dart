@@ -1,10 +1,8 @@
-enum Settings { precipitationFalling }
+enum Settings {
+  precipitationFalling('precipitationFalling'),
+  languageIsoCode('languageIsoCode');
 
-extension SettingsExtension on Settings {
-  String get key {
-    switch (this) {
-      case Settings.precipitationFalling:
-        return 'precipitationFalling';
-    }
-  }
+  const Settings(this.key);
+
+  final String key;
 }

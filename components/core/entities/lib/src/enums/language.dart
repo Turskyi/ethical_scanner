@@ -1,22 +1,42 @@
-/// [IsoCode] is an enum object that contains all supported ISO 639-1 code
-/// languages by project.
-enum IsoCode {
-  en,
-  ua;
+/// [Language] is an `enum` object that contains all supported languages by
+/// project.
+enum Language {
+  en(
+    name: _englishLanguage,
+    isoLanguageCode: englishIsoLanguageCode,
+    flag: '🇬🇧',
+  ),
+  uk(
+    name: _ukrainianLanguage,
+    isoLanguageCode: _ukrainianIsoLanguageCode,
+    flag: '🇺🇦',
+  );
 
-  bool get isEnglish => this == IsoCode.en;
+  const Language({
+    required this.name,
+    required this.isoLanguageCode,
+    required this.flag,
+  });
 
-  static IsoCode fromLanguageCode(String langCode) {
-    switch (langCode.trim().toLowerCase()) {
-      case _englishIsoCode:
-        return IsoCode.en;
-      case _ukrainianIsoCode:
-        return IsoCode.ua;
+  final String name;
+  final String isoLanguageCode;
+  final String flag;
+
+  bool get isEnglish => this == Language.en;
+
+  static Language fromIsoLanguageCode(String isoLanguageCode) {
+    switch (isoLanguageCode.trim().toLowerCase()) {
+      case englishIsoLanguageCode:
+        return Language.en;
+      case _ukrainianIsoLanguageCode:
+        return Language.uk;
       default:
-        return IsoCode.en;
+        return Language.en;
     }
   }
 }
 
-const String _englishIsoCode = 'en';
-const String _ukrainianIsoCode = 'ua';
+const String englishIsoLanguageCode = 'en';
+const String _ukrainianIsoLanguageCode = 'uk';
+const String _englishLanguage = 'English';
+const String _ukrainianLanguage = 'Ukrainian';

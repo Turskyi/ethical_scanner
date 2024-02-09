@@ -1,4 +1,6 @@
+import 'package:entities/entities.dart';
 import 'package:ethical_scanner/res/enums/settings.dart';
+import 'package:flutter/foundation.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,15 +32,17 @@ class LocalDataSourceImpl implements LocalDataSource {
       '001': 'United States',
       '002': 'United States',
       '003': 'United States',
-      '004': 'Afghanistan',
+      // ISO 3166-1 numeric for Afghanistan and GS1 USA country code
+      '004': 'USA(GS1)/Afghanistan(ISO 3166-1)',
       '005': 'United States',
       '006': 'United States',
       '007': 'United States',
-      '008': 'Albania',
+      // ISO 3166-1 numeric for Albania and GS1 USA country code
+      '008': 'USA(GS1)/Albania(ISO 3166-1)',
       '009': 'United States',
       '010': 'United States',
       '011': 'United States',
-      '012': 'Algeria',
+      '012': 'USA(GS1)/Algeria(ISO 3166-1)',
       '013': 'United States',
       '014': 'United States',
       '015': 'United States',
@@ -46,30 +50,28 @@ class LocalDataSourceImpl implements LocalDataSource {
       '017': 'United States',
       '018': 'United States',
       '019': 'United States and Canada',
-      '020': 'Andorra',
-      '022': 'U.S. and Canada',
-      '024': 'Angola',
-      '028': 'Antigua and Barbuda',
+      '020': 'Andorra(ISO 3166-1)',
+      '024': 'Angola(ISO 3166-1)',
+      '028': 'Antigua and Barbuda(ISO 3166-1)',
       '030': 'United States',
       '031': 'United States',
-      '032': 'Argentina',
+      '032': 'USA(GS1)/Argentina(ISO 3166-1)',
       '033': 'United States',
       '034': 'United States',
       '035': 'United States',
-      '036': 'Australia',
+      '036': 'USA(GS1)/Australia(ISO 3166-1)',
       '037': 'United States',
       '038': 'United States',
       '039': 'United States',
-      '040': 'Austria',
-      '044': 'Bahamas',
-      '048': 'Bahrain',
-      '050': 'Bangladesh',
-      '051': 'Armenia',
-      '052': 'Barbados',
-      '055': 'Canada',
-      '056': 'Belgium',
+      '040': 'Austria(ISO 3166-1)',
+      '044': 'Bahamas(ISO 3166-1)',
+      '048': 'Bahrain(ISO 3166-1)',
+      '050': 'US(GS1)/Bangladesh(ISO 3166-1)',
+      '051': 'US(GS1)/Armenia(ISO 3166-1)',
+      '052': 'US(GS1)/Barbados(ISO 3166-1)',
+      '056': 'US(GS1)/Belgium(ISO 3166-1)',
       // 057 is EAN-13 barcode prefix for the United States
-      '057': 'United States',
+      '057': 'United States(EAN-13)',
       '060': 'United States and Canada',
       '061': 'United States',
       '062': 'United States',
@@ -765,4 +767,15 @@ class LocalDataSourceImpl implements LocalDataSource {
         Settings.precipitationFalling.key,
       ) ??
       true;
+
+  @override
+  String getLanguageIsoCode() =>
+      _sharedPrefs.getString(Settings.languageIsoCode.key) ??
+      Language.fromIsoLanguageCode(
+        PlatformDispatcher.instance.locale.languageCode,
+      ).isoLanguageCode;
+
+  @override
+  Future<bool> saveLanguageIsoCode(String languageIsoCode) =>
+      _sharedPrefs.setString(Settings.languageIsoCode.key, languageIsoCode);
 }

@@ -1,51 +1,32 @@
-enum ProductInfoKey {
-  code,
-  productName,
-  countryOfOrigin,
-  countryWhereSold,
-  brand,
-  terrorismSponsor,
-  isVegan,
-  isVegetarian,
-  packaging,
-  ingredients,
-  website,
-  countryAi,
-  error,
-}
+enum ProductInfoType {
+  code('product_info.code_colon'),
+  productName('product_info.product_name_colon'),
+  originCountry('product_info.origin_country_colon'),
+  countryWhereSold('product_info.country_where_sold_colon'),
+  brand('product_info.brand_colon'),
+  companyTerrorismSponsor('product_info.is_company_terrorism_sponsor'),
+  countryTerrorismSponsor('product_info.is_country_terrorism_sponsor'),
+  isVegan('product_info.is_vegan'),
+  isVegetarian('product_info.is_vegetarian'),
+  packaging('product_info.packaging_colon'),
+  ingredients('product_info.ingredients_colon'),
+  website('product_info.website_colon'),
+  countryAi('product_info.country_ai_colon'),
+  error('product_info.error_colon');
 
-extension ProductInfoKeyExtension on ProductInfoKey {
-  String get value {
-    switch (this) {
-      case ProductInfoKey.code:
-        return 'Code: ';
-      case ProductInfoKey.productName:
-        return 'Product name: ';
-      case ProductInfoKey.countryOfOrigin:
-        return 'Country of origin: ';
-      case ProductInfoKey.countryWhereSold:
-        return 'Country where the product is sold: ';
-      case ProductInfoKey.brand:
-        return 'Brand: ';
-      case ProductInfoKey.terrorismSponsor:
-        return 'Is company sponsor of war? ';
-      case ProductInfoKey.isVegan:
-        return 'Is vegan? ';
-      case ProductInfoKey.isVegetarian:
-        return 'Is vegetarian? ';
-      case ProductInfoKey.packaging:
-        return 'Packaging: ';
-      case ProductInfoKey.ingredients:
-        return 'Ingredients: ';
-      case ProductInfoKey.website:
-        return 'Website: ';
-      case ProductInfoKey.countryAi:
-        return 'AI-Generated Country Information: ';
-      case ProductInfoKey.error:
-        return 'Error: ';
-    }
-  }
+  const ProductInfoType(this.key);
 
-  bool get isWebsite => this == ProductInfoKey.website;
-  bool get isWarSponsor => this == ProductInfoKey.terrorismSponsor;
+  final String key;
+
+  bool get isWebsite => this == ProductInfoType.website;
+
+  bool get isCompanyWarSponsor =>
+      this == ProductInfoType.companyTerrorismSponsor;
+
+  bool get isTerrorismSponsor =>
+      this == ProductInfoType.countryTerrorismSponsor;
+
+  bool get isCode => this == ProductInfoType.code;
+
+  bool get isIngredients => this == ProductInfoType.ingredients;
 }

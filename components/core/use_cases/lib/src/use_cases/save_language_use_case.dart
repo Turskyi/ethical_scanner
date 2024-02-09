@@ -1,11 +1,14 @@
+import 'package:entities/entities.dart' as language;
 import 'package:use_cases/use_cases.dart';
 
-class SavePrecipitationStateUseCase implements UseCase<Future<bool>, bool> {
-  const SavePrecipitationStateUseCase(this._settingsGateway);
+class SaveLanguageUseCase implements UseCase<Future<bool>, String> {
+  const SaveLanguageUseCase(this._settingsGateway);
 
   final SettingsGateway _settingsGateway;
 
   @override
-  Future<bool> call([bool isPrecipitationFalling = true]) =>
-      _settingsGateway.savePrecipitationStateAsFuture(isPrecipitationFalling);
+  Future<bool> call([
+    String languageIsoCode = language.englishIsoLanguageCode,
+  ]) =>
+      _settingsGateway.saveLanguageIsoCodeAsFuture(languageIsoCode);
 }

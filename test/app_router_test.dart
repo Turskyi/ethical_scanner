@@ -1,5 +1,5 @@
-import 'package:ethical_scanner/routes/app_route.dart';
-import 'package:ethical_scanner/routes/app_router.dart';
+import 'package:ethical_scanner/routes/routes.dart' as route;
+import 'package:ethical_scanner/routes/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -7,25 +7,25 @@ void main() {
   group('App Router', () {
     test('Generate Route - Home', () {
       // Arrange
-      final RouteSettings settings = RouteSettings(name: AppRoute.home.path);
+      const RouteSettings settings = RouteSettings(name: route.homePath);
 
       // Act
-      final Route<String> route = generateRoute(settings);
+      final Route<String> pageRoute = generateRoute(settings);
 
       // Assert
-      expect(route is PageRouteBuilder<String>, true);
+      expect(pageRoute is PageRouteBuilder<String>, true);
       // You can add more assertions based on your specific requirements
     });
 
     test('Generate Route - Scan', () {
       // Arrange
-      final RouteSettings settings = RouteSettings(name: AppRoute.scan.path);
+      const RouteSettings settings = RouteSettings(name: route.scanPath);
 
       // Act
-      final Route<String> route = generateRoute(settings);
+      final Route<String> pageRoute = generateRoute(settings);
 
       // Assert
-      expect(route is PageRouteBuilder<String>, true);
+      expect(pageRoute is PageRouteBuilder<String>, true);
       // You can add more assertions based on your specific requirements
     });
 

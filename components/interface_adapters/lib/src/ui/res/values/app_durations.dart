@@ -1,4 +1,4 @@
-class Strings {
-  const Strings();
-  final String warSponsorSource = 'https://sanctions.nazk.gov.ua/en/boycott/';
+class AppDurations {
+  const AppDurations();
+  final Duration animatedSwitcher = const Duration(milliseconds: 240);
 }

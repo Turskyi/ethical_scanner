@@ -5,19 +5,20 @@ extension ProductExtension on Product {
   ProductInfo toProductInfo() => ProductInfo(
         barcode: barcode ?? '',
         origin: origins ?? '',
-        country: countryName,
-        countryTags: countryNames,
+        country: _countryName,
+        countryTags: _countryNames,
         name: productName ?? '',
         brand: brands ?? '',
-        categoryTags: categories,
+        categoryTags: _categories,
         packaging: packaging ?? '',
-        ingredientList: ingredientNames,
-        vegan: vegan,
-        vegetarian: vegetarian,
+        ingredientList: _ingredientNames,
+        vegan: _vegan,
+        vegetarian: _vegetarian,
         website: website ?? '',
+        imageIngredientsUrl: imageIngredientsUrl ?? '',
       );
 
-  String get countryName {
+  String get _countryName {
     if (countries != null && countries!.isNotEmpty) {
       if (countries!.contains(':')) {
         String countryName = countries!.split(':')[1];
@@ -25,33 +26,31 @@ extension ProductExtension on Product {
       }
       return countries!;
     } else {
-      return countryNames.isNotEmpty ? countryNames.first : '';
+      return _countryNames.isNotEmpty ? _countryNames.first : '';
     }
   }
 
-  List<String> get countryNames {
-    return countriesTags?.map((String countryTag) {
-          if (countryTag.contains(':')) {
-            String countryName = countryTag.split(':')[1];
-            return countryName[0].toUpperCase() + countryName.substring(1);
-          }
-          return countryTag;
-        }).toList() ??
-        <String>[];
-  }
+  List<String> get _countryNames =>
+      countriesTags?.map((String countryTag) {
+        if (countryTag.contains(':')) {
+          String countryName = countryTag.split(':')[1];
+          return countryName[0].toUpperCase() + countryName.substring(1);
+        }
+        return countryTag;
+      }).toList() ??
+      <String>[];
 
-  List<String> get categories {
-    return categoriesTags?.map((String categoryTag) {
-          if (categoryTag.contains(':')) {
-            String categoryName = categoryTag.split(':')[1];
-            return categoryName;
-          }
-          return categoryTag;
-        }).toList() ??
-        <String>[];
-  }
+  List<String> get _categories =>
+      categoriesTags?.map((String categoryTag) {
+        if (categoryTag.contains(':')) {
+          String categoryName = categoryTag.split(':')[1];
+          return categoryName;
+        }
+        return categoryTag;
+      }).toList() ??
+      <String>[];
 
-  List<String> get ingredientNames {
+  List<String> get _ingredientNames {
     if (_isUnknownIngredients) {
       return <String>[];
     } else {
@@ -67,7 +66,7 @@ extension ProductExtension on Product {
     }
   }
 
-  Vegan get vegan {
+  Vegan get _vegan {
     if (ingredientsAnalysisTags?.veganStatus == VeganStatus.VEGAN) {
       return Vegan.positive;
     } else if (_isNonVeganStatus) {
@@ -82,7 +81,7 @@ extension ProductExtension on Product {
     }
   }
 
-  Vegetarian get vegetarian {
+  Vegetarian get _vegetarian {
     if (ingredientsAnalysisTags?.vegetarianStatus ==
         VegetarianStatus.VEGETARIAN) {
       return Vegetarian.positive;

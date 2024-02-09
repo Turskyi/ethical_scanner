@@ -14,4 +14,11 @@ class SettingsGatewayImpl implements SettingsGateway {
 
   @override
   bool getPrecipitationState() => _localDataSource.getPrecipitationState();
+
+  @override
+  String getLanguageIsoCode() => _localDataSource.getLanguageIsoCode();
+
+  @override
+  Future<bool> saveLanguageIsoCodeAsFuture(String languageIsoCode) =>
+      _localDataSource.saveLanguageIsoCode(languageIsoCode);
 }

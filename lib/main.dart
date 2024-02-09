@@ -1,14 +1,20 @@
+import 'dart:io';
+
+import 'package:camera/camera.dart';
 import 'package:dart_openai/dart_openai.dart';
+import 'package:entities/entities.dart';
+import 'package:ethical_scanner/camera_descriptions.dart' as cameras;
 import 'package:ethical_scanner/constants.dart' as constants;
-import 'package:ethical_scanner/data/data_sources/local/local_data_source_impl.dart';
 import 'package:ethical_scanner/di/dependencies.dart';
 import 'package:ethical_scanner/di/dependencies_scope.dart';
-import 'package:ethical_scanner/res/enums/language.dart';
-import 'package:ethical_scanner/routes/app_router.dart';
+import 'package:ethical_scanner/routes/router.dart';
+import 'package:feedback/feedback.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'env/env.dart';
 
@@ -19,33 +25,76 @@ import 'env/env.dart';
 /// factories, strategies, and other global facilities, and then hand control
 /// over to the high-level policy of the [App].
 void main() async {
+  /// Get the singleton instance of the `PlatformDispatcher`.
+  PlatformDispatcher platformDispatcher = PlatformDispatcher.instance;
+
+  /// Get the current locale from the `PlatformDispatcher`.
+  Locale deviceLocale = platformDispatcher.locale;
+
+  /// Get the language code from the `Locale`.
+  String deviceIsoLanguageCode = deviceLocale.languageCode;
+
   LocalizationDelegate localizationDelegate = await LocalizationDelegate.create(
-    fallbackLocale: Language.en.name,
-    supportedLocales: <String>[Language.en.name],
+    fallbackLocale: Language.fromIsoLanguageCode(
+      deviceIsoLanguageCode,
+    ).isoLanguageCode,
+    supportedLocales: Language.values
+        .map((Language language) => language.isoLanguageCode)
+        .toList(),
     basePath: constants.localePath,
   );
 
-  OpenFoodAPIConfiguration.userAgent = UserAgent(
-    name: constants.useAgentAppName,
-  );
-
-  OpenFoodAPIConfiguration.globalLanguages = <OpenFoodFactsLanguage>[
-    OpenFoodFactsLanguage.ENGLISH,
-  ];
+  /// Filter the `OpenFoodFactsLanguage` values based on the `Language` enum.
+  OpenFoodAPIConfiguration.globalLanguages = OpenFoodFactsLanguage.values
+      .where(
+        // Compare the code of the OpenFoodFactsLanguage value with the
+        // `isoLanguageCode` of each Language enum value.
+        (OpenFoodFactsLanguage openFoodFactsLanguage) => Language.values.any(
+          (Language language) =>
+              language.isoLanguageCode == openFoodFactsLanguage.code,
+        ),
+      )
+      .toList();
 
   OpenFoodAPIConfiguration.globalCountry = OpenFoodFactsCountry.CANADA;
 
   OpenAI.apiKey = Env.apiKey;
 
+  OpenFoodAPIConfiguration.globalUser = const User(
+    userId: Env.openFoodUserId,
+    password: Env.openFoodPassword,
+    comment: constants.openFoodUserComment,
+  );
+
+  /// Needed for `Dependencies`, `PackageInfo.fromPlatform()` and
+  /// `availableCameras`.
   WidgetsFlutterBinding.ensureInitialized();
-  await LocalDataSourceImpl().init();
+
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+  OpenFoodAPIConfiguration.userAgent = UserAgent(
+    name: packageInfo.appName,
+    version: packageInfo.version,
+    system: Platform.operatingSystem,
+    url: constants.webPage,
+    comment: constants.userAgentComment,
+  );
+
+  // Fetch the available cameras before initializing the app.
+  try {
+    cameras.cameraDescriptions = await availableCameras();
+  } on CameraException catch (exception, stacktrace) {
+    debugPrint('Error: $exception\nStacktrace: $stacktrace');
+  }
 
   runApp(
-    LocalizedApp(
-      localizationDelegate,
-      DependenciesScope(
-        dependencies: const Dependencies(),
-        child: App.factory(generateRoute),
+    BetterFeedback(
+      child: LocalizedApp(
+        localizationDelegate,
+        DependenciesScope(
+          dependencies: Dependencies(),
+          child: App.factory(generateRoute),
+        ),
       ),
     ),
   );
