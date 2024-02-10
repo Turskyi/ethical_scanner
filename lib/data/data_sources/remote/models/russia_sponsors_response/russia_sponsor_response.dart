@@ -54,4 +54,13 @@ class RussiaSponsorResponse implements TerrorismSponsor {
 
   @override
   int get hashCode => id.hashCode ^ createdTime.hashCode ^ fields.hashCode;
+
+  @override
+  String get status => fields.status ?? '';
+
+  @override
+  String get name => fields.name;
+
+  @override
+  String get brands => fields.brands;
 }

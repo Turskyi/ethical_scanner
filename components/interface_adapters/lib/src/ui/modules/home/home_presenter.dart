@@ -156,7 +156,11 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
             if (productInfo.isCompanyTerrorismSponsor) {
               modifiableProductInfo[ProductInfoType.companyTerrorismSponsor] =
-                  productInfo.isCompanyTerrorismSponsor ? 'Yes' : 'No';
+                  productInfo.isCompanyTerrorismSponsor
+                      ? (state.language.isEnglish
+                          ? 'Probably yes'
+                          : 'Напевно так')
+                      : 'No';
               if (state is LoadingProductInfoState) {
                 LoadingProductInfoState loadingState =
                     state as LoadingProductInfoState;

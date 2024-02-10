@@ -4,4 +4,6 @@ abstract class RestClient {
   const RestClient();
 
   Future<List<TerrorismSponsor>> getTerrorismSponsors();
+
+  Future<List<TerrorismSponsor>> getBackupTerrorismSponsors();
 }

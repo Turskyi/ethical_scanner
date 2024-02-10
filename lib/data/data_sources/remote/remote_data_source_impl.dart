@@ -1,10 +1,12 @@
+import 'dart:io';
+
 import 'package:collection/collection.dart';
 import 'package:dart_openai/dart_openai.dart';
+import 'package:dio/dio.dart';
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/constants.dart' as constants;
 import 'package:ethical_scanner/data/data_mappers/product_data_mapper.dart';
 import 'package:ethical_scanner/data/data_mappers/product_result_data_mapper.dart';
-import 'package:ethical_scanner/data/data_sources/remote/models/russia_sponsors_response/russia_sponsor_response.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 
@@ -24,45 +26,38 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         ),
       ).then((ProductResultV3 result) {
         if (result.product != null && result.hasSuccessfulStatus) {
-          ProductInfo productInfo = result.product!.toProductInfo();
-          if (productInfo.brand.isNotEmpty || productInfo.name.isNotEmpty) {
+          ProductInfo product = result.product!.toProductInfo();
+          if (product.brand.isNotEmpty || product.name.isNotEmpty) {
             return _restClient
                 .getTerrorismSponsors()
                 .then((List<TerrorismSponsor> terrorismSponsors) {
-              return productInfo.copyWith(
-                isCompanyTerrorismSponsor: _otherRussiaSponsors
-                        .contains(productInfo.brand.toLowerCase()) ||
-                    terrorismSponsors is List<RussiaSponsorResponse> &&
-                        terrorismSponsors.any(
-                          (RussiaSponsorResponse russiaSponsorsResponse) =>
-                              (russiaSponsorsResponse.fields.status !=
-                                      'Withdrawal' &&
-                                  russiaSponsorsResponse
-                                      .fields.name.isNotEmpty &&
-                                  (productInfo.brand.toLowerCase().trim() ==
-                                          russiaSponsorsResponse.fields.name
-                                              .toLowerCase()
-                                              .trim() ||
-                                      productInfo.name.toLowerCase().trim() ==
-                                          russiaSponsorsResponse.fields.name
-                                              .toLowerCase()
-                                              .trim())) ||
-                              (russiaSponsorsResponse
-                                      .fields.brands.isNotEmpty &&
-                                  russiaSponsorsResponse.fields.brands
-                                      .split(', ')
-                                      .map(
-                                        (String brand) => brand.toLowerCase(),
-                                      )
-                                      .toList()
-                                      .contains(
-                                        productInfo.brand.toLowerCase(),
-                                      )),
-                        ),
+              return product.copyWith(
+                isCompanyTerrorismSponsor: terrorismSponsors.sponsoredBy(
+                  product,
+                ),
               );
-            }).onError((Object? e, StackTrace s) => productInfo);
+            }).onError((Object? exception, __) {
+              if (exception is DioException &&
+                  exception.type == DioExceptionType.badResponse &&
+                  exception.response?.statusCode ==
+                      HttpStatus.serviceUnavailable) {
+                return _restClient
+                    .getBackupTerrorismSponsors()
+                    .then((List<TerrorismSponsor> terrorismSponsors) {
+                  return product.copyWith(
+                    isCompanyTerrorismSponsor: terrorismSponsors.sponsoredBy(
+                      product,
+                    ),
+                  );
+                }).onError((_, __) {
+                  return product;
+                });
+              } else {
+                return product;
+              }
+            });
           } else {
-            return productInfo;
+            return product;
           }
         } else if (result.status == ProductResultV3.statusFailure) {
           if (_isBarcode(input.code)) {
@@ -120,16 +115,16 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       ingredients: product.ingredientList
           .mapIndexed(
             (int rank, String ingredient) => Ingredient(
-              rank: rank,
-              text: ingredient,
-              vegan: product.isVegan
-                  ? IngredientSpecialPropertyStatus.POSITIVE
-                  : IngredientSpecialPropertyStatus.IGNORE,
-              vegetarian: product.isVegetarian
-                  ? IngredientSpecialPropertyStatus.POSITIVE
-                  : IngredientSpecialPropertyStatus.IGNORE,
-            ),
-          )
+          rank: rank,
+          text: ingredient,
+          vegan: product.isVegan
+              ? IngredientSpecialPropertyStatus.POSITIVE
+              : IngredientSpecialPropertyStatus.IGNORE,
+          vegetarian: product.isVegetarian
+              ? IngredientSpecialPropertyStatus.POSITIVE
+              : IngredientSpecialPropertyStatus.IGNORE,
+        ),
+      )
           .toList(),
       ingredientsText: ingredientsText,
       categories: product.countryTags.join(','),
@@ -174,7 +169,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     if (status.status != 'status ok') {
       throw Exception(
         'image could not be uploaded: ${status.error} '
-        '${status.imageId.toString()}',
+            '${status.imageId.toString()}',
       );
     }
   }
@@ -196,8 +191,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
             ? OpenFoodFactsLanguage.ENGLISH
             : OpenFoodFactsLanguage.UKRAINIAN,
       ).then(
-        (OcrIngredientsResult response) =>
-            response.status != 0 ? '' : response.ingredientsTextFromImage ?? '',
+            (OcrIngredientsResult response) =>
+        response.status != 0 ? '' : response.ingredientsTextFromImage ?? '',
       );
 
   /// Extract the ingredients of an existing product of the OpenFoodFacts
@@ -228,7 +223,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     }
 
     OcrIngredientsResult ocrResponse =
-        await OpenFoodAPIClient.extractIngredients(
+    await OpenFoodAPIClient.extractIngredients(
       user,
       photo.info.barcode,
       language,
@@ -260,16 +255,16 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       ingredients: product.ingredientList
           .mapIndexed(
             (int rank, String ingredient) => Ingredient(
-              rank: rank,
-              text: ingredient,
-              vegan: product.isVegan
-                  ? IngredientSpecialPropertyStatus.POSITIVE
-                  : IngredientSpecialPropertyStatus.IGNORE,
-              vegetarian: product.isVegetarian
-                  ? IngredientSpecialPropertyStatus.POSITIVE
-                  : IngredientSpecialPropertyStatus.IGNORE,
-            ),
-          )
+          rank: rank,
+          text: ingredient,
+          vegan: product.isVegan
+              ? IngredientSpecialPropertyStatus.POSITIVE
+              : IngredientSpecialPropertyStatus.IGNORE,
+          vegetarian: product.isVegetarian
+              ? IngredientSpecialPropertyStatus.POSITIVE
+              : IngredientSpecialPropertyStatus.IGNORE,
+        ),
+      )
           .toList(),
       ingredientsText: ingredientsText,
       ingredientsTextInLanguages: <OpenFoodFactsLanguage, String>{
@@ -347,9 +342,5 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }
     }
     return true;
-  }
-
-  List<String> get _otherRussiaSponsors {
-    return <String>['twix', 'quaker'];
   }
 }

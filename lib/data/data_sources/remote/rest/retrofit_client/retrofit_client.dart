@@ -13,4 +13,8 @@ abstract class RetrofitClient implements RestClient {
   @override
   @GET('/get-companies-database')
   Future<List<RussiaSponsorResponse>> getTerrorismSponsors();
+
+  @override
+  @GET('https://ethical-scanner.turskyi.com/api/russia-sponsors')
+  Future<List<RussiaSponsorResponse>> getBackupTerrorismSponsors();
 }
