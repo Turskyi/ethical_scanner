@@ -15,6 +15,9 @@ jobs:
         with:
           channel: stable
 
+      - name: Display files in root
+        run: ls -a
+
       - name: Navigate to interface_adapters folder
         run: cd components/interface_adapters
 
@@ -25,14 +28,22 @@ jobs:
         env:
           ENV: ${{ secrets.ENV }}
 
+      - name: Display files in interface adapters
+        run: ls -a
+
       - name: Write interface_adapters env.g.dart file
         run: |
           dart run build_runner build --delete-conflicting-outputs
-          flutter pub get
         shell: bash
 
+      - name: Navigate to env folder
+        run: cd lib/src/env
+
+      - name: Display files in interface adapters env directory
+        run: ls -a
+
       - name: Return to the root directory
-        run: cd ../..
+        run: cd ../../../../..
 
       - name: Get packages
         run: flutter pub get
