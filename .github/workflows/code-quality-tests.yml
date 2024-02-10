@@ -36,6 +36,9 @@ jobs:
           dart run build_runner build --delete-conflicting-outputs
         shell: bash
 
+      - name: Display files in current folder
+        run: ls -a
+
       - name: Navigate to env folder
         run: cd lib/src/env
 

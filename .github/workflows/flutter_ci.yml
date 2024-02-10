@@ -52,13 +52,13 @@ jobs:
         env:
           ENV: ${{ secrets.ENV }}
 
-      - name: Display files in interface adapters
-        run: ls -a
-
       - name: Write env.g.dart file
         run: |
           dart run build_runner build --delete-conflicting-outputs
         shell: bash
+
+      - name: Display files in current folder
+        run: ls -a
 
       - name: Return to the root directory
         run: cd ../..
