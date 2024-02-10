@@ -45,6 +45,9 @@ jobs:
       - name: Navigate to interface_adapters folder
         run: cd components/interface_adapters
 
+      - name: Display files after navigation
+        run: ls -a
+
       - name: Write .env file
         run: |
           echo $ENV | base64 -d > .env
