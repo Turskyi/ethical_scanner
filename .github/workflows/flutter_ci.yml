@@ -11,6 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Write .env file
+        run: |
+          cd components/interface_adapters
+          echo $ENV | base64 -d > .env
+        shell: bash
+        env:
+          ENV: ${{ secrets.ENV }}
+
       - name: Write key.properties file
         run: |
           echo $KEY_PROPERTIES | base64 -d > android/key.properties
@@ -42,29 +50,11 @@ jobs:
           channel: 'stable'
       - run: flutter pub get
 
-      - name: Navigate to interface_adapters folder
-        run: cd components/interface_adapters
-
-      - name: Display files after navigation
-        run: ls -a
-
-      - name: Write .env file
-        run: |
-          echo $ENV | base64 -d > .env
-        shell: bash
-        env:
-          ENV: ${{ secrets.ENV }}
-
       - name: Write env.g.dart file
         run: |
+          cd components/interface_adapters
           dart run build_runner build --delete-conflicting-outputs
         shell: bash
-
-      - name: Display files in current folder
-        run: ls -a
-
-      - name: Return to the root directory
-        run: cd ../..
 
       - run: flutter build apk --release
       - name: Upload APK

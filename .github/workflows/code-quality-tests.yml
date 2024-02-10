@@ -10,46 +10,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup flutter
-        uses: subosito/flutter-action@v1
-        with:
-          channel: stable
-
-      - name: Display files in root
-        run: ls -a
-
-      - name: Navigate to interface_adapters folder
-        run: cd components/interface_adapters
-
-      - name: Display files after navigation
-        run: ls -a
-
-      - name: Write interface_adapters .env file
+      - name: Write .env file
         run: |
+          cd components/interface_adapters
           echo $ENV | base64 -d > .env
         shell: bash
         env:
           ENV: ${{ secrets.ENV }}
 
-      - name: Display files in interface adapters
-        run: ls -a
+      - name: Setup flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: stable
 
-      - name: Write interface_adapters env.g.dart file
+      - name: Write env.g.dart file
         run: |
+          cd components/interface_adapters
           dart run build_runner build --delete-conflicting-outputs
         shell: bash
-
-      - name: Display files in current folder
-        run: ls -a
-
-      - name: Navigate to env folder
-        run: cd lib/src/env
-
-      - name: Display files in interface adapters env directory
-        run: ls -a
-
-      - name: Return to the root directory
-        run: cd ../../../../..
 
       - name: Get packages
         run: flutter pub get
