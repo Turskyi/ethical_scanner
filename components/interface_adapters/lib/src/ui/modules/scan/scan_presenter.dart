@@ -10,7 +10,9 @@ class ScanPresenter extends Bloc<ScanEvent, ScanViewModel> {
           emit(ScanSuccessState(event.barcode)),
     );
     on<NavigateBackEvent>(
-      (_, Emitter<ScanViewModel> emit) => emit(const ScanFailureState()),
+      (_, Emitter<ScanViewModel> emit) {
+        emit(const CanceledScanningState());
+      },
     );
   }
 }

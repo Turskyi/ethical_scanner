@@ -1,3 +1,4 @@
+import 'package:entities/src/enums/language.dart';
 import 'package:entities/src/enums/vegan.dart';
 import 'package:entities/src/enums/vegetarian.dart';
 
@@ -10,13 +11,16 @@ class ProductInfo {
     this.countryAi = '',
     this.name = '',
     this.brand = '',
-    this.isTerrorismSponsor = false,
+    this.isCompanyTerrorismSponsor = false,
     this.categoryTags = const <String>[],
     this.packaging = '',
     this.ingredientList = const <String>[],
     this.vegan = Vegan.unknown,
     this.vegetarian = Vegetarian.unknown,
     this.website = '',
+    this.language = Language.en,
+    this.quantity = '',
+    this.imageIngredientsUrl = '',
   });
 
   final String barcode;
@@ -43,7 +47,7 @@ class ProductInfo {
   final String countryAi;
   final String name;
   final String brand;
-  final bool isTerrorismSponsor;
+  final bool isCompanyTerrorismSponsor;
 
   /// The [categoryTags] parameter is a list of strings that indicates the
   /// categories of the product. For example,
@@ -55,6 +59,21 @@ class ProductInfo {
   final Vegan vegan;
   final Vegetarian vegetarian;
   final String website;
+  final Language language;
+  final String quantity;
+  final String imageIngredientsUrl;
+
+  bool get isVegan => vegan == Vegan.positive;
+
+  bool get isVegetarian => vegetarian == Vegetarian.positive;
+
+  bool get isFromRussia =>
+      country.toLowerCase() == 'russia' ||
+      country.toLowerCase() == 'ru' ||
+      origin.toLowerCase() == 'russia' ||
+      origin.toLowerCase() == 'ru' ||
+      country.toLowerCase() == 'россия' ||
+      origin.toLowerCase() == 'россия';
 
   ProductInfo copyWith({
     String? barcode,
@@ -64,13 +83,16 @@ class ProductInfo {
     String? countryAi,
     String? name,
     String? brand,
-    bool? isTerrorismSponsor,
+    bool? isCompanyTerrorismSponsor,
     List<String>? categoryTags,
     String? packaging,
     List<String>? ingredientList,
     Vegan? vegan,
     Vegetarian? vegetarian,
     String? website,
+    Language? language,
+    String? quantity,
+    String? imageIngredientsUrl,
   }) =>
       ProductInfo(
         barcode: barcode ?? this.barcode,
@@ -80,12 +102,28 @@ class ProductInfo {
         countryAi: countryAi ?? this.countryAi,
         name: name ?? this.name,
         brand: brand ?? this.brand,
-        isTerrorismSponsor: isTerrorismSponsor ?? this.isTerrorismSponsor,
+        isCompanyTerrorismSponsor:
+            isCompanyTerrorismSponsor ?? this.isCompanyTerrorismSponsor,
         categoryTags: categoryTags ?? this.categoryTags,
         packaging: packaging ?? this.packaging,
         ingredientList: ingredientList ?? this.ingredientList,
         vegan: vegan ?? this.vegan,
         vegetarian: vegetarian ?? this.vegetarian,
         website: website ?? this.website,
+        language: language ?? this.language,
+        quantity: quantity ?? this.quantity,
+        imageIngredientsUrl: imageIngredientsUrl ?? this.imageIngredientsUrl,
       );
+
+  @override
+  String toString() {
+    return 'ProductInfo{barcode: $barcode, origin: $origin, '
+        'countryTags: $countryTags, country: $country, countryAi: $countryAi, '
+        'name: $name, brand: $brand, isTerrorismSponsor: '
+        '$isCompanyTerrorismSponsor, '
+        'categoryTags: $categoryTags, packaging: $packaging, '
+        'ingredientList: $ingredientList, vegan: $vegan, '
+        'vegetarian: $vegetarian, website: $website, '
+        'language: ${language.name}, quantity: $quantity}';
+  }
 }

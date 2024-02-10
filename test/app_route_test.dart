@@ -1,4 +1,4 @@
-import 'package:ethical_scanner/routes/app_route.dart';
+import 'package:ethical_scanner/routes/routes.dart' as route;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as path;
 
@@ -6,9 +6,9 @@ void main() {
   group('RouteExtension', () {
     test('path property should return the correct paths', () {
       // Arrange & Act
-      final String homePath = AppRoute.home.path;
-      final String scanPath = AppRoute.scan.path;
-      final String settingsPath = AppRoute.settings.path;
+      const String homePath = route.homePath;
+      const String scanPath = route.scanPath;
+      const String settingsPath = route.settingsPath;
 
       // Assert
       expect(homePath, '/');
@@ -19,9 +19,9 @@ void main() {
     test('paths should be unique', () {
       // Arrange
       final List<String> paths = <String>[
-        AppRoute.home.path,
-        AppRoute.scan.path,
-        AppRoute.settings.path,
+        route.homePath,
+        route.scanPath,
+        route.settingsPath,
       ];
 
       // Act
@@ -33,23 +33,23 @@ void main() {
 
     test('paths should not be empty', () {
       // Arrange & Act & Assert
-      expect(AppRoute.home.path.isNotEmpty, true);
-      expect(AppRoute.scan.path.isNotEmpty, true);
-      expect(AppRoute.settings.path.isNotEmpty, true);
+      expect(route.homePath.isNotEmpty, true);
+      expect(route.scanPath.isNotEmpty, true);
+      expect(route.settingsPath.isNotEmpty, true);
     });
 
     test('paths should not contain consecutive slashes', () {
       // Arrange & Act & Assert
-      expect(AppRoute.home.path.contains('//'), false);
-      expect(AppRoute.scan.path.contains('//'), false);
-      expect(AppRoute.settings.path.contains('//'), false);
+      expect(route.homePath.contains('//'), false);
+      expect(route.scanPath.contains('//'), false);
+      expect(route.settingsPath.contains('//'), false);
     });
 
     test('paths should be valid', () {
       // Arrange
-      final String homePath = AppRoute.home.path;
-      final String scanPath = AppRoute.scan.path;
-      final String settingsPath = AppRoute.settings.path;
+      const String homePath = route.homePath;
+      const String scanPath = route.scanPath;
+      const String settingsPath = route.settingsPath;
 
 // Act
       final bool isHomePathValid = path.fromUri(homePath) != '';

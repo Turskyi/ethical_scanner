@@ -8,6 +8,12 @@ class SnowPainter extends CustomPainter {
 
   final List<Snowflake> snowflakes;
 
+  /// Constant for maximum rotation speed
+  static const double _maxRotationSpeed = 0.03;
+
+  /// Constant for size adjustment factor
+  static const double _sizeAdjustmentFactor = 2;
+
   @override
   void paint(Canvas canvas, Size size) {
     for (int i = 0; i < snowflakes.length; i++) {
@@ -32,7 +38,10 @@ class SnowPainter extends CustomPainter {
         ..layout()
         ..paint(
           canvas,
-          Offset(-snowflakes[i].size / 2, -snowflakes[i].size / 2),
+          Offset(
+            -snowflakes[i].size / _sizeAdjustmentFactor,
+            -snowflakes[i].size / _sizeAdjustmentFactor,
+          ),
         );
 
       canvas.restore();
@@ -42,9 +51,7 @@ class SnowPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 
-  double _randomRotationAngle() {
-    return Random().nextDouble() * 0.03; // Adjust the rotation speed here
-  }
+  double _randomRotationAngle() => Random().nextDouble() * _maxRotationSpeed;
 
   Snowflake _incrementRotationAngle(Snowflake snowflake) => snowflake.copyWith(
         rotationAngle: snowflake.rotationAngle + _randomRotationAngle(),

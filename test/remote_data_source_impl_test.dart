@@ -35,7 +35,7 @@ void main() {
 
       // Act
       final ProductInfo result = await remoteDataSource.getProductInfoAsFuture(
-        input,
+        const Barcode(code: input),
       );
 
       // Assert

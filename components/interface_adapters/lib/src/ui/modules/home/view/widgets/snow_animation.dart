@@ -16,9 +16,18 @@ class SnowAnimation extends StatefulWidget {
 
 class _SnowAnimationState extends State<SnowAnimation>
     with SingleTickerProviderStateMixin {
+  final double _snowflakeSizeMultiplier = 30.0;
+  final double _snowflakeSizeConstant = 5.0;
+  final double _rotationSpeed = 0.02;
+  final int _initialBatchSizeOfSnowflakes = 50;
+  final double _fallSpeed = 1.0;
+
+  /// Constants for fallback values
+  final double _fallbackScreenWidth = 400;
+  final double _fallbackScreenHeight = 800;
   final Random _random = Random();
   List<Snowflake> _snowflakes = <Snowflake>[];
-  late Ticker _ticker;
+  Ticker? _ticker;
 
   @override
   void initState() {
@@ -41,7 +50,7 @@ class _SnowAnimationState extends State<SnowAnimation>
 
   @override
   void dispose() {
-    _ticker.dispose();
+    _ticker?.dispose();
     SystemChrome.setPreferredOrientations(<DeviceOrientation>[
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
@@ -56,14 +65,20 @@ class _SnowAnimationState extends State<SnowAnimation>
       Future<List<Snowflake>>.delayed(Duration.zero, _generateSnowflakeList);
 
   @pragma('vm:never-inline')
-  List<Snowflake> _generateSnowflakeList() => List<Snowflake>.generate(
-        50,
+  List<Snowflake> _generateSnowflakeList() {
+    if (mounted) {
+      return List<Snowflake>.generate(
+        _initialBatchSizeOfSnowflakes,
         (_) => Snowflake(
           offset: _randomOffset(),
           size: _randomSize(),
           rotationAngle: _randomRotationAngle(),
         ),
       );
+    } else {
+      return <Snowflake>[];
+    }
+  }
 
   void _updateSnowflakes(Duration elapsed) {
     if (_snowflakes.isNotEmpty) {
@@ -71,34 +86,40 @@ class _SnowAnimationState extends State<SnowAnimation>
         _snowflakes[i] = _snowflakes[i].copyWith(
           offset: Offset(
             _snowflakes[i].offset.dx,
-            (_snowflakes[i].offset.dy + 1) % MediaQuery.sizeOf(context).height,
+            (_snowflakes[i].offset.dy + _fallSpeed) %
+                MediaQuery.sizeOf(context).height,
           ),
         );
       }
     }
   }
 
-  double _randomSize() {
-    return _random.nextDouble() * 30 +
-        5; // Adjust the range (30 is the multiplier, 5 is the constant)
-  }
+  double _randomSize() =>
+      _random.nextDouble() * _snowflakeSizeMultiplier + _snowflakeSizeConstant;
 
-  double _randomRotationAngle() {
-    return _random.nextDouble() * 0.02; // Adjust the rotation speed here
-  }
+  double _randomRotationAngle() => _random.nextDouble() * _rotationSpeed;
 
   Offset _randomOffset() {
-    Size size = MediaQuery.sizeOf(context);
-    return Offset(
-      _random.nextDouble() * size.width,
-      _random.nextDouble() * size.height,
-    );
+    if (mounted) {
+      Size size = MediaQuery.sizeOf(context);
+      return Offset(
+        _random.nextDouble() * size.width,
+        _random.nextDouble() * size.height,
+      );
+    } else {
+      return Offset(
+        _random.nextDouble() * _fallbackScreenWidth,
+        _random.nextDouble() * _fallbackScreenHeight,
+      );
+    }
   }
 
   FutureOr<Null> _startSnowfallAnimation(List<Snowflake> snowflakes) {
-    setState(() {
-      _snowflakes = snowflakes;
-      _ticker = createTicker(_updateSnowflakes);
-    });
+    if (mounted) {
+      setState(() {
+        _snowflakes = snowflakes;
+        _ticker = createTicker(_updateSnowflakes);
+      });
+    }
   }
 }

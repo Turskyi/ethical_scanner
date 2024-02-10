@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('LocalDataSourceImpl', () {
     test('getCountryFromBarcode should return the correct country', () {
-      const LocalDataSourceImpl localDataSource = LocalDataSourceImpl();
+      LocalDataSourceImpl localDataSource = LocalDataSourceImpl();
 
       // Test cases with known barcode prefixes and expected countries
       final Map<String, String> testCases = <String, String>{
@@ -23,7 +23,7 @@ void main() {
     });
 
     test('isEnglishBook should return true for English books', () {
-      const LocalDataSourceImpl localDataSource = LocalDataSourceImpl();
+      LocalDataSourceImpl localDataSource = LocalDataSourceImpl();
 
       // Test cases with known ISBN-13 barcodes for English books
       final List<String> testCases = <String>[
@@ -39,7 +39,7 @@ void main() {
     });
 
     test('isEnglishBook should return false for non-English books', () {
-      const LocalDataSourceImpl localDataSource = LocalDataSourceImpl();
+      LocalDataSourceImpl localDataSource = LocalDataSourceImpl();
 
       // Test cases with non-ISBN-13 barcodes or non-English books
       final List<String> testCases = <String>[

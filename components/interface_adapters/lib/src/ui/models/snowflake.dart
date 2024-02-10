@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Snowflake {
-  Snowflake({
+  const Snowflake({
     required this.offset,
     required this.size,
     required this.rotationAngle,
@@ -9,7 +9,7 @@ class Snowflake {
 
   final Offset offset;
   final double size;
-  double rotationAngle;
+  final double rotationAngle;
 
   Snowflake copyWith({
     Offset? offset,

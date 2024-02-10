@@ -32,9 +32,10 @@ class _DelayedAnimationState extends State<DelayedAnimation>
       parent: _controller,
       curve: Curves.easeOutQuint,
     );
-    _animOffset =
-        Tween<Offset>(begin: const Offset(0.0, 0.35), end: Offset.zero)
-            .animate(curve);
+    _animOffset = Tween<Offset>(
+      begin: const Offset(0.0, 0.35),
+      end: Offset.zero,
+    ).animate(curve);
     if (widget.delay == 0) {
       _controller.forward();
     } else {
@@ -46,12 +47,6 @@ class _DelayedAnimationState extends State<DelayedAnimation>
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: _controller,
@@ -60,6 +55,12 @@ class _DelayedAnimationState extends State<DelayedAnimation>
         child: widget.child,
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   FutureOr<void> _startAnimationIfActive() {

@@ -8,10 +8,10 @@ void main() {
     testWidgets('of method should retrieve dependencies',
         (WidgetTester tester) async {
       // Arrange
-      const Dependencies dependencies = Dependencies();
-      const DependenciesScope widget = DependenciesScope(
+      Dependencies dependencies = Dependencies();
+      DependenciesScope widget = DependenciesScope(
         dependencies: dependencies,
-        child: SizedBox(),
+        child: const SizedBox(),
       );
 
       // Act

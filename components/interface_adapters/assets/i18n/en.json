@@ -1,5 +1,6 @@
 {
   "title": "Ethical Scanner",
+  "app_feedback": "App Feedback",
   "menu": {
     "home": "Home",
     "scan": "Scan",
@@ -9,7 +10,30 @@
     "scan_barcode": "Please scan barcode",
     "fab": "Floating action button"
   },
+  "product_info": {
+    "click_to_know": " (Click to know more)",
+    "ingredients_missing": "Vegan/Vegetarian Information Unavailable: Ingredients Missing",
+    "ingredients_image_added": "Vegan/Vegetarian Information Unavailable: Sorry, we are working on it",
+    "code_colon": "Code: ",
+    "product_name_colon": "Product name: ",
+    "origin_country_colon": "Country of origin: ",
+    "country_where_sold_colon": "Country where the product is sold: ",
+    "brand_colon": "Brand: ",
+    "is_company_terrorism_sponsor": "Is company sponsor of war? ",
+    "is_country_terrorism_sponsor": "Is country sponsor of terrorism? ",
+    "is_vegan": "Is vegan? ",
+    "is_vegetarian": "Is vegetarian? ",
+    "packaging_colon": "Packaging: ",
+    "ingredients_colon": "Ingredients: ",
+    "website_colon": "Website: ",
+    "country_ai_colon": "AI-Generated Country Information: ",
+    "error_colon": "Error: "
+  },
   "scan": {
-    "scan_screen": "Scan screen"
+    "scan_screen": "Scan screen",
+    "scanning": "Scanning..."
+  },
+  "photo": {
+    "capture_ingredients": "Make a photo of the ingredients."
   }
 }

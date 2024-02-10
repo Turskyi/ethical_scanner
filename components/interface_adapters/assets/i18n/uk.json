@@ -1,0 +1,39 @@
+{
+  "title": "Ethical Scanner",
+  "app_feedback": "Відгук про додаток",
+  "menu": {
+    "home": "Домашня сторінка",
+    "scan": "Сканер",
+    "settings": "Налаштування"
+  },
+  "home": {
+    "scan_barcode": "Будьласка відскануйте баркод.",
+    "fab": "Плаваюча кнопка дії."
+  },
+  "product_info": {
+    "click_to_know": " (Натисніть, щоб дізнатися більше)",
+    "ingredients_missing": "Веганська/вегетаріанська інформація недоступна: відсутні інгредієнти",
+    "ingredients_image_added": "Веганська/вегетаріанська інформація недоступна: Вибачте, ми працюємо над цим.",
+    "code_colon": "Код: ",
+    "product_name_colon": "Назва продукту: ",
+    "origin_country_colon": "Країна походження: ",
+    "country_where_sold_colon": "Країна, де продукт продається: ",
+    "brand_colon": "Бренд: ",
+    "is_company_terrorism_sponsor": "Чи є компанія спонсором війни? ",
+    "is_country_terrorism_sponsor": "Чи є країна спонсором війни? ",
+    "is_vegan": "Це веганський продукт? ",
+    "is_vegetarian": "Це вегетаріанський продукт? ",
+    "packaging_colon": "Упаковка: ",
+    "ingredients_colon": "Інгредієнти: ",
+    "website_colon": "Веб-сайт: ",
+    "country_ai_colon": "Інформація про країну, згенерована ШІ: ",
+    "error_colon": "Помилка: "
+  },
+  "scan": {
+    "scan_screen": "Вікно сканування",
+    "scanning": "Сканування..."
+  },
+  "photo": {
+    "capture_ingredients": "Сфотографуйте\nінгредієнти."
+  }
+}

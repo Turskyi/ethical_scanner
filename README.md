@@ -13,15 +13,15 @@ The app allows you to customize your preferences based on
 various criteria, such as human rights, environmental impact, animal well-being, and more.
 
 The app uses the data from various sources, such as
-[Don’t Fund War](https://dontfundwar.com/directory), [NATIONAL AGENCY
-ON CORRUPTION PREVENTION | INTERNATIONAL
-SPONSORS OF WAR](https://sanctions.nazk.gov.ua/en/boycott/)
-[Over 1,000 Companies Have Curtailed Operations in Russia—But Some Remain](https://som.yale.edu/story/2022/over-1000-companies-have-curtailed-operations-russia-some-remain),
-[Yale CELI List of Companies Leaving and Staying in Russia](https://www.yalerussianbusinessretreat.com/),
-[State Sponsors of Terrorism](https://www.state.gov/state-sponsors-of-terrorism/) and
-[Global Forum Against Terrorism](https://www.gfatf.org/threats/countries-who-support-terrorism/).
-The app aims to help you shop with confidence and conscience. For more information, please visit the
-project website at [website in progress].
+* [Open Food Facts](https://world.openfoodfacts.org);
+* [Ukrainian national agency on corruption prevention | INTERNATIONAL SPONSORS OF WAR](https://sanctions.nazk.gov.ua/en/boycott/);
+* [Yale chief executive leadership institute| List of Companies
+  Leaving and Staying in Russia](https://www.yalerussianbusinessretreat.com/);
+[U.S. bureau of counterterrorism | State Sponsors of Terrorism](https://www.state.gov/state-sponsors-of-terrorism/);
+* [Global Forum Against Terrorism](https://www.gfatf.org/threats/countries-who-support-terrorism/).
+
+The app aims to help you shop with confidence and conscience.
+For more information, please visit the project website at https://ethical-scanner.turskyi.com.
 
 ## PROJECT SPECIFICATION
 
@@ -56,6 +56,7 @@ named such that another developer reading the code can easily understand their f
 ## To create generated files, run:
 
 ```
+dart run build_runner clean
 dart run build_runner build --delete-conflicting-outputs
 ```
 
@@ -257,7 +258,7 @@ Inaccurate comments are far worse than no comments at all.
 BAD:
 // Check to see if the employee is eligible
 // for full benefits
-if ((employee.flags & HOURLY_FLAG) && (employee.age > 65))
+if ((employee.flags & hourlyFlag) && (employee.age > 65))
 
 GOOD:
 if (employee.isEligibleForFullBenefits())

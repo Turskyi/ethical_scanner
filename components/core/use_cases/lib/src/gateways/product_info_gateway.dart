@@ -1,6 +1,11 @@
 import 'package:entities/entities.dart';
 
-abstract class ProductInfoGateway {
+abstract interface class ProductInfoGateway {
   const ProductInfoGateway();
-  Future<ProductInfo> getProductInfoAsFuture(String barcode);
+
+  Future<ProductInfo> getProductInfoAsFuture(Barcode barcode);
+
+  Future<void> addProduct(ProductInfo productInfo);
+
+  Future<void> addIngredients(ProductPhoto productPhoto);
 }
