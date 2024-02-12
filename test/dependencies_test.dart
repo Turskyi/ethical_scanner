@@ -5,9 +5,9 @@ import 'package:use_cases/use_cases.dart';
 
 void main() {
   group('Dependencies', () {
-    test('getProductInfoUseCase should not be null', () {
+    test('getProductInfoUseCase should not be null', () async {
       // Arrange
-      Dependencies dependencies = Dependencies();
+      Dependencies dependencies = await Dependencies.create();
 
       // Act
       final UseCase<Future<ProductInfo>, Barcode> useCase =

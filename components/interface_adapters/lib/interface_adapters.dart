@@ -18,5 +18,6 @@ export 'src/ui/modules/home/home_presenter.dart';
 export 'src/ui/modules/home/view/home_view.dart';
 export 'src/ui/modules/photo/photo_presenter.dart';
 export 'src/ui/modules/photo/view/photo_view.dart';
+export 'src/ui/modules/scan/scan_event.dart';
 export 'src/ui/modules/scan/scan_presenter.dart';
 export 'src/ui/modules/scan/view/scan_view.dart';

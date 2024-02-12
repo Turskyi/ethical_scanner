@@ -13,12 +13,13 @@ The app allows you to customize your preferences based on
 various criteria, such as human rights, environmental impact, animal well-being, and more.
 
 The app uses the data from various sources, such as
-* [Open Food Facts](https://world.openfoodfacts.org);
-* [Ukrainian national agency on corruption prevention | INTERNATIONAL SPONSORS OF WAR](https://sanctions.nazk.gov.ua/en/boycott/);
-* [Yale chief executive leadership institute| List of Companies
+
+- [Open Food Facts](https://world.openfoodfacts.org);
+- [Ukrainian national agency on corruption prevention | INTERNATIONAL SPONSORS OF WAR](https://sanctions.nazk.gov.ua/en/boycott/);
+- [Yale chief executive leadership institute | List of Companies
   Leaving and Staying in Russia](https://www.yalerussianbusinessretreat.com/);
-[U.S. bureau of counterterrorism | State Sponsors of Terrorism](https://www.state.gov/state-sponsors-of-terrorism/);
-* [Global Forum Against Terrorism](https://www.gfatf.org/threats/countries-who-support-terrorism/).
+- [U.S. bureau of counterterrorism | State Sponsors of Terrorism](https://www.state.gov/state-sponsors-of-terrorism/);
+- [European Parliament](https://www.europarl.europa.eu/delegations/en/recognising-the-russian-federation-as-a-/product-details/20221124DPU34521).
 
 The app aims to help you shop with confidence and conscience.
 For more information, please visit the project website at https://ethical-scanner.turskyi.com.
@@ -66,7 +67,7 @@ Ethical Scanner is an open source project and welcomes contributions from anyone
 If you want to contribute to Ethical Scanner, you can follow these steps:
 
 - Fork this repository and clone it to your local machine.
-- Create a new branch for your feature or bugfix.
+- Create a new branch for your feature or bug-fix.
 - Make your changes and commit them with a clear and descriptive message.
 - Push your branch to your forked repository and create a pull request to the main repository.
 - Wait for your pull request to be reviewed and merged.

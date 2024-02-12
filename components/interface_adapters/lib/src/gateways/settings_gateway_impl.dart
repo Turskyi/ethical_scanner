@@ -21,4 +21,11 @@ class SettingsGatewayImpl implements SettingsGateway {
   @override
   Future<bool> saveLanguageIsoCodeAsFuture(String languageIsoCode) =>
       _localDataSource.saveLanguageIsoCode(languageIsoCode);
+
+  @override
+  bool getSoundPreference() => _localDataSource.getSoundPreference();
+
+  @override
+  Future<bool> saveSoundPreferenceAsFuture(bool isSoundOn) =>
+      _localDataSource.saveSoundPreference(isSoundOn);
 }

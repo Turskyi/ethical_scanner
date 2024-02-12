@@ -8,4 +8,8 @@ abstract interface class SettingsGateway {
   Future<bool> saveLanguageIsoCodeAsFuture(String languageIsoCode);
 
   String getLanguageIsoCode();
+
+  bool getSoundPreference();
+
+  Future<bool> saveSoundPreferenceAsFuture(bool isSoundOn);
 }

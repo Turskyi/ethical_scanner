@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.0.6+6
+version: 0.0.7+7
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
@@ -30,6 +30,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  audiofileplayer: ^2.1.1
   # The `bloc` library is a platform-agnostic package that provides the core functionality for
   # implementing the BLoC (Business Logic Component) design pattern1. The `flutter_bloc` package is
   # a Flutter-specific package that integrates the bloc library with Flutter widgets, such as
@@ -110,6 +111,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - components/interface_adapters/assets/i18n/
+    - components/interface_adapters/assets/audio/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -1,6 +1,7 @@
 enum Settings {
   precipitationFalling('precipitationFalling'),
-  languageIsoCode('languageIsoCode');
+  languageIsoCode('languageIsoCode'),
+  sound('soundPreference');
 
   const Settings(this.key);
 

@@ -1,6 +1,8 @@
+import 'package:audiofileplayer/audiofileplayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:interface_adapters/src/constants.dart' as constants;
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/scanner_error_widget.dart';
 import 'package:interface_adapters/src/ui/modules/scan/scan_event.dart';
 import 'package:interface_adapters/src/ui/modules/scan/scan_presenter.dart';
@@ -74,16 +76,57 @@ class _HomeViewState extends State<ScanView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    IconButton(
-                      icon: const Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
-                      ),
-                      onPressed: () => _closeCamera().whenComplete(() {
-                        context
-                            .read<ScanPresenter>()
-                            .add(const NavigateBackEvent());
-                      }),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        IconButton(
+                          icon: const Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.white,
+                          ),
+                          onPressed: () => _closeCamera().whenComplete(() {
+                            context
+                                .read<ScanPresenter>()
+                                .add(const NavigateBackEvent());
+                          }),
+                        ),
+                        IconButton(
+                          icon: BlocConsumer<ScanPresenter, ScanViewModel>(
+                            listener: (
+                              BuildContext context,
+                              ScanViewModel viewModel,
+                            ) {
+                              if (viewModel is DetectedBarcodeState) {
+                                if (viewModel.isSoundOn) {
+                                  // Play a sound as a one-shot, releasing its
+                                  // resources when it finishes playing.
+                                  Audio.load(constants.scanSoundAsset)
+                                    ..play()
+                                    ..dispose();
+                                }
+                                _closeCamera().whenComplete(() {
+                                  context.read<ScanPresenter>().add(
+                                        PopBarcodeEvent(viewModel.barcodeValue),
+                                      );
+                                });
+                              }
+                            },
+                            builder: (
+                              _,
+                              ScanViewModel viewModel,
+                            ) =>
+                                Icon(
+                              viewModel is ScanningState && viewModel.isSoundOn
+                                  ? Icons.music_note_outlined
+                                  : Icons.music_off_outlined,
+                              color: Colors.white,
+                            ),
+                          ),
+                          onPressed: () => context
+                              .read<ScanPresenter>()
+                              .add(const SoundToggleEvent()),
+                        ),
+                      ],
                     ),
                     Container(
                       padding: EdgeInsets.only(bottom: _bottomPadding),
@@ -153,16 +196,12 @@ class _HomeViewState extends State<ScanView> {
     super.dispose();
   }
 
-  Future<void> _onBarcodeDetect(BarcodeCapture barcodeCapture) {
-    return _closeCamera().whenComplete(() {
-      final Barcode barcode = barcodeCapture.barcodes.last;
-      String? barcodeValue = barcode.displayValue ?? barcode.rawValue;
-      if (barcodeValue != null) {
-        context.read<ScanPresenter>().add(PopBarcodeEvent((barcodeValue)));
-      } else {
-        context.read<ScanPresenter>().add(const NavigateBackEvent());
-      }
-    });
+  void _onBarcodeDetect(BarcodeCapture barcodeCapture) {
+    final Barcode barcode = barcodeCapture.barcodes.last;
+    String? barcodeValue = barcode.displayValue ?? barcode.rawValue;
+    return context
+        .read<ScanPresenter>()
+        .add(DetectedBarcodeEvent(barcodeValue));
   }
 
   Future<void> _closeCamera() => _scannerController.stop().catchError((
