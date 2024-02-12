@@ -1,5 +1,6 @@
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/camera_descriptions.dart' as cameras;
+import 'package:ethical_scanner/di/dependencies.dart';
 import 'package:ethical_scanner/di/dependencies_scope.dart';
 import 'package:ethical_scanner/routes/routes.dart' as route;
 import 'package:flutter/material.dart';
@@ -17,7 +18,13 @@ Route<String> generateRoute(RouteSettings settings) => switch (settings.name) {
             Animation<double> __,
           ) =>
               BlocProvider<ScanPresenter>(
-            create: (_) => ScanPresenter(),
+            create: (BuildContext context) {
+              Dependencies dependencies = DependenciesScope.of(context);
+              return ScanPresenter(
+                dependencies.saveSoundPreferenceUseCase,
+                dependencies.getSoundPreferenceUseCase,
+              )..add(const LoadScannerEvent());
+            },
             child: BlocListener<ScanPresenter, ScanViewModel>(
               listener: (BuildContext context, ScanViewModel viewModel) {
                 if (viewModel is ScanSuccessState) {
@@ -121,13 +128,16 @@ class HomeBlocProvider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<HomePresenter>(
-      create: (BuildContext context) => HomePresenter(
-        DependenciesScope.of(context).productInfoUseCase,
-        DependenciesScope.of(context).savePrecipitationStateUseCase,
-        DependenciesScope.of(context).getPrecipitationStateUseCase,
-        DependenciesScope.of(context).saveLanguageUseCase,
-        DependenciesScope.of(context).getLanguageUseCase,
-      )..add(const LoadHomeEvent()),
+      create: (BuildContext context) {
+        Dependencies dependencies = DependenciesScope.of(context);
+        return HomePresenter(
+          dependencies.productInfoUseCase,
+          dependencies.savePrecipitationStateUseCase,
+          dependencies.getPrecipitationStateUseCase,
+          dependencies.saveLanguageUseCase,
+          dependencies.getLanguageUseCase,
+        )..add(const LoadHomeEvent());
+      },
       child: BlocListener<HomePresenter, HomeViewModel>(
         listener: (BuildContext context, HomeViewModel viewModel) {
           Language language = Language.fromIsoLanguageCode(

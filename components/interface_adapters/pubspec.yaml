@@ -15,6 +15,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
+  audiofileplayer: ^2.1.1
   # state management package that helps implement the Business Logic Component design pattern.
   bloc: ^8.1.2
 
@@ -69,6 +70,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/i18n/
+    - assets/audio/
   #
   # For details regarding assets in packages, see
   # https://flutter.dev/assets-and-images/#from-packages

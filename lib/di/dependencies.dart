@@ -9,11 +9,15 @@ import 'package:use_cases/use_cases.dart';
 
 /// Dependencies container
 class Dependencies {
-  Dependencies() : _localDataSource = LocalDataSourceImpl() {
-    _localDataSource.init();
-  }
+  const Dependencies._(this._localDataSource);
 
   final LocalDataSourceImpl _localDataSource;
+
+  static Future<Dependencies> create() async {
+    final LocalDataSourceImpl localDataSource = LocalDataSourceImpl();
+    await localDataSource.init();
+    return Dependencies._(localDataSource);
+  }
 
   UseCase<bool, Null> get getPrecipitationStateUseCase =>
       GetPrecipitationStateUseCase(_settingsGateway);
@@ -33,13 +37,18 @@ class Dependencies {
   UseCase<Future<void>, ProductPhoto> get addIngredientsUseCase =>
       AddIngredientsUseCase(_productInfoGateway);
 
-  SettingsGateway get _settingsGateway =>
-      SettingsGatewayImpl(_localDataSource);
+  GetSoundPreferenceUseCase get getSoundPreferenceUseCase =>
+      GetSoundPreferenceUseCase(_settingsGateway);
+
+  SaveSoundPreferenceUseCase get saveSoundPreferenceUseCase =>
+      SaveSoundPreferenceUseCase(_settingsGateway);
+
+  SettingsGateway get _settingsGateway => SettingsGatewayImpl(_localDataSource);
 
   ProductInfoGateway get _productInfoGateway => ProductInfoGatewayImpl(
-    RemoteDataSourceImpl(_restClient),
-    _localDataSource,
-  );
+        RemoteDataSourceImpl(_restClient),
+        _localDataSource,
+      );
 
   RestClient get _restClient {
     final Dio dio = Dio();

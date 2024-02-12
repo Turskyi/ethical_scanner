@@ -769,6 +769,19 @@ class LocalDataSourceImpl implements LocalDataSource {
       true;
 
   @override
+  Future<bool> saveSoundPreference(bool isSoundOn) => _sharedPrefs.setBool(
+        Settings.sound.key,
+        isSoundOn,
+      );
+
+  @override
+  bool getSoundPreference() =>
+      _sharedPrefs.getBool(
+        Settings.sound.key,
+      ) ??
+      false;
+
+  @override
   String getLanguageIsoCode() =>
       _sharedPrefs.getString(Settings.languageIsoCode.key) ??
       Language.fromIsoLanguageCode(

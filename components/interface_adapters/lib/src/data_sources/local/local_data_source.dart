@@ -14,4 +14,8 @@ abstract interface class LocalDataSource {
   String getLanguageIsoCode();
 
   Future<bool> saveLanguageIsoCode(String languageIsoCode);
+
+  Future<bool> saveSoundPreference(bool isSoundOn);
+
+  bool getSoundPreference();
 }

@@ -14,7 +14,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     this._getPrecipitationStateUseCase,
     this._saveLanguageUseCase,
     this._getLanguageUseCase,
-  ) : super(const ReadyToScanState()) {
+  ) : super(const LoadingHomeState()) {
     on<LoadHomeEvent>(
       (_, Emitter<HomeViewModel> emit) {
         emit(
