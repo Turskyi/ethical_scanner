@@ -168,11 +168,15 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           ),
       image,
     );
-
-    if (status.status != 'status ok') {
+    if (status.status == HttpStatus.internalServerError) {
+      throw InternalServerError(
+        'Image could not be uploaded: ${status.error}.\n'
+        '${status.imageId != null ? status.imageId.toString() : ''}',
+      );
+    } else if (status.status != 'status ok') {
       throw Exception(
-        'image could not be uploaded: ${status.error} '
-        '${status.imageId.toString()}',
+        'image could not be uploaded: ${status.error}.\n'
+        '${status.imageId != null ? status.imageId.toString() : ''}',
       );
     }
   }

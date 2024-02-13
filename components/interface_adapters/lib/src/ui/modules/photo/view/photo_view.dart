@@ -181,7 +181,19 @@ class _CameraScreenState extends State<PhotoView> {
                   ),
                 ),
               if (viewModel is AddIngredientsErrorState)
-                Text(viewModel.errorMessage),
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  alignment: Alignment.center,
+                  child: Text(
+                    viewModel.errorMessage,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: Theme.of(context).textTheme.bodyLarge?.fontSize,
+                    ),
+                  ),
+                ),
             ],
           );
         },
@@ -219,13 +231,12 @@ class _CameraScreenState extends State<PhotoView> {
                           }
                         } catch (e) {
                           debugPrint('Error taking picture: $e');
-                        } finally {
-                          // TODO: should we await _controller.dispose?
                         }
                       },
             child: viewModel is TakenPhotoState
                 ? const Icon(Icons.send)
-                : viewModel is PhotoMakerReadyState
+                : viewModel is PhotoMakerReadyState ||
+                        viewModel is AddIngredientsErrorState
                     ? const Icon(Icons.camera)
                     : viewModel is LoadingState
                         ? const Icon(Icons.stop)
