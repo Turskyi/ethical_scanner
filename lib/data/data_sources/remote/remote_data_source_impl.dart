@@ -146,8 +146,16 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       newProduct,
     );
 
-    if (result.status != 1) {
-      throw Exception('product could not be added: ${result.error}');
+    if (result.status == HttpStatus.badRequest) {
+      throw BadRequestError(
+        result.body != null
+            ? '${result.body}'
+            : 'Product could not be added.\n${result.error ?? ''}',
+      );
+    } else if (result.status != 1) {
+      throw Exception(
+        'product could not be added ${result.error ?? ''}',
+      );
     }
   }
 

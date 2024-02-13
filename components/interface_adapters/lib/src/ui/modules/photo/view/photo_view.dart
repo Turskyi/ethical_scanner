@@ -2,13 +2,16 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:entities/entities.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/photo/photo_event.dart';
 import 'package:interface_adapters/src/ui/modules/photo/photo_presenter.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PhotoView extends StatefulWidget {
   const PhotoView({
@@ -27,6 +30,7 @@ class PhotoView extends StatefulWidget {
 class _CameraScreenState extends State<PhotoView> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
+  final RegExp _emailExp = RegExp(r'\b[\w.-]+@[\w.-]+\.\w{2,}\b');
 
   @override
   void initState() {
@@ -183,14 +187,33 @@ class _CameraScreenState extends State<PhotoView> {
               if (viewModel is AddIngredientsErrorState)
                 Container(
                   padding: const EdgeInsets.all(20),
+                  color: Colors.black.withOpacity(0.7),
                   alignment: Alignment.center,
-                  child: Text(
-                    viewModel.errorMessage,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: Theme.of(context).textTheme.bodyLarge?.fontSize,
+                  child: GestureDetector(
+                    onLongPress: () {
+                      Clipboard.setData(
+                        ClipboardData(text: viewModel.errorMessage),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Copied to clipboard',
+                            textAlign: TextAlign.right,
+                          ),
+                        ),
+                      );
+                    },
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      strutStyle: StrutStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize:
+                            Theme.of(context).textTheme.bodyLarge?.fontSize,
+                      ),
+                      text: _getTextSpan(
+                        viewModel.errorMessage,
+                        Theme.of(context).textTheme.bodyLarge?.fontSize,
+                      ),
                     ),
                   ),
                 ),
@@ -200,48 +223,50 @@ class _CameraScreenState extends State<PhotoView> {
       ),
       floatingActionButton: BlocBuilder<PhotoPresenter, PhotoViewModel>(
         builder: (BuildContext context, PhotoViewModel viewModel) {
-          return FloatingActionButton(
-            onPressed: viewModel is LoadingState
-                ? null
-                : viewModel is TakenPhotoState
-                    ? () {
-                        context.read<PhotoPresenter>().add(
-                              AddIngredientsPhotoEvent(
-                                ProductPhoto(
-                                  path: viewModel.photoPath,
-                                  info: widget.productInfo,
-                                ),
-                              ),
-                            );
-                      }
-                    : () async {
-                        context
-                            .read<PhotoPresenter>()
-                            .add(const TakePhotoEvent());
-                        try {
-                          await _initializeControllerFuture;
+          return viewModel is AddIngredientsErrorState
+              ? const SizedBox()
+              : FloatingActionButton(
+                  onPressed: viewModel is LoadingState
+                      ? null
+                      : viewModel is TakenPhotoState
+                          ? () {
+                              context.read<PhotoPresenter>().add(
+                                    AddIngredientsPhotoEvent(
+                                      ProductPhoto(
+                                        path: viewModel.photoPath,
+                                        info: widget.productInfo,
+                                      ),
+                                    ),
+                                  );
+                            }
+                          : () async {
+                              context
+                                  .read<PhotoPresenter>()
+                                  .add(const TakePhotoEvent());
+                              try {
+                                await _initializeControllerFuture;
 
-                          // Take a picture and get the file path
-                          XFile picture = await _controller.takePicture();
+                                // Take a picture and get the file path
+                                XFile picture = await _controller.takePicture();
 
-                          if (mounted) {
-                            context
-                                .read<PhotoPresenter>()
-                                .add(TakenPhotoEvent(picture.path));
-                          }
-                        } catch (e) {
-                          debugPrint('Error taking picture: $e');
-                        }
-                      },
-            child: viewModel is TakenPhotoState
-                ? const Icon(Icons.send)
-                : viewModel is PhotoMakerReadyState ||
-                        viewModel is AddIngredientsErrorState
-                    ? const Icon(Icons.camera)
-                    : viewModel is LoadingState
-                        ? const Icon(Icons.stop)
-                        : const SizedBox(),
-          );
+                                if (mounted) {
+                                  context
+                                      .read<PhotoPresenter>()
+                                      .add(TakenPhotoEvent(picture.path));
+                                }
+                              } catch (e) {
+                                debugPrint('Error taking picture: $e');
+                              }
+                            },
+                  child: viewModel is TakenPhotoState
+                      ? const Icon(Icons.send)
+                      : viewModel is PhotoMakerReadyState ||
+                              viewModel is AddIngredientsErrorState
+                          ? const Icon(Icons.camera)
+                          : viewModel is LoadingState
+                              ? const Icon(Icons.stop)
+                              : const SizedBox(),
+                );
         },
       ),
     );
@@ -251,5 +276,83 @@ class _CameraScreenState extends State<PhotoView> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  TextSpan _getTextSpan(String text, double? fontSize) {
+    final Iterable<Match> matches = _emailExp.allMatches(text);
+    if (matches.isEmpty) {
+      return TextSpan(
+        text: text,
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: fontSize,
+        ),
+      );
+    }
+
+    final List<TextSpan> spans = <TextSpan>[];
+    int start = 0;
+
+    for (final Match match in matches) {
+      if (match.start != start) {
+        spans.add(
+          TextSpan(
+            text: text.substring(start, match.start),
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: fontSize,
+            ),
+          ),
+        );
+      }
+
+      final String email = match.group(0)!;
+      spans.add(
+        TextSpan(
+          text: email,
+          style: TextStyle(
+            color: Colors.lightBlueAccent,
+            fontWeight: FontWeight.bold,
+            fontSize: fontSize,
+            decoration: TextDecoration.underline,
+          ),
+          recognizer: TapGestureRecognizer()
+            ..onTap = () async {
+              final Uri emailLaunchUri = Uri(
+                scheme: 'mailto',
+                path: email,
+              );
+
+              if (await canLaunchUrl(emailLaunchUri)) {
+                await launchUrl(emailLaunchUri);
+              } else {
+                throw PlatformException(
+                  code: 'UNABLE_TO_LAUNCH_URL',
+                  message: 'Could not launch $emailLaunchUri',
+                );
+              }
+            },
+        ),
+      );
+
+      start = match.end;
+    }
+
+    if (start != text.length) {
+      spans.add(
+        TextSpan(
+          text: text.substring(start),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: fontSize,
+          ),
+        ),
+      );
+    }
+
+    return TextSpan(children: spans);
   }
 }
