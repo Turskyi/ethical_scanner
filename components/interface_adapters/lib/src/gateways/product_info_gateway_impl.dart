@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:entities/entities.dart';
+import 'package:flutter/foundation.dart';
 import 'package:interface_adapters/src/data_sources/local/local_data_source.dart';
 import 'package:interface_adapters/src/data_sources/remote/remote_data_source.dart';
 import 'package:interface_adapters/src/error_message_extractor.dart';
@@ -19,7 +19,8 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
         .getProductInfoAsFuture(input)
         .onError((Object? error, StackTrace stackTrace) {
       if (error is FormatException && error.source is String) {
-        log('Error in $runtimeType: ${extractErrorMessage(error.source)}.'
+        debugPrint(
+            'Error in $runtimeType: ${extractErrorMessage(error.source)}.'
             '\nStacktrace: $stackTrace');
       }
       if (_isBarcode(input.code)) {
@@ -28,10 +29,13 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
         return ProductInfo(website: input.code);
       } else if (_isAmazonAsin(input.code)) {
         return const ProductInfo(brand: 'Amazon');
+      } else if (error is NotFoundException) {
+        throw error;
+      } else {
+        throw Exception(
+          'Product information not found for barcode: $input.\nError: $error',
+        );
       }
-      throw Exception(
-        'Product information not found for barcode: $input.\nError: $error',
-      );
     }).then((ProductInfo info) {
       if (info.origin.isNotEmpty || info.country.isNotEmpty) {
         return info;

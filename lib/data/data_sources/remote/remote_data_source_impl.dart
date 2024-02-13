@@ -68,8 +68,11 @@ class RemoteDataSourceImpl implements RemoteDataSource {
             return const ProductInfo(brand: 'Amazon');
           }
         }
-        throw Exception(
-          'Product information not found for barcode: $input.',
+        throw NotFoundException(
+          input.language.isEnglish
+              ? 'Product information not found for barcode: ${input.code}.'
+              : 'Інформація про продукт не знайдена для штрих-коду: '
+                  '${input.code}',
         );
       });
 
@@ -115,16 +118,16 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       ingredients: product.ingredientList
           .mapIndexed(
             (int rank, String ingredient) => Ingredient(
-          rank: rank,
-          text: ingredient,
-          vegan: product.isVegan
-              ? IngredientSpecialPropertyStatus.POSITIVE
-              : IngredientSpecialPropertyStatus.IGNORE,
-          vegetarian: product.isVegetarian
-              ? IngredientSpecialPropertyStatus.POSITIVE
-              : IngredientSpecialPropertyStatus.IGNORE,
-        ),
-      )
+              rank: rank,
+              text: ingredient,
+              vegan: product.isVegan
+                  ? IngredientSpecialPropertyStatus.POSITIVE
+                  : IngredientSpecialPropertyStatus.IGNORE,
+              vegetarian: product.isVegetarian
+                  ? IngredientSpecialPropertyStatus.POSITIVE
+                  : IngredientSpecialPropertyStatus.IGNORE,
+            ),
+          )
           .toList(),
       ingredientsText: ingredientsText,
       categories: product.countryTags.join(','),
@@ -169,7 +172,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     if (status.status != 'status ok') {
       throw Exception(
         'image could not be uploaded: ${status.error} '
-            '${status.imageId.toString()}',
+        '${status.imageId.toString()}',
       );
     }
   }
@@ -191,8 +194,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
             ? OpenFoodFactsLanguage.ENGLISH
             : OpenFoodFactsLanguage.UKRAINIAN,
       ).then(
-            (OcrIngredientsResult response) =>
-        response.status != 0 ? '' : response.ingredientsTextFromImage ?? '',
+        (OcrIngredientsResult response) =>
+            response.status != 0 ? '' : response.ingredientsTextFromImage ?? '',
       );
 
   /// Extract the ingredients of an existing product of the OpenFoodFacts
@@ -255,16 +258,16 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       ingredients: product.ingredientList
           .mapIndexed(
             (int rank, String ingredient) => Ingredient(
-          rank: rank,
-          text: ingredient,
-          vegan: product.isVegan
-              ? IngredientSpecialPropertyStatus.POSITIVE
-              : IngredientSpecialPropertyStatus.IGNORE,
-          vegetarian: product.isVegetarian
-              ? IngredientSpecialPropertyStatus.POSITIVE
-              : IngredientSpecialPropertyStatus.IGNORE,
-        ),
-      )
+              rank: rank,
+              text: ingredient,
+              vegan: product.isVegan
+                  ? IngredientSpecialPropertyStatus.POSITIVE
+                  : IngredientSpecialPropertyStatus.IGNORE,
+              vegetarian: product.isVegetarian
+                  ? IngredientSpecialPropertyStatus.POSITIVE
+                  : IngredientSpecialPropertyStatus.IGNORE,
+            ),
+          )
           .toList(),
       ingredientsText: ingredientsText,
       ingredientsTextInLanguages: <OpenFoodFactsLanguage, String>{
@@ -305,7 +308,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
     if (productResult.status != ProductResultV3.statusSuccess) {
       throw Exception(
-        'product not found, please insert data for 3613042717385',
+        'product not found, please insert data for ${photo.info.barcode}',
       );
     }
   }
