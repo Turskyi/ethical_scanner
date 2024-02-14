@@ -1,7 +1,7 @@
 name: interface_adapters
 description: The software in the interface adapters layer is a set of adapters that convert data
   from the format most convenient for the use cases and entities to the format most convenient for
-  some external agency such as the database or the web.
+  some external agency such as the database or the web services.
   The presenters, views, and controllers all belong in the interface adapters layer.
   No code inward of this circle should know anything at all about the database.
 version: 0.0.1
@@ -9,6 +9,7 @@ version: 0.0.1
 # preferred for private packages.
 publish_to: none
 homepage: https://ethical-scanner.turskyi.com
+repository: https://github.com/Turskyi/ethical_scanner/tree/master/components/interface_adapters
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
@@ -17,7 +18,7 @@ environment:
 dependencies:
   audiofileplayer: ^2.1.1
   # state management package that helps implement the Business Logic Component design pattern.
-  bloc: ^8.1.2
+  bloc: ^8.1.3
 
   camera: ^0.10.5+9
   entities:
@@ -29,7 +30,7 @@ dependencies:
     sdk: flutter
 
   # Built to be used with the `bloc` state management package
-  flutter_bloc: ^8.1.3
+  flutter_bloc: ^8.1.4
 
   # localization / internationalization (i18n) library
   flutter_email_sender: ^6.0.2

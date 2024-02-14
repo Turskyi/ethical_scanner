@@ -158,8 +158,8 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
               modifiableProductInfo[ProductInfoType.companyTerrorismSponsor] =
                   productInfo.isCompanyTerrorismSponsor
                       ? (state.language.isEnglish
-                          ? 'Probably yes'
-                          : 'Напевно так')
+                          ? 'Probably yes. '
+                          : 'Напевно так. ')
                       : 'No';
               if (state is LoadingProductInfoState) {
                 LoadingProductInfoState loadingState =
@@ -193,6 +193,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
                 );
               }
             }
+
             if (productInfo.vegan != Vegan.unknown) {
               modifiableProductInfo[ProductInfoType.isVegan] =
                   productInfo.vegan == Vegan.positive ? 'Yes' : 'No';

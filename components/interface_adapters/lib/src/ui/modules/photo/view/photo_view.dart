@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:interface_adapters/src/constants.dart' as constants;
 import 'package:interface_adapters/src/ui/modules/photo/photo_event.dart';
 import 'package:interface_adapters/src/ui/modules/photo/photo_presenter.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
@@ -218,9 +219,9 @@ class _CameraScreenState extends State<PhotoView> {
                               ClipboardData(text: viewModel.errorMessage),
                             );
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
+                              SnackBar(
                                 content: Text(
-                                  'Copied to clipboard',
+                                  translate('copied_to_clipboard'),
                                   textAlign: TextAlign.right,
                                 ),
                               ),
@@ -251,15 +252,13 @@ class _CameraScreenState extends State<PhotoView> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       ElevatedButton(
-                        onPressed: () {
-                          _adjustZoomLevel(-_zoomStep); // Decrease zoom
-                        },
+                        // Decrease zoom
+                        onPressed: () => _adjustZoomLevel(-_zoomStep),
                         child: const Icon(Icons.remove),
                       ),
                       ElevatedButton(
-                        onPressed: () {
-                          _adjustZoomLevel(_zoomStep); // Increase zoom
-                        },
+                        // Increase zoom
+                        onPressed: () => _adjustZoomLevel(_zoomStep),
                         child: const Icon(Icons.add),
                       ),
                     ],
@@ -367,7 +366,7 @@ class _CameraScreenState extends State<PhotoView> {
         );
       }
 
-      final String email = match.group(0)!;
+      final String? email = match.group(0);
       spans.add(
         TextSpan(
           text: email,
@@ -380,7 +379,7 @@ class _CameraScreenState extends State<PhotoView> {
           recognizer: TapGestureRecognizer()
             ..onTap = () async {
               final Uri emailLaunchUri = Uri(
-                scheme: 'mailto',
+                scheme: constants.mailToScheme,
                 path: email,
               );
 

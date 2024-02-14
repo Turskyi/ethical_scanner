@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:dart_openai/dart_openai.dart';
-import 'package:dio/dio.dart';
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/constants.dart' as constants;
 import 'package:ethical_scanner/data/data_mappers/product_data_mapper.dart';
@@ -36,26 +35,17 @@ class RemoteDataSourceImpl implements RemoteDataSource {
                   product,
                 ),
               );
-            }).onError((Object? exception, __) {
-              if (exception is DioException &&
-                  exception.type == DioExceptionType.badResponse &&
-                  exception.response?.statusCode ==
-                      HttpStatus.serviceUnavailable) {
-                return _restClient
-                    .getBackupTerrorismSponsors()
-                    .then((List<TerrorismSponsor> terrorismSponsors) {
-                  return product.copyWith(
-                    isCompanyTerrorismSponsor: terrorismSponsors.sponsoredBy(
-                      product,
-                    ),
-                  );
-                }).onError((_, __) {
-                  return product;
-                });
-              } else {
-                return product;
-              }
-            });
+            }).onError(
+              (_, __) => _restClient
+                  .getBackupTerrorismSponsors()
+                  .then((List<TerrorismSponsor> terrorismSponsors) {
+                return product.copyWith(
+                  isCompanyTerrorismSponsor: terrorismSponsors.sponsoredBy(
+                    product,
+                  ),
+                );
+              }).onError((_, __) => product),
+            );
           } else {
             return product;
           }
