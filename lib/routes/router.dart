@@ -64,6 +64,14 @@ Route<String> generateRoute(RouteSettings settings) => switch (settings.name) {
                 child: BlocListener<PhotoPresenter, PhotoViewModel>(
                   listener: (BuildContext context, PhotoViewModel viewModel) {
                     if (viewModel is IngredientsAddedSuccessState) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            translate('photo.image_upload_successful'),
+                          ),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
                       Navigator.pop(context);
                     } else if (viewModel is CanceledPhotoState) {
                       Navigator.pop(context);
@@ -161,10 +169,9 @@ class HomeBlocProvider extends StatelessWidget {
               route.photoPath,
               arguments: viewModel.productInfo,
             ).then(
-              (_) => _displayProductInfoOrHome(
-                context: context,
-                productInfo: viewModel.productInfo,
-              ),
+              (_) => context.read<HomePresenter>().add(
+                    const ClearProductInfoEvent(),
+                  ),
             );
           } else if (viewModel is ReadyToScanState) {
             Language currentLanguage = Language.fromIsoLanguageCode(

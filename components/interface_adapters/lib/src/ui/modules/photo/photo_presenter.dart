@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:entities/entities.dart';
 import 'package:flutter/material.dart';
+import 'package:interface_adapters/src/error_message_extractor.dart';
 import 'package:interface_adapters/src/ui/modules/photo/photo_event.dart';
 import 'package:use_cases/use_cases.dart';
 
@@ -37,7 +38,9 @@ class PhotoPresenter extends Bloc<PhotoEvent, PhotoViewModel> {
         emit(
           AddIngredientsErrorState(
             barcode: event.productPhoto.info.barcode,
-            errorMessage: error.toString(),
+            errorMessage: error is BadRequestError
+                ? extractErrorMessage(error.message)
+                : error.toString(),
           ),
         );
         debugPrint('Stacktrace: $stacktrace');

@@ -1,6 +1,7 @@
 {
   "title": "Ethical Scanner",
   "app_feedback": "App Feedback",
+  "copied_to_clipboard": "Copied to clipboard",
   "menu": {
     "home": "Home",
     "scan": "Scan",
@@ -27,13 +28,18 @@
     "ingredients_colon": "Ingredients: ",
     "website_colon": "Website: ",
     "country_ai_colon": "AI-Generated Country Information: ",
-    "error_colon": "Error: "
+    "error_colon": "Error: ",
+    "click": "Click ",
+    "here": "here",
+    "or": " or ",
+    "to_know_more": " to know more."
   },
   "scan": {
     "scan_screen": "Scan screen",
     "scanning": "Scanning..."
   },
   "photo": {
-    "capture_ingredients": "Make a photo of the ingredients."
+    "capture_ingredients": "Make a photo of the ingredients.",
+    "image_upload_successful": "Image upload successful!"
   }
 }

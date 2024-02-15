@@ -19,9 +19,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ProductInfoBody extends StatelessWidget {
-  const ProductInfoBody({
-    super.key,
-  });
+  const ProductInfoBody({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,12 +38,12 @@ class ProductInfoBody extends StatelessWidget {
         builder: (_, HomeViewModel viewModel) {
           if (viewModel is ProductInfoState) {
             return RefreshIndicator(
-              onRefresh: () =>
-                  PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
-                return BetterFeedback.of(context).show((UserFeedback feedback) {
-                  return _sendFeedback(feedback, packageInfo);
-                });
-              }),
+              onRefresh: () => PackageInfo.fromPlatform().then(
+                (PackageInfo packageInfo) => BetterFeedback.of(context).show(
+                  (UserFeedback feedback) =>
+                      _sendFeedback(feedback, packageInfo),
+                ),
+              ),
               child: ListView.builder(
                 padding: EdgeInsets.only(
                   top: dimens.productInfoListTopPadding,

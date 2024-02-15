@@ -1,7 +1,7 @@
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://stand-with-ukraine.pp.ua)
 [![Codemagic build status](https://api.codemagic.io/apps/659998e6caf611b8969ad389/659998e6caf611b8969ad388/status_badge.svg)](https://codemagic.io/apps/659998e6caf611b8969ad389/659998e6caf611b8969ad388/latest_build)
-[![Build & upload to Firebase App Distribution](https://github.com/Turskyi/ethical_scanner/actions/workflows/flutter_ci.yml/badge.svg?branch=dev&event=push)](https://github.com/Turskyi/ethical_scanner/actions/workflows/flutter_ci.yml)
-[![Code Quality](https://github.com/Turskyi/ethical_scanner/actions/workflows/code-quality-tests.yml/badge.svg?branch=master&event=push)](https://github.com/Turskyi/ethical_scanner/actions/workflows/code-quality-tests.yml)
+[![Build & upload to Firebase App Distribution](https://github.com/Turskyi/ethical_scanner/actions/workflows/flutter_ci.yml/badge.svg?branch=dev&event=push)](https://appdistribution.firebase.dev/i/ad57d28bed182b15)
+[![Code Quality](https://github.com/Turskyi/ethical_scanner/actions/workflows/code-quality-tests.yml/badge.svg?branch=master&event=push)](https://github.com/flutter/flutter/wiki/Style-guide-for-Flutter-repo)
 [![style: flutter lints](https://img.shields.io/badge/style-flutter__lints-blue)](https://pub.dev/packages/flutter_lints)
 
 # Ethical Scanner
@@ -19,7 +19,8 @@ The app uses the data from various sources, such as
 - [Yale chief executive leadership institute | List of Companies
   Leaving and Staying in Russia](https://www.yalerussianbusinessretreat.com/);
 - [U.S. bureau of counterterrorism | State Sponsors of Terrorism](https://www.state.gov/state-sponsors-of-terrorism/);
-- [European Parliament](https://www.europarl.europa.eu/delegations/en/recognising-the-russian-federation-as-a-/product-details/20221124DPU34521).
+- [European Parliament](https://www.europarl.europa.eu/delegations/en/recognising-the-russian-federation-as-a-/product-details/20221124DPU34521);
+- [Don't Fund War](https://dontfundwar.com).
 
 The app aims to help you shop with confidence and conscience.
 For more information, please visit the project website at https://ethical-scanner.turskyi.com.

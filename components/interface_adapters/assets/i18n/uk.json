@@ -1,6 +1,7 @@
 {
   "title": "Ethical Scanner",
   "app_feedback": "Відгук про додаток",
+  "copied_to_clipboard": "Скопійовано в буфер обміну.",
   "menu": {
     "home": "Домашня сторінка",
     "scan": "Сканер",
@@ -27,13 +28,18 @@
     "ingredients_colon": "Інгредієнти: ",
     "website_colon": "Веб-сайт: ",
     "country_ai_colon": "Інформація про країну, згенерована ШІ: ",
-    "error_colon": "Помилка: "
+    "error_colon": "Помилка: ",
+    "click": "Натисніть ",
+    "here": "тут",
+    "or": " або ",
+    "to_know_more": " щоб дізнатися більше."
   },
   "scan": {
     "scan_screen": "Вікно сканування",
     "scanning": "Сканування..."
   },
   "photo": {
-    "capture_ingredients": "Сфотографуйте\nінгредієнти."
+    "capture_ingredients": "Сфотографуйте\nінгредієнти.",
+    "image_upload_successful": "Завантаження зображення успішне!"
   }
 }

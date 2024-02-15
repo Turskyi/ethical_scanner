@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:dart_openai/dart_openai.dart';
-import 'package:dio/dio.dart';
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/constants.dart' as constants;
 import 'package:ethical_scanner/data/data_mappers/product_data_mapper.dart';
@@ -36,26 +35,17 @@ class RemoteDataSourceImpl implements RemoteDataSource {
                   product,
                 ),
               );
-            }).onError((Object? exception, __) {
-              if (exception is DioException &&
-                  exception.type == DioExceptionType.badResponse &&
-                  exception.response?.statusCode ==
-                      HttpStatus.serviceUnavailable) {
-                return _restClient
-                    .getBackupTerrorismSponsors()
-                    .then((List<TerrorismSponsor> terrorismSponsors) {
-                  return product.copyWith(
-                    isCompanyTerrorismSponsor: terrorismSponsors.sponsoredBy(
-                      product,
-                    ),
-                  );
-                }).onError((_, __) {
-                  return product;
-                });
-              } else {
-                return product;
-              }
-            });
+            }).onError(
+              (_, __) => _restClient
+                  .getBackupTerrorismSponsors()
+                  .then((List<TerrorismSponsor> terrorismSponsors) {
+                return product.copyWith(
+                  isCompanyTerrorismSponsor: terrorismSponsors.sponsoredBy(
+                    product,
+                  ),
+                );
+              }).onError((_, __) => product),
+            );
           } else {
             return product;
           }
@@ -68,8 +58,11 @@ class RemoteDataSourceImpl implements RemoteDataSource {
             return const ProductInfo(brand: 'Amazon');
           }
         }
-        throw Exception(
-          'Product information not found for barcode: $input.',
+        throw NotFoundException(
+          input.language.isEnglish
+              ? 'Product information not found for barcode: ${input.code}.'
+              : 'Інформація про продукт не знайдена для штрих-коду: '
+                  '${input.code}',
         );
       });
 
@@ -115,16 +108,16 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       ingredients: product.ingredientList
           .mapIndexed(
             (int rank, String ingredient) => Ingredient(
-          rank: rank,
-          text: ingredient,
-          vegan: product.isVegan
-              ? IngredientSpecialPropertyStatus.POSITIVE
-              : IngredientSpecialPropertyStatus.IGNORE,
-          vegetarian: product.isVegetarian
-              ? IngredientSpecialPropertyStatus.POSITIVE
-              : IngredientSpecialPropertyStatus.IGNORE,
-        ),
-      )
+              rank: rank,
+              text: ingredient,
+              vegan: product.isVegan
+                  ? IngredientSpecialPropertyStatus.POSITIVE
+                  : IngredientSpecialPropertyStatus.IGNORE,
+              vegetarian: product.isVegetarian
+                  ? IngredientSpecialPropertyStatus.POSITIVE
+                  : IngredientSpecialPropertyStatus.IGNORE,
+            ),
+          )
           .toList(),
       ingredientsText: ingredientsText,
       categories: product.countryTags.join(','),
@@ -143,8 +136,16 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       newProduct,
     );
 
-    if (result.status != 1) {
-      throw Exception('product could not be added: ${result.error}');
+    if (result.status == HttpStatus.badRequest) {
+      throw BadRequestError(
+        result.body != null
+            ? '${result.body}'
+            : 'Product could not be added.\n${result.error ?? ''}',
+      );
+    } else if (result.status != 1) {
+      throw Exception(
+        'product could not be added ${result.error ?? ''}',
+      );
     }
   }
 
@@ -165,11 +166,15 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           ),
       image,
     );
-
-    if (status.status != 'status ok') {
+    if (status.status == HttpStatus.internalServerError) {
+      throw InternalServerError(
+        'Image could not be uploaded: ${status.error}.\n'
+        '${status.imageId != null ? status.imageId.toString() : ''}',
+      );
+    } else if (status.status != 'status ok') {
       throw Exception(
-        'image could not be uploaded: ${status.error} '
-            '${status.imageId.toString()}',
+        'image could not be uploaded: ${status.error}.\n'
+        '${status.imageId != null ? status.imageId.toString() : ''}',
       );
     }
   }
@@ -191,8 +196,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
             ? OpenFoodFactsLanguage.ENGLISH
             : OpenFoodFactsLanguage.UKRAINIAN,
       ).then(
-            (OcrIngredientsResult response) =>
-        response.status != 0 ? '' : response.ingredientsTextFromImage ?? '',
+        (OcrIngredientsResult response) =>
+            response.status != 0 ? '' : response.ingredientsTextFromImage ?? '',
       );
 
   /// Extract the ingredients of an existing product of the OpenFoodFacts
@@ -255,16 +260,16 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       ingredients: product.ingredientList
           .mapIndexed(
             (int rank, String ingredient) => Ingredient(
-          rank: rank,
-          text: ingredient,
-          vegan: product.isVegan
-              ? IngredientSpecialPropertyStatus.POSITIVE
-              : IngredientSpecialPropertyStatus.IGNORE,
-          vegetarian: product.isVegetarian
-              ? IngredientSpecialPropertyStatus.POSITIVE
-              : IngredientSpecialPropertyStatus.IGNORE,
-        ),
-      )
+              rank: rank,
+              text: ingredient,
+              vegan: product.isVegan
+                  ? IngredientSpecialPropertyStatus.POSITIVE
+                  : IngredientSpecialPropertyStatus.IGNORE,
+              vegetarian: product.isVegetarian
+                  ? IngredientSpecialPropertyStatus.POSITIVE
+                  : IngredientSpecialPropertyStatus.IGNORE,
+            ),
+          )
           .toList(),
       ingredientsText: ingredientsText,
       ingredientsTextInLanguages: <OpenFoodFactsLanguage, String>{
@@ -305,7 +310,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
     if (productResult.status != ProductResultV3.statusSuccess) {
       throw Exception(
-        'product not found, please insert data for 3613042717385',
+        'product not found, please insert data for ${photo.info.barcode}',
       );
     }
   }
