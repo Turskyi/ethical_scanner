@@ -89,9 +89,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
             .choices.firstOrNull?.message.content?.firstOrNull?.text
             ?.trim();
         return country ?? '';
-      }).onError((Object? error, StackTrace stacktrace) {
-        return '';
-      });
+      }).onError((_, __) => '');
 
   @override
   Future<void> addProduct(ProductInfo product) async {
