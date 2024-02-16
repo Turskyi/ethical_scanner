@@ -298,10 +298,12 @@ class _CameraScreenState extends State<PhotoView> {
                                   XFile picture =
                                       await _controller.takePicture();
 
-                                  if (mounted) {
+                                  if (context.mounted) {
                                     context
                                         .read<PhotoPresenter>()
                                         .add(TakenPhotoEvent(picture.path));
+                                  } else {
+                                    //TODO: add error event
                                   }
                                 } catch (e) {
                                   debugPrint('Error taking picture: $e');
