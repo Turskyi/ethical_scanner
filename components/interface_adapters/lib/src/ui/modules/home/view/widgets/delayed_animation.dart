@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:interface_adapters/interface_adapters.dart';
 
 class DelayedAnimation extends StatefulWidget {
   const DelayedAnimation({
@@ -33,7 +34,7 @@ class _DelayedAnimationState extends State<DelayedAnimation>
       curve: Curves.easeOutQuint,
     );
     _animOffset = Tween<Offset>(
-      begin: const Offset(0.0, 0.35),
+      begin: Offset(AnimationConstants.transparentOpacityAnimation.value, 0.35),
       end: Offset.zero,
     ).animate(curve);
     if (widget.delay == 0) {

@@ -62,7 +62,7 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
       builder: (_, HomeViewModel viewModel) {
         return AnimatedPadding(
           padding: EdgeInsets.only(bottom: _bottomPadding),
-          duration: const Duration(seconds: 1),
+          duration: Duration(seconds: DurationSeconds.short.time),
           child: Stack(
             alignment: AlignmentDirectional.center,
             children: <Widget>[
@@ -142,7 +142,7 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
                 valueListenable: _isExpandedNotifier,
                 builder: (_, bool isExpanded, __) => AnimatedPositioned(
                   bottom: isExpanded ? 0 : 2,
-                  duration: const Duration(seconds: 1),
+                  duration: Duration(seconds: DurationSeconds.short.time),
                   child: ValueListenableBuilder<bool>(
                     valueListenable: _isEnabledNotifier,
                     builder:

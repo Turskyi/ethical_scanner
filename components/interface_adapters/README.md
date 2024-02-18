@@ -19,7 +19,7 @@ flutter pub run build_runner build --delete-conflicting-outputs
 ## Usage
 
 The low-level details of the `construct_pm_interface_adapters` are relegated to plugin modules that
-can be deployed and developed independently from the modules that contain high-level policies.
+can be deployed and developed independently of the modules that contain high-level policies.
 `ui` could be replaced with any other kind of interface—and the business rules would not care.
 If the `ui` plugs in to the business rules, then changes in the `ui` cannot affect those business
 rules.

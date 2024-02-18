@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.0.8+8
+version: 0.0.9+9
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
@@ -45,7 +45,7 @@ dependencies:
   # Dart SDK for openAI Apis (GPT-3 & DALL-E), integrate easily the power of OpenAI's
   # state-of-the-art AI models into their Dart applications.
   dart_openai: ^5.0.0
-  dio: ^5.4.0
+  dio: ^5.4.1
   entities:
     path: ./components/core/entities
 
@@ -93,7 +93,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # A full featured library for writing and running Dart tests across platforms.
+  # A full-featured library for writing and running Dart tests across platforms.
   json_serializable: ^6.7.1
   test: any
 

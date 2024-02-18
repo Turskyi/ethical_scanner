@@ -11,14 +11,19 @@ import 'package:interface_adapters/interface_adapters.dart';
 /// The [main] is the ultimate detail — the lowest-level policy.
 /// It is the initial entry point of the system.
 /// Nothing, other than the operating system, depends on it.
-/// Think of [main] as a plugin to the [App]. Its job is to create all the
-/// factories, strategies, and other global facilities, and then hand control
-/// over to the high-level policy of the [App].
+/// It is in this [main] component that [Dependencies] should be injected.
+/// The [main] is a dirty low-level module in the outermost circle of the clean
+/// architecture.
+/// Think of [main] as a plugin to the [App] — a plugin that sets up the
+/// initial conditions and configurations, gathers all the outside resources,
+/// and then hands control over to the high-level policy of the [App].
+/// When [main] is released, it has utterly no effect on any of the other
+/// components in the system. They don’t know about [main], and they don’t care
+/// when it changes.
 void main() async {
-  /// Get the singleton instance of the `PlatformDispatcher`.
   LocalizationDelegate localizationDelegate = await getLocalizationDelegate();
 
-  /// Filter the `OpenFoodFactsLanguage` values based on the `Language` enum.
+  // Filter the `OpenFoodFactsLanguage` values based on the `Language` enum.
   Dependencies dependencies = await injectAndGetDependencies();
 
   runApp(

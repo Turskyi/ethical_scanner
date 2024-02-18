@@ -6,7 +6,8 @@
 
 # Ethical Scanner
 
-Ethical Scanner is a Flutter project for Android and iOS mobile app that scans the barcode
+**Ethical Scanner** is a Flutter project for building Android and iOS mobile apps that scans the
+barcode
 of a product and tells you if the product meets your ethical standards.
 
 The app allows you to customize your preferences based on
@@ -41,7 +42,8 @@ For more information, please visit the project website at https://ethical-scanne
 
 • CI/CD: [GitHub Actions](https://docs.github.com/en/actions) is used to deliver new Android
 Package (APK) to [Firebase App Distribution](https://firebase.google.com/docs/app-distribution)
-after every push to the **dev** branch, [Codemagic](https://codemagic.io/start/) is used to deliver
+after every push to any other than the **main** branch, [Codemagic](https://codemagic.io/start/) is
+used to deliver
 new release app bundle to **Google Play** after every merge (push) to **master** branch;
 
 • State management approach: [BLoC](https://bloclibrary.dev);
