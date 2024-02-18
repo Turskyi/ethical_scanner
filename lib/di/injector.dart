@@ -4,15 +4,15 @@ import 'package:camera/camera.dart';
 import 'package:dart_openai/dart_openai.dart';
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/camera_descriptions.dart' as cameras;
-import 'package:ethical_scanner/constants.dart' as constants;
 import 'package:ethical_scanner/di/dependencies.dart';
+import 'package:ethical_scanner/res/values/constants.dart' as constants;
 import 'package:flutter/widgets.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 Future<Dependencies> injectAndGetDependencies() async {
-  /// Filter the `OpenFoodFactsLanguage` values based on the `Language` enum.
+  // Filter the `OpenFoodFactsLanguage` values based on the `Language` enum.
   OpenFoodAPIConfiguration.globalLanguages = OpenFoodFactsLanguage.values
       .where(
         // Compare the code of the OpenFoodFactsLanguage value with the
@@ -34,8 +34,8 @@ Future<Dependencies> injectAndGetDependencies() async {
     comment: constants.openFoodUserComment,
   );
 
-  /// Needed for `Dependencies`, `PackageInfo.fromPlatform()` and
-  /// `availableCameras`.
+  // Needed for `Dependencies`, `PackageInfo.fromPlatform()` and
+  // `availableCameras`.
   WidgetsFlutterBinding.ensureInitialized();
 
   PackageInfo packageInfo = await PackageInfo.fromPlatform();

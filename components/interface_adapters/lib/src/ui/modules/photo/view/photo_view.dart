@@ -7,10 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
-import 'package:interface_adapters/src/constants.dart' as constants;
 import 'package:interface_adapters/src/ui/modules/photo/photo_event.dart';
 import 'package:interface_adapters/src/ui/modules/photo/photo_presenter.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
+import 'package:interface_adapters/src/ui/res/values/constants.dart'
+    as constants;
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
 import 'package:url_launcher/url_launcher.dart';
 

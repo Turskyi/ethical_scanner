@@ -2,13 +2,14 @@ import 'package:audiofileplayer/audiofileplayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
-import 'package:interface_adapters/src/constants.dart' as constants;
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/scanner_error_widget.dart';
 import 'package:interface_adapters/src/ui/modules/scan/scan_event.dart';
 import 'package:interface_adapters/src/ui/modules/scan/scan_presenter.dart';
 import 'package:interface_adapters/src/ui/modules/scan/view/scan_placeholder_widget.dart';
 import 'package:interface_adapters/src/ui/modules/scan/view/scanner_overlay.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
+import 'package:interface_adapters/src/ui/res/values/constants.dart'
+    as constants;
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 

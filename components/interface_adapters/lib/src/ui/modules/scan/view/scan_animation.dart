@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:interface_adapters/interface_adapters.dart';
 import 'package:interface_adapters/src/ui/modules/scan/view/scan_painter.dart';
 
 class ScanAnimation extends StatefulWidget {
@@ -10,8 +11,7 @@ class ScanAnimation extends StatefulWidget {
 
 class _ScanAnimationState extends State<ScanAnimation>
     with SingleTickerProviderStateMixin {
-  // Define meaningful names for durations and sizes
-  final Duration _animationDuration = const Duration(seconds: 2);
+  // Define meaningful names for durations and sizes.
   final double _paintSize = 300.0;
   final double _transparentOpacityAnimation = 0.0;
   final double _opaqueOpacityAnimation = 1.0;
@@ -24,7 +24,7 @@ class _ScanAnimationState extends State<ScanAnimation>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: _animationDuration,
+      duration: Duration(seconds: DurationSeconds.long.time),
     );
     _animation = Tween<double>(
       begin: _transparentOpacityAnimation,

@@ -22,10 +22,10 @@ class _RetrofitClient implements RetrofitClient {
 
   @override
   Future<List<RussiaSponsorResponse>> getTerrorismSponsors() async {
-    const _extra = <String, dynamic>{};
+    final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final Map<String, dynamic>? _data = null;
+    const Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<List<dynamic>>(
         _setStreamType<List<RussiaSponsorResponse>>(Options(
       method: 'GET',
@@ -52,10 +52,10 @@ class _RetrofitClient implements RetrofitClient {
 
   @override
   Future<List<RussiaSponsorResponse>> getBackupTerrorismSponsors() async {
-    const _extra = <String, dynamic>{};
+    final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final Map<String, dynamic>? _data = null;
+    const Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<List<dynamic>>(
         _setStreamType<List<RussiaSponsorResponse>>(Options(
       method: 'GET',

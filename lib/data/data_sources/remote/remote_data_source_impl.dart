@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:dart_openai/dart_openai.dart';
 import 'package:entities/entities.dart';
-import 'package:ethical_scanner/constants.dart' as constants;
 import 'package:ethical_scanner/data/data_mappers/product_data_mapper.dart';
 import 'package:ethical_scanner/data/data_mappers/product_result_data_mapper.dart';
+import 'package:ethical_scanner/res/values/constants.dart' as constants;
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 
