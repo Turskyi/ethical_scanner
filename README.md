@@ -3,6 +3,7 @@
 [![Build & upload to Firebase App Distribution](https://github.com/Turskyi/ethical_scanner/actions/workflows/flutter_ci.yml/badge.svg?branch=dev&event=push)](https://appdistribution.firebase.dev/i/ad57d28bed182b15)
 [![Code Quality](https://github.com/Turskyi/ethical_scanner/actions/workflows/code-quality-tests.yml/badge.svg?branch=master&event=push)](https://github.com/flutter/flutter/wiki/Style-guide-for-Flutter-repo)
 [![style: flutter lints](https://img.shields.io/badge/style-flutter__lints-blue)](https://pub.dev/packages/flutter_lints)
+<img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/Turskyi/news_glance">
 
 # Ethical Scanner
 
