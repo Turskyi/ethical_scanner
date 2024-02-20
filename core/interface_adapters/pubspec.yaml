@@ -22,7 +22,7 @@ dependencies:
 
   camera: ^0.10.5+9
   entities:
-    path: ../core/entities
+    path: ../domain/entities
 
   envied: ^0.5.3
   feedback: ^3.0.0
@@ -45,7 +45,7 @@ dependencies:
   url_launcher: ^6.2.4
 
   use_cases:
-    path: ../core/use_cases
+    path: ../domain/use_cases
 
 dev_dependencies:
   # A build system for Dart code generation and modular compilation.
