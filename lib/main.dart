@@ -2,7 +2,7 @@ import 'package:ethical_scanner/di/dependencies.dart';
 import 'package:ethical_scanner/di/dependencies_scope.dart';
 import 'package:ethical_scanner/di/injector.dart';
 import 'package:ethical_scanner/localization_delelegate_getter.dart';
-import 'package:ethical_scanner/routes/router.dart';
+import 'package:ethical_scanner/router/router.dart';
 import 'package:feedback/feedback.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';

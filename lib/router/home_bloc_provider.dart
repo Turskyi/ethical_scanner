@@ -1,7 +1,7 @@
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/di/dependencies.dart';
 import 'package:ethical_scanner/di/dependencies_scope.dart';
-import 'package:ethical_scanner/routes/routes.dart' as route;
+import 'package:ethical_scanner/router/routes.dart' as route;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
