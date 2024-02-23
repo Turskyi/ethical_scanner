@@ -1,6 +1,7 @@
-import 'package:entities/entities.dart';
+part of 'home_presenter.dart';
 
-sealed class HomeEvent {
+@immutable
+abstract class HomeEvent {
   const HomeEvent();
 }
 

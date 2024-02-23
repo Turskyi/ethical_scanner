@@ -15,14 +15,12 @@ abstract class TerrorismSponsor {
 }
 
 extension TerrorismSponsorList on List<TerrorismSponsor> {
-  bool sponsoredBy(ProductInfo product) {
-    return _isSponsoredByOtherRussiaSponsors(product) ||
-        _isSponsoredByAnyTerrorismSponsor(product);
-  }
+  bool sponsoredBy(ProductInfo product) =>
+      _isSponsoredByOtherRussiaSponsors(product) ||
+      _isSponsoredByAnyTerrorismSponsor(product);
 
-  bool _isSponsoredByOtherRussiaSponsors(ProductInfo product) {
-    return _otherRussiaSponsors.contains(product.brand.toLowerCase());
-  }
+  bool _isSponsoredByOtherRussiaSponsors(ProductInfo product) =>
+      _otherTerrorismSponsors.contains(product.brand.toLowerCase());
 
   bool _isSponsoredByAnyTerrorismSponsor(ProductInfo product) {
     return any(
@@ -48,22 +46,20 @@ extension TerrorismSponsorList on List<TerrorismSponsor> {
   bool _isSponsorNameNotEmptyAndMatchesProductBrandOrName(
     TerrorismSponsor terrorismSponsor,
     ProductInfo product,
-  ) {
-    return terrorismSponsor.name.isNotEmpty &&
-        (product.brand.toLowerCase().trim() ==
-                terrorismSponsor.name.toLowerCase().trim() ||
-            product.name.toLowerCase().trim() ==
-                terrorismSponsor.name.toLowerCase().trim());
-  }
+  ) =>
+      terrorismSponsor.name.isNotEmpty &&
+      (product.brand.toLowerCase().trim() ==
+              terrorismSponsor.name.toLowerCase().trim() ||
+          product.name.toLowerCase().trim() ==
+              terrorismSponsor.name.toLowerCase().trim());
 
   bool _isSponsorBrandsNotEmptyAndContainsProductBrand(
     TerrorismSponsor terrorismSponsor,
     ProductInfo product,
-  ) {
-    return terrorismSponsor.brands.isNotEmpty &&
-        product.brand.isNotEmpty &&
-        _doesSponsorBrandsContainProductBrand(terrorismSponsor, product);
-  }
+  ) =>
+      terrorismSponsor.brands.isNotEmpty &&
+      product.brand.isNotEmpty &&
+      _doesSponsorBrandsContainProductBrand(terrorismSponsor, product);
 
   bool _doesSponsorBrandsContainProductBrand(
     TerrorismSponsor terrorismSponsor,
@@ -73,14 +69,13 @@ extension TerrorismSponsorList on List<TerrorismSponsor> {
     return lowerCaseBrands.contains(product.brand.toLowerCase());
   }
 
-  List<String> _getLowerCaseBrands(TerrorismSponsor terrorismSponsor) {
-    return terrorismSponsor.brands
-        .split(', ')
-        .map((String brand) => brand.toLowerCase())
-        .toList();
-  }
+  List<String> _getLowerCaseBrands(TerrorismSponsor terrorismSponsor) =>
+      terrorismSponsor.brands
+          .split(', ')
+          .map((String brand) => brand.toLowerCase())
+          .toList();
 
-  List<String> get _otherRussiaSponsors => <String>[
+  List<String> get _otherTerrorismSponsors => <String>[
         'twix',
         'quaker',
         'nestlé',

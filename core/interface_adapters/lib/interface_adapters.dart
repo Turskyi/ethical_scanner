@@ -13,7 +13,6 @@ export 'src/env/env.dart';
 export 'src/gateways/product_info_gateway_impl.dart';
 export 'src/gateways/settings_gateway_impl.dart';
 export 'src/ui/app/app.dart';
-export 'src/ui/modules/home/home_event.dart';
 export 'src/ui/modules/home/home_presenter.dart';
 export 'src/ui/modules/home/view/home_view.dart';
 export 'src/ui/modules/photo/photo_presenter.dart';

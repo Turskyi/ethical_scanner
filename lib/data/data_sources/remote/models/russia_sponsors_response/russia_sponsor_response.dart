@@ -35,13 +35,12 @@ class RussiaSponsorResponse implements TerrorismSponsor {
     String? id,
     DateTime? createdTime,
     Fields? fields,
-  }) {
-    return RussiaSponsorResponse(
-      id: id ?? this.id,
-      createdTime: createdTime ?? this.createdTime,
-      fields: fields ?? this.fields,
-    );
-  }
+  }) =>
+      RussiaSponsorResponse(
+        id: id ?? this.id,
+        createdTime: createdTime ?? this.createdTime,
+        fields: fields ?? this.fields,
+      );
 
   @override
   bool operator ==(Object other) {
