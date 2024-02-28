@@ -6,6 +6,5 @@ class GetPrecipitationStateUseCase implements UseCase<bool, Null> {
   final SettingsGateway _settingsGateway;
 
   @override
-  bool call([_]) =>
-      _settingsGateway.getPrecipitationState();
+  bool call([_]) => _settingsGateway.getPrecipitationState();
 }

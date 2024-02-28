@@ -5,6 +5,6 @@ abstract interface class App extends StatelessWidget {
   const App({super.key});
 
   factory App.factory(RouteFactory routeFactory) => EthicalScannerApp(
-    routeFactory: routeFactory,
-  );
+        routeFactory: routeFactory,
+      );
 }

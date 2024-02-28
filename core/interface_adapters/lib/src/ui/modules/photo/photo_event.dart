@@ -13,7 +13,6 @@ class PhotoViewBackEvent extends PhotoEvent {
   const PhotoViewBackEvent();
 }
 
-
 class TakePhotoEvent extends PhotoEvent {
   const TakePhotoEvent();
 }

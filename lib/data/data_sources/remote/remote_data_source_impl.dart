@@ -226,7 +226,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     }
 
     OcrIngredientsResult ocrResponse =
-    await OpenFoodAPIClient.extractIngredients(
+        await OpenFoodAPIClient.extractIngredients(
       user,
       photo.info.barcode,
       language,

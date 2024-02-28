@@ -45,7 +45,9 @@ def SIGNING_KEY_RELEASE_KEY_PASSWORD = keyProperties.getProperty('SIGNING_KEY_RE
 android {
     //noinspection GroovyAssignabilityCheck
     namespace rootProject.application_id
+    //TODO: change to dynamic "flutter.compileSdkVersion" version, when the error is gone.
     compileSdk 34
+    //TODO: change to dynamic "flutter.ndkVersion" version, when the error is gone.
     ndkVersion "25.1.8937393"
 
     compileOptions {
@@ -65,6 +67,7 @@ android {
         applicationId rootProject.application_id
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
+        //TODO: change to dynamic "flutter.minSdkVersion" value, when it will be possible.
         minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
@@ -73,10 +76,15 @@ android {
     signingConfigs {
         production {
             // FCI_BUILD_ID is exported by Codemagic
+            //noinspection GroovyAssignabilityCheck
             if (System.getenv()["FCI_BUILD_ID"] != null) {
+                //noinspection GroovyAssignabilityCheck
                 storeFile file(System.getenv()["CM_KEYSTORE_PATH"])
+                //noinspection GroovyAssignabilityCheck
                 storePassword System.getenv()["CM_KEYSTORE_PASSWORD"]
+                //noinspection GroovyAssignabilityCheck
                 keyAlias System.getenv()["CM_KEY_ALIAS"]
+                //noinspection GroovyAssignabilityCheck
                 keyPassword System.getenv()["CM_KEY_PASSWORD"]
             } else {
                 storeFile file(SIGNING_KEY_RELEASE_PATH)
@@ -87,10 +95,15 @@ android {
         }
         dev {
             // FCI_BUILD_ID is exported by Codemagic
+            //noinspection GroovyAssignabilityCheck
             if (System.getenv()["FCI_BUILD_ID"] != null) {
+                //noinspection GroovyAssignabilityCheck
                 storeFile file(System.getenv()["CM_KEYSTORE_PATH"])
+                //noinspection GroovyAssignabilityCheck
                 storePassword System.getenv()["CM_KEYSTORE_PASSWORD"]
+                //noinspection GroovyAssignabilityCheck
                 keyAlias System.getenv()["CM_KEY_ALIAS"]
+                //noinspection GroovyAssignabilityCheck
                 keyPassword System.getenv()["CM_KEY_PASSWORD"]
             } else {
                 storeFile file(SIGNING_KEY_DEBUG_PATH)

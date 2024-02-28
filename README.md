@@ -43,7 +43,8 @@ For more information, please visit the project website at https://ethical-scanne
 
 • CI/CD: [GitHub Actions](https://docs.github.com/en/actions) is used to deliver new Android
 Package (APK) to [Firebase App Distribution](https://firebase.google.com/docs/app-distribution)
-after every push to any other than the **main** branch, [Codemagic](https://codemagic.io/start/) is
+after every push to any other than the **master**
+branch, [Codemagic](https://codemagic.io/start/) is
 used to deliver
 new release app bundle to **Google Play** after every merge (push) to **master** branch;
 

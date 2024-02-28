@@ -9,7 +9,7 @@ class AddIngredientsUseCase implements UseCase<Future<void>, ProductPhoto> {
 
   @override
   Future<void> call([ProductPhoto productPhoto = const ProductPhoto()]) {
-    if(productPhoto.info.name.isEmpty){
+    if (productPhoto.info.name.isEmpty) {
       return _productInfoGateway.addProduct(productPhoto.info).whenComplete(() {
         _productInfoGateway.addIngredients(productPhoto);
       });
