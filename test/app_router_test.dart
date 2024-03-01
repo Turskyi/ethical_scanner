@@ -37,7 +37,7 @@ void main() {
       final Route<String> route = generateRoute(settings);
 
       // Assert
-      expect(route is MaterialPageRoute<String>, true);
+      expect(route is PageRouteBuilder<String>, true);
     });
   });
 }
