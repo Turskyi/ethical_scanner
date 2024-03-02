@@ -422,16 +422,10 @@ more expression and flexibility.
 ## Additional information
 
 When it is time to release the system, the process proceeds from the bottom up.
-First the
-`Entities` component is compiled, tested, and released.
-Then the same is done for interactors from
-the `use_cases`.
-These components are followed by `interface_adapters` (
-Presenters, View and ViewModels).
-(`data` and `main`) go last.
-This process
-is very clear to deal with.
-We know how to build the system
+First the `Entities` component is compiled, tested, and released. Then the same
+is done for interactors from the `use_cases`. These components are followed by
+`interface_adapters` (Presenters, View and ViewModels). `data` and `main` go
+last. This process is very clear to deal with. We know how to build the system
 because we understand the dependencies between its parts.
 
 # Usage
