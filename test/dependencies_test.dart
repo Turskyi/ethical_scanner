@@ -8,11 +8,34 @@ import 'mock_dependencies.dart';
 
 void main() {
   group('Dependencies', () {
-    test('getProductInfoUseCase should be GetProductInfoUseCase', () async {
+    late Dependencies dependencies;
+    setUp(() async {
       WidgetsFlutterBinding.ensureInitialized();
-      // Arrange
-      Dependencies dependencies = await MockDependencies.create();
-
+      dependencies = await MockDependencies.create();
+    });
+    test(
+        'getPrecipitationStateUseCase returns instance of '
+        'GetPrecipitationStateUseCase', () async {
+      expect(
+        dependencies.getPrecipitationStateUseCase,
+        isA<GetPrecipitationStateUseCase>(),
+      );
+    });
+    test('getLanguageUseCase returns instance of GetLanguageUseCase', () async {
+      expect(
+        dependencies.getLanguageUseCase,
+        isA<GetLanguageUseCase>(),
+      );
+    });
+    test(
+        'savePrecipitationStateUseCas returns instance of '
+        'SavePrecipitationStateUseCase', () async {
+      expect(
+        dependencies.savePrecipitationStateUseCase,
+        isA<SavePrecipitationStateUseCase>(),
+      );
+    });
+    test('getProductInfoUseCase should be GetProductInfoUseCase', () async {
       // Act
       final UseCase<Future<ProductInfo>, Barcode> useCase =
           dependencies.productInfoUseCase;

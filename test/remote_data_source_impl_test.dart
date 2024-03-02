@@ -52,5 +52,25 @@ void main() {
       },
       timeout: const Timeout(Duration(seconds: 40)),
     );
+
+    test(
+      'getProductInfoAsFuture returns ProductInfo with backup terrorism '
+      'sponsors on error',
+      () async {
+        // Arrange
+        const String input = 'invalid_barcode';
+
+        // Act and Assert
+        expect(
+          () async {
+            await remoteDataSource.getProductInfoAsFuture(
+              const Barcode(code: input),
+            );
+          },
+          throwsA(isA<NotFoundException>()),
+        );
+      },
+      timeout: const Timeout(Duration(seconds: 40)),
+    );
   });
 }

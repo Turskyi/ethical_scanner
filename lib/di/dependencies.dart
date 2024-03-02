@@ -22,11 +22,11 @@ class Dependencies {
   UseCase<bool, Null> get getPrecipitationStateUseCase =>
       GetPrecipitationStateUseCase(_settingsGateway);
 
-  UseCase<Language, Null> get getLanguageUseCase =>
-      GetLanguageUseCase(_settingsGateway);
-
   UseCase<Future<bool>, bool> get savePrecipitationStateUseCase =>
       SavePrecipitationStateUseCase(_settingsGateway);
+
+  UseCase<Language, Null> get getLanguageUseCase =>
+      GetLanguageUseCase(_settingsGateway);
 
   UseCase<Future<bool>, String> get saveLanguageUseCase =>
       SaveLanguageUseCase(_settingsGateway);

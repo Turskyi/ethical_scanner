@@ -22,6 +22,22 @@ class MockDependencies extends Mock implements Dependencies {
     return MockDependencies._(localDataSource);
   }
 
+  @override
+  UseCase<bool, Null> get getPrecipitationStateUseCase =>
+      GetPrecipitationStateUseCase(_settingsGateway);
+
+  @override
+  UseCase<Language, Null> get getLanguageUseCase =>
+      GetLanguageUseCase(_settingsGateway);
+
+  @override
+  UseCase<Future<bool>, bool> get savePrecipitationStateUseCase =>
+      SavePrecipitationStateUseCase(_settingsGateway);
+
+  @override
+  UseCase<Future<ProductInfo>, Barcode> get productInfoUseCase =>
+      GetProductInfoUseCase(_productInfoGateway);
+
   RestClient get _restClient {
     final Dio dio = Dio();
     const LoggingInterceptor loggingInterceptor = LoggingInterceptorImpl();
@@ -36,7 +52,5 @@ class MockDependencies extends Mock implements Dependencies {
         _localDataSource,
       );
 
-  @override
-  UseCase<Future<ProductInfo>, Barcode> get productInfoUseCase =>
-      GetProductInfoUseCase(_productInfoGateway);
+  SettingsGateway get _settingsGateway => SettingsGatewayImpl(_localDataSource);
 }
