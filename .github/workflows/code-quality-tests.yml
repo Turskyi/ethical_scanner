@@ -3,7 +3,7 @@ name: Code Quality
 on: [ push ]
 
 jobs:
-  check_lint_errors:
+  check-code-quality-and-tests:
     if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
@@ -44,4 +44,4 @@ jobs:
       - name: Very Good Coverage
         uses: VeryGoodOpenSource/very_good_coverage@v2.1.0
         with:
-          min_coverage: 33
+          min_coverage: 33.9
