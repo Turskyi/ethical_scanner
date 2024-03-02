@@ -63,13 +63,6 @@ reading the code can easily understand their function.
 
 # Getting Started
 
-## To create generated files, run:
-
-```
-dart run build_runner clean
-dart run build_runner build --delete-conflicting-outputs
-```
-
 ## Contribution
 
 **Ethical Scanner** is an open source project and welcomes contributions from
@@ -98,6 +91,13 @@ set up your development environment. To run an **Ethical Scanner** on your
 device or emulator, you need to clone this repository and open it in Android
 Studio. Then, you can use the run button or the command line to launch the app.
 For more information, see the Flutter documentation.
+
+## To create generated files, run:
+
+```
+dart run build_runner clean
+dart run build_runner build --delete-conflicting-outputs
+```
 
 ### Data flow
 
