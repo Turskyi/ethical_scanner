@@ -43,7 +43,7 @@ void main() {
         // Act
         final ProductInfo result =
             await remoteDataSource.getProductInfoAsFuture(
-          const Barcode(code: input),
+          const LocalizedCode(code: input),
         );
 
         // Assert
@@ -64,7 +64,7 @@ void main() {
         expect(
           () async {
             await remoteDataSource.getProductInfoAsFuture(
-              const Barcode(code: input),
+              const LocalizedCode(code: input),
             );
           },
           throwsA(isA<NotFoundException>()),

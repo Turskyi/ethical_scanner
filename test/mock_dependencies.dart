@@ -35,7 +35,7 @@ class MockDependencies extends Mock implements Dependencies {
       SavePrecipitationStateUseCase(_settingsGateway);
 
   @override
-  UseCase<Future<ProductInfo>, Barcode> get productInfoUseCase =>
+  UseCase<Future<ProductInfo>, LocalizedCode> get productInfoUseCase =>
       GetProductInfoUseCase(_productInfoGateway);
 
   RestClient get _restClient {

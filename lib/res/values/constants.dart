@@ -1,5 +1,5 @@
 const String baseUrl = 'https://api.standwithukraine.how/';
-const String localePath = 'core/interface_adapters/assets/i18n/';
+const String localePath = 'components/interface_adapters/assets/i18n/';
 const String webPage = 'https://ethical-scanner.turskyi.com';
 const String userAgentComment =
     'Ethical Scanner is a mobile application that scans the barcode of a '

@@ -31,7 +31,7 @@ class Dependencies {
   UseCase<Future<bool>, String> get saveLanguageUseCase =>
       SaveLanguageUseCase(_settingsGateway);
 
-  UseCase<Future<ProductInfo>, Barcode> get productInfoUseCase =>
+  UseCase<Future<ProductInfo>, LocalizedCode> get productInfoUseCase =>
       GetProductInfoUseCase(_productInfoGateway);
 
   UseCase<Future<void>, ProductPhoto> get addIngredientsUseCase =>

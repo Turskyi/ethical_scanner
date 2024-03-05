@@ -37,7 +37,7 @@ void main() {
     });
     test('getProductInfoUseCase should be GetProductInfoUseCase', () async {
       // Act
-      final UseCase<Future<ProductInfo>, Barcode> useCase =
+      final UseCase<Future<ProductInfo>, LocalizedCode> useCase =
           dependencies.productInfoUseCase;
       // Assert
       expect(useCase, isA<GetProductInfoUseCase>());

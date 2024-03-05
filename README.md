@@ -116,12 +116,45 @@ dart run build_runner build --delete-conflicting-outputs
 <img src="assets/images/flutter_clean_architecture.png" width="800" title="Flutter Clean Architecture" alt="Image of the Flutter Clean Architecture Pattern">
 </a>
 
+### Components - `components`
+
+A "component" is a grouping of related functionality behind a nice clean
+interface, which resides inside an execution environment like an application.
+If the SOLID principles tell us how to arrange the bricks into walls and rooms,
+then the component principles tell us how to arrange the rooms into buildings.
+Large software systems, like large buildings, are built out of smaller
+`components`.
+• **REP**: *The Reuse/Release Equivalence Principle*. The granule of reuse is
+the granule of release. This means that the classes and modules that are formed
+into a component must belong to a cohesive group.
+• **CCP**: *The Common Closure Principle*. Gather into components those classes
+that change for the same reasons and at the same times. Separate into different
+`components` those classes that change at different times and for different
+reasons.
+• **CRP**: *The Common Reuse Principle*. Don’t force users of a component to
+depend on things they don’t need.
+
 ## Layers
+
+### Business/Domain - `domain`
+
+In the context of the Clean Architecture by Robert C. Martin, the `domain`
+refers to the business logic or domain logic of the application. This is the
+innermost circle, which encapsulates business logic (`use_cases`) and
+`entities`. Domain models, in general, are designed to be highly reusable and
+to encapsulate useful business functionality. The domain layer may contain
+entities like `User`, `Role`, `Product`, etc. It’s essentially a collection of
+best practice design principles that help us keep business logic together and
+minimize the dependencies within the system.
 
 #### Enterprise Business Rules - `entities`
 
 An **Entity** is an object within our computer system that embodies a small set
-of critical business rules operating on Critical Business Data.
+of critical business rules operating on Critical Business Data. Entities are a
+way to implement and enforce application-independent business rules.
+Application-independent business rules are rules or procedures that make or
+save the business money. Irrespective of whether they were implemented on a
+computer, they would make or save money even if they were executed manually.
 
 #### Application Business Rules - `use_cases`
 
