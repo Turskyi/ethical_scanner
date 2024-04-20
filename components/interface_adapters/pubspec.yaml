@@ -41,7 +41,7 @@ dependencies:
   mobile_scanner: ^4.0.0
 
   # For launching a URL. Supports web, phone, SMS, and email schemes.
-  package_info_plus: ^5.0.1
+  package_info_plus: ^7.0.0
   path_provider: ^2.1.2
   url_launcher: ^6.2.5
 
