@@ -40,8 +40,10 @@ class ProductInfoBody extends StatelessWidget {
             return RefreshIndicator(
               onRefresh: () => PackageInfo.fromPlatform().then(
                 (PackageInfo packageInfo) => BetterFeedback.of(context).show(
-                  (UserFeedback feedback) =>
-                      _sendFeedback(feedback, packageInfo),
+                  (UserFeedback feedback) => _sendFeedback(
+                    feedback: feedback,
+                    packageInfo: packageInfo,
+                  ),
                 ),
               ),
               child: ListView.builder(
@@ -87,7 +89,10 @@ class ProductInfoBody extends StatelessWidget {
     );
   }
 
-  Future<void> _sendFeedback(UserFeedback feedback, PackageInfo packageInfo) {
+  Future<void> _sendFeedback({
+    required UserFeedback feedback,
+    required PackageInfo packageInfo,
+  }) {
     return _writeImageToStorage(feedback.screenshot)
         .then((String screenshotFilePath) {
       return FlutterEmailSender.send(
@@ -97,7 +102,7 @@ class ProductInfoBody extends StatelessWidget {
               '${packageInfo.buildNumber}',
           subject: '${translate('app_feedback')}: '
               '${packageInfo.appName}',
-          recipients: <String>[Env.openFoodPassword],
+          recipients: <String>[Env.supportEmail],
           attachmentPaths: <String>[screenshotFilePath],
         ),
       );

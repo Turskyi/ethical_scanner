@@ -12,6 +12,7 @@ import 'package:interface_adapters/interface_adapters.dart';
 Route<String> generateRoute(RouteSettings settings) => switch (settings.name) {
       route.homePath => _getHomePageRouteBuilder(settings),
       route.scanPath => PageRouteBuilder<String>(
+          settings: settings,
           opaque: false,
           pageBuilder: (
             _,
@@ -55,6 +56,7 @@ Route<String> generateRoute(RouteSettings settings) => switch (settings.name) {
           ),
         ),
       route.photoPath => PageRouteBuilder<String>(
+          settings: settings,
           pageBuilder: (BuildContext context, Animation<double> animation, __) {
             Object? args = settings.arguments;
             if (args is ProductInfo) {
