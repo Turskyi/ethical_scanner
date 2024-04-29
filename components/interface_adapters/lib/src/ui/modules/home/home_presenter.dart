@@ -1,10 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:entities/entities.dart';
 import 'package:interface_adapters/src/error_message_extractor.dart';
-import 'package:interface_adapters/src/ui/modules/home/home_event.dart';
+import 'package:meta/meta.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:use_cases/use_cases.dart';
 
+part 'home_event.dart';
 part 'home_view_model.dart';
 
 class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
@@ -84,7 +85,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
             productInfo = event.productInfo.ingredientList.isEmpty
                 ? await _getProductInfoUseCase.call(
-                    Barcode(
+                    LocalizedCode(
                       code: event.productInfo.barcode,
                       language: event.productInfo.language,
                     ),
@@ -358,7 +359,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     );
   }
 
-  final UseCase<Future<ProductInfo>, Barcode> _getProductInfoUseCase;
+  final UseCase<Future<ProductInfo>, LocalizedCode> _getProductInfoUseCase;
   final UseCase<Future<bool>, bool> _savePrecipitationStateUseCase;
   final UseCase<bool, Null> _getPrecipitationStateUseCase;
   final UseCase<Future<bool>, String> _saveLanguageUseCase;

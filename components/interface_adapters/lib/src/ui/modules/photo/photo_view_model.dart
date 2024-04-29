@@ -4,7 +4,7 @@ sealed class PhotoViewModel {
   const PhotoViewModel();
 }
 
-abstract class LoadingState extends PhotoViewModel{
+abstract class LoadingState extends PhotoViewModel {
   const LoadingState();
 }
 
@@ -33,7 +33,7 @@ class AddIngredientsErrorState extends PhotoViewModel {
   const AddIngredientsErrorState({
     required String barcode,
     required this.errorMessage,
-  }):super();
+  }) : super();
   final String errorMessage;
 }
 

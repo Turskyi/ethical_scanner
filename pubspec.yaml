@@ -10,7 +10,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # followed by an optional build number separated by a +.
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
-# In Android, build-name is used as versionName while build-number used as versionCode.
+# In Android, build-name is used as versionName while build-number is used as
+# `versionCode`.
 # Read more about Android versioning at https://developer.android.com/studio/publish/versioning
 # In iOS, build-name is used as CFBundleShortVersionString while build-number is used as
 # CFBundleVersion.
@@ -18,13 +19,13 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.0.9+9
+version: 0.1.0+10
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
 
-# Dependencies specify other packages that your package needs in order to work.
-# To automatically upgrade your package dependencies to the latest versions
+# Dependencies specify other packages that your package needs to work.
+# To automatically upgrade your package dependencies to the latest versions,
 # consider running `flutter pub upgrade --major-versions`. Alternatively,
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
@@ -39,25 +40,26 @@ dependencies:
   # the `flutter_bloc` package handles the UI and presentation layer. You can think of the bloc
   # package as the engine, and the `flutter_bloc` package as the car body. You need both to make a
   # functional car 🚗.
-  bloc: ^8.1.3
+  bloc: ^8.1.4
   camera: ^0.10.5+9
   collection: ^1.18.0
-  # Dart SDK for openAI Apis (GPT-3 & DALL-E), integrate easily the power of OpenAI's
+  # Dart SDK for openAI Apis (GPT-3 & DALL-E), easily integrate the power of
+  # OpenAI's
   # state-of-the-art AI models into their Dart applications.
-  dart_openai: ^5.0.0
-  dio: ^5.4.1
+  dart_openai: ^5.1.0
+  dio: ^5.4.3+1
   entities:
-    path: ./components/core/entities
+    path: ./components/domain/entities
 
   # Explicitly reads environment variables into a dart file from a .env file for more security and
   # faster start up times.
-  envied: ^0.5.3
-  feedback: ^3.0.0
+  envied: ^0.5.4+1
+  feedback: ^3.1.0
   flutter:
     sdk: flutter
 
   # Built to be used with the `bloc` state management package.
-  flutter_bloc: ^8.1.4
+  flutter_bloc: ^8.1.5
 
   # Localization / internationalization (i18n) library.
   flutter_translate: ^4.0.4
@@ -65,36 +67,38 @@ dependencies:
   interface_adapters:
     path: ./components/interface_adapters
 
-  json_annotation: ^4.8.1
-  logger: ^2.0.2+1
-  openfoodfacts: ^3.4.0
+  json_annotation: ^4.9.0
+  logger: ^2.2.0
+  openfoodfacts: ^3.6.1
 
-  package_info_plus: ^5.0.1
+  package_info_plus: ^8.0.0
   path: any
+  path_provider: ^2.1.3
   retrofit: ^4.1.0
   retrofit_generator: ^8.1.0
-  shared_preferences: ^2.2.2
+  shared_preferences: ^2.2.3
   use_cases:
-    path: ./components/core/use_cases
+    path: ./components/domain/use_cases
 
 dev_dependencies:
   # A build system for Dart code generation and modular compilation.
-  build_runner: ^2.4.8
+  build_runner: ^2.4.9
 
   # Generator for the Envied package. See https://pub.dev/packages/envied.
-  envied_generator: ^0.5.3
+  envied_generator: ^0.5.4+1
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.1
+  flutter_lints: ^3.0.2
   flutter_test:
     sdk: flutter
 
   # A full-featured library for writing and running Dart tests across platforms.
-  json_serializable: ^6.7.1
+  json_serializable: ^6.8.0
+  mockito: ^5.4.4
   test: any
 
 # For information on the generic Dart part of this file, see the
@@ -123,13 +127,8 @@ flutter:
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
-  # example:
+  # example,
   # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

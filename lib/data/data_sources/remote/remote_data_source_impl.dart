@@ -15,7 +15,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   final RestClient _restClient;
 
   @override
-  Future<ProductInfo> getProductInfoAsFuture(Barcode input) =>
+  Future<ProductInfo> getProductInfoAsFuture(LocalizedCode input) =>
       OpenFoodAPIClient.getProductV3(
         ProductQueryConfiguration(
           input.code,
@@ -181,7 +181,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   /// database that has already ingredient image otherwise it should be added
   /// first to the server and then this can be called.
   @override
-  Future<String> getIngredientsText(Barcode barcode) =>
+  Future<String> getIngredientsText(LocalizedCode barcode) =>
       OpenFoodAPIClient.extractIngredients(
         OpenFoodAPIConfiguration.globalUser ??
             const User(
@@ -226,7 +226,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     }
 
     OcrIngredientsResult ocrResponse =
-    await OpenFoodAPIClient.extractIngredients(
+        await OpenFoodAPIClient.extractIngredients(
       user,
       photo.info.barcode,
       language,

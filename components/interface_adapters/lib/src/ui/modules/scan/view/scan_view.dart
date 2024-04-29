@@ -1,4 +1,5 @@
 import 'package:audiofileplayer/audiofileplayer.dart';
+import 'package:entities/entities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
@@ -62,7 +63,16 @@ class _HomeViewState extends State<ScanView> {
                 controller: _scannerController,
                 errorBuilder: (_, MobileScannerException error, __) {
                   _scannerController.stop().whenComplete(() {
-                    _scannerController.start();
+                    _scannerController
+                        .start()
+                        .catchError((Object error, StackTrace stacktrace) {
+                      debugPrint(
+                          'Warning: an error occurred in $runtimeType: $error\n'
+                          'Stacktrace: $stacktrace');
+                      throw const NotFoundException(
+                        'No camera found or failed to open camera!',
+                      );
+                    });
                   });
                   return ScannerErrorWidget(error: error);
                 },

@@ -14,7 +14,7 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
   final LocalDataSource _localDataSource;
 
   @override
-  Future<ProductInfo> getProductInfoAsFuture(Barcode input) {
+  Future<ProductInfo> getProductInfoAsFuture(LocalizedCode input) {
     return _remoteDataSource
         .getProductInfoAsFuture(input)
         .onError((Object? error, StackTrace stackTrace) {

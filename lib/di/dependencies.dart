@@ -2,12 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/data/data_sources/local/local_data_source_impl.dart';
 import 'package:ethical_scanner/data/data_sources/remote/remote_data_source_impl.dart';
-import 'package:ethical_scanner/data/data_sources/remote/rest/dio/logging_interceptor_impl.dart';
+import 'package:ethical_scanner/data/data_sources/remote/rest/logging_interceptor_impl.dart';
 import 'package:ethical_scanner/data/data_sources/remote/rest/retrofit_client/retrofit_client.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:use_cases/use_cases.dart';
 
-/// Dependencies container
+/// Dependencies container.
 class Dependencies {
   const Dependencies._(this._localDataSource);
 
@@ -22,16 +22,16 @@ class Dependencies {
   UseCase<bool, Null> get getPrecipitationStateUseCase =>
       GetPrecipitationStateUseCase(_settingsGateway);
 
-  UseCase<Language, Null> get getLanguageUseCase =>
-      GetLanguageUseCase(_settingsGateway);
-
   UseCase<Future<bool>, bool> get savePrecipitationStateUseCase =>
       SavePrecipitationStateUseCase(_settingsGateway);
+
+  UseCase<Language, Null> get getLanguageUseCase =>
+      GetLanguageUseCase(_settingsGateway);
 
   UseCase<Future<bool>, String> get saveLanguageUseCase =>
       SaveLanguageUseCase(_settingsGateway);
 
-  UseCase<Future<ProductInfo>, Barcode> get productInfoUseCase =>
+  UseCase<Future<ProductInfo>, LocalizedCode> get productInfoUseCase =>
       GetProductInfoUseCase(_productInfoGateway);
 
   UseCase<Future<void>, ProductPhoto> get addIngredientsUseCase =>

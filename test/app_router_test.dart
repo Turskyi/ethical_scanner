@@ -1,5 +1,5 @@
-import 'package:ethical_scanner/routes/routes.dart' as route;
-import 'package:ethical_scanner/routes/router.dart';
+import 'package:ethical_scanner/router/router.dart';
+import 'package:ethical_scanner/router/routes.dart' as route;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -37,7 +37,7 @@ void main() {
       final Route<String> route = generateRoute(settings);
 
       // Assert
-      expect(route is MaterialPageRoute<String>, true);
+      expect(route is PageRouteBuilder<String>, true);
     });
   });
 }

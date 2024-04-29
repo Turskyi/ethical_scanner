@@ -2,9 +2,10 @@ import 'package:entities/entities.dart';
 
 abstract interface class RemoteDataSource {
   const RemoteDataSource();
-  Future<ProductInfo> getProductInfoAsFuture(Barcode barcode);
 
-  Future<String> getIngredientsText(Barcode barcode);
+  Future<ProductInfo> getProductInfoAsFuture(LocalizedCode barcode);
+
+  Future<String> getIngredientsText(LocalizedCode barcode);
 
   Future<String> getCountryFromAiAsFuture(String barcode);
 

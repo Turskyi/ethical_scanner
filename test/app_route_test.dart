@@ -1,4 +1,4 @@
-import 'package:ethical_scanner/routes/routes.dart' as route;
+import 'package:ethical_scanner/router/routes.dart' as route;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as path;
 

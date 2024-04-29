@@ -71,7 +71,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       '052': 'US(GS1)/Barbados(ISO 3166-1)',
       '056': 'US(GS1)/Belgium(ISO 3166-1)',
       // 057 is EAN-13 barcode prefix for the United States
-      '057': 'United States(EAN-13)',
+      '057': 'United States',
       '060': 'United States and Canada',
       '061': 'United States',
       '062': 'United States',
