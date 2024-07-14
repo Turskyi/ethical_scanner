@@ -19,8 +19,7 @@ and more.
 The app uses the data from various sources, such as
 
 - [Open Food Facts](https://world.openfoodfacts.org);
-- [STOP FUNDING PUTIN’S
-  WAR](https://boycottrussia.info/all-companies);
+- [STOP FUNDING PUTIN’S WAR](https://boycottrussia.info/all-companies);
 - [Yale chief executive leadership institute | List of Companies
   Leaving and Staying in Russia](https://www.yalerussianbusinessretreat.com/);
 - [U.S. bureau of counterterrorism | State Sponsors of Terrorism](https://www.state.gov/state-sponsors-of-terrorism/);
