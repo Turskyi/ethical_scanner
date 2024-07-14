@@ -6,15 +6,16 @@ import 'package:flutter_translate/flutter_translate.dart';
 
 Future<LocalizationDelegate> getLocalizationDelegate() async {
   // Get the singleton instance of the `PlatformDispatcher`.
-  PlatformDispatcher platformDispatcher = PlatformDispatcher.instance;
+  final PlatformDispatcher platformDispatcher = PlatformDispatcher.instance;
 
   // Get the current locale from the `PlatformDispatcher`.
-  Locale deviceLocale = platformDispatcher.locale;
+  final Locale deviceLocale = platformDispatcher.locale;
 
   // Get the language code from the `Locale`.
-  String deviceIsoLanguageCode = deviceLocale.languageCode;
+  final String deviceIsoLanguageCode = deviceLocale.languageCode;
 
-  LocalizationDelegate localizationDelegate = await LocalizationDelegate.create(
+  final LocalizationDelegate localizationDelegate =
+      await LocalizationDelegate.create(
     fallbackLocale: Language.fromIsoLanguageCode(
       deviceIsoLanguageCode,
     ).isoLanguageCode,

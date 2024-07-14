@@ -21,10 +21,13 @@ import 'package:interface_adapters/interface_adapters.dart';
 /// components in the system. They don’t know about [main], and they don’t care
 /// when it changes.
 void main() async {
-  LocalizationDelegate localizationDelegate = await getLocalizationDelegate();
+  //TODO: move `await getLocalizationDelegate()` inside
+  // `await injectAndGetDependencies()` and
+  // `LocalizationDelegate localizationDelegate` inside `Dependencies`.
+  final LocalizationDelegate localizationDelegate =
+      await getLocalizationDelegate();
 
-  // Filter the `OpenFoodFactsLanguage` values based on the `Language` enum.
-  Dependencies dependencies = await injectAndGetDependencies();
+  final Dependencies dependencies = await injectAndGetDependencies();
 
   runApp(
     BetterFeedback(

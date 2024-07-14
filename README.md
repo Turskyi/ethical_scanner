@@ -19,12 +19,11 @@ and more.
 The app uses the data from various sources, such as
 
 - [Open Food Facts](https://world.openfoodfacts.org);
-- [Ukrainian national agency on corruption prevention | INTERNATIONAL SPONSORS OF WAR](https://sanctions.nazk.gov.ua/en/boycott/);
+- [STOP FUNDING PUTIN’S WAR](https://boycottrussia.info/all-companies);
 - [Yale chief executive leadership institute | List of Companies
   Leaving and Staying in Russia](https://www.yalerussianbusinessretreat.com/);
 - [U.S. bureau of counterterrorism | State Sponsors of Terrorism](https://www.state.gov/state-sponsors-of-terrorism/);
-- [European Parliament](https://www.europarl.europa.eu/delegations/en/recognising-the-russian-federation-as-a-/product-details/20221124DPU34521);
-- [Don't Fund War](https://dontfundwar.com).
+- [European Parliament](https://www.europarl.europa.eu/delegations/en/recognising-the-russian-federation-as-a-/product-details/20221124DPU34521).
 
 The app aims to help you shop with confidence and conscience. For more
 information, please visit the project website at
@@ -41,8 +40,6 @@ https://ethical-scanner.turskyi.com.
 • Version control system: [Git](https://git-scm.com);
 
 • Git Hosting Service: [GitHub](https://github.com);
-
-• RESTful API: https://api.standwithukraine.how/get-companies-database;
 
 • CI/CD: [GitHub Actions](https://docs.github.com/en/actions) is used to deliver
 new Android Package (APK) to

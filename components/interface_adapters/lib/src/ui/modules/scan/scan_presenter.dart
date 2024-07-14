@@ -10,7 +10,10 @@ class ScanPresenter extends Bloc<ScanEvent, ScanViewModel> {
     this._getSoundPreferenceUseCase,
   ) : super(const LoadingScanningState()) {
     on<LoadScannerEvent>(
-      (_, Emitter<ScanViewModel> emit) {
+      (
+        _,
+        Emitter<ScanViewModel> emit,
+      ) {
         emit(ScanningState(_getSoundPreferenceUseCase.call()));
       },
     );

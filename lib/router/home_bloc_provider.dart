@@ -14,7 +14,7 @@ class HomeBlocProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<HomePresenter>(
       create: (BuildContext context) {
-        Dependencies dependencies = DependenciesScope.of(context);
+        final Dependencies dependencies = DependenciesScope.of(context);
         return HomePresenter(
           dependencies.productInfoUseCase,
           dependencies.savePrecipitationStateUseCase,
@@ -25,9 +25,10 @@ class HomeBlocProvider extends StatelessWidget {
       },
       child: BlocListener<HomePresenter, HomeViewModel>(
         listener: (BuildContext context, HomeViewModel viewModel) {
-          Language language = Language.fromIsoLanguageCode(
+          final Language language = Language.fromIsoLanguageCode(
             viewModel.language.isoLanguageCode,
           );
+
           if (viewModel is ScanState) {
             Navigator.pushNamed<String>(context, route.scanPath).then(
               (String? barcode) {
@@ -51,10 +52,10 @@ class HomeBlocProvider extends StatelessWidget {
                   ),
             );
           } else if (viewModel is ReadyToScanState) {
-            Language currentLanguage = Language.fromIsoLanguageCode(
+            final Language currentLanguage = Language.fromIsoLanguageCode(
               LocalizedApp.of(context).delegate.currentLocale.languageCode,
             );
-            Language savedLanguage = viewModel.language;
+            final Language savedLanguage = viewModel.language;
             if (currentLanguage != savedLanguage) {
               changeLocale(context, savedLanguage.isoLanguageCode)
                   // The returned value in `then` is always `null`.
