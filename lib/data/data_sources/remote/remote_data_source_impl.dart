@@ -35,17 +35,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
                   product,
                 ),
               );
-            }).onError(
-              (_, __) => _restClient
-                  .getBackupTerrorismSponsors()
-                  .then((List<TerrorismSponsor> terrorismSponsors) {
-                return product.copyWith(
-                  isCompanyTerrorismSponsor: terrorismSponsors.sponsoredBy(
-                    product,
-                  ),
-                );
-              }).onError((_, __) => product),
-            );
+            }).onError((_, __) => product);
           } else {
             return product;
           }

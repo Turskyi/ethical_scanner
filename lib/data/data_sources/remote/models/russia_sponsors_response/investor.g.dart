@@ -10,13 +10,13 @@ Investor _$InvestorFromJson(Map<String, dynamic> json) => Investor(
       symbol: json['symbol'] as String?,
       id: json['id'] as String?,
       adjHolding: (json['adjHolding'] as num?)?.toDouble(),
-      adjMv: json['adjMv'] as int?,
+      adjMv: (json['adjMv'] as num?)?.toInt(),
       entityProperName: json['entityProperName'] as String?,
-      reportDate: json['reportDate'] as int?,
+      reportDate: (json['reportDate'] as num?)?.toInt(),
       filingDate: json['filingDate'] as String?,
-      reportedHolding: json['reportedHolding'] as int?,
-      date: json['date'] as int?,
-      updated: json['updated'] as int?,
+      reportedHolding: (json['reportedHolding'] as num?)?.toInt(),
+      date: (json['date'] as num?)?.toInt(),
+      updated: (json['updated'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$InvestorToJson(Investor instance) => <String, dynamic>{

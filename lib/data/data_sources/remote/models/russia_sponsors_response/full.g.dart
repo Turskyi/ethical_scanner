@@ -8,8 +8,8 @@ part of 'full.dart';
 
 Full _$FullFromJson(Map<String, dynamic> json) => Full(
       url: json['url'] as String?,
-      width: json['width'] as int?,
-      height: json['height'] as int?,
+      width: (json['width'] as num?)?.toInt(),
+      height: (json['height'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$FullToJson(Full instance) => <String, dynamic>{

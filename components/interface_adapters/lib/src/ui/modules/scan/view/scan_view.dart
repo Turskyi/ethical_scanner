@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audiofileplayer/audiofileplayer.dart';
 import 'package:entities/entities.dart';
 import 'package:flutter/material.dart';
@@ -41,9 +43,9 @@ class _HomeViewState extends State<ScanView> {
 
   @override
   Widget build(BuildContext context) {
-    Resources resources = Resources.of(context);
-    Dimens dimens = resources.dimens;
-    EdgeInsets paddingTop = EdgeInsets.only(
+    final Resources resources = Resources.of(context);
+    final Dimens dimens = resources.dimens;
+    final EdgeInsets paddingTop = EdgeInsets.only(
       top: MediaQuery.paddingOf(context).top,
       left: dimens.leftPadding,
     );
@@ -145,18 +147,49 @@ class _HomeViewState extends State<ScanView> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
-                          ValueListenableBuilder<TorchState>(
-                            valueListenable: _scannerController.torchState,
-                            builder: (_, TorchState torchState, __) =>
-                                IconButton(
-                              onPressed: _scannerController.toggleTorch,
-                              icon: Icon(
-                                torchState == TorchState.on
-                                    ? Icons.flashlight_on
-                                    : Icons.flashlight_off,
-                                color: Colors.white,
-                              ),
-                            ),
+                          ValueListenableBuilder<MobileScannerState>(
+                            valueListenable: _scannerController,
+                            builder: (_, MobileScannerState scannerState, __) {
+                              if (!scannerState.isInitialized ||
+                                  !scannerState.isRunning) {
+                                return const SizedBox.shrink();
+                              }
+
+                              switch (scannerState.torchState) {
+                                case TorchState.auto:
+                                  return IconButton(
+                                    color: Colors.white,
+                                    iconSize: 32.0,
+                                    icon: const Icon(Icons.flash_auto),
+                                    onPressed: () async {
+                                      await _scannerController.toggleTorch();
+                                    },
+                                  );
+                                case TorchState.off:
+                                  return IconButton(
+                                    color: Colors.white,
+                                    iconSize: 32.0,
+                                    icon: const Icon(Icons.flash_off),
+                                    onPressed: () async {
+                                      await _scannerController.toggleTorch();
+                                    },
+                                  );
+                                case TorchState.on:
+                                  return IconButton(
+                                    color: Colors.white,
+                                    iconSize: 32.0,
+                                    icon: const Icon(Icons.flash_on),
+                                    onPressed: () async {
+                                      await _scannerController.toggleTorch();
+                                    },
+                                  );
+                                case TorchState.unavailable:
+                                  return const Icon(
+                                    Icons.no_flash,
+                                    color: Colors.grey,
+                                  );
+                              }
+                            },
                           ),
                           IconButton(
                             onPressed: _scannerController.switchCamera,
@@ -203,13 +236,15 @@ class _HomeViewState extends State<ScanView> {
 
   @override
   void dispose() {
-    _scannerController.dispose();
+    // Dispose the widget itself.
     super.dispose();
+    // Finally, dispose of the controller.
+    _scannerController.dispose();
   }
 
   void _onBarcodeDetect(BarcodeCapture barcodeCapture) {
     final Barcode barcode = barcodeCapture.barcodes.last;
-    String? barcodeValue = barcode.displayValue ?? barcode.rawValue;
+    final String? barcodeValue = barcode.displayValue ?? barcode.rawValue;
     return context
         .read<ScanPresenter>()
         .add(DetectedBarcodeEvent(barcodeValue));

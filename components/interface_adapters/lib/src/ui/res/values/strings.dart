@@ -1,7 +1,7 @@
 class Strings {
   const Strings();
 
-  final String warSponsorsSource = 'https://sanctions.nazk.gov.ua/en/boycott/';
+  final String warSponsorsSource = 'https://boycottrussia.info/all-companies';
   final String russiaSponsorsSource =
       'https://www.yalerussianbusinessretreat.com';
   final String russiaTerrorismSponsorSource =

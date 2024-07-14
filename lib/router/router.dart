@@ -21,7 +21,7 @@ Route<String> generateRoute(RouteSettings settings) => switch (settings.name) {
           ) =>
               BlocProvider<ScanPresenter>(
             create: (BuildContext context) {
-              Dependencies dependencies = DependenciesScope.of(context);
+              final Dependencies dependencies = DependenciesScope.of(context);
               return ScanPresenter(
                 dependencies.saveSoundPreferenceUseCase,
                 dependencies.getSoundPreferenceUseCase,

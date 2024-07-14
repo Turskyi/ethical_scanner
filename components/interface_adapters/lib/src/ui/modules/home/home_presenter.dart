@@ -41,7 +41,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     on<NavigateToScanViewEvent>(
       (_, Emitter<HomeViewModel> emit) {
         if (state is ReadyToScanState) {
-          ReadyToScanState readyToScanState = state as ReadyToScanState;
+          final ReadyToScanState readyToScanState = state as ReadyToScanState;
           emit(
             ScanState(
               language: readyToScanState.language,
@@ -67,6 +67,11 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
             isPrecipitationFalls: state.isPrecipitationFalls,
           ),
         );
+
+        // The `productInfo` variable is intentionally kept mutable here.
+        // Making it `final` would require additional variables and complexity
+        // to handle reassignment, which would reduce the readability and
+        // simplicity of the code.
         ProductInfo productInfo = event.productInfo;
         try {
           if (_isWebsite(event.productInfo.barcode)) {
@@ -126,8 +131,8 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
                 );
               }
             } else if (productInfo.categoryTags.isNotEmpty) {
-              StringBuffer stringBuffer = StringBuffer();
-              for (String countryTag in productInfo.categoryTags) {
+              final StringBuffer stringBuffer = StringBuffer();
+              for (final String countryTag in productInfo.categoryTags) {
                 stringBuffer.write(countryTag);
                 if (countryTag != productInfo.categoryTags.last) {
                   stringBuffer.write(', ');
@@ -163,7 +168,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
                           : 'Напевно так. ')
                       : 'No';
               if (state is LoadingProductInfoState) {
-                LoadingProductInfoState loadingState =
+                final LoadingProductInfoState loadingState =
                     state as LoadingProductInfoState;
                 emit(
                   loadingState.copyWith(productInfoMap: modifiableProductInfo),
@@ -175,7 +180,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
               modifiableProductInfo[ProductInfoType.countryTerrorismSponsor] =
                   'Yes';
               if (state is LoadingProductInfoState) {
-                LoadingProductInfoState loadingState =
+                final LoadingProductInfoState loadingState =
                     state as LoadingProductInfoState;
                 emit(
                   loadingState.copyWith(productInfoMap: modifiableProductInfo),
@@ -187,7 +192,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
               modifiableProductInfo[ProductInfoType.isVegetarian] =
                   productInfo.vegetarian == Vegetarian.positive ? 'Yes' : 'No';
               if (state is LoadingProductInfoState) {
-                LoadingProductInfoState loadingState =
+                final LoadingProductInfoState loadingState =
                     state as LoadingProductInfoState;
                 emit(
                   loadingState.copyWith(productInfoMap: modifiableProductInfo),
@@ -199,7 +204,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
               modifiableProductInfo[ProductInfoType.isVegan] =
                   productInfo.vegan == Vegan.positive ? 'Yes' : 'No';
               if (state is LoadingProductInfoState) {
-                LoadingProductInfoState loadingState =
+                final LoadingProductInfoState loadingState =
                     state as LoadingProductInfoState;
                 emit(
                   loadingState.copyWith(productInfoMap: modifiableProductInfo),
@@ -211,7 +216,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
               modifiableProductInfo[ProductInfoType.packaging] =
                   productInfo.packaging;
               if (state is LoadingProductInfoState) {
-                LoadingProductInfoState loadingState =
+                final LoadingProductInfoState loadingState =
                     state as LoadingProductInfoState;
                 emit(
                   loadingState.copyWith(productInfoMap: modifiableProductInfo),
@@ -219,21 +224,21 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
               }
             }
 
-            StringBuffer stringBuffer = StringBuffer();
-            for (String ingredient in productInfo.ingredientList) {
+            final StringBuffer stringBuffer = StringBuffer();
+            for (final String ingredient in productInfo.ingredientList) {
               stringBuffer.write(ingredient);
               if (ingredient != productInfo.ingredientList.last) {
                 stringBuffer.write(', ');
               }
             }
 
-            String ingredientsText = stringBuffer.toString();
+            final String ingredientsText = stringBuffer.toString();
 
             modifiableProductInfo[ProductInfoType.ingredients] =
                 ingredientsText;
 
             if (state is LoadingProductInfoState) {
-              LoadingProductInfoState loadingState =
+              final LoadingProductInfoState loadingState =
                   state as LoadingProductInfoState;
               emit(
                 loadingState.copyWith(productInfoMap: modifiableProductInfo),
@@ -244,7 +249,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
               modifiableProductInfo[ProductInfoType.website] =
                   productInfo.website;
               if (state is LoadingProductInfoState) {
-                LoadingProductInfoState loadingState =
+                final LoadingProductInfoState loadingState =
                     state as LoadingProductInfoState;
                 emit(
                   loadingState.copyWith(productInfoMap: modifiableProductInfo),
@@ -255,7 +260,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
               modifiableProductInfo[ProductInfoType.countryAi] =
                   productInfo.countryAi;
               if (state is LoadingProductInfoState) {
-                LoadingProductInfoState loadingState =
+                final LoadingProductInfoState loadingState =
                     state as LoadingProductInfoState;
                 emit(
                   loadingState.copyWith(productInfoMap: modifiableProductInfo),
@@ -271,7 +276,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
             modifiableProductInfo[ProductInfoType.error] = '$exception';
           }
           if (state is LoadingProductInfoState) {
-            LoadingProductInfoState loadingState =
+            final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
             emit(
               loadingState.copyWith(productInfoMap: modifiableProductInfo),
@@ -291,7 +296,10 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     );
 
     on<LaunchUrlEvent>(
-      (LaunchUrlEvent event, Emitter<HomeViewModel> emit) async {
+      (
+        LaunchUrlEvent event,
+        Emitter<HomeViewModel> emit,
+      ) async {
         final Uri url = Uri.parse(event.uri);
         if (!await launchUrl(url)) {
           emit(
@@ -314,9 +322,9 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
       Emitter<HomeViewModel> emit,
     ) async {
       if (state is ReadyToScanState) {
-        bool isPrecipitationFalls =
+        final bool isPrecipitationFalls =
             !(state as ReadyToScanState).isPrecipitationFalls;
-        bool isSaved =
+        final bool isSaved =
             await _savePrecipitationStateUseCase.call(isPrecipitationFalls);
         if (isSaved) {
           emit(
@@ -333,7 +341,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     on<SnapIngredientsEvent>(
       (_, Emitter<HomeViewModel> emit) {
         if (state is ProductInfoState) {
-          ProductInfoState productInfoState = state as ProductInfoState;
+          final ProductInfoState productInfoState = state as ProductInfoState;
           emit(
             PhotoMakerState(
               productInfo: productInfoState.productInfo,
@@ -346,14 +354,19 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     );
 
     on<ChangeLanguageEvent>(
-      (ChangeLanguageEvent event, Emitter<HomeViewModel> emit) async {
-        Language language = event.language;
-        bool isSaved =
-            await _saveLanguageUseCase.call(language.isoLanguageCode);
-        if (isSaved && state is ReadyToScanState) {
-          emit((state as ReadyToScanState).copyWith(language: language));
-        } else {
-          emit(const LoadingHomeState());
+      (
+        ChangeLanguageEvent event,
+        Emitter<HomeViewModel> emit,
+      ) async {
+        final Language language = event.language;
+        if (language != state.language) {
+          final bool isSaved =
+              await _saveLanguageUseCase.call(language.isoLanguageCode);
+          if (isSaved && state is ReadyToScanState) {
+            emit((state as ReadyToScanState).copyWith(language: language));
+          } else {
+            emit(const LoadingHomeState());
+          }
         }
       },
     );

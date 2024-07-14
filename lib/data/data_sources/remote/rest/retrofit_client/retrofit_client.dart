@@ -11,10 +11,6 @@ abstract class RetrofitClient implements RestClient {
   factory RetrofitClient(Dio dio, {String baseUrl}) = _RetrofitClient;
 
   @override
-  @GET('/get-companies-database')
+  @GET('russia-sponsors')
   Future<List<RussiaSponsorResponse>> getTerrorismSponsors();
-
-  @override
-  @GET('https://ethical-scanner.turskyi.com/api/russia-sponsors')
-  Future<List<RussiaSponsorResponse>> getBackupTerrorismSponsors();
 }

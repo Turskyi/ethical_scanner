@@ -22,7 +22,7 @@ Fields _$FieldsFromJson(Map<String, dynamic> json) => Fields(
       sector: json['Sector'] as String?,
       ticker: json['Ticker'] as String?,
       notes: json['Notes'] as String?,
-      marketCap: json['Market Cap'] as int?,
+      marketCap: (json['Market Cap'] as num?)?.toInt(),
       currency: json['Currency'] as String?,
       industry: json['Industry'] as String?,
       description: json['Description'] as String?,

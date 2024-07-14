@@ -8,11 +8,11 @@ part of 'logo.dart';
 
 Logo _$LogoFromJson(Map<String, dynamic> json) => Logo(
       id: json['id'] as String?,
-      width: json['width'] as int?,
-      height: json['height'] as int?,
+      width: (json['width'] as num?)?.toInt(),
+      height: (json['height'] as num?)?.toInt(),
       url: json['url'] as String?,
       filename: json['filename'] as String?,
-      size: json['size'] as int?,
+      size: (json['size'] as num?)?.toInt(),
       type: json['type'] as String?,
       thumbnails: json['thumbnails'] == null
           ? null

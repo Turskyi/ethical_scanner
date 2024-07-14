@@ -33,11 +33,13 @@ class HomeView extends StatelessWidget {
             // to remove any default background, so that the custom background
             // above will be visible.
             backgroundColor: Colors.transparent,
-            resizeToAvoidBottomInset: viewModel is! ProductInfoState,
+            resizeToAvoidBottomInset: true,
             extendBodyBehindAppBar: viewModel is ReadyToScanState,
             // Add an appBar with the language selector dropdown
             appBar: AppBar(
               backgroundColor: Colors.transparent,
+              //TODO: should I add this (scrolledUnderElevation: 0.0)?
+              // scrolledUnderElevation: 0.0,
               actions: const <Widget>[
                 // Use the `LanguageSelector` widget as an action.
                 LanguageSelector(),

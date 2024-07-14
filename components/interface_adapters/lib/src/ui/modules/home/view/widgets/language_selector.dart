@@ -21,7 +21,7 @@ class LanguageSelector extends StatelessWidget {
             // The child of each item is a row with the flag and the name of the
             // language.
             child: Padding(
-              padding: const EdgeInsets.only(left: 24, bottom: 6.0),
+              padding: const EdgeInsets.only(left: 24, bottom: 8.0),
               child: Text(language.flag),
             ),
           ),
@@ -29,8 +29,8 @@ class LanguageSelector extends StatelessWidget {
         .toList();
     return BlocBuilder<HomePresenter, HomeViewModel>(
       builder: (BuildContext context, HomeViewModel viewModel) {
-        Dimens dimens = Resources.of(context).dimens;
-        Language currentLanguage = viewModel.language;
+        final Dimens dimens = Resources.of(context).dimens;
+        final Language currentLanguage = viewModel.language;
         return DropdownButton<Language>(
           padding: EdgeInsets.only(left: dimens.leftPadding),
           // The value of the dropdown is the current language.
@@ -41,13 +41,14 @@ class LanguageSelector extends StatelessWidget {
             Icons.arrow_drop_down_outlined,
             color: Colors.white,
           ),
-          selectedItemBuilder: (_) {
-            List<Center> languageSelectorItems = Language.values
+          selectedItemBuilder: (BuildContext context) {
+            final List<Center> languageSelectorItems = Language.values
                 .map(
                   (Language language) => Center(
                     child: AnimatedSwitcher(
-                      duration:
-                          Resources.of(context).durations.animatedSwitcher,
+                      duration: Resources.of(
+                        context,
+                      ).durations.animatedSwitcher,
                       transitionBuilder: (
                         Widget child,
                         Animation<double> animation,
@@ -69,8 +70,7 @@ class LanguageSelector extends StatelessWidget {
                 : languageSelectorItems.reversed.toList();
           },
           underline: const SizedBox(),
-          elevation: dimens.noElevation,
-          dropdownColor: Colors.transparent,
+          dropdownColor: Theme.of(context).colorScheme.primary,
           borderRadius: BorderRadius.circular(dimens.borderRadius),
           // The items of the dropdown are the supported languages.
           items: currentLanguage.isEnglish
@@ -79,8 +79,8 @@ class LanguageSelector extends StatelessWidget {
           // The onChanged callback is triggered when the user selects a
           // different language.
           onChanged: (Language? language) {
-            // Change the language in the provider based on the isoCode of the
-            // selected language.
+            // Change the language in based on the isoCode of the selected
+            // language.
             if (language != null) {
               changeLocale(context, language.isoLanguageCode)
                   // The returned value is always `null`.

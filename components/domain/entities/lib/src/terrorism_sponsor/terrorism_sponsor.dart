@@ -65,7 +65,7 @@ extension TerrorismSponsorList on List<TerrorismSponsor> {
     TerrorismSponsor terrorismSponsor,
     ProductInfo product,
   ) {
-    List<String> lowerCaseBrands = _getLowerCaseBrands(terrorismSponsor);
+    final List<String> lowerCaseBrands = _getLowerCaseBrands(terrorismSponsor);
     return lowerCaseBrands.contains(product.brand.toLowerCase());
   }
 

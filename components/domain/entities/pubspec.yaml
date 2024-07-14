@@ -1,12 +1,17 @@
 name: entities
-description: An Entity is an object within our computer system that embodies a small set of
-  critical business rules operating on Critical Business Data.
-version: 1.0.0
+description: An Entity is an object within our computer system that embodies a
+  small set of critical business rules operating on Critical Business Data.
+version: 1.0.1
 repository: https://github.com/Turskyi/ethical_scanner/tree/master/components/domain/entities
+homepage: https://ethical-scanner.turskyi.com
+issue_tracker: https://github.com/users/Turskyi/projects/10/views/1?layout=board
+# This prevents the package from being accidentally published to pub.dev using pub publish. This is
+# preferred for private packages.
+publish_to: none
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
 
 dev_dependencies:
-  lints: ^3.0.0
-  test: ^1.25.4
+  lints: ^4.0.0
+  test: ^1.25.8
