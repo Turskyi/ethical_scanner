@@ -18,44 +18,44 @@ environment:
 dependencies:
   audiofileplayer: ^2.1.1
   # state management package that helps implement the Business Logic Component design pattern.
-  bloc: ^8.1.4
+  bloc: ^9.0.0
 
-  camera: ^0.11.0+1
+  camera: ^0.11.1
   entities:
     path: ../domain/entities
 
-  envied: ^0.5.4+1
+  envied: ^1.1.1
   feedback: ^3.1.0
   flutter:
     sdk: flutter
 
   # Built to be used with the `bloc` state management package
-  flutter_bloc: ^8.1.6
+  flutter_bloc: ^9.1.0
 
   # localization / internationalization (i18n) library
-  flutter_email_sender: ^6.0.3
+  flutter_email_sender: ^7.0.0
   flutter_translate: ^4.1.0
 
-  html: ^0.15.4
+  html: ^0.15.5
   # Set to specific version when this error is gone: "Because every version of flutter_test from sdk depends on meta 1.12.0 and laozi_ai depends on meta ^1.15.0, flutter_test from sdk is forbidden.
   # So, because laozi_ai depends on flutter_test from sdk, version solving failed.".
-  meta: any
-  mobile_scanner: ^5.1.1
+  meta: ^1.16.0
+  mobile_scanner: ^6.0.7
 
   # For launching a URL. Supports web, phone, SMS, and email schemes.
-  package_info_plus: ^8.0.0
-  path_provider: ^2.1.3
-  url_launcher: ^6.3.0
+  package_info_plus: ^8.3.0
+  path_provider: ^2.1.5
+  url_launcher: ^6.3.1
 
   use_cases:
     path: ../domain/use_cases
 
 dev_dependencies:
   # A build system for Dart code generation and modular compilation.
-  build_runner: ^2.4.11
+  build_runner: ^2.4.15
 
-  envied_generator: ^0.5.4+1
-  flutter_lints: ^4.0.0
+  envied_generator: ^1.1.1
+  flutter_lints: ^5.0.0
 
   flutter_test:
     sdk: flutter

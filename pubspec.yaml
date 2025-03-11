@@ -19,13 +19,13 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.1.1+11
+version: 0.1.2+12
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
 
 dependency_overrides:
-  intl: ^0.19.0
+  intl: ^0.20.2
 
 # Dependencies specify other packages that your package needs to work.
 # To automatically upgrade your package dependencies to the latest versions,
@@ -45,8 +45,8 @@ dependencies:
   # presentation layer. You can think of the bloc package as the engine, and
   # the `flutter_bloc` package as the car body. You need both to make a
   # functional car 🚗.
-  bloc: ^8.1.4
-  camera: ^0.11.0+1
+  bloc: ^9.0.0
+  camera: ^0.11.1
   # Because every version of flutter_test from sdk depends on collection 1.18.0 and ethical_scanner depends on collection ^1.19.0, flutter_test from sdk is forbidden.
   #So, because ethical_scanner depends on flutter_test from sdk, version solving failed.
   collection: any
@@ -54,19 +54,19 @@ dependencies:
   # OpenAI's
   # state-of-the-art AI models into their Dart applications.
   dart_openai: ^5.1.0
-  dio: ^5.5.0+1
+  dio: ^5.8.0+1
   entities:
     path: ./components/domain/entities
 
   # Explicitly reads environment variables into a dart file from a .env file for more security and
   # faster start up times.
-  envied: ^0.5.4+1
+  envied: ^1.1.1
   feedback: ^3.1.0
   flutter:
     sdk: flutter
 
   # Built to be used with the `bloc` state management package.
-  flutter_bloc: ^8.1.6
+  flutter_bloc: ^9.1.0
 
   # Localization / internationalization (i18n) library.
   flutter_translate: ^4.1.0
@@ -75,40 +75,40 @@ dependencies:
     path: ./components/interface_adapters
 
   json_annotation: ^4.9.0
-  logger: ^2.3.0
-  openfoodfacts: ^3.12.0
+  logger: ^2.5.0
+  openfoodfacts: ^3.20.0
 
-  package_info_plus: ^8.0.0
-  path: ^1.9.0
-  path_provider: ^2.1.3
-  retrofit: ^4.1.0
-  retrofit_generator: ^8.1.2
-  shared_preferences: ^2.2.3
+  package_info_plus: ^8.3.0
+  path: ^1.9.1
+  path_provider: ^2.1.5
+  retrofit: ^4.4.2
+  retrofit_generator: ^9.1.9
+  shared_preferences: ^2.5.2
   use_cases:
     path: ./components/domain/use_cases
 
 dev_dependencies:
   # A build system for Dart code generation and modular compilation.
-  build_runner: ^2.4.11
+  build_runner: ^2.4.15
 
   # Generator for the Envied package. See https://pub.dev/packages/envied.
-  envied_generator: ^0.5.4+1
+  envied_generator: ^1.1.1
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
 
   # A full-featured library for writing and running Dart tests across platforms.
-  json_serializable: ^6.8.0
-  mockito: ^5.4.4
+  json_serializable: ^6.9.4
+  mockito: ^5.4.5
   # Because test >=1.25.8 depends on test_api 0.7.3 and every version of flutter_test from sdk depends on test_api 0.7.0, test >=1.25.8 is incompatible with flutter_test from sdk.
   #So, because ethical_scanner depends on both flutter_test from sdk and test ^1.25.8, version solving failed.
-  test: any
+  test: ^1.25.15
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

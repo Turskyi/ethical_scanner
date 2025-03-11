@@ -154,7 +154,7 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
                           height: 78,
                           decoration: BoxDecoration(
                             color: isExpanded
-                                ? Colors.white.withOpacity(0.3)
+                                ? Colors.white.withValues(alpha: 0.3)
                                 : null,
                             shape: BoxShape.circle,
                           ),

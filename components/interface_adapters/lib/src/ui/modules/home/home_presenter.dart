@@ -232,10 +232,12 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
               }
             }
 
-            final String ingredientsText = stringBuffer.toString();
+            if (!productInfo.isEnglishBook) {
+              final String ingredientsText = stringBuffer.toString();
 
-            modifiableProductInfo[ProductInfoType.ingredients] =
-                ingredientsText;
+              modifiableProductInfo[ProductInfoType.ingredients] =
+                  ingredientsText;
+            }
 
             if (state is LoadingProductInfoState) {
               final LoadingProductInfoState loadingState =

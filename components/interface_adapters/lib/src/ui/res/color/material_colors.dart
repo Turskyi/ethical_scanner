@@ -20,9 +20,9 @@ class MaterialColors {
   );
 
   static MaterialColor getMaterialColor(Color color) {
-    final int red = color.red;
-    final int green = color.green;
-    final int blue = color.blue;
+    final int red = (color.r * 255).toInt();
+    final int green = (color.g * 255).toInt();
+    final int blue = (color.b * 255).toInt();
 
     final Map<int, Color> shades = <int, Color>{
       50: Color.fromRGBO(red, green, blue, .1),
@@ -37,7 +37,7 @@ class MaterialColors {
       900: Color.fromRGBO(red, green, blue, 1),
     };
 
-    return MaterialColor(color.value, shades);
+    return MaterialColor(color.toARGB32(), shades);
   }
 
   final MaterialColor cetaceanBlue = const MaterialColor(

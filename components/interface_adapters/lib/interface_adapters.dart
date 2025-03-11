@@ -5,7 +5,7 @@
 /// The presenters, views, and controllers all belong in the
 /// [interface_adapters] layer.
 /// No code inward of this layer should know anything at all about the database.
-library interface_adapters;
+library;
 
 export 'src/data_sources/local/local_data_source.dart';
 export 'src/data_sources/remote/remote_data_source.dart';

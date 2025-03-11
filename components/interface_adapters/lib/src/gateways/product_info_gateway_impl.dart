@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:entities/entities.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/data_sources/local/local_data_source.dart';
 import 'package:interface_adapters/src/data_sources/remote/remote_data_source.dart';
 import 'package:interface_adapters/src/error_message_extractor.dart';
@@ -40,16 +41,15 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
       if (info.origin.isNotEmpty || info.country.isNotEmpty) {
         return info;
       } else if (_localDataSource.isEnglishBook(input.code)) {
+        final String eanPrefix = input.code.substring(0, 3);
         return info.copyWith(
-          origin:
-              'The initial ${input.code.substring(0, 3)} in this barcode is '
-              'the Book-land EAN prefix, indicating that it is a book. The '
-              '${input.code.substring(0, 3)} prefix, in this case, is '
-              'assigned to the English language, but it doesn\'t specify '
-              'a particular country.',
+          origin: translate(
+            'product_info.initial_book_code_description',
+            args: <String, Object?>{'eanPrefix': eanPrefix},
+          ),
         );
       } else {
-        ProductInfo localInfo = info.copyWith(
+        final ProductInfo localInfo = info.copyWith(
           origin: _localDataSource.getCountryFromBarcode(input.code),
         );
         if (localInfo.origin.isNotEmpty) {

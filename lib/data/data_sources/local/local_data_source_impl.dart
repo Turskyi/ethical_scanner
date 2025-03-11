@@ -738,7 +738,7 @@ class LocalDataSourceImpl implements LocalDataSource {
 
   @override
   bool isEnglishBook(String barcode) {
-    List<int> digits = barcode.codeUnits
+    final List<int> digits = barcode.codeUnits
         .where((int char) => char >= 48 && char <= 57)
         .map((int char) => char - 48)
         .toList();
@@ -747,7 +747,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       return false;
     }
 
-    // Check if it starts with "978" (common Book-land prefix)
+    // Check if it starts with "978" (common Book-land prefix).
     if (digits.sublist(0, 3).join() != '978') {
       return false;
     }

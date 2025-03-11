@@ -115,15 +115,43 @@ class ProductInfo {
         imageIngredientsUrl: imageIngredientsUrl ?? this.imageIngredientsUrl,
       );
 
+  bool get isEnglishBook {
+    final List<int> digits = barcode.codeUnits
+        .where((int char) => char >= 48 && char <= 57)
+        .map((int char) => char - 48)
+        .toList();
+
+    if (digits.length != 13) {
+      return false;
+    }
+
+    // Check if it starts with "978" (common Book-land prefix).
+    if (digits.sublist(0, 3).join() != '978') {
+      return false;
+    }
+    return true;
+  }
+
   @override
   String toString() {
-    return 'ProductInfo{barcode: $barcode, origin: $origin, '
-        'countryTags: $countryTags, country: $country, countryAi: $countryAi, '
-        'name: $name, brand: $brand, isTerrorismSponsor: '
+    return 'ProductInfo{'
+        'barcode: $barcode, '
+        'origin: $origin, '
+        'countryTags: $countryTags, '
+        'country: $country, '
+        'countryAi: $countryAi, '
+        'name: $name, '
+        'brand: $brand, '
+        'isTerrorismSponsor: '
         '$isCompanyTerrorismSponsor, '
-        'categoryTags: $categoryTags, packaging: $packaging, '
-        'ingredientList: $ingredientList, vegan: $vegan, '
-        'vegetarian: $vegetarian, website: $website, '
-        'language: ${language.name}, quantity: $quantity}';
+        'categoryTags: $categoryTags, '
+        'packaging: $packaging, '
+        'ingredientList: $ingredientList, '
+        'vegan: $vegan, '
+        'vegetarian: $vegetarian, '
+        'website: $website, '
+        'language: ${language.name}, '
+        'quantity: $quantity,'
+        '}';
   }
 }

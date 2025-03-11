@@ -98,9 +98,11 @@ class _HomeViewState extends State<ScanView> {
                             color: Colors.white,
                           ),
                           onPressed: () => _closeCamera().whenComplete(() {
-                            context
-                                .read<ScanPresenter>()
-                                .add(const NavigateBackEvent());
+                            if (context.mounted) {
+                              context
+                                  .read<ScanPresenter>()
+                                  .add(const NavigateBackEvent());
+                            }
                           }),
                         ),
                         IconButton(
@@ -118,9 +120,13 @@ class _HomeViewState extends State<ScanView> {
                                     ..dispose();
                                 }
                                 _closeCamera().whenComplete(() {
-                                  context.read<ScanPresenter>().add(
-                                        PopBarcodeEvent(viewModel.barcodeValue),
-                                      );
+                                  if (context.mounted) {
+                                    context.read<ScanPresenter>().add(
+                                          PopBarcodeEvent(
+                                            viewModel.barcodeValue,
+                                          ),
+                                        );
+                                  }
                                 });
                               }
                             },

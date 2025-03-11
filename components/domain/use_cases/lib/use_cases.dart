@@ -4,7 +4,7 @@
 /// provided by the user, the outputs to be returned to the user.
 /// A [use_cases] library describes application-specific business
 /// rules.
-library use_cases;
+library;
 
 export 'src/gateways/product_info_gateway.dart';
 export 'src/gateways/settings_gateway.dart';

@@ -15,7 +15,7 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Resources resources = Resources.of(context);
+    final Resources resources = Resources.of(context);
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: resources.gradients.unauthorizedConstructionGradient,

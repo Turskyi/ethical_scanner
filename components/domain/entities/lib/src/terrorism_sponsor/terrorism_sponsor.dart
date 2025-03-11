@@ -1,6 +1,6 @@
 import 'package:entities/entities.dart';
 
-abstract class TerrorismSponsor {
+abstract interface class TerrorismSponsor {
   const TerrorismSponsor({
     required this.id,
     required this.status,
