@@ -8,7 +8,7 @@
 /// An Entity is an object within our computer system in a single and separate
 /// module that embodies a small set of critical business rules operating on
 /// Critical business data.
-library entities;
+library;
 
 export 'src/enums/language.dart';
 export 'src/enums/product_info_type.dart';

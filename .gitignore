@@ -65,5 +65,4 @@ build
 /android/fastlane/metadata/android/fr-FR/images/
 ios/Runner/GoogleService-Info.plist
 coverage
-/coverage/
 /ios/Podfile.lock
