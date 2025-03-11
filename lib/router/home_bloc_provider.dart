@@ -32,13 +32,15 @@ class HomeBlocProvider extends StatelessWidget {
           if (viewModel is ScanState) {
             Navigator.pushNamed<String>(context, route.scanPath).then(
               (String? barcode) {
-                _displayProductInfoOrHome(
-                  context: context,
-                  productInfo: ProductInfo(
-                    barcode: barcode ?? '',
-                    language: language,
-                  ),
-                );
+                if (context.mounted) {
+                  _displayProductInfoOrHome(
+                    context: context,
+                    productInfo: ProductInfo(
+                      barcode: barcode ?? '',
+                      language: language,
+                    ),
+                  );
+                }
               },
             );
           } else if (viewModel is PhotoMakerState) {
@@ -47,9 +49,13 @@ class HomeBlocProvider extends StatelessWidget {
               route.photoPath,
               arguments: viewModel.productInfo,
             ).then(
-              (_) => context.read<HomePresenter>().add(
-                    const ClearProductInfoEvent(),
-                  ),
+              (_) {
+                if (context.mounted) {
+                  context.read<HomePresenter>().add(
+                        const ClearProductInfoEvent(),
+                      );
+                }
+              },
             );
           } else if (viewModel is ReadyToScanState) {
             final Language currentLanguage = Language.fromIsoLanguageCode(
@@ -60,9 +66,11 @@ class HomeBlocProvider extends StatelessWidget {
               changeLocale(context, savedLanguage.isoLanguageCode)
                   // The returned value in `then` is always `null`.
                   .then((_) {
-                context
-                    .read<HomePresenter>()
-                    .add(ChangeLanguageEvent(savedLanguage));
+                if (context.mounted) {
+                  context
+                      .read<HomePresenter>()
+                      .add(ChangeLanguageEvent(savedLanguage));
+                }
               });
             }
           }

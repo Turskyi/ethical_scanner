@@ -57,33 +57,34 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       });
 
   @override
-  Future<String> getCountryFromAiAsFuture(String barcode) =>
-      OpenAI.instance.chat.create(
-        model: 'gpt-4',
-        seed: 6,
-        temperature: 0.2,
-        maxTokens: 500,
-        stop: <String>['\n'],
-        messages: <OpenAIChatCompletionChoiceMessageModel>[
-          OpenAIChatCompletionChoiceMessageModel(
-            content: <OpenAIChatCompletionChoiceMessageContentItemModel>[
-              OpenAIChatCompletionChoiceMessageContentItemModel.text(
-                'The country encoded in the barcode $barcode is',
-              ),
-            ],
-            role: OpenAIChatMessageRole.user,
-          ),
-        ],
-      ).then((OpenAIChatCompletionModel completion) {
-        String? country = completion
-            .choices.firstOrNull?.message.content?.firstOrNull?.text
-            ?.trim();
-        return country ?? '';
-      }).onError((_, __) => '');
+  Future<String> getCountryFromAiAsFuture(String barcode) {
+    return OpenAI.instance.chat.create(
+      model: 'gpt-3.5-turbo',
+      seed: 6,
+      temperature: 0.2,
+      maxTokens: 500,
+      stop: <String>['\n'],
+      messages: <OpenAIChatCompletionChoiceMessageModel>[
+        OpenAIChatCompletionChoiceMessageModel(
+          content: <OpenAIChatCompletionChoiceMessageContentItemModel>[
+            OpenAIChatCompletionChoiceMessageContentItemModel.text(
+              'The country encoded in the barcode $barcode is',
+            ),
+          ],
+          role: OpenAIChatMessageRole.user,
+        ),
+      ],
+    ).then((OpenAIChatCompletionModel completion) {
+      final String? country = completion
+          .choices.firstOrNull?.message.content?.firstOrNull?.text
+          ?.trim();
+      return country ?? '';
+    }).onError((_, __) => '');
+  }
 
   @override
   Future<void> addProduct(ProductInfo product) async {
-    String ingredientsText = product.ingredientList.join(',');
+    final String ingredientsText = product.ingredientList.join(',');
     Product newProduct = Product(
       barcode: product.barcode,
       productName: product.name,

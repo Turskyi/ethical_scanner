@@ -193,7 +193,9 @@ class _CameraScreenState extends State<PhotoView> {
                                         right: 0,
                                         child: Container(
                                           padding: const EdgeInsets.all(4.0),
-                                          color: Colors.black.withOpacity(0.5),
+                                          color: Colors.black.withValues(
+                                            alpha: 0.5,
+                                          ),
                                           child: const Icon(
                                             Icons.close,
                                             color: Colors.white,
@@ -212,7 +214,7 @@ class _CameraScreenState extends State<PhotoView> {
                     if (viewModel is AddIngredientsErrorState)
                       Container(
                         padding: const EdgeInsets.all(20),
-                        color: Colors.black.withOpacity(0.7),
+                        color: Colors.black.withValues(alpha: 0.7),
                         alignment: Alignment.center,
                         child: GestureDetector(
                           onLongPress: () {

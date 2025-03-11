@@ -118,12 +118,16 @@ class _CodeTileState extends State<CodeTile> {
       _editNotifier.value = text.isNotEmpty && text != widget.value;
 
   Future<void> _onBugReportPressed() => PackageInfo.fromPlatform().then(
-        (PackageInfo packageInfo) => BetterFeedback.of(context).show(
-          (UserFeedback feedback) => _sendFeedback(
-            feedback: feedback,
-            packageInfo: packageInfo,
-          ),
-        ),
+        (PackageInfo packageInfo) {
+          if (mounted) {
+            BetterFeedback.of(context).show(
+              (UserFeedback feedback) => _sendFeedback(
+                feedback: feedback,
+                packageInfo: packageInfo,
+              ),
+            );
+          }
+        },
       );
 
   Future<void> _sendFeedback({
