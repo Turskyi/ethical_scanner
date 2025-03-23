@@ -53,7 +53,8 @@ is used to deliver new release app bundle to **Google Play** after every merge
 • State management approach: [BLoC](https://bloclibrary.dev);
 
 • App testing platforms:
-[Firebase App Distribution](https://appdistribution.firebase.dev/i/ad57d28bed182b15);
+[Android Firebase App Distribution](https://appdistribution.firebase.dev/i/ad57d28bed182b15),
+[iOS TestFlight](https://testflight.apple.com/join/Wz3XnVAv);
 
 **Code Readability:** code is easily readable with no unnecessary blank lines,
 no unused variables or methods, and no commented-out code, all variables,
@@ -101,7 +102,8 @@ dart run build_runner build --delete-conflicting-outputs
 ### Data flow
 
 `Device` -> `View` -> `Presenter` -> `Use case` -> `Gateway`
--> `Data Source` -> `Data mapper` -> `Gateway` -> `Use case` -> `Presenter` -> `View model` ->
+-> `Data Source` -> `Data mapper` -> `Gateway` -> `Use case` -> `Presenter` ->
+`View model` ->
 `View` -> `Device`
 
 <details style="border: 1px solid #aaa; border-radius: 4px; padding: 0.5em 0.5em 0;">
@@ -201,7 +203,8 @@ layer communicates directly with the platform in other words `android` and
 
 - [DON'T cast a nullable value to a non-nullable type. This hides a null check and most of the time it is not what is expected.](https://dart-lang.github.io/linter/lints/avoid_as.html)
 
-- [PREFER using `const` for instantiating constant constructors](https://dart-lang.github.io/linter/lints/prefer_const_constructors.html)
+- [PREFER using
+  `const` for instantiating constant constructors](https://dart-lang.github.io/linter/lints/prefer_const_constructors.html)
 
 If a constructor can be invoked as const to produce a canonicalized instance,
 it's preferable to do so.

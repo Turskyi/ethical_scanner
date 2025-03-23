@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.turskyi.ethical_scanner"
-    android:versionCode="12"
-    android:versionName="0.1.2">
+    android:versionCode="13"
+    android:versionName="0.1.3">
 
     <queries>
         <intent>
