@@ -145,8 +145,11 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
                   duration: Duration(seconds: DurationSeconds.short.time),
                   child: ValueListenableBuilder<bool>(
                     valueListenable: _isEnabledNotifier,
-                    builder:
-                        (BuildContext context, bool isEnabled, Widget? child) {
+                    builder: (
+                      BuildContext context,
+                      bool isEnabled,
+                      Widget? _,
+                    ) {
                       return IconButton(
                         onPressed: isEnabled ? _onPressed : null,
                         icon: Container(
@@ -160,14 +163,19 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
                           ),
                           child: AnimatedSwitcher(
                             duration: const Duration(milliseconds: 400),
-                            transitionBuilder:
-                                (Widget child, Animation<double> anim) =>
-                                    RotationTransition(
-                              turns: Tween<double>(begin: 0.75, end: 1)
-                                  .animate(anim),
-                              child:
-                                  FadeTransition(opacity: anim, child: child),
-                            ),
+                            transitionBuilder: (
+                              Widget child,
+                              Animation<double> anim,
+                            ) {
+                              return RotationTransition(
+                                turns: Tween<double>(begin: 0.75, end: 1)
+                                    .animate(anim),
+                                child: FadeTransition(
+                                  opacity: anim,
+                                  child: child,
+                                ),
+                              );
+                            },
                             child: isExpanded
                                 ? Icon(
                                     Icons.close_rounded,

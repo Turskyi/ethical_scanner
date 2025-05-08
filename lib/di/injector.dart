@@ -6,6 +6,7 @@ import 'package:entities/entities.dart';
 import 'package:ethical_scanner/camera_descriptions.dart' as cameras;
 import 'package:ethical_scanner/di/dependencies.dart';
 import 'package:ethical_scanner/res/values/constants.dart' as constants;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
@@ -43,7 +44,7 @@ Future<Dependencies> injectAndGetDependencies() async {
   OpenFoodAPIConfiguration.userAgent = UserAgent(
     name: packageInfo.appName,
     version: packageInfo.version,
-    system: Platform.operatingSystem,
+    system: kIsWeb ? 'Web' : Platform.operatingSystem,
     url: constants.webPage,
     comment: constants.userAgentComment,
   );

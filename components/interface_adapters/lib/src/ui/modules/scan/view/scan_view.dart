@@ -63,7 +63,7 @@ class _HomeViewState extends State<ScanView> {
             children: <Widget>[
               MobileScanner(
                 controller: _scannerController,
-                errorBuilder: (_, MobileScannerException error, __) {
+                errorBuilder: (_, MobileScannerException error) {
                   _scannerController.stop().whenComplete(() {
                     _scannerController
                         .start()
@@ -80,7 +80,7 @@ class _HomeViewState extends State<ScanView> {
                 },
                 fit: BoxFit.fitHeight,
                 onDetect: _onBarcodeDetect,
-                placeholderBuilder: (_, __) => const ScanPlaceholderWidget(),
+                placeholderBuilder: (_) => const ScanPlaceholderWidget(),
               ),
               CustomPaint(painter: ScannerOverlay(_scanWindow)),
               Padding(

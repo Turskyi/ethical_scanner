@@ -1,9 +1,10 @@
 name: interface_adapters
-description: The software in the interface adapters layer is a set of adapters that convert data
-  from the format most convenient for the use cases and entities to the format most convenient for
-  some external agency such as the database or the web services.
-  The presenters, views, and controllers all belong in the interface adapters layer.
-  No code inward of this circle should know anything at all about the database.
+description: The software in the interface adapters layer is a set of adapters
+  that convert data from the format most convenient for the use cases and
+  entities to the format most convenient for some external agency such as the
+  database or the web services. The presenters, views, and controllers all
+  belong in the interface adapters layer. No code inward of this circle should
+  know anything at all about the database.
 version: 0.0.1
 # This prevents the package from being accidentally published to pub.dev using pub publish. This is
 # preferred for private packages.
@@ -30,17 +31,17 @@ dependencies:
     sdk: flutter
 
   # Built to be used with the `bloc` state management package
-  flutter_bloc: ^9.1.0
+  flutter_bloc: ^9.1.1
 
   # localization / internationalization (i18n) library
   flutter_email_sender: ^7.0.0
   flutter_translate: ^4.1.0
 
-  html: ^0.15.5
+  html: ^0.15.6
   # Set to specific version when this error is gone: "Because every version of flutter_test from sdk depends on meta 1.12.0 and laozi_ai depends on meta ^1.15.0, flutter_test from sdk is forbidden.
   # So, because laozi_ai depends on flutter_test from sdk, version solving failed.".
   meta: ^1.16.0
-  mobile_scanner: ^6.0.7
+  mobile_scanner: ^7.0.0
 
   # For launching a URL. Supports web, phone, SMS, and email schemes.
   package_info_plus: ^8.3.0
