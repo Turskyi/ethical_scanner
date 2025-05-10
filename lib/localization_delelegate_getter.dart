@@ -22,7 +22,7 @@ Future<LocalizationDelegate> getLocalizationDelegate() async {
     supportedLocales: Language.values
         .map((Language language) => language.isoLanguageCode)
         .toList(),
-    basePath: constants.localePath,
+    basePath: constants.localizationPath,
   );
   return localizationDelegate;
 }
