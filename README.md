@@ -21,14 +21,14 @@ The app uses the data from various sources, such as
 
 - [Open Food Facts](https://world.openfoodfacts.org);
 - [STOP FUNDING PUTIN’S WAR](https://boycottrussia.info/all-companies);
-- [Yale chief executive leadership institute | List of Companies
+- [Yale Chief Executive Leadership Institute | List of Companies
   Leaving and Staying in Russia](https://www.yalerussianbusinessretreat.com/);
 - [U.S. bureau of counterterrorism | State Sponsors of Terrorism](https://www.state.gov/state-sponsors-of-terrorism/);
 - [European Parliament](https://www.europarl.europa.eu/delegations/en/recognising-the-russian-federation-as-a-/product-details/20221124DPU34521).
 
 The app aims to help you shop with confidence and conscience. For more
 information, please visit the project website at
-https://ethical-scanner.turskyi.com.
+https://ethical-scanner.com.
 
 ## PROJECT SPECIFICATION
 
@@ -125,14 +125,14 @@ If the SOLID principles tell us how to arrange the bricks into walls and rooms,
 then the component principles tell us how to arrange the rooms into buildings.
 Large software systems, like large buildings, are built out of smaller
 `components`.
-• **REP**: *The Reuse/Release Equivalence Principle*. The granule of reuse is
+• **REP**: _The Reuse/Release Equivalence Principle_. The granule of reuse is
 the granule of release. This means that the classes and modules that are formed
 into a component must belong to a cohesive group.
-• **CCP**: *The Common Closure Principle*. Gather into components those classes
+• **CCP**: _The Common Closure Principle_. Gather into components those classes
 that change for the same reasons and at the same times. Separate into different
 `components` those classes that change at different times and for different
 reasons.
-• **CRP**: *The Common Reuse Principle*. Don’t force users of a component to
+• **CRP**: _The Common Reuse Principle_. Don’t force users of a component to
 depend on things they don’t need.
 
 ## Layers
@@ -478,8 +478,23 @@ at it. The app will show you the product name and some information.
 <!--suppress CheckImageSize -->
 <img src="screenshots/scan_android_phone_portrait_20240106.png" width="400"  alt="screenshot">
 
+# Usage
+
+To use **Ethical Scanner**, you need to grant the app permission to access your camera. Then, you can scan the barcode of any product by pointing your camera at it. The app will show you the product name and some information.
+
 ## Download
 
-<a href="https://play.google.com/store/apps/details?id=com.turskyi.ethical_scanner" target="_blank">
-<img src="https://play.google.com/intl/en_gb/badges/static/images/badges/en_badge_web_generic.png" width=240  alt="google play badge"/>
-</a>
+<div align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.turskyi.ethical_scanner" target="_blank" style="display: inline-block; vertical-align: middle;">
+    <img src="https://play.google.com/intl/en_gb/badges/static/images/badges/en_badge_web_generic.png" width=240 alt="google play badge"/>
+  </a>
+  <a href="https://apps.apple.com/ca/app/ethical-scanner/id6743681663" target="_blank" style="display: inline-block; vertical-align: middle;">
+    <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" width=200 alt="app store badge"/>
+  </a>
+</div>
+
+## Web Version
+
+In addition to the Android and iOS apps, **Ethical Scanner** is also available as a web app. You can access it directly via [Firebase Hosting](https://ethical-scanner.web.app) or use the embedded version on the official website at [https://ethical-scanner.com/web-app](https://ethical-scanner.com/web-app).
+
+The web version provides the same functionality as the mobile apps, allowing you to scan barcodes and check product information from your browser.
