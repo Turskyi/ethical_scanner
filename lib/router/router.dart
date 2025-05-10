@@ -17,48 +17,49 @@ Route<String> generateRoute(RouteSettings settings) => switch (settings.name) {
           pageBuilder: (
             _,
             Animation<double> animation,
-            Animation<double> __,
-          ) =>
-              BlocProvider<ScanPresenter>(
-            create: (BuildContext context) {
-              final Dependencies dependencies = DependenciesScope.of(context);
-              return ScanPresenter(
-                dependencies.saveSoundPreferenceUseCase,
-                dependencies.getSoundPreferenceUseCase,
-              )..add(const LoadScannerEvent());
-            },
-            child: BlocListener<ScanPresenter, ScanViewModel>(
-              listener: (BuildContext context, ScanViewModel viewModel) {
-                if (viewModel is ScanSuccessState) {
-                  Navigator.pop(context, viewModel.barcode);
-                } else if (viewModel is CanceledScanningState) {
-                  Navigator.pop(context);
-                }
+            Animation<double> __,) {
+            return BlocProvider<ScanPresenter>(
+              create: (BuildContext context) {
+                final Dependencies dependencies = DependenciesScope.of(context);
+                return ScanPresenter(
+                  dependencies.saveSoundPreferenceUseCase,
+                  dependencies.getSoundPreferenceUseCase,
+                )
+                  ..add(const LoadScannerEvent());
               },
-              child: Opacity(
-                opacity: animation.value,
-                child: const ScanView(),
+              child: BlocListener<ScanPresenter, ScanViewModel>(
+                listener: (BuildContext context, ScanViewModel viewModel) {
+                  if (viewModel is ScanSuccessState) {
+                    Navigator.pop(context, viewModel.barcode);
+                  } else if (viewModel is CanceledScanningState) {
+                    Navigator.pop(context);
+                  }
+                },
+                child: Opacity(
+                  opacity: animation.value,
+                  child: const ScanView(),
+                ),
               ),
-            ),
-          ),
+            );
+          },
           transitionsBuilder: (
             _,
             Animation<double> animation,
             __,
-            Widget child,
-          ) =>
-              FadeTransition(
-            opacity: CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeInOut,
-            ),
-            child: child,
-          ),
+            Widget child,) {
+            return FadeTransition(
+              opacity: CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeInOut,
+              ),
+              child: child,
+            );
+          },
         ),
       route.photoPath => PageRouteBuilder<String>(
           settings: settings,
           pageBuilder: (BuildContext context, Animation<double> animation, __) {
-            Object? args = settings.arguments;
+            final Object? args = settings.arguments;
             if (args is ProductInfo) {
               return BlocProvider<PhotoPresenter>(
                 create: (_) => PhotoPresenter(
@@ -100,15 +101,15 @@ Route<String> generateRoute(RouteSettings settings) => switch (settings.name) {
             _,
             Animation<double> animation,
             __,
-            Widget child,
-          ) =>
-              FadeTransition(
-            opacity: CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeInOut,
-            ),
-            child: child,
-          ),
+            Widget child,) {
+            return FadeTransition(
+              opacity: CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeInOut,
+              ),
+              child: child,
+            );
+          },
         ),
       _ => _getHomePageRouteBuilder(settings),
     };
@@ -116,18 +117,17 @@ Route<String> generateRoute(RouteSettings settings) => switch (settings.name) {
 PageRouteBuilder<String> _getHomePageRouteBuilder(RouteSettings settings) =>
     PageRouteBuilder<String>(
       settings: settings,
-      pageBuilder: (
-        BuildContext context,
+      pageBuilder: (BuildContext __,
         Animation<double> _,
-        Animation<double> animation,
-      ) =>
-          Transform.translate(
-        offset: Offset(
-          AnimationConstants.transparentOpacityAnimation.value,
-          animation.value * AnimationConstants.maxTranslationOffset.value,
-        ),
-        child: const HomeBlocProvider(),
-      ),
+        Animation<double> animation,) {
+        return Transform.translate(
+          offset: Offset(
+            AnimationConstants.transparentOpacityAnimation.value,
+            animation.value * AnimationConstants.maxTranslationOffset.value,
+          ),
+          child: const HomeBlocProvider(),
+        );
+      },
       transitionsBuilder: (
         _,
         Animation<double> animation,
