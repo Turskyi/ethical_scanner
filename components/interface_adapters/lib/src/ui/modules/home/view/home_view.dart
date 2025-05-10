@@ -75,7 +75,8 @@ class HomeView extends StatelessWidget {
                         duration: resources.durations.animatedSwitcher,
                         transitionBuilder: (
                           Widget child,
-                          Animation<double> animation,) {
+                          Animation<double> animation,
+                        ) {
                           return FadeTransition(
                             opacity: animation,
                             child: child,
