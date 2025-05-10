@@ -17,15 +17,15 @@ Route<String> generateRoute(RouteSettings settings) => switch (settings.name) {
           pageBuilder: (
             _,
             Animation<double> animation,
-            Animation<double> __,) {
+            Animation<double> __,
+          ) {
             return BlocProvider<ScanPresenter>(
               create: (BuildContext context) {
                 final Dependencies dependencies = DependenciesScope.of(context);
                 return ScanPresenter(
                   dependencies.saveSoundPreferenceUseCase,
                   dependencies.getSoundPreferenceUseCase,
-                )
-                  ..add(const LoadScannerEvent());
+                )..add(const LoadScannerEvent());
               },
               child: BlocListener<ScanPresenter, ScanViewModel>(
                 listener: (BuildContext context, ScanViewModel viewModel) {
@@ -46,7 +46,8 @@ Route<String> generateRoute(RouteSettings settings) => switch (settings.name) {
             _,
             Animation<double> animation,
             __,
-            Widget child,) {
+            Widget child,
+          ) {
             return FadeTransition(
               opacity: CurvedAnimation(
                 parent: animation,
@@ -101,7 +102,8 @@ Route<String> generateRoute(RouteSettings settings) => switch (settings.name) {
             _,
             Animation<double> animation,
             __,
-            Widget child,) {
+            Widget child,
+          ) {
             return FadeTransition(
               opacity: CurvedAnimation(
                 parent: animation,
@@ -117,9 +119,11 @@ Route<String> generateRoute(RouteSettings settings) => switch (settings.name) {
 PageRouteBuilder<String> _getHomePageRouteBuilder(RouteSettings settings) =>
     PageRouteBuilder<String>(
       settings: settings,
-      pageBuilder: (BuildContext __,
+      pageBuilder: (
+        BuildContext __,
         Animation<double> _,
-        Animation<double> animation,) {
+        Animation<double> animation,
+      ) {
         return Transform.translate(
           offset: Offset(
             AnimationConstants.transparentOpacityAnimation.value,
