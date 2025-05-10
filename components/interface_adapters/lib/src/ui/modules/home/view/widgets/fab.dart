@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
+import 'package:interface_adapters/src/ui/res/values/constants.dart';
 
 class Fab extends StatefulWidget {
   const Fab({
@@ -43,6 +44,8 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.sizeOf(context).width;
+    final bool isWide = screenWidth > kWideScreenThreshold;
     return BlocConsumer<HomePresenter, HomeViewModel>(
       listener: _viewModelListener,
       builder: (_, HomeViewModel viewModel) {
@@ -56,7 +59,7 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
                 animation: _animationController,
                 builder: (BuildContext _, Widget? __) {
                   return Transform.scale(
-                    scale: 1.0 + (_animation.value * 0.2),
+                    scale: 1.0 + (_animation.value * (isWide ? 0.28 : 0.2)),
                     child: Semantics(
                       label: translate('home.fab'),
                       child: AnimatedContainer(

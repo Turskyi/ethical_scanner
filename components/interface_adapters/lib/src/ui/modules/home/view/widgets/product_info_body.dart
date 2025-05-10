@@ -14,8 +14,8 @@ class ProductInfoBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Resources resources = Resources.of(context);
-    Dimens dimens = resources.dimens;
+    final Resources resources = Resources.of(context);
+    final Dimens dimens = resources.dimens;
     // Define a constant for the purpose of the additional count.
     const int loadingIndicatorCount = 1;
     // Define a constant for the animation delay.

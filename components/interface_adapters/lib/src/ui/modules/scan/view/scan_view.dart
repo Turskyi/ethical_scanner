@@ -49,6 +49,10 @@ class _HomeViewState extends State<ScanView> {
       top: MediaQuery.paddingOf(context).top,
       left: dimens.leftPadding,
     );
+
+    final double screenWidth = MediaQuery.sizeOf(context).width;
+    final bool isWide = screenWidth > kWideScreenThreshold;
+    final BoxFit currentFit = isWide ? BoxFit.fitWidth : BoxFit.fitHeight;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Semantics(
@@ -67,7 +71,7 @@ class _HomeViewState extends State<ScanView> {
                   _restartScannerOnError();
                   return ScannerErrorWidget(error: error);
                 },
-                fit: BoxFit.fitHeight,
+                fit: currentFit,
                 onDetect: _onBarcodeDetect,
                 placeholderBuilder: (_) => const ScanPlaceholderWidget(),
               ),
@@ -93,13 +97,14 @@ class _HomeViewState extends State<ScanView> {
                             listener: _viewModelListener,
                             builder: (
                               _,
-                              ScanViewModel viewModel,) {
+                              ScanViewModel viewModel,
+                            ) {
                               if (kIsWeb) {
                                 return const SizedBox.shrink();
                               } else {
                                 return Icon(
                                   viewModel is ScanningState &&
-                                      viewModel.isSoundOn
+                                          viewModel.isSoundOn
                                       ? Icons.music_note_outlined
                                       : Icons.music_off_outlined,
                                   color: Colors.white,
