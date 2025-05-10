@@ -20,7 +20,7 @@ jobs:
           ENV: ${{ secrets.ENV }}
       - run: >-
           flutter pub get && dart run build_runner build
-          --delete-conflicting-outputs && flutter build web
+          --delete-conflicting-outputs && flutter build web --no-tree-shake-icons
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
