@@ -460,7 +460,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
         ..writeln()
         ..writeln('Platform: $platform')
         ..writeln();
-      if (kIsWeb) {
+      if (kIsWeb || Platform.isMacOS) {
         final Uri emailLaunchUri = Uri(
           scheme: 'mailto',
           path: kSupportEmail,

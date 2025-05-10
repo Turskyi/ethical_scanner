@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:audiofileplayer/audiofileplayer.dart';
 import 'package:entities/entities.dart';
@@ -52,7 +53,8 @@ class _HomeViewState extends State<ScanView> {
 
     final double screenWidth = MediaQuery.sizeOf(context).width;
     final bool isWide = screenWidth > kWideScreenThreshold;
-    final BoxFit currentFit = isWide ? BoxFit.fitWidth : BoxFit.fitHeight;
+    final BoxFit currentFit =
+        (isWide && kIsWeb) ? BoxFit.fitWidth : BoxFit.fitHeight;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Semantics(
@@ -99,7 +101,7 @@ class _HomeViewState extends State<ScanView> {
                               _,
                               ScanViewModel viewModel,
                             ) {
-                              if (kIsWeb) {
+                              if (kIsWeb || Platform.isMacOS) {
                                 return const SizedBox.shrink();
                               } else {
                                 return Icon(
@@ -168,13 +170,14 @@ class _HomeViewState extends State<ScanView> {
                               }
                             },
                           ),
-                          IconButton(
-                            onPressed: _scannerController.switchCamera,
-                            icon: const Icon(
-                              Icons.cameraswitch_rounded,
-                              color: Colors.white,
+                          if (!kIsWeb && !Platform.isMacOS)
+                            IconButton(
+                              onPressed: _scannerController.switchCamera,
+                              icon: const Icon(
+                                Icons.cameraswitch_rounded,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),
@@ -246,7 +249,7 @@ class _HomeViewState extends State<ScanView> {
     ScanViewModel viewModel,
   ) {
     if (viewModel is DetectedBarcodeState) {
-      if (viewModel.isSoundOn) {
+      if (!kIsWeb && !Platform.isMacOS && viewModel.isSoundOn) {
         // Play a sound as a one-shot, releasing its
         // resources when it finishes playing.
         Audio.load(kScanSoundAsset)

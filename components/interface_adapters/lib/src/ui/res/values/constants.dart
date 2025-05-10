@@ -3,4 +3,6 @@ const String kScanSoundAsset =
 const String kMailToScheme = 'mailto';
 const String _developerDomain = 'turskyi.com';
 const String kSupportEmail = 'support@$_developerDomain';
-final double kWideScreenThreshold = 600.0;
+const double kWideScreenThreshold = 600.0;
+const String kDomain = 'ethical-scanner.com';
+const String kWebsite = 'https://$kDomain';

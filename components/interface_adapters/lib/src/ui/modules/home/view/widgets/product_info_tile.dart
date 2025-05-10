@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:entities/entities.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,15 +25,17 @@ class ProductInfoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Resources resources = Resources.of(context);
-    MaterialColors colors = resources.colors;
-    Color color = value.isEmpty ? Colors.white : colors.cetaceanBlue;
-    TextTheme textTheme = Theme.of(context).textTheme;
-    bool isIngredientsMissing =
+    final Resources resources = Resources.of(context);
+    final MaterialColors colors = resources.colors;
+    final Color color = value.isEmpty ? Colors.white : colors.cetaceanBlue;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final bool isIngredientsMissing =
         type.isIngredients && value.isEmpty && info.imageIngredientsUrl.isEmpty;
-    bool isIngredientsImageAdded = type.isIngredients &&
+    final bool isIngredientsImageAdded = type.isIngredients &&
         value.isEmpty &&
         info.imageIngredientsUrl.isNotEmpty;
+    final bool isCameraSupported =
+        kIsWeb || Platform.isAndroid || Platform.isIOS;
     return ListTile(
       textColor: color,
       iconColor: color,
@@ -39,7 +44,7 @@ class ProductInfoTile extends StatelessWidget {
           () {
             if (type.isCompanyWarSponsor) {
               return Icons.question_mark;
-            } else if (isIngredientsMissing) {
+            } else if (isCameraSupported && isIngredientsMissing) {
               return Icons.camera_alt_outlined;
             } else if (isIngredientsImageAdded) {
               return Icons.construction;
@@ -50,7 +55,7 @@ class ProductInfoTile extends StatelessWidget {
             // the `icon` parameter.
           }(),
         ),
-        onPressed: isIngredientsMissing
+        onPressed: isIngredientsMissing && isCameraSupported
             ? () => context.read<HomePresenter>().add(
                   const SnapIngredientsEvent(),
                 )

@@ -11,6 +11,7 @@ import 'package:flutter/widgets.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:window_size/window_size.dart';
 
 Future<Dependencies> injectAndGetDependencies() async {
   // Filter the `OpenFoodFactsLanguage` values based on the `Language` enum.
@@ -39,7 +40,7 @@ Future<Dependencies> injectAndGetDependencies() async {
   // `availableCameras`.
   WidgetsFlutterBinding.ensureInitialized();
 
-  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  final PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
   OpenFoodAPIConfiguration.userAgent = UserAgent(
     name: packageInfo.appName,
@@ -49,9 +50,14 @@ Future<Dependencies> injectAndGetDependencies() async {
     comment: constants.userAgentComment,
   );
 
-  // Fetch the available cameras before initializing the app.
   try {
-    cameras.cameraDescriptions = await availableCameras();
+    if (kIsWeb || Platform.isAndroid || Platform.isIOS) {
+      // Fetch the available cameras before initializing the app.
+      cameras.cameraDescriptions = await availableCameras();
+    } else if (!kIsWeb && Platform.isMacOS) {
+      setWindowMinSize(const Size(800, 600));
+      setWindowMaxSize(Size.infinite);
+    }
   } on CameraException catch (exception, stacktrace) {
     debugPrint('Error: $exception\nStacktrace: $stacktrace');
   }

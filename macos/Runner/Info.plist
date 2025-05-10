@@ -28,5 +28,9 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSCameraUsageDescription</key>
+    <string>This app uses the camera to scan barcodes.</string>
+    <key>CFBundleDisplayName</key>
+    <string>Ethical Scanner</string>
 </dict>
 </plist>

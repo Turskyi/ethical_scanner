@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:entities/entities.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,12 +30,19 @@ class PhotoView extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<PhotoView> {
-  late CameraController _controller;
-  late Future<void> _initializeControllerFuture;
+  final double _zoomStep = 0.4;
   final RegExp _emailExp = RegExp(r'\b[\w.-]+@[\w.-]+\.\w{2,}\b');
-  double _currentZoomLevel = 1.0; // Initial zoom level
-  double _maxZoomLevel = 5.0; // Initial max zoom level
-  final double _zoomStep = 0.4; // Adjust the step size as needed
+
+  // Initial zoom level.
+  double _currentZoomLevel = 1.0;
+
+  /// Initial max zoom level.
+  double _maxZoomLevel = 5.0;
+
+  bool _noCameraAvailable = false;
+
+  CameraController? _controller;
+  Future<void>? _initializeControllerFuture;
 
   @override
   void initState() {
@@ -44,7 +52,7 @@ class _CameraScreenState extends State<PhotoView> {
         widget.cameraDescriptions.first,
         ResolutionPreset.high,
       );
-      _initializeControllerFuture = _controller.initialize().then((_) {
+      _initializeControllerFuture = _controller?.initialize().then((_) {
         // The returned value in `then` is always `null`
         if (!mounted) {
           return;
@@ -61,14 +69,96 @@ class _CameraScreenState extends State<PhotoView> {
         }
       });
     } else {
-      throw Exception('No cameras available.');
+      _noCameraAvailable = true;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    Resources resources = Resources.of(context);
-    Dimens dimens = resources.dimens;
+    final Resources resources = Resources.of(context);
+    final Dimens dimens = resources.dimens;
+    if (_noCameraAvailable) {
+      return DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: resources.gradients.unauthorizedConstructionGradient,
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+              onPressed: () {
+                context.read<PhotoPresenter>().add(const PhotoViewBackEvent());
+              },
+            ),
+            title: Text(
+              translate('photo.capture_ingredients'),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: Theme.of(context).textTheme.titleLarge?.fontSize,
+                fontWeight: FontWeight.bold,
+                shadows: <Shadow>[
+                  Shadow(
+                    blurRadius: dimens.bodyBlurRadius,
+                    color: Colors.white30,
+                    offset: Offset(
+                      dimens.bodyTitleOffset,
+                      dimens.bodyTitleOffset,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            titleTextStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                  children: <TextSpan>[
+                    const TextSpan(
+                      text: 'Camera access is not supported on this device.\n\n'
+                          'This feature is available on Web, Android, and iOS '
+                          'platforms.\n\nPlease try scanning the product using '
+                          'another device,\nor visit:\n',
+                    ),
+                    TextSpan(
+                      text: kDomain,
+                      style: const TextStyle(
+                        color: Colors.lightBlueAccent,
+                        decoration: TextDecoration.underline,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () async {
+                          final Uri url = Uri.parse(kWebsite);
+                          if (await canLaunchUrl(url)) {
+                            await launchUrl(url);
+                          }
+                        },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: resources.gradients.violetTwilightGradient,
@@ -118,9 +208,14 @@ class _CameraScreenState extends State<PhotoView> {
         ),
         body: BlocBuilder<PhotoPresenter, PhotoViewModel>(
           builder: (BuildContext context, PhotoViewModel viewModel) {
-            CameraValue camera = _controller.value;
-            // fetch screen size
-            final Size size = MediaQuery.of(context).size;
+            final CameraValue? camera = _controller?.value;
+            if (camera == null) {
+              return const Center(
+                child: SizedBox.shrink(),
+              );
+            }
+            // Fetch screen size.
+            final Size size = MediaQuery.sizeOf(context);
 
             // Calculate scale depending on screen and camera ratios
             // this is actually size.aspectRatio / (1 / camera.aspectRatio)
@@ -132,140 +227,158 @@ class _CameraScreenState extends State<PhotoView> {
             // to prevent scaling down, invert the value
             if (scale < 1) scale = 1 / scale;
 
-            if (camera.isInitialized) {
-              _controller.setFlashMode(FlashMode.off);
-              _controller.getMaxZoomLevel().then((double max) {
+            if (!kIsWeb && camera.isInitialized) {
+              _controller?.setFlashMode(FlashMode.off);
+              _controller?.getMaxZoomLevel().then((double max) {
                 _maxZoomLevel = max;
               });
-              _controller.setFocusMode(FocusMode.auto);
+              _controller?.setFocusMode(FocusMode.auto);
             }
+
+            final Stack cameraStack = Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                GestureDetector(
+                  onScaleUpdate: (ScaleUpdateDetails details) {
+                    double newZoomLevel = _currentZoomLevel * details.scale;
+                    newZoomLevel = newZoomLevel.clamp(1.0, _maxZoomLevel);
+                    if (!kIsWeb) {
+                      _controller?.setZoomLevel(newZoomLevel);
+                    }
+                    setState(() {
+                      _currentZoomLevel = newZoomLevel;
+                    });
+                  },
+                  child: _controller != null
+                      ? CameraPreview(_controller!)
+                      : const SizedBox(),
+                ),
+                Positioned(
+                  bottom: 16.0,
+                  left: 16.0,
+                  child: AnimatedOpacity(
+                    opacity: viewModel is TakenPhotoState ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 500),
+                    // Display captured photo preview
+                    child: viewModel is TakenPhotoState
+                        ? GestureDetector(
+                            onTap: () {
+                              // Remove the preview and reset the captured
+                              // image path.
+                              context
+                                  .read<PhotoPresenter>()
+                                  .add(const RemovePhotoEvent());
+                            },
+                            child: Container(
+                              width: 200.0, // Increased width
+                              height: 350, // Increased height
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 2.0,
+                                ),
+                              ),
+                              child: Stack(
+                                children: <Widget>[
+                                  if (kIsWeb)
+                                    Image.network(
+                                      viewModel.photoPath,
+                                      fit: BoxFit.cover,
+                                    )
+                                  else
+                                    Image.file(
+                                      File(viewModel.photoPath),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  Positioned(
+                                    top: 0,
+                                    right: 0,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(4.0),
+                                      color: Colors.black.withValues(
+                                        alpha: 0.5,
+                                      ),
+                                      child: const Icon(
+                                        Icons.close,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        : const SizedBox(),
+                  ),
+                ),
+                if (viewModel is LoadingState)
+                  const CircularProgressIndicator(color: Colors.white),
+                if (viewModel is AddIngredientsErrorState)
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    color: Colors.black.withValues(alpha: 0.7),
+                    alignment: Alignment.center,
+                    child: GestureDetector(
+                      onLongPress: () {
+                        Clipboard.setData(
+                          ClipboardData(text: viewModel.errorMessage),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              translate('copied_to_clipboard'),
+                              textAlign: TextAlign.right,
+                            ),
+                          ),
+                        );
+                      },
+                      child: RichText(
+                        textAlign: TextAlign.center,
+                        strutStyle: StrutStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize:
+                              Theme.of(context).textTheme.bodyLarge?.fontSize,
+                        ),
+                        text: _getTextSpan(
+                          viewModel.errorMessage,
+                          Theme.of(context).textTheme.bodyLarge?.fontSize,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            );
 
             return Column(
               children: <Widget>[
-                Stack(
-                  alignment: Alignment.center,
-                  children: <Widget>[
-                    GestureDetector(
-                      onScaleUpdate: (ScaleUpdateDetails details) {
-                        double newZoomLevel = _currentZoomLevel * details.scale;
-                        newZoomLevel = newZoomLevel.clamp(1.0, _maxZoomLevel);
-                        _controller.setZoomLevel(newZoomLevel);
-                        setState(() {
-                          _currentZoomLevel = newZoomLevel;
-                        });
-                      },
-                      child: CameraPreview(_controller),
-                    ),
-                    Positioned(
-                      bottom: 16.0,
-                      left: 16.0,
-                      child: AnimatedOpacity(
-                        opacity: viewModel is TakenPhotoState ? 1.0 : 0.0,
-                        duration: const Duration(milliseconds: 500),
-                        // Display captured photo preview
-                        child: viewModel is TakenPhotoState
-                            ? GestureDetector(
-                                onTap: () {
-                                  // Remove the preview and reset the captured
-                                  // image path.
-                                  context
-                                      .read<PhotoPresenter>()
-                                      .add(const RemovePhotoEvent());
-                                },
-                                child: Container(
-                                  width: 200.0, // Increased width
-                                  height: 350, // Increased height
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                  child: Stack(
-                                    children: <Widget>[
-                                      Image.file(
-                                        File(viewModel.photoPath),
-                                        fit: BoxFit.cover,
-                                      ),
-                                      Positioned(
-                                        top: 0,
-                                        right: 0,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(4.0),
-                                          color: Colors.black.withValues(
-                                            alpha: 0.5,
-                                          ),
-                                          child: const Icon(
-                                            Icons.close,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
-                            : const SizedBox(),
-                      ),
-                    ),
-                    if (viewModel is LoadingState)
-                      const CircularProgressIndicator(color: Colors.white),
-                    if (viewModel is AddIngredientsErrorState)
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        color: Colors.black.withValues(alpha: 0.7),
-                        alignment: Alignment.center,
-                        child: GestureDetector(
-                          onLongPress: () {
-                            Clipboard.setData(
-                              ClipboardData(text: viewModel.errorMessage),
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  translate('copied_to_clipboard'),
-                                  textAlign: TextAlign.right,
-                                ),
-                              ),
-                            );
-                          },
-                          child: RichText(
-                            textAlign: TextAlign.center,
-                            strutStyle: StrutStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge
-                                  ?.fontSize,
-                            ),
-                            text: _getTextSpan(
-                              viewModel.errorMessage,
-                              Theme.of(context).textTheme.bodyLarge?.fontSize,
-                            ),
-                          ),
+                if (kIsWeb)
+                  Container(
+                    alignment: Alignment.center,
+                    height: size.height * 0.8,
+                    child: cameraStack,
+                  )
+                else
+                  cameraStack,
+                if (!kIsWeb)
+                  // Buttons for manual zoom control.
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        ElevatedButton(
+                          // Decrease zoom
+                          onPressed: () => _adjustZoomLevel(-_zoomStep),
+                          child: const Icon(Icons.remove),
                         ),
-                      ),
-                  ],
-                ),
-                // Buttons for manual zoom control
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      ElevatedButton(
-                        // Decrease zoom
-                        onPressed: () => _adjustZoomLevel(-_zoomStep),
-                        child: const Icon(Icons.remove),
-                      ),
-                      ElevatedButton(
-                        // Increase zoom
-                        onPressed: () => _adjustZoomLevel(_zoomStep),
-                        child: const Icon(Icons.add),
-                      ),
-                    ],
+                        ElevatedButton(
+                          // Increase zoom
+                          onPressed: () => _adjustZoomLevel(_zoomStep),
+                          child: const Icon(Icons.add),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
               ],
             );
           },
@@ -296,11 +409,11 @@ class _CameraScreenState extends State<PhotoView> {
                                 try {
                                   await _initializeControllerFuture;
 
-                                  // Take a picture and get the file path
-                                  XFile picture =
-                                      await _controller.takePicture();
+                                  // Take a picture and get the file path.
+                                  final XFile? picture =
+                                      await _controller?.takePicture();
 
-                                  if (context.mounted) {
+                                  if (context.mounted && picture != null) {
                                     context
                                         .read<PhotoPresenter>()
                                         .add(TakenPhotoEvent(picture.path));
@@ -328,13 +441,19 @@ class _CameraScreenState extends State<PhotoView> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
   void _adjustZoomLevel(double delta) {
-    double newZoomLevel = (_currentZoomLevel + delta).clamp(1.0, _maxZoomLevel);
-    _controller.setZoomLevel(newZoomLevel);
+    final double newZoomLevel = (_currentZoomLevel + delta).clamp(
+      1.0,
+      _maxZoomLevel,
+    );
+    if (!kIsWeb) {
+      _controller?.setZoomLevel(newZoomLevel);
+    }
+
     setState(() {
       _currentZoomLevel = newZoomLevel;
     });
