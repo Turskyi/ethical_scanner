@@ -33,6 +33,6 @@ class DetectedBarcodeState extends ScanViewModel {
     required this.isSoundOn,
   });
 
-  final String? barcodeValue;
+  final String barcodeValue;
   final bool isSoundOn;
 }

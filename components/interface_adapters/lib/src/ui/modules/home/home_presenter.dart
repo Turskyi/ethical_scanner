@@ -1,9 +1,15 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:entities/entities.dart';
+import 'package:feedback/feedback.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:interface_adapters/src/error_message_extractor.dart';
-import 'package:meta/meta.dart';
+import 'package:interface_adapters/src/ui/res/values/constants.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:use_cases/use_cases.dart';
 
@@ -37,6 +43,12 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     on<SnapIngredientsEvent>(_startPhotoMaker);
 
     on<ChangeLanguageEvent>(_changeLanguage);
+
+    on<BugReportPressedEvent>(_onFeedbackRequested);
+
+    on<SubmitFeedbackEvent>(_sendUserFeedback);
+
+    on<HomeErrorEvent>(_handleError);
   }
 
   final UseCase<Future<ProductInfo>, LocalizedCode> _getProductInfoUseCase;
@@ -44,6 +56,13 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
   final UseCase<bool, Null> _getPrecipitationStateUseCase;
   final UseCase<Future<bool>, String> _saveLanguageUseCase;
   final UseCase<Language, Null> _getLanguageUseCase;
+
+  FutureOr<void> _handleError(
+    HomeErrorEvent event,
+    Emitter<HomeViewModel> emit,
+  ) {
+    emit(HomeErrorState(event.error));
+  }
 
   FutureOr<void> _changeLanguage(
     ChangeLanguageEvent event,
@@ -385,6 +404,116 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     }
   }
 
+  FutureOr<void> _onFeedbackRequested(_, Emitter<HomeViewModel> emit) {
+    if (state is LoadedProductInfoState) {
+      final LoadedProductInfoState viewModel = state as LoadedProductInfoState;
+      emit(
+        FeedbackState(
+          productInfoMap: viewModel.productInfoMap,
+          productInfo: viewModel.productInfo,
+          language: viewModel.language,
+          isPrecipitationFalls: viewModel.isPrecipitationFalls,
+        ),
+      );
+    }
+  }
+
+  FutureOr<void> _sendUserFeedback(
+    SubmitFeedbackEvent event,
+    Emitter<HomeViewModel> emit,
+  ) async {
+    final UserFeedback feedback = event.feedback;
+    try {
+      final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+      final String platform = kIsWeb
+          ? 'Web'
+          : switch (defaultTargetPlatform) {
+              TargetPlatform.android => 'Android',
+              TargetPlatform.iOS => 'iOS',
+              TargetPlatform.macOS => 'macOS',
+              TargetPlatform.windows => 'Windows',
+              TargetPlatform.linux => 'Linux',
+              _ => 'Unknown',
+            };
+
+      final Map<String, Object?>? extra = feedback.extra;
+      final Object? rating = extra?['rating'];
+      final Object? type = extra?['feedback_type'];
+
+      final bool isFeedbackType = type is FeedbackType;
+      final bool isFeedbackRating = rating is FeedbackRating;
+      // Construct the feedback text with details from `extra'.
+      final StringBuffer feedbackBody = StringBuffer()
+        ..writeln('${isFeedbackType ? 'Feedback Type' : ''}:'
+            ' ${isFeedbackType ? type.value : ''}')
+        ..writeln()
+        ..writeln(feedback.text)
+        ..writeln()
+        ..writeln('${isFeedbackRating ? 'Rating' : ''}'
+            '${isFeedbackRating ? ':' : ''}'
+            ' ${isFeedbackRating ? rating.value : ''}')
+        ..writeln()
+        ..writeln('App id: ${packageInfo.packageName}')
+        ..writeln('App version: ${packageInfo.version}')
+        ..writeln('Build number: ${packageInfo.buildNumber}')
+        ..writeln()
+        ..writeln('Platform: $platform')
+        ..writeln();
+      if (kIsWeb) {
+        final Uri emailLaunchUri = Uri(
+          scheme: 'mailto',
+          path: kSupportEmail,
+          queryParameters: <String, Object?>{
+            'subject': 'App Feedback: ${packageInfo.appName}',
+            'body': feedbackBody.toString(),
+          },
+        );
+        try {
+          if (await canLaunchUrl(emailLaunchUri)) {
+            await launchUrl(emailLaunchUri);
+            debugPrint(
+              'Feedback email launched successfully via url_launcher.',
+            );
+          } else {
+            throw 'Could not launch email with url_launcher.';
+          }
+        } catch (urlLauncherError, urlLauncherStackTrace) {
+          final String urlLauncherErrorMessage =
+              'Error launching email via url_launcher: $urlLauncherError';
+          debugPrint(
+            '$urlLauncherErrorMessage\nStackTrace: $urlLauncherStackTrace',
+          );
+          // Optionally, show an error message to the user.
+        }
+      } else {
+        final String screenshotFilePath = await _writeImageToStorage(
+          feedback.screenshot,
+        );
+        final Email email = Email(
+          subject: 'App Feedback: ${packageInfo.appName}',
+          body: feedbackBody.toString(),
+          recipients: <String>[kSupportEmail],
+          attachmentPaths: <String>[screenshotFilePath],
+        );
+        try {
+          await FlutterEmailSender.send(email);
+        } catch (e, stackTrace) {
+          debugPrint(
+            'Warning: an error occurred in $this: $e;\nStackTrace: $stackTrace',
+          );
+        }
+      }
+    } catch (e, stackTrace) {
+      debugPrint('SettingsErrorEvent: $e\nStackTrace: $stackTrace');
+      add(
+        const HomeErrorEvent(
+          'An unexpected error occurred. Please try again.',
+        ),
+      );
+    }
+  }
+
   bool _isWebsite(String input) {
     // Regular expression for URL validation
     final RegExp regex = RegExp(
@@ -392,5 +521,13 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
       r'{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$',
     );
     return regex.hasMatch(input);
+  }
+
+  Future<String> _writeImageToStorage(Uint8List feedbackScreenshot) async {
+    final Directory output = await getTemporaryDirectory();
+    final String screenshotFilePath = '${output.path}/feedback.png';
+    final File screenshotFile = File(screenshotFilePath);
+    await screenshotFile.writeAsBytes(feedbackScreenshot);
+    return screenshotFilePath;
   }
 }

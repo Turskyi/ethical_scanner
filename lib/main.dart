@@ -2,6 +2,7 @@ import 'package:ethical_scanner/di/dependencies.dart';
 import 'package:ethical_scanner/di/dependencies_scope.dart';
 import 'package:ethical_scanner/di/injector.dart';
 import 'package:ethical_scanner/localization_delelegate_getter.dart';
+import 'package:ethical_scanner/res/layout/feedback_form.dart';
 import 'package:ethical_scanner/router/router.dart';
 import 'package:feedback/feedback.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,17 @@ void main() async {
 
   runApp(
     BetterFeedback(
+      feedbackBuilder: (
+        BuildContext context,
+        OnSubmit onSubmit,
+        ScrollController? scrollController,
+      ) {
+        return FeedbackForm(
+          onSubmit: onSubmit,
+          scrollController: scrollController,
+        );
+      },
+      theme: FeedbackThemeData(feedbackSheetColor: Colors.grey.shade50),
       child: LocalizedApp(
         localizationDelegate,
         DependenciesScope(

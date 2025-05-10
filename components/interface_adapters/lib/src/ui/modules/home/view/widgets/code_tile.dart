@@ -1,18 +1,11 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:entities/entities.dart';
 import 'package:feedback/feedback.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:path_provider/path_provider.dart';
 
 class CodeTile extends StatefulWidget {
   const CodeTile({
@@ -30,13 +23,14 @@ class _CodeTileState extends State<CodeTile> {
   /// Define a controller for the barcode text field
   final TextEditingController _codeController = TextEditingController();
   final ValueNotifier<bool> _editNotifier = ValueNotifier<bool>(false);
+  bool _isDisposing = false;
   late MaterialColors _colors;
   late TextTheme _textTheme;
 
   @override
   void initState() {
     super.initState();
-    // Set the initial value of the barcode text field
+    // Set the initial value of the barcode text field.
     _codeController.text = widget.value;
   }
 
@@ -100,60 +94,66 @@ class _CodeTileState extends State<CodeTile> {
           fontSize: _textTheme.bodyLarge?.fontSize,
         ),
       ),
-      trailing: IconButton(
-        icon: const Icon(Icons.bug_report_outlined),
-        onPressed: _onBugReportPressed,
+      trailing: BlocListener<HomePresenter, HomeViewModel>(
+        listener: _homeViewModelListener,
+        child: IconButton(
+          icon: const Icon(Icons.bug_report_outlined),
+          onPressed: _onBugReportPressed,
+        ),
       ),
     );
   }
 
   @override
   void dispose() {
+    _isDisposing = true;
     _codeController.dispose();
     _editNotifier.dispose();
     super.dispose();
   }
 
-  void _onCodeTextChanged(String text) =>
-      _editNotifier.value = text.isNotEmpty && text != widget.value;
+  void _onCodeTextChanged(String text) {
+    _editNotifier.value = text.isNotEmpty && text != widget.value;
+  }
 
-  Future<void> _onBugReportPressed() => PackageInfo.fromPlatform().then(
-        (PackageInfo packageInfo) {
-          if (mounted) {
-            BetterFeedback.of(context).show(
-              (UserFeedback feedback) => _sendFeedback(
-                feedback: feedback,
-                packageInfo: packageInfo,
-              ),
-            );
-          }
-        },
+  void _onBugReportPressed() {
+    context.read<HomePresenter>().add(const BugReportPressedEvent());
+  }
+
+  void _homeViewModelListener(BuildContext context, HomeViewModel state) {
+    if (state is FeedbackState) {
+      _showFeedbackUi();
+    } else if (state is FeedbackSent) {
+      _notifyFeedbackSent();
+    } else if (state is HomeErrorState) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(state.errorMessage),
+          duration: const Duration(seconds: 2),
+        ),
       );
+    }
+  }
 
-  Future<void> _sendFeedback({
-    required UserFeedback feedback,
-    required PackageInfo packageInfo,
-  }) =>
-      _writeImageToStorage(feedback.screenshot)
-          .then((String screenshotFilePath) {
-        return FlutterEmailSender.send(
-          Email(
-            body: '${feedback.text}\n\nApp id: ${packageInfo.packageName}\n'
-                'App version: ${packageInfo.version}\n'
-                'Build number: ${packageInfo.buildNumber}',
-            subject: '${translate('app_feedback')}: '
-                '${packageInfo.appName}',
-            recipients: <String>[Env.supportEmail],
-            attachmentPaths: <String>[screenshotFilePath],
-          ),
-        );
-      });
+  void _showFeedbackUi() {
+    if (_isDisposing) return;
+    BetterFeedback.of(context).show(
+      (UserFeedback feedback) {
+        if (mounted) {
+          context.read<HomePresenter>().add(SubmitFeedbackEvent(feedback));
+        }
+      },
+    );
+  }
 
-  Future<String> _writeImageToStorage(Uint8List feedbackScreenshot) async {
-    final Directory output = await getTemporaryDirectory();
-    final String screenshotFilePath = '${output.path}/feedback.png';
-    final File screenshotFile = File(screenshotFilePath);
-    await screenshotFile.writeAsBytes(feedbackScreenshot);
-    return screenshotFilePath;
+  void _notifyFeedbackSent() {
+    BetterFeedback.of(context).hide();
+    // Let user know that his feedback is sent.
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Your feedback has been sent successfully!'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 }

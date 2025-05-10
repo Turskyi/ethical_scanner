@@ -46,3 +46,19 @@ class ChangeLanguageEvent extends HomeEvent {
   const ChangeLanguageEvent(this.language);
   final Language language;
 }
+
+final class BugReportPressedEvent extends HomeEvent {
+  const BugReportPressedEvent();
+}
+
+final class SubmitFeedbackEvent extends HomeEvent {
+  const SubmitFeedbackEvent(this.feedback);
+
+  final UserFeedback feedback;
+}
+
+final class HomeErrorEvent extends HomeEvent {
+  const HomeErrorEvent(this.error);
+
+  final String error;
+}

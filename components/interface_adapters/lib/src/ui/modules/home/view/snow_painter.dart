@@ -31,6 +31,7 @@ class SnowPainter extends CustomPainter {
           style: TextStyle(
             fontSize: snowflakes[i].size,
             fontFamily: Icons.ac_unit.fontFamily,
+            color: Colors.white,
           ),
         ),
         textDirection: TextDirection.ltr,
@@ -53,7 +54,9 @@ class SnowPainter extends CustomPainter {
 
   double _randomRotationAngle() => Random().nextDouble() * _maxRotationSpeed;
 
-  Snowflake _incrementRotationAngle(Snowflake snowflake) => snowflake.copyWith(
-        rotationAngle: snowflake.rotationAngle + _randomRotationAngle(),
-      );
+  Snowflake _incrementRotationAngle(Snowflake snowflake) {
+    return snowflake.copyWith(
+      rotationAngle: snowflake.rotationAngle + _randomRotationAngle(),
+    );
+  }
 }

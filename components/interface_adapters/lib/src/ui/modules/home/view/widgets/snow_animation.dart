@@ -61,19 +61,25 @@ class _SnowAnimationState extends State<SnowAnimation>
   }
 
   @pragma('vm:never-inline')
-  Future<List<Snowflake>> _initializeSnowflakesAsync() =>
-      Future<List<Snowflake>>.delayed(Duration.zero, _generateSnowflakeList);
+  Future<List<Snowflake>> _initializeSnowflakesAsync() {
+    return Future<List<Snowflake>>.delayed(
+      Duration.zero,
+      _generateSnowflakeList,
+    );
+  }
 
   @pragma('vm:never-inline')
   List<Snowflake> _generateSnowflakeList() {
     if (mounted) {
       return List<Snowflake>.generate(
         _initialBatchSizeOfSnowflakes,
-        (_) => Snowflake(
-          offset: _randomOffset(),
-          size: _randomSize(),
-          rotationAngle: _randomRotationAngle(),
-        ),
+        (int _) {
+          return Snowflake(
+            offset: _randomOffset(),
+            size: _randomSize(),
+            rotationAngle: _randomRotationAngle(),
+          );
+        },
       );
     } else {
       return <Snowflake>[];
@@ -94,8 +100,10 @@ class _SnowAnimationState extends State<SnowAnimation>
     }
   }
 
-  double _randomSize() =>
-      _random.nextDouble() * _snowflakeSizeMultiplier + _snowflakeSizeConstant;
+  double _randomSize() {
+    return _random.nextDouble() * _snowflakeSizeMultiplier +
+        _snowflakeSizeConstant;
+  }
 
   double _randomRotationAngle() => _random.nextDouble() * _rotationSpeed;
 

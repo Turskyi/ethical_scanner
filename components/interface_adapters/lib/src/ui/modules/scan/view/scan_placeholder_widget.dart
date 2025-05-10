@@ -9,7 +9,7 @@ class ScanPlaceholderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Define meaningful names for dimensions
+    // Define meaningful names for dimensions.
     const double containerPadding = 12.0;
     const double borderRadiusValue = 8.0;
     const double verticalSpacing = 10.0;

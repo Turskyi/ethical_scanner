@@ -132,7 +132,7 @@ PageRouteBuilder<String> _getHomePageRouteBuilder(RouteSettings settings) =>
         _,
         Animation<double> animation,
         __,
-        Widget child,
-      ) =>
-          FadeTransition(opacity: animation, child: child),
+        Widget child,) {
+        return FadeTransition(opacity: animation, child: child);
+      },
     );
