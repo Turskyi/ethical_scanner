@@ -480,10 +480,13 @@ at it. The app will show you the product name and some information.
 
 # Usage
 
-To use **Ethical Scanner**, you need to grant the app permission to access your camera. Then, you can scan the barcode of any product by pointing your camera at it. The app will show you the product name and some information.
+To use **Ethical Scanner**, you need to grant the app permission to access your
+camera. Then, you can scan the barcode of any product by pointing your camera at
+it. The app will show you the product name and some information.
 
 ## Download
 
+<!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
   <a href="https://play.google.com/store/apps/details?id=com.turskyi.ethical_scanner" target="_blank" style="display: inline-block; vertical-align: middle;">
     <img src="https://play.google.com/intl/en_gb/badges/static/images/badges/en_badge_web_generic.png" width=240 alt="google play badge"/>
@@ -495,6 +498,34 @@ To use **Ethical Scanner**, you need to grant the app permission to access your 
 
 ## Web Version
 
-In addition to the Android and iOS apps, **Ethical Scanner** is also available as a web app. You can access it directly via [Firebase Hosting](https://ethical-scanner.web.app) or use the embedded version on the official website at [https://ethical-scanner.com/web-app](https://ethical-scanner.com/web-app).
+In addition to the Android and iOS apps, **Ethical Scanner** offers web-based
+access through the following platforms:
 
-The web version provides the same functionality as the mobile apps, allowing you to scan barcodes and check product information from your browser.
+1. **Official Website (Embedded):**
+
+* **URL:**
+  [https://ethical-scanner.com/web-app](https://ethical-scanner.com/web-app)
+* **Description:** This is the primary web presence where you can find the
+  embedded version of the Ethical Scanner. It provides the same core
+  functionality as the mobile apps.
+* *Note: The availability of this custom domain depends on continued
+  registration.*
+
+2. **Firebase Hosting (Direct Access):**
+
+* **URL:** [https://ethical-scanner.web.app](https://ethical-scanner.web.app)
+* **Description:** This provides direct access to the web-deployed version of
+  the Flutter application, hosted on Firebase. It allows users to experience the
+  app's features directly in their browser.
+
+3. **Vercel Hosting (Alternative/Stable Access):**
+
+* **URL:**
+  [https://ethical-scanner-web.vercel.app](https://ethical-scanner-web.vercel.app)
+* **Description:** This URL also hosts a web version of the Ethical Scanner. It
+  serves as a stable, long-term accessible alternative, particularly as it's
+  hosted on Vercel's free tier.
+
+All web versions aim to provide the same functionality as the mobile apps,
+allowing you to scan barcodes (if your browser and device support camera access
+for web pages) and check product information directly from your browser.
