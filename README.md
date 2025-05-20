@@ -535,3 +535,11 @@ for web pages) and check product information directly from your browser.
 The landing page and backend for Ethical Scanner are managed in a separate
 repository:  
 ➡️ [ethical_scanner_web (Next.js)](https://github.com/Turskyi/ethical_scanner_web)
+
+## Project Management
+
+This project's development is managed using GitHub Projects. You can view our
+current tasks, progress, and roadmap here:
+
+- **Project Board:**
+  [Ethical Scanner - Project Roadmap](https://github.com/users/Turskyi/projects/10)
