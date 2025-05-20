@@ -504,29 +504,34 @@ access through the following platforms:
 
 1. **Official Website (Embedded):**
 
-* **URL:**
+- **URL:**
   [https://ethical-scanner.com/web-app](https://ethical-scanner.com/web-app)
-* **Description:** This is the primary web presence where you can find the
+- **Description:** This is the primary web presence where you can find the
   embedded version of the Ethical Scanner. It provides the same core
   functionality as the mobile apps.
-* *Note: The availability of this custom domain depends on continued
-  registration.*
+- _Note: The availability of this custom domain depends on continued
+  registration._
 
 2. **Firebase Hosting (Direct Access):**
 
-* **URL:** [https://ethical-scanner.web.app](https://ethical-scanner.web.app)
-* **Description:** This provides direct access to the web-deployed version of
+- **URL:** [https://ethical-scanner.web.app](https://ethical-scanner.web.app)
+- **Description:** This provides direct access to the web-deployed version of
   the Flutter application, hosted on Firebase. It allows users to experience the
   app's features directly in their browser.
 
 3. **Vercel Hosting (Alternative/Stable Access):**
 
-* **URL:**
+- **URL:**
   [https://ethical-scanner-web.vercel.app](https://ethical-scanner-web.vercel.app)
-* **Description:** This URL also hosts a web version of the Ethical Scanner. It
+- **Description:** This URL also hosts a web version of the Ethical Scanner. It
   serves as a stable, long-term accessible alternative, particularly as it's
   hosted on Vercel's free tier.
 
 All web versions aim to provide the same functionality as the mobile apps,
 allowing you to scan barcodes (if your browser and device support camera access
 for web pages) and check product information directly from your browser.
+
+**Note:**  
+The landing page and backend for Ethical Scanner are managed in a separate
+repository:  
+➡️ [ethical_scanner_web (Next.js)](https://github.com/Turskyi/ethical_scanner_web)
