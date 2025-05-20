@@ -486,15 +486,12 @@ it. The app will show you the product name and some information.
 
 ## Download
 
-<!--suppress HtmlDeprecatedAttribute -->
-<div align="center">
   <a href="https://play.google.com/store/apps/details?id=com.turskyi.ethical_scanner" target="_blank" style="display: inline-block; vertical-align: middle;">
     <img src="https://play.google.com/intl/en_gb/badges/static/images/badges/en_badge_web_generic.png" width=240 alt="google play badge"/>
   </a>
   <a href="https://apps.apple.com/ca/app/ethical-scanner/id6743681663" target="_blank" style="display: inline-block; vertical-align: middle;">
     <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" width=200 alt="app store badge"/>
   </a>
-</div>
 
 ## Web Version
 
