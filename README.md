@@ -5,6 +5,7 @@
 [![style: flutter lints](https://img.shields.io/badge/style-flutter__lints-blue)](https://pub.dev/packages/flutter_lints)
 [![codecov](https://codecov.io/gh/Turskyi/ethical_scanner/graph/badge.svg?token=8PSVNC8TES)](https://codecov.io/gh/Turskyi/ethical_scanner)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/Turskyi/ethical_scanner)
+[![wakatime](https://wakatime.com/badge/user/f9df5074-b4ea-4c17-b001-fff428ab82aa/project/86650e58-a90e-4d79-b0c7-d46631f8c1a8.svg)](https://wakatime.com/badge/user/f9df5074-b4ea-4c17-b001-fff428ab82aa/project/86650e58-a90e-4d79-b0c7-d46631f8c1a8)
 <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/Turskyi/ethical_scanner">
 
 # Ethical Scanner
@@ -486,12 +487,15 @@ it. The app will show you the product name and some information.
 
 ## Download
 
-  <a href="https://play.google.com/store/apps/details?id=com.turskyi.ethical_scanner" target="_blank" style="display: inline-block; vertical-align: middle;">
-    <img src="https://play.google.com/intl/en_gb/badges/static/images/badges/en_badge_web_generic.png" width=240 alt="google play badge"/>
+<!--suppress HtmlDeprecatedAttribute -->
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.turskyi.ethical_scanner" target="_blank">
+    <img src="https://play.google.com/intl/en_gb/badges/static/images/badges/en_badge_web_generic.png" height="80" alt="google play badge"/>
   </a>
-  <a href="https://apps.apple.com/ca/app/ethical-scanner/id6743681663" target="_blank" style="display: inline-block; vertical-align: middle;">
-    <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" width=200 alt="app store badge"/>
+  <a href="https://apps.apple.com/ca/app/ethical-scanner/id6743681663" target="_blank">
+    <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" height="80" alt="app store badge"/>
   </a>
+</p>
 
 ## Web Version
 
