@@ -404,8 +404,8 @@ class _CameraScreenState extends State<PhotoView> {
                                     await _initializeControllerFuture;
 
                                     // Take a picture and get the file path.
-                    final XFile? picture =
-                    await _controller?.takePicture();
+                                    final XFile? picture =
+                                        await _controller?.takePicture();
 
                                     if (context.mounted && picture != null) {
                                       context
