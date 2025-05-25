@@ -19,8 +19,12 @@ jobs:
         env:
           ENV: ${{ secrets.ENV }}
       - run: >-
+          cd components/interface_adapters && flutter pub get && dart run build_runner build
+          --delete-conflicting-outputs && flutter build web --no-tree-shake-icons --release
+      - run: >-
           flutter pub get && dart run build_runner build
-          --delete-conflicting-outputs && flutter build web --no-tree-shake-icons
+          --delete-conflicting-outputs && flutter build web --no-tree-shake-icons --release
+
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'

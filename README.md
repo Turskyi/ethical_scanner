@@ -21,11 +21,12 @@ and more.
 The app uses the data from various sources, such as
 
 - [Open Food Facts](https://world.openfoodfacts.org);
-- [STOP FUNDING PUTIN’S WAR](https://boycottrussia.info/all-companies);
-- [Yale Chief Executive Leadership Institute | List of Companies
-  Leaving and Staying in Russia](https://www.yalerussianbusinessretreat.com/);
+- [Yale Chief Executive Leadership Institute](https://www.yalerussianbusinessretreat.com/);
+- [Squeezing Putin](https://squeezingputin.com);
 - [U.S. bureau of counterterrorism | State Sponsors of Terrorism](https://www.state.gov/state-sponsors-of-terrorism/);
 - [European Parliament](https://www.europarl.europa.eu/delegations/en/recognising-the-russian-federation-as-a-/product-details/20221124DPU34521).
+- [NATO Parliamentary Assembly](https://www.nato-pa.int/download-file?filename=/sites/default/files/2022-11/RESOLUTION%20479%20-%20%20NATO%20POST%20MADRID%20.pdf)
+- [The Sejm of the Republic of Poland](https://www.sejm.gov.pl/media9.nsf/files/ASEA-CM5N53/%24File/Resolution%20on%20the%20recognition%20of%20the%20Russian%20Federation%20as%20a%20state%20supporting%20terrorism.pdf)
 
 The app aims to help you shop with confidence and conscience. For more
 information, please visit the project website at
@@ -140,7 +141,7 @@ depend on things they don’t need.
 
 ### Business/Domain - `domain`
 
-In the context of the Clean Architecture by Robert C. Martin, the `domain`
+In the context of the Clean Architecture by Robert C. Martin, the `domain`
 refers to the business logic or domain logic of the application. This is the
 innermost circle, which encapsulates business logic (`use_cases`) and
 `entities`. Domain models, in general, are designed to be highly reusable and
