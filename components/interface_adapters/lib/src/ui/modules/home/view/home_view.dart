@@ -7,6 +7,7 @@ import 'package:interface_adapters/src/ui/modules/home/view/widgets/language_sel
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/product_info_body.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/sakura_petal_animation.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/snow_animation.dart';
+import 'package:interface_adapters/src/ui/res/color/app_color.dart';
 import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
@@ -29,16 +30,17 @@ class HomeView extends StatelessWidget {
               ? viewModel.errorMessage
               : translate('home.scan_barcode');
           return Scaffold(
+            extendBody: true,
             // We need to set transparent background explicitly, because
             // Scaffold does not support gradient backgrounds, so we program it
             // to remove any default background, so that the custom background
             // above will be visible.
-            backgroundColor: Colors.transparent,
+            backgroundColor: AppColor.cetaceanBlue.value.withAlpha(5),
             resizeToAvoidBottomInset: true,
-            extendBodyBehindAppBar: viewModel is ReadyToScanState,
-            // Add an appBar with the language selector dropdown
+            extendBodyBehindAppBar: true,
+            // Add an appBar with the language selector dropdown.
             appBar: AppBar(
-              backgroundColor: Colors.transparent,
+              backgroundColor: AppColor.cetaceanBlue.value.withAlpha(5),
               //TODO: should I add this (scrolledUnderElevation: 0.0)?
               // scrolledUnderElevation: 0.0,
               actions: const <Widget>[

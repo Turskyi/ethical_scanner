@@ -88,7 +88,7 @@ class ProductInfoTile extends StatelessWidget {
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
                         final Uri link = Uri.parse(
-                          resources.strings.warSponsorsSource,
+                          resources.strings.russiaSponsorsSource,
                         );
                         launchUrl(link);
                       },
@@ -111,7 +111,7 @@ class ProductInfoTile extends StatelessWidget {
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
                         final Uri link = Uri.parse(
-                          resources.strings.russiaSponsorsSource,
+                          resources.strings.warSponsorsSource,
                         );
                         launchUrl(link);
                       },

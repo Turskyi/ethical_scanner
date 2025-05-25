@@ -27,7 +27,7 @@ Future<Dependencies> injectAndGetDependencies() async {
 
   OpenFoodAPIConfiguration.globalCountry = OpenFoodFactsCountry.CANADA;
 
-  OpenAI.apiKey = Env.apiKey;
+  OpenAI.apiKey = Env.openAiApiKey;
 
   OpenFoodAPIConfiguration.globalUser = const User(
     userId: Env.openFoodUserId,

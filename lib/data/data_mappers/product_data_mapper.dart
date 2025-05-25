@@ -5,7 +5,7 @@ extension ProductExtension on Product {
   ProductInfo toProductInfo() => ProductInfo(
         barcode: barcode ?? '',
         origin: origins ?? '',
-        country: _countryName,
+        countrySold: _countryName,
         countryTags: _countryNames,
         name: productName ?? '',
         brand: brands ?? '',

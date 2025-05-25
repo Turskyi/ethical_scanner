@@ -28,13 +28,7 @@ Route<String> generateRoute(RouteSettings settings) => switch (settings.name) {
                 )..add(const LoadScannerEvent());
               },
               child: BlocListener<ScanPresenter, ScanViewModel>(
-                listener: (BuildContext context, ScanViewModel viewModel) {
-                  if (viewModel is ScanSuccessState) {
-                    Navigator.pop(context, viewModel.barcode);
-                  } else if (viewModel is CanceledScanningState) {
-                    Navigator.pop(context);
-                  }
-                },
+                listener: _scanViewModelListener,
                 child: Opacity(
                   opacity: animation.value,
                   child: const ScanView(),
@@ -67,23 +61,7 @@ Route<String> generateRoute(RouteSettings settings) => switch (settings.name) {
                   DependenciesScope.of(context).addIngredientsUseCase,
                 ),
                 child: BlocListener<PhotoPresenter, PhotoViewModel>(
-                  listener: (BuildContext context, PhotoViewModel viewModel) {
-                    if (viewModel is IngredientsAddedSuccessState) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            translate('photo.image_upload_successful'),
-                          ),
-                          duration: Duration(
-                            seconds: DurationSeconds.long.time,
-                          ),
-                        ),
-                      );
-                      Navigator.pop(context);
-                    } else if (viewModel is CanceledPhotoState) {
-                      Navigator.pop(context);
-                    }
-                  },
+                  listener: _photoViewModelListener,
                   child: FadeTransition(
                     // Use the animation parameter to control `opacity`.
                     opacity: animation,
@@ -115,6 +93,32 @@ Route<String> generateRoute(RouteSettings settings) => switch (settings.name) {
         ),
       _ => _getHomePageRouteBuilder(settings),
     };
+
+void _photoViewModelListener(BuildContext context, PhotoViewModel viewModel) {
+  if (viewModel is IngredientsAddedSuccessState) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          translate('photo.image_upload_successful'),
+        ),
+        duration: Duration(
+          seconds: DurationSeconds.long.time,
+        ),
+      ),
+    );
+    Navigator.pop(context);
+  } else if (viewModel is CanceledPhotoState) {
+    Navigator.pop(context);
+  }
+}
+
+void _scanViewModelListener(BuildContext context, ScanViewModel viewModel) {
+  if (viewModel is ScanSuccessState) {
+    Navigator.pop(context, viewModel.barcode);
+  } else if (viewModel is CanceledScanningState) {
+    Navigator.pop(context);
+  }
+}
 
 PageRouteBuilder<String> _getHomePageRouteBuilder(RouteSettings settings) =>
     PageRouteBuilder<String>(

@@ -15,46 +15,57 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   final RestClient _restClient;
 
   @override
-  Future<ProductInfo> getProductInfoAsFuture(LocalizedCode input) =>
-      OpenFoodAPIClient.getProductV3(
-        ProductQueryConfiguration(
-          input.code,
-          language: OpenFoodFactsLanguage.ENGLISH,
-          fields: <ProductField>[ProductField.ALL],
-          version: ProductQueryVersion.v3,
-        ),
-      ).then((ProductResultV3 result) {
-        if (result.product != null && result.hasSuccessfulStatus) {
-          ProductInfo product = result.product!.toProductInfo();
-          if (product.brand.isNotEmpty || product.name.isNotEmpty) {
-            return _restClient
-                .getTerrorismSponsors()
-                .then((List<TerrorismSponsor> terrorismSponsors) {
-              return product.copyWith(
-                isCompanyTerrorismSponsor: terrorismSponsors.sponsoredBy(
-                  product,
-                ),
-              );
-            }).onError((_, __) => product);
-          } else {
-            return product;
-          }
-        } else if (result.status == ProductResultV3.statusFailure) {
-          if (_isBarcode(input.code)) {
-            return ProductInfo(barcode: input.code);
-          } else if (_isWebsite(input.code)) {
-            return ProductInfo(website: input.code);
-          } else if (_isAmazonAsin(input.code)) {
-            return const ProductInfo(brand: 'Amazon');
-          }
+  Future<ProductInfo> getProductInfoAsFuture(LocalizedCode input) {
+    final String code = input.code;
+    return OpenFoodAPIClient.getProductV3(
+      ProductQueryConfiguration(
+        code,
+        language: OpenFoodFactsLanguage.ENGLISH,
+        fields: <ProductField>[ProductField.ALL],
+        version: ProductQueryVersion.v3,
+      ),
+    ).then((ProductResultV3 result) {
+      final Product? resultProduct = result.product;
+      if (resultProduct != null && result.hasSuccessfulStatus) {
+        final ProductInfo product = resultProduct.toProductInfo();
+        if (product.brand.isNotEmpty || product.name.isNotEmpty) {
+          return _restClient
+              .getTerrorismSponsors()
+              .then((List<TerrorismSponsor> terrorismSponsors) {
+            final bool isCompanyTerrorismSponsor =
+                terrorismSponsors.sponsoredBy(
+              product,
+            );
+
+            final String origin = product.origin;
+            return product.copyWith(
+              isCompanyTerrorismSponsor: isCompanyTerrorismSponsor,
+              origin:
+                  (origin.isEmpty && code.isNotEmpty && code.startsWith('460'))
+                      ? 'russian'
+                      : origin,
+            );
+          }).onError((_, __) => product);
+        } else {
+          return product;
         }
-        throw NotFoundException(
-          input.language.isEnglish
-              ? 'Product information not found for barcode: ${input.code}.'
-              : 'Інформація про продукт не знайдена для штрих-коду: '
-                  '${input.code}',
-        );
-      });
+      } else if (result.status == ProductResultV3.statusFailure) {
+        if (_isBarcode(input.code)) {
+          return ProductInfo(barcode: input.code);
+        } else if (_isWebsite(input.code)) {
+          return ProductInfo(website: input.code);
+        } else if (_isAmazonAsin(input.code)) {
+          return const ProductInfo(brand: 'Amazon');
+        }
+      }
+      throw NotFoundException(
+        input.language.isEnglish
+            ? 'Product information not found for barcode: ${input.code}.'
+            : 'Інформація про продукт не знайдена для штрих-коду: '
+                '${input.code}',
+      );
+    });
+  }
 
   @override
   Future<String> getCountryFromAiAsFuture(String barcode) {
@@ -85,13 +96,13 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   @override
   Future<void> addProduct(ProductInfo product) async {
     final String ingredientsText = product.ingredientList.join(',');
-    Product newProduct = Product(
+    final Product newProduct = Product(
       barcode: product.barcode,
       productName: product.name,
       genericName: product.name,
       brands: product.brand,
       brandsTags: <String>[product.brand],
-      countries: product.country,
+      countries: product.countrySold,
       countriesTags: product.countryTags,
       quantity: product.quantity,
       ingredients: product.ingredientList
@@ -115,13 +126,37 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       packagingTags: <String>[product.packaging],
     );
 
-    Status result = await OpenFoodAPIClient.saveProduct(
-      OpenFoodAPIConfiguration.globalUser ??
-          const User(
-            userId: Env.openFoodUserId,
+    final User openFoodUser = OpenFoodAPIConfiguration.globalUser ??
+        const User(
+          userId: Env.openFoodUserId,
+          password: Env.openFoodPassword,
+          comment: constants.openFoodUserComment,
+        );
+    try {
+      await _saveProductToOpenFoodFacts(
+        newProduct: newProduct,
+        openFoodUser: openFoodUser,
+      );
+    } catch (error) {
+      if (error is BadRequestError) {
+        await _saveProductToOpenFoodFacts(
+          newProduct: newProduct,
+          openFoodUser: const User(
+            userId: Env.openFoodBackupUserId,
             password: Env.openFoodPassword,
             comment: constants.openFoodUserComment,
           ),
+        );
+      }
+    }
+  }
+
+  Future<void> _saveProductToOpenFoodFacts({
+    required Product newProduct,
+    required User openFoodUser,
+  }) async {
+    final Status result = await OpenFoodAPIClient.saveProduct(
+      openFoodUser,
       newProduct,
     );
 
@@ -140,25 +175,46 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<void> addIngredients(ProductPhoto photo) async {
-    SendImage image = SendImage(
+    final SendImage image = SendImage(
       barcode: photo.info.barcode,
       imageUri: Uri.parse(photo.path),
       imageField: ImageField.INGREDIENTS,
     );
+    final User openFoodUser = OpenFoodAPIConfiguration.globalUser ??
+        const User(
+          userId: Env.openFoodUserId,
+          password: Env.openFoodPassword,
+          comment: constants.openFoodUserComment,
+        );
 
-    Status status = await OpenFoodAPIClient.addProductImage(
-      OpenFoodAPIConfiguration.globalUser ??
-          const User(
-            userId: Env.openFoodUserId,
-            password: Env.openFoodPassword,
-            comment: constants.openFoodUserComment,
-          ),
+    await _uploadProductImageToOpenFoodFacts(
+      image: image,
+      openFoodUser: openFoodUser,
+    );
+  }
+
+  Future<void> _uploadProductImageToOpenFoodFacts({
+    required SendImage image,
+    required User openFoodUser,
+  }) async {
+    final Status status = await OpenFoodAPIClient.addProductImage(
+      openFoodUser,
       image,
     );
+
     if (status.status == HttpStatus.internalServerError) {
       throw InternalServerError(
         'Image could not be uploaded: ${status.error}.\n'
         '${status.imageId != null ? status.imageId.toString() : ''}',
+      );
+    } else if (status.status == HttpStatus.forbidden) {
+      await _uploadProductImageToOpenFoodFacts(
+        image: image,
+        openFoodUser: const User(
+          userId: Env.openFoodBackupUserId,
+          password: Env.openFoodPassword,
+          comment: constants.openFoodUserComment,
+        ),
       );
     } else if (status.status != 'status ok') {
       throw Exception(
@@ -230,7 +286,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     ProductInfo product = photo.info;
     String ingredientsText = ocrResponse.ingredientsTextFromImage ??
         photo.info.ingredientList.join(',');
-    Product editedProduct = Product(
+    final Product editedProduct = Product(
       barcode: product.barcode,
       productName: product.name,
       productNameInLanguages: <OpenFoodFactsLanguage, String>{
@@ -239,7 +295,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       genericName: product.name,
       brands: product.brand,
       brandsTags: <String>[product.brand],
-      countries: product.country,
+      countries: product.countrySold,
       countriesTags: product.countryTags,
       countriesTagsInLanguages: <OpenFoodFactsLanguage, List<String>>{
         language: product.countryTags,

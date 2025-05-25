@@ -227,8 +227,10 @@ class _HomeViewState extends State<ScanView> {
       _scannerController
           .start()
           .catchError((Object error, StackTrace stacktrace) {
-        debugPrint('Warning: an error occurred in $runtimeType: $error\n'
-            'Stacktrace: $stacktrace');
+        debugPrint(
+          'Warning: an error occurred in $runtimeType: $error\n'
+          'Stacktrace: $stacktrace',
+        );
         throw const NotFoundException(
           'No camera found or failed to open camera!',
         );
@@ -309,8 +311,10 @@ class _HomeViewState extends State<ScanView> {
           ),
         );
       } else {
-        debugPrint('Error in $runtimeType: $error.'
-            '\nStacktrace: $stackTrace');
+        debugPrint(
+          'Error in $runtimeType: $error.'
+          '\nStacktrace: $stackTrace',
+        );
       }
     });
   }

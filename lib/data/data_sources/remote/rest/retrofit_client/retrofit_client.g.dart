@@ -6,19 +6,18 @@ part of 'retrofit_client.dart';
 // RetrofitGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
 
 class _RetrofitClient implements RetrofitClient {
-  _RetrofitClient(
-    this._dio, {
-    this.baseUrl,
-  }) {
-    baseUrl ??= 'https://ethical-scanner.turskyi.com/api/';
+  _RetrofitClient(this._dio, {this.baseUrl, this.errorLogger}) {
+    baseUrl ??= 'https://ethical-scanner.com/api/';
   }
 
   final Dio _dio;
 
   String? baseUrl;
+
+  final ParseErrorLogger? errorLogger;
 
   @override
   Future<List<RussiaSponsorResponse>> getTerrorismSponsors() async {
@@ -26,27 +25,29 @@ class _RetrofitClient implements RetrofitClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _result = await _dio.fetch<List<dynamic>>(
-        _setStreamType<List<RussiaSponsorResponse>>(Options(
-      method: 'GET',
-      headers: _headers,
-      extra: _extra,
-    )
-            .compose(
-              _dio.options,
-              'russia-sponsors',
-              queryParameters: queryParameters,
-              data: _data,
-            )
-            .copyWith(
-                baseUrl: _combineBaseUrls(
-              _dio.options.baseUrl,
-              baseUrl,
-            ))));
-    var _value = _result.data!
-        .map((dynamic i) =>
-            RussiaSponsorResponse.fromJson(i as Map<String, dynamic>))
-        .toList();
+    final _options = _setStreamType<List<RussiaSponsorResponse>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'russia-sponsors',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<List<dynamic>>(_options);
+    late List<RussiaSponsorResponse> _value;
+    try {
+      _value = _result.data!
+          .map(
+            (dynamic i) =>
+                RussiaSponsorResponse.fromJson(i as Map<String, dynamic>),
+          )
+          .toList();
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
     return _value;
   }
 
@@ -63,10 +64,7 @@ class _RetrofitClient implements RetrofitClient {
     return requestOptions;
   }
 
-  String _combineBaseUrls(
-    String dioBaseUrl,
-    String? baseUrl,
-  ) {
+  String _combineBaseUrls(String dioBaseUrl, String? baseUrl) {
     if (baseUrl == null || baseUrl.trim().isEmpty) {
       return dioBaseUrl;
     }

@@ -52,11 +52,13 @@ class _CameraScreenState extends State<PhotoView> {
         widget.cameraDescriptions.first,
         ResolutionPreset.high,
       );
+
       _initializeControllerFuture = _controller?.initialize().then((_) {
         // The returned value in `then` is always `null`
         if (!mounted) {
           return;
         }
+        _configureCamera();
         setState(() {});
       }).catchError((Object e) {
         if (e is CameraException) {
@@ -210,9 +212,7 @@ class _CameraScreenState extends State<PhotoView> {
           builder: (BuildContext context, PhotoViewModel viewModel) {
             final CameraValue? camera = _controller?.value;
             if (camera == null) {
-              return const Center(
-                child: SizedBox.shrink(),
-              );
+              return const Center(child: SizedBox.shrink());
             }
             // Fetch screen size.
             final Size size = MediaQuery.sizeOf(context);
@@ -227,16 +227,8 @@ class _CameraScreenState extends State<PhotoView> {
             // to prevent scaling down, invert the value
             if (scale < 1) scale = 1 / scale;
 
-            if (!kIsWeb && camera.isInitialized) {
-              _controller?.setFlashMode(FlashMode.off);
-              _controller?.getMaxZoomLevel().then((double max) {
-                _maxZoomLevel = max;
-              });
-              _controller?.setFocusMode(FocusMode.auto);
-            }
-
             final Stack cameraStack = Stack(
-              alignment: Alignment.center,
+              alignment: Alignment.topCenter,
               children: <Widget>[
                 GestureDetector(
                   onScaleUpdate: (ScaleUpdateDetails details) {
@@ -358,11 +350,11 @@ class _CameraScreenState extends State<PhotoView> {
                     child: cameraStack,
                   )
                 else
-                  cameraStack,
+                  Expanded(child: cameraStack),
                 if (!kIsWeb)
                   // Buttons for manual zoom control.
                   Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
@@ -388,50 +380,53 @@ class _CameraScreenState extends State<PhotoView> {
           builder: (BuildContext context, PhotoViewModel viewModel) {
             return viewModel is AddIngredientsErrorState
                 ? const SizedBox()
-                : FloatingActionButton(
-                    onPressed: viewModel is LoadingState
-                        ? null
-                        : viewModel is TakenPhotoState
-                            ? () {
-                                context.read<PhotoPresenter>().add(
-                                      AddIngredientsPhotoEvent(
-                                        ProductPhoto(
-                                          path: viewModel.photoPath,
-                                          info: widget.productInfo,
+                : Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: FloatingActionButton(
+                      onPressed: viewModel is LoadingState
+                          ? null
+                          : viewModel is TakenPhotoState
+                              ? () {
+                                  context.read<PhotoPresenter>().add(
+                                        AddIngredientsPhotoEvent(
+                                          ProductPhoto(
+                                            path: viewModel.photoPath,
+                                            info: widget.productInfo,
+                                          ),
                                         ),
-                                      ),
-                                    );
-                              }
-                            : () async {
-                                context
-                                    .read<PhotoPresenter>()
-                                    .add(const TakePhotoEvent());
-                                try {
-                                  await _initializeControllerFuture;
-
-                                  // Take a picture and get the file path.
-                                  final XFile? picture =
-                                      await _controller?.takePicture();
-
-                                  if (context.mounted && picture != null) {
-                                    context
-                                        .read<PhotoPresenter>()
-                                        .add(TakenPhotoEvent(picture.path));
-                                  } else {
-                                    //TODO: add error event
-                                  }
-                                } catch (e) {
-                                  debugPrint('Error taking picture: $e');
+                                      );
                                 }
-                              },
-                    child: viewModel is TakenPhotoState
-                        ? const Icon(Icons.send)
-                        : viewModel is PhotoMakerReadyState ||
-                                viewModel is AddIngredientsErrorState
-                            ? const Icon(Icons.camera)
-                            : viewModel is LoadingState
-                                ? const Icon(Icons.stop)
-                                : const SizedBox(),
+                              : () async {
+                                  context
+                                      .read<PhotoPresenter>()
+                                      .add(const TakePhotoEvent());
+                                  try {
+                                    await _initializeControllerFuture;
+
+                                    // Take a picture and get the file path.
+                    final XFile? picture =
+                    await _controller?.takePicture();
+
+                                    if (context.mounted && picture != null) {
+                                      context
+                                          .read<PhotoPresenter>()
+                                          .add(TakenPhotoEvent(picture.path));
+                                    } else {
+                                      //TODO: add error event
+                                    }
+                                  } catch (e) {
+                                    debugPrint('Error taking picture: $e');
+                                  }
+                                },
+                      child: viewModel is TakenPhotoState
+                          ? const Icon(Icons.send)
+                          : viewModel is PhotoMakerReadyState ||
+                                  viewModel is AddIngredientsErrorState
+                              ? const Icon(Icons.camera)
+                              : viewModel is LoadingState
+                                  ? const Icon(Icons.stop)
+                                  : const SizedBox(),
+                    ),
                   );
           },
         ),
@@ -535,5 +530,21 @@ class _CameraScreenState extends State<PhotoView> {
     }
 
     return TextSpan(children: spans);
+  }
+
+  Future<void> _configureCamera() async {
+    final CameraValue? camera = _controller?.value;
+    if (!kIsWeb && camera?.isInitialized == true) {
+      try {
+        await _controller?.setFlashMode(FlashMode.off);
+      } on CameraException catch (_) {
+        // Intentionally left blank, since we do not want to turn on flash
+        // anyway.
+      }
+      _controller?.getMaxZoomLevel().then((double max) {
+        _maxZoomLevel = max;
+      });
+      _controller?.setFocusMode(FocusMode.auto);
+    }
   }
 }

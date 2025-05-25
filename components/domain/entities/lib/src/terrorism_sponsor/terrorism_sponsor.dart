@@ -15,12 +15,19 @@ abstract interface class TerrorismSponsor {
 }
 
 extension TerrorismSponsorList on List<TerrorismSponsor> {
-  bool sponsoredBy(ProductInfo product) =>
-      _isSponsoredByOtherRussiaSponsors(product) ||
-      _isSponsoredByAnyTerrorismSponsor(product);
+  bool sponsoredBy(ProductInfo product) {
+    final bool isSponsoredByOtherRussiaSponsors =
+        _isSponsoredByOtherRussiaSponsors(product);
 
-  bool _isSponsoredByOtherRussiaSponsors(ProductInfo product) =>
-      _otherTerrorismSponsors.contains(product.brand.toLowerCase());
+    return isSponsoredByOtherRussiaSponsors ||
+        _isSponsoredByAnyTerrorismSponsor(product);
+  }
+
+  bool _isSponsoredByOtherRussiaSponsors(ProductInfo product) {
+    final String brand = product.brand.toLowerCase();
+
+    return _otherTerrorismSponsors.contains(brand);
+  }
 
   bool _isSponsoredByAnyTerrorismSponsor(ProductInfo product) {
     return any(
@@ -76,11 +83,12 @@ extension TerrorismSponsorList on List<TerrorismSponsor> {
           .toList();
 
   List<String> get _otherTerrorismSponsors => <String>[
-        'twix',
         'quaker',
         'nestlé',
         'pepsi cola',
         'bacardi, martini',
         'quakerquaker oats',
+        'bounty chocolate',
+        'mars inc.',
       ];
 }

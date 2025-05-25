@@ -37,7 +37,7 @@ void main() {
         const String input = '0055577105436';
         const ProductInfo expectedResult = ProductInfo(
           barcode: input,
-          country: 'Canada',
+          countrySold: 'Canada',
         );
 
         // Act
@@ -47,7 +47,7 @@ void main() {
         );
 
         // Assert
-        expect(result.country, equals(expectedResult.country));
+        expect(result.countrySold, equals(expectedResult.countrySold));
         expect(result.barcode, equals(expectedResult.barcode));
       },
       timeout: const Timeout(Duration(seconds: 40)),

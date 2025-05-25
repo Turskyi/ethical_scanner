@@ -34,9 +34,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
     on<LaunchUrlEvent>(_handleLaunchUrl);
 
-    on<ShowHomeEvent>(
-      (_, Emitter<HomeViewModel> emit) => emit(const ReadyToScanState()),
-    );
+    on<ShowHomeEvent>(_onShowHomeEvent);
 
     on<PrecipitationToggleEvent>(_togglePrecipitationSetting);
 
@@ -56,6 +54,13 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
   final UseCase<bool, Null> _getPrecipitationStateUseCase;
   final UseCase<Future<bool>, String> _saveLanguageUseCase;
   final UseCase<Language, Null> _getLanguageUseCase;
+
+  FutureOr<void> _onShowHomeEvent(
+    ShowHomeEvent _,
+    Emitter<HomeViewModel> emit,
+  ) {
+    emit(const ReadyToScanState());
+  }
 
   FutureOr<void> _handleError(
     HomeErrorEvent event,
@@ -230,9 +235,9 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           }
         }
 
-        if (productInfo.country.isNotEmpty) {
+        if (productInfo.countrySold.isNotEmpty) {
           modifiableProductInfo[ProductInfoType.countryWhereSold] =
-              productInfo.country;
+              productInfo.countrySold;
           if (state is LoadingProductInfoState) {
             LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
@@ -472,9 +477,6 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
         try {
           if (await canLaunchUrl(emailLaunchUri)) {
             await launchUrl(emailLaunchUri);
-            debugPrint(
-              'Feedback email launched successfully via url_launcher.',
-            );
           } else {
             throw 'Could not launch email with url_launcher.';
           }
@@ -484,7 +486,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           debugPrint(
             '$urlLauncherErrorMessage\nStackTrace: $urlLauncherStackTrace',
           );
-          // Optionally, show an error message to the user.
+          // TODO: show an error message to the user.
         }
       } else {
         final String screenshotFilePath = await _writeImageToStorage(

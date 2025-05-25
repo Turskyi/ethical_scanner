@@ -3,7 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>NSCameraUsageDescription</key>
-	<string>This app needs camera access to scan barcodes</string>
+	<string>This app needs camera access to scan barcodes and capture photos of product ingredients.</string>
+	<key>NSMicrophoneUsageDescription</key>
+    <string>This app accesses camera functionalities that may include the microphone, though audio is not actively recorded by default.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app needs photos access to get barcode from photo library</string>
 	<key>CFBundleDevelopmentRegion</key>
