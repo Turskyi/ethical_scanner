@@ -10,6 +10,8 @@
 /// Critical business data.
 library;
 
+export 'src/enums/feedback_rating.dart';
+export 'src/enums/feedback_type.dart';
 export 'src/enums/language.dart';
 export 'src/enums/product_info_type.dart';
 export 'src/enums/vegan.dart';
@@ -17,6 +19,7 @@ export 'src/enums/vegetarian.dart';
 export 'src/exceptions/bad_request_error.dart';
 export 'src/exceptions/internal_server_error.dart';
 export 'src/exceptions/not_found_exception.dart';
+export 'src/feedback_details.dart';
 export 'src/localized_code/localized_code.dart';
 export 'src/logging_interceptor/logging_interceptor.dart';
 export 'src/product/product_info.dart';

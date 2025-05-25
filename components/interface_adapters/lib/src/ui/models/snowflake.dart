@@ -15,10 +15,11 @@ class Snowflake {
     Offset? offset,
     double? size,
     double? rotationAngle,
-  }) =>
-      Snowflake(
-        offset: offset ?? this.offset,
-        size: size ?? this.size,
-        rotationAngle: rotationAngle ?? this.rotationAngle,
-      );
+  }) {
+    return Snowflake(
+      offset: offset ?? this.offset,
+      size: size ?? this.size,
+      rotationAngle: rotationAngle ?? this.rotationAngle,
+    );
+  }
 }

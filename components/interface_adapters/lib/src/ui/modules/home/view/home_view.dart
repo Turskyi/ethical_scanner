@@ -5,7 +5,9 @@ import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/fab.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/language_selector.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/product_info_body.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/sakura_petal_animation.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/snow_animation.dart';
+import 'package:interface_adapters/src/ui/res/color/app_color.dart';
 import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
@@ -22,22 +24,23 @@ class HomeView extends StatelessWidget {
       ),
       child: BlocBuilder<HomePresenter, HomeViewModel>(
         builder: (BuildContext context, HomeViewModel viewModel) {
-          MaterialColors colors = resources.colors;
-          Dimens dimens = resources.dimens;
-          String displayText = viewModel is HomeErrorState
+          final MaterialColors colors = resources.colors;
+          final Dimens dimens = resources.dimens;
+          final String displayText = viewModel is HomeErrorState
               ? viewModel.errorMessage
               : translate('home.scan_barcode');
           return Scaffold(
+            extendBody: true,
             // We need to set transparent background explicitly, because
             // Scaffold does not support gradient backgrounds, so we program it
             // to remove any default background, so that the custom background
             // above will be visible.
-            backgroundColor: Colors.transparent,
+            backgroundColor: AppColor.cetaceanBlue.value.withAlpha(5),
             resizeToAvoidBottomInset: true,
-            extendBodyBehindAppBar: viewModel is ReadyToScanState,
-            // Add an appBar with the language selector dropdown
+            extendBodyBehindAppBar: true,
+            // Add an appBar with the language selector dropdown.
             appBar: AppBar(
-              backgroundColor: Colors.transparent,
+              backgroundColor: AppColor.cetaceanBlue.value.withAlpha(5),
               //TODO: should I add this (scrolledUnderElevation: 0.0)?
               // scrolledUnderElevation: 0.0,
               actions: const <Widget>[
@@ -52,7 +55,7 @@ class HomeView extends StatelessWidget {
                   margin: EdgeInsets.only(bottom: dimens.bodyBottomMargin),
                   child: GestureDetector(
                     onHorizontalDragEnd: (DragEndDetails details) {
-                      double? primaryVelocity = details.primaryVelocity;
+                      final double? primaryVelocity = details.primaryVelocity;
                       if (primaryVelocity != null && primaryVelocity > 0) {
                         context
                             .read<HomePresenter>()
@@ -60,24 +63,27 @@ class HomeView extends StatelessWidget {
                       }
                     },
                     child: ShaderMask(
-                      shaderCallback: (Rect bounds) => LinearGradient(
-                        colors: <Color>[
-                          colors.columbiaBlue,
-                          colors.verdigris,
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ).createShader(bounds),
+                      shaderCallback: (Rect bounds) {
+                        return LinearGradient(
+                          colors: <Color>[
+                            colors.columbiaBlue,
+                            colors.verdigris,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ).createShader(bounds);
+                      },
                       child: AnimatedSwitcher(
                         duration: resources.durations.animatedSwitcher,
                         transitionBuilder: (
                           Widget child,
                           Animation<double> animation,
-                        ) =>
-                            FadeTransition(
-                          opacity: animation,
-                          child: child,
-                        ),
+                        ) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
                         child: Text(
                           displayText,
                           key: ValueKey<String>(displayText),
@@ -106,7 +112,10 @@ class HomeView extends StatelessWidget {
                 ),
                 if (viewModel is ReadyToScanState &&
                     viewModel.isPrecipitationFalls)
-                  if (_isWinter) const SnowAnimation(),
+                  if (_isWinter)
+                    const SnowAnimation()
+                  else if (_isSpring)
+                    const SakuraPetalAnimation(),
               ],
             ),
             floatingActionButtonLocation:
@@ -127,10 +136,18 @@ class HomeView extends StatelessWidget {
   }
 
   bool get _isWinter {
-    DateTime currentDate = DateTime.now();
-    int currentMonth = currentDate.month;
+    final DateTime currentDate = DateTime.now();
+    final int currentMonth = currentDate.month;
     return currentMonth == DateTime.december ||
         currentMonth == DateTime.january ||
         currentMonth == DateTime.february;
+  }
+
+  bool get _isSpring {
+    final DateTime currentDate = DateTime.now();
+    final int currentMonth = currentDate.month;
+    return currentMonth == DateTime.march ||
+        currentMonth == DateTime.april ||
+        currentMonth == DateTime.may;
   }
 }

@@ -21,8 +21,9 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
         .onError((Object? error, StackTrace stackTrace) {
       if (error is FormatException && error.source is String) {
         debugPrint(
-            'Error in $runtimeType: ${extractErrorMessage(error.source)}.'
-            '\nStacktrace: $stackTrace');
+          'Error in $runtimeType: ${extractErrorMessage(error.source)}.'
+          '\nStacktrace: $stackTrace',
+        );
       }
       if (_isBarcode(input.code)) {
         return ProductInfo(barcode: input.code);
@@ -38,7 +39,7 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
         );
       }
     }).then((ProductInfo info) {
-      if (info.origin.isNotEmpty || info.country.isNotEmpty) {
+      if (info.origin.isNotEmpty || info.countrySold.isNotEmpty) {
         return info;
       } else if (_localDataSource.isEnglishBook(input.code)) {
         final String eanPrefix = input.code.substring(0, 3);
@@ -66,8 +67,9 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
   }
 
   @override
-  Future<void> addProduct(ProductInfo productInfo) =>
-      _remoteDataSource.addProduct(productInfo);
+  Future<void> addProduct(ProductInfo productInfo) {
+    return _remoteDataSource.addProduct(productInfo);
+  }
 
   @override
   Future<void> addIngredients(ProductPhoto productPhoto) {

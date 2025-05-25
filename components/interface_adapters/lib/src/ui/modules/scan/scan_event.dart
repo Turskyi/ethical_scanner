@@ -9,7 +9,7 @@ class LoadScannerEvent extends ScanEvent {
 class PopBarcodeEvent extends ScanEvent {
   const PopBarcodeEvent(this.barcode);
 
-  final String? barcode;
+  final String barcode;
 }
 
 class NavigateBackEvent extends ScanEvent {
@@ -23,5 +23,5 @@ class SoundToggleEvent extends ScanEvent {
 class DetectedBarcodeEvent extends ScanEvent {
   const DetectedBarcodeEvent(this.barcodeValue);
 
-  final String? barcodeValue;
+  final String barcodeValue;
 }

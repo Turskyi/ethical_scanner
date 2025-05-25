@@ -18,70 +18,50 @@ Route<String> generateRoute(RouteSettings settings) => switch (settings.name) {
             _,
             Animation<double> animation,
             Animation<double> __,
-          ) =>
-              BlocProvider<ScanPresenter>(
-            create: (BuildContext context) {
-              final Dependencies dependencies = DependenciesScope.of(context);
-              return ScanPresenter(
-                dependencies.saveSoundPreferenceUseCase,
-                dependencies.getSoundPreferenceUseCase,
-              )..add(const LoadScannerEvent());
-            },
-            child: BlocListener<ScanPresenter, ScanViewModel>(
-              listener: (BuildContext context, ScanViewModel viewModel) {
-                if (viewModel is ScanSuccessState) {
-                  Navigator.pop(context, viewModel.barcode);
-                } else if (viewModel is CanceledScanningState) {
-                  Navigator.pop(context);
-                }
+          ) {
+            return BlocProvider<ScanPresenter>(
+              create: (BuildContext context) {
+                final Dependencies dependencies = DependenciesScope.of(context);
+                return ScanPresenter(
+                  dependencies.saveSoundPreferenceUseCase,
+                  dependencies.getSoundPreferenceUseCase,
+                )..add(const LoadScannerEvent());
               },
-              child: Opacity(
-                opacity: animation.value,
-                child: const ScanView(),
+              child: BlocListener<ScanPresenter, ScanViewModel>(
+                listener: _scanViewModelListener,
+                child: Opacity(
+                  opacity: animation.value,
+                  child: const ScanView(),
+                ),
               ),
-            ),
-          ),
+            );
+          },
           transitionsBuilder: (
             _,
             Animation<double> animation,
             __,
             Widget child,
-          ) =>
-              FadeTransition(
-            opacity: CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeInOut,
-            ),
-            child: child,
-          ),
+          ) {
+            return FadeTransition(
+              opacity: CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeInOut,
+              ),
+              child: child,
+            );
+          },
         ),
       route.photoPath => PageRouteBuilder<String>(
           settings: settings,
           pageBuilder: (BuildContext context, Animation<double> animation, __) {
-            Object? args = settings.arguments;
+            final Object? args = settings.arguments;
             if (args is ProductInfo) {
               return BlocProvider<PhotoPresenter>(
                 create: (_) => PhotoPresenter(
                   DependenciesScope.of(context).addIngredientsUseCase,
                 ),
                 child: BlocListener<PhotoPresenter, PhotoViewModel>(
-                  listener: (BuildContext context, PhotoViewModel viewModel) {
-                    if (viewModel is IngredientsAddedSuccessState) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            translate('photo.image_upload_successful'),
-                          ),
-                          duration: Duration(
-                            seconds: DurationSeconds.long.time,
-                          ),
-                        ),
-                      );
-                      Navigator.pop(context);
-                    } else if (viewModel is CanceledPhotoState) {
-                      Navigator.pop(context);
-                    }
-                  },
+                  listener: _photoViewModelListener,
                   child: FadeTransition(
                     // Use the animation parameter to control `opacity`.
                     opacity: animation,
@@ -101,38 +81,67 @@ Route<String> generateRoute(RouteSettings settings) => switch (settings.name) {
             Animation<double> animation,
             __,
             Widget child,
-          ) =>
-              FadeTransition(
-            opacity: CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeInOut,
-            ),
-            child: child,
-          ),
+          ) {
+            return FadeTransition(
+              opacity: CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeInOut,
+              ),
+              child: child,
+            );
+          },
         ),
       _ => _getHomePageRouteBuilder(settings),
     };
+
+void _photoViewModelListener(BuildContext context, PhotoViewModel viewModel) {
+  if (viewModel is IngredientsAddedSuccessState) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          translate('photo.image_upload_successful'),
+        ),
+        duration: Duration(
+          seconds: DurationSeconds.long.time,
+        ),
+      ),
+    );
+    Navigator.pop(context);
+  } else if (viewModel is CanceledPhotoState) {
+    Navigator.pop(context);
+  }
+}
+
+void _scanViewModelListener(BuildContext context, ScanViewModel viewModel) {
+  if (viewModel is ScanSuccessState) {
+    Navigator.pop(context, viewModel.barcode);
+  } else if (viewModel is CanceledScanningState) {
+    Navigator.pop(context);
+  }
+}
 
 PageRouteBuilder<String> _getHomePageRouteBuilder(RouteSettings settings) =>
     PageRouteBuilder<String>(
       settings: settings,
       pageBuilder: (
-        BuildContext context,
+        BuildContext __,
         Animation<double> _,
         Animation<double> animation,
-      ) =>
-          Transform.translate(
-        offset: Offset(
-          AnimationConstants.transparentOpacityAnimation.value,
-          animation.value * AnimationConstants.maxTranslationOffset.value,
-        ),
-        child: const HomeBlocProvider(),
-      ),
+      ) {
+        return Transform.translate(
+          offset: Offset(
+            AnimationConstants.transparentOpacityAnimation.value,
+            animation.value * AnimationConstants.maxTranslationOffset.value,
+          ),
+          child: const HomeBlocProvider(),
+        );
+      },
       transitionsBuilder: (
         _,
         Animation<double> animation,
         __,
         Widget child,
-      ) =>
-          FadeTransition(opacity: animation, child: child),
+      ) {
+        return FadeTransition(opacity: animation, child: child);
+      },
     );

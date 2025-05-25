@@ -5,6 +5,7 @@
 [![style: flutter lints](https://img.shields.io/badge/style-flutter__lints-blue)](https://pub.dev/packages/flutter_lints)
 [![codecov](https://codecov.io/gh/Turskyi/ethical_scanner/graph/badge.svg?token=8PSVNC8TES)](https://codecov.io/gh/Turskyi/ethical_scanner)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/Turskyi/ethical_scanner)
+[![wakatime](https://wakatime.com/badge/user/f9df5074-b4ea-4c17-b001-fff428ab82aa/project/86650e58-a90e-4d79-b0c7-d46631f8c1a8.svg)](https://wakatime.com/badge/user/f9df5074-b4ea-4c17-b001-fff428ab82aa/project/86650e58-a90e-4d79-b0c7-d46631f8c1a8)
 <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/Turskyi/ethical_scanner">
 
 # Ethical Scanner
@@ -20,15 +21,16 @@ and more.
 The app uses the data from various sources, such as
 
 - [Open Food Facts](https://world.openfoodfacts.org);
-- [STOP FUNDING PUTIN’S WAR](https://boycottrussia.info/all-companies);
-- [Yale chief executive leadership institute | List of Companies
-  Leaving and Staying in Russia](https://www.yalerussianbusinessretreat.com/);
+- [Yale Chief Executive Leadership Institute](https://www.yalerussianbusinessretreat.com/);
+- [Squeezing Putin](https://squeezingputin.com);
 - [U.S. bureau of counterterrorism | State Sponsors of Terrorism](https://www.state.gov/state-sponsors-of-terrorism/);
 - [European Parliament](https://www.europarl.europa.eu/delegations/en/recognising-the-russian-federation-as-a-/product-details/20221124DPU34521).
+- [NATO Parliamentary Assembly](https://www.nato-pa.int/download-file?filename=/sites/default/files/2022-11/RESOLUTION%20479%20-%20%20NATO%20POST%20MADRID%20.pdf)
+- [The Sejm of the Republic of Poland](https://www.sejm.gov.pl/media9.nsf/files/ASEA-CM5N53/%24File/Resolution%20on%20the%20recognition%20of%20the%20Russian%20Federation%20as%20a%20state%20supporting%20terrorism.pdf)
 
 The app aims to help you shop with confidence and conscience. For more
 information, please visit the project website at
-https://ethical-scanner.turskyi.com.
+https://ethical-scanner.com.
 
 ## PROJECT SPECIFICATION
 
@@ -53,7 +55,8 @@ is used to deliver new release app bundle to **Google Play** after every merge
 • State management approach: [BLoC](https://bloclibrary.dev);
 
 • App testing platforms:
-[Firebase App Distribution](https://appdistribution.firebase.dev/i/ad57d28bed182b15);
+[Android Firebase App Distribution](https://appdistribution.firebase.dev/i/ad57d28bed182b15),
+[iOS TestFlight](https://testflight.apple.com/join/Wz3XnVAv);
 
 **Code Readability:** code is easily readable with no unnecessary blank lines,
 no unused variables or methods, and no commented-out code, all variables,
@@ -101,7 +104,8 @@ dart run build_runner build --delete-conflicting-outputs
 ### Data flow
 
 `Device` -> `View` -> `Presenter` -> `Use case` -> `Gateway`
--> `Data Source` -> `Data mapper` -> `Gateway` -> `Use case` -> `Presenter` -> `View model` ->
+-> `Data Source` -> `Data mapper` -> `Gateway` -> `Use case` -> `Presenter` ->
+`View model` ->
 `View` -> `Device`
 
 <details style="border: 1px solid #aaa; border-radius: 4px; padding: 0.5em 0.5em 0;">
@@ -123,14 +127,14 @@ If the SOLID principles tell us how to arrange the bricks into walls and rooms,
 then the component principles tell us how to arrange the rooms into buildings.
 Large software systems, like large buildings, are built out of smaller
 `components`.
-• **REP**: *The Reuse/Release Equivalence Principle*. The granule of reuse is
+• **REP**: _The Reuse/Release Equivalence Principle_. The granule of reuse is
 the granule of release. This means that the classes and modules that are formed
 into a component must belong to a cohesive group.
-• **CCP**: *The Common Closure Principle*. Gather into components those classes
+• **CCP**: _The Common Closure Principle_. Gather into components those classes
 that change for the same reasons and at the same times. Separate into different
 `components` those classes that change at different times and for different
 reasons.
-• **CRP**: *The Common Reuse Principle*. Don’t force users of a component to
+• **CRP**: _The Common Reuse Principle_. Don’t force users of a component to
 depend on things they don’t need.
 
 ## Layers
@@ -201,7 +205,8 @@ layer communicates directly with the platform in other words `android` and
 
 - [DON'T cast a nullable value to a non-nullable type. This hides a null check and most of the time it is not what is expected.](https://dart-lang.github.io/linter/lints/avoid_as.html)
 
-- [PREFER using `const` for instantiating constant constructors](https://dart-lang.github.io/linter/lints/prefer_const_constructors.html)
+- [PREFER using
+  `const` for instantiating constant constructors](https://dart-lang.github.io/linter/lints/prefer_const_constructors.html)
 
 If a constructor can be invoked as const to produce a canonicalized instance,
 it's preferable to do so.
@@ -475,8 +480,67 @@ at it. The app will show you the product name and some information.
 <!--suppress CheckImageSize -->
 <img src="screenshots/scan_android_phone_portrait_20240106.png" width="400"  alt="screenshot">
 
+# Usage
+
+To use **Ethical Scanner**, you need to grant the app permission to access your
+camera. Then, you can scan the barcode of any product by pointing your camera at
+it. The app will show you the product name and some information.
+
 ## Download
 
-<a href="https://play.google.com/store/apps/details?id=com.turskyi.ethical_scanner" target="_blank">
-<img src="https://play.google.com/intl/en_gb/badges/static/images/badges/en_badge_web_generic.png" width=240  alt="google play badge"/>
-</a>
+<!--suppress HtmlDeprecatedAttribute -->
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.turskyi.ethical_scanner" target="_blank">
+    <img src="https://play.google.com/intl/en_gb/badges/static/images/badges/en_badge_web_generic.png" height="80" alt="google play badge"/>
+  </a>
+  <a href="https://apps.apple.com/ca/app/ethical-scanner/id6743681663" target="_blank">
+    <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" height="80" alt="app store badge"/>
+  </a>
+</p>
+
+## Web Version
+
+In addition to the Android and iOS apps, **Ethical Scanner** offers web-based
+access through the following platforms:
+
+1. **Official Website (Embedded):**
+
+- **URL:**
+  [https://ethical-scanner.com/web-app](https://ethical-scanner.com/web-app)
+- **Description:** This is the primary web presence where you can find the
+  embedded version of the Ethical Scanner. It provides the same core
+  functionality as the mobile apps.
+- _Note: The availability of this custom domain depends on continued
+  registration._
+
+2. **Firebase Hosting (Direct Access):**
+
+- **URL:** [https://ethical-scanner.web.app](https://ethical-scanner.web.app)
+- **Description:** This provides direct access to the web-deployed version of
+  the Flutter application, hosted on Firebase. It allows users to experience the
+  app's features directly in their browser.
+
+3. **Vercel Hosting (Alternative/Stable Access):**
+
+- **URL:**
+  [https://ethical-scanner-web.vercel.app](https://ethical-scanner-web.vercel.app)
+- **Description:** This URL also hosts a web version of the Ethical Scanner. It
+  serves as a stable, long-term accessible alternative, particularly as it's
+  hosted on Vercel's free tier.
+
+All web versions aim to provide the same functionality as the mobile apps,
+allowing you to scan barcodes (if your browser and device support camera access
+for web pages) and check product information directly from your browser.
+
+**Note:**  
+The landing page and backend for Ethical Scanner are managed in a separate
+repository:  
+➡️ [ethical_scanner_web (Next.js)](https://github.com/Turskyi/ethical_scanner_web)
+
+## Project Management
+
+This project's development is managed using GitHub Projects. You can view our
+current tasks, progress, and roadmap here:
+
+- **Project Board:**
+  [Ethical Scanner - Project Roadmap](https://github.com/users/Turskyi/projects/10)

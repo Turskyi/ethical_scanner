@@ -6,6 +6,7 @@ import 'package:entities/entities.dart';
 import 'package:ethical_scanner/camera_descriptions.dart' as cameras;
 import 'package:ethical_scanner/di/dependencies.dart';
 import 'package:ethical_scanner/res/values/constants.dart' as constants;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
@@ -26,7 +27,7 @@ Future<Dependencies> injectAndGetDependencies() async {
 
   OpenFoodAPIConfiguration.globalCountry = OpenFoodFactsCountry.CANADA;
 
-  OpenAI.apiKey = Env.apiKey;
+  OpenAI.apiKey = Env.openAiApiKey;
 
   OpenFoodAPIConfiguration.globalUser = const User(
     userId: Env.openFoodUserId,
@@ -38,23 +39,25 @@ Future<Dependencies> injectAndGetDependencies() async {
   // `availableCameras`.
   WidgetsFlutterBinding.ensureInitialized();
 
-  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  final PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
   OpenFoodAPIConfiguration.userAgent = UserAgent(
     name: packageInfo.appName,
     version: packageInfo.version,
-    system: Platform.operatingSystem,
+    system: kIsWeb ? 'Web' : Platform.operatingSystem,
     url: constants.webPage,
     comment: constants.userAgentComment,
   );
 
-  // Fetch the available cameras before initializing the app.
   try {
-    cameras.cameraDescriptions = await availableCameras();
+    if (kIsWeb || Platform.isAndroid || Platform.isIOS) {
+      // Fetch the available cameras before initializing the app.
+      cameras.cameraDescriptions = await availableCameras();
+    }
   } on CameraException catch (exception, stacktrace) {
     debugPrint('Error: $exception\nStacktrace: $stacktrace');
   }
 
-  Dependencies dependencies = await Dependencies.create();
+  final Dependencies dependencies = await Dependencies.create();
   return dependencies;
 }

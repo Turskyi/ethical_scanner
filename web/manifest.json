@@ -1,0 +1,35 @@
+{
+  "name": "Ethical Scanner",
+  "short_name": "EthicalScanner",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#000C40",
+  "theme_color": "#000C40",
+  "description": "Ethical Scanner helps you evaluate products based on their origin, vegan status, and other ethical factors.",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "icons/Icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/Icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/Icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/Icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

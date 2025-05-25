@@ -7,7 +7,7 @@ class ProductInfo {
     this.barcode = '',
     this.origin = '',
     this.countryTags = const <String>[],
-    this.country = '',
+    this.countrySold = '',
     this.countryAi = '',
     this.name = '',
     this.brand = '',
@@ -35,15 +35,15 @@ class ProductInfo {
   /// Germany.
   final List<String> countryTags;
 
-  /// The [country] parameter is a string that indicates the country where the
-  /// product is sold. For example, [country]=France. It is similar to the
-  /// [countriesTags] parameter, but it uses the common names of the countries
-  /// instead of the language codes. However, the countriesTags parameter is
-  /// more reliable and consistent, as it follows the [ISO 3166-1 alpha-2]
-  /// standard. Therefore, it is recommended to use the [countriesTags]
-  /// parameter over the countries parameter for filtering and sorting the
-  /// products.
-  final String country;
+  /// The [countrySold] parameter is a string that indicates the country where
+  /// the product is sold. For example, [countrySold]=France. It is similar to
+  /// the [countriesTags] parameter, but it uses the common names of the
+  /// countries instead of the language codes. However, the countriesTags
+  /// parameter is more reliable and consistent, as it follows the
+  /// [ISO 3166-1 alpha-2] standard. Therefore, it is recommended to use the
+  /// [countriesTags] parameter over the countries parameter for filtering and
+  /// sorting the products.
+  final String countrySold;
   final String countryAi;
   final String name;
   final String brand;
@@ -68,18 +68,19 @@ class ProductInfo {
   bool get isVegetarian => vegetarian == Vegetarian.positive;
 
   bool get isFromRussia =>
-      country.toLowerCase() == 'russia' ||
-      country.toLowerCase() == 'ru' ||
+      countrySold.toLowerCase() == 'russia' ||
+      countrySold.toLowerCase() == 'ru' ||
       origin.toLowerCase() == 'russia' ||
       origin.toLowerCase() == 'ru' ||
-      country.toLowerCase() == 'россия' ||
-      origin.toLowerCase() == 'россия';
+      countrySold.toLowerCase() == 'россия' ||
+      origin.toLowerCase() == 'россия' ||
+      barcode.startsWith('460');
 
   ProductInfo copyWith({
     String? barcode,
     String? origin,
     List<String>? countryTags,
-    String? country,
+    String? countrySold,
     String? countryAi,
     String? name,
     String? brand,
@@ -98,7 +99,7 @@ class ProductInfo {
         barcode: barcode ?? this.barcode,
         origin: origin ?? this.origin,
         countryTags: countryTags ?? this.countryTags,
-        country: country ?? this.country,
+        countrySold: countrySold ?? this.countrySold,
         countryAi: countryAi ?? this.countryAi,
         name: name ?? this.name,
         brand: brand ?? this.brand,
@@ -138,7 +139,7 @@ class ProductInfo {
         'barcode: $barcode, '
         'origin: $origin, '
         'countryTags: $countryTags, '
-        'country: $country, '
+        'country: $countrySold, '
         'countryAi: $countryAi, '
         'name: $name, '
         'brand: $brand, '

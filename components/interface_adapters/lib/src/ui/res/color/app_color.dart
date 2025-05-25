@@ -2,10 +2,8 @@ import 'package:flutter/painting.dart';
 
 enum AppColor {
   cetaceanBlue,
-  antiFlashWhite,
-}
+  antiFlashWhite;
 
-extension AppColorExtension on AppColor {
   Color get value {
     switch (this) {
       case AppColor.cetaceanBlue:

@@ -1,7 +1,8 @@
 //noinspection GrUnresolvedAccess
+//file:noinspection GrDeprecatedAPIUsage
 buildscript {
     ext {
-        kotlin_version = '1.9.0'
+        kotlin_version = '2.1.0'
         application_id = 'com.turskyi.ethical_scanner'
     }
     repositories {
@@ -11,9 +12,9 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.android.tools.build:gradle:8.5.1'
+        classpath 'com.android.tools.build:gradle:8.10.0'
         classpath 'com.google.gms:google-services:4.4.2'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.2'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.3'
     }
 }
 
@@ -35,8 +36,10 @@ allprojects {
     }
 }
 
+//noinspection GrDeprecatedAPIUsage
 rootProject.buildDir = '../build'
 subprojects {
+    //noinspection GrDeprecatedAPIUsage
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
 subprojects {

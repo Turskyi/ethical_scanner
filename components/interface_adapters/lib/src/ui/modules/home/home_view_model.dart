@@ -143,3 +143,22 @@ class PhotoMakerState extends ProductInfoState {
         'isPrecipitationFalls: $isPrecipitationFalls)';
   }
 }
+
+final class FeedbackState extends LoadedProductInfoState {
+  const FeedbackState({
+    super.productInfoMap,
+    super.productInfo,
+    super.language,
+    super.isPrecipitationFalls,
+  });
+
+  @override
+  String toString() => 'FeedbackState(${super.toString()})';
+}
+
+final class FeedbackSent extends FeedbackState {
+  const FeedbackSent();
+
+  @override
+  String toString() => 'FeedbackSent()';
+}

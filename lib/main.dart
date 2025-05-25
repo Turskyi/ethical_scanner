@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:ethical_scanner/di/dependencies.dart';
 import 'package:ethical_scanner/di/dependencies_scope.dart';
 import 'package:ethical_scanner/di/injector.dart';
 import 'package:ethical_scanner/localization_delelegate_getter.dart';
+import 'package:ethical_scanner/res/layout/feedback_form.dart';
 import 'package:ethical_scanner/router/router.dart';
 import 'package:feedback/feedback.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/interface_adapters.dart';
+import 'package:window_size/window_size.dart';
 
 /// The [main] is the ultimate detail — the lowest-level policy.
 /// It is the initial entry point of the system.
@@ -29,8 +34,24 @@ void main() async {
 
   final Dependencies dependencies = await injectAndGetDependencies();
 
+  if (!kIsWeb && Platform.isMacOS) {
+    setWindowMinSize(const Size(800, 600));
+    setWindowMaxSize(Size.infinite);
+  }
+
   runApp(
     BetterFeedback(
+      feedbackBuilder: (
+        BuildContext context,
+        OnSubmit onSubmit,
+        ScrollController? scrollController,
+      ) {
+        return FeedbackForm(
+          onSubmit: onSubmit,
+          scrollController: scrollController,
+        );
+      },
+      theme: FeedbackThemeData(feedbackSheetColor: Colors.grey.shade50),
       child: LocalizedApp(
         localizationDelegate,
         DependenciesScope(

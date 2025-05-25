@@ -1,7 +1,7 @@
 class Strings {
   const Strings();
 
-  final String warSponsorsSource = 'https://boycottrussia.info/all-companies';
+  final String warSponsorsSource = 'https://squeezingputin.com';
   final String russiaSponsorsSource =
       'https://www.yalerussianbusinessretreat.com';
   // https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:52022IP0405

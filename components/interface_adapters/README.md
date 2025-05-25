@@ -10,7 +10,7 @@ No code inward of this circle should know anything at all about the database.
 
 ## Getting started
 
-### To create generated files run:
+### To create generated files, run:
 
 ```
 flutter pub run build_runner build --delete-conflicting-outputs

@@ -17,6 +17,7 @@ class EthicalScannerApp extends StatelessWidget implements App {
       colors: MaterialColors(),
       gradients: Gradients(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: translate('title'),
         onGenerateRoute: routeFactory,
         theme: ThemeData(
