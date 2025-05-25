@@ -20,7 +20,7 @@ jobs:
           ENV: ${{ secrets.ENV }}
       - run: >-
           cd components/interface_adapters && flutter pub get && dart run build_runner build
-          --delete-conflicting-outputs && flutter build web --no-tree-shake-icons --release
+          --delete-conflicting-outputs
       - run: >-
           flutter pub get && dart run build_runner build
           --delete-conflicting-outputs && flutter build web --no-tree-shake-icons --release
