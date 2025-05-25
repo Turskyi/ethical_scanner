@@ -140,7 +140,7 @@ depend on things they don’t need.
 
 ### Business/Domain - `domain`
 
-In the context of the Clean Architecture by Robert C. Martin, the `domain`
+In the context of the Clean Architecture by Robert C. Martin, the `domain`
 refers to the business logic or domain logic of the application. This is the
 innermost circle, which encapsulates business logic (`use_cases`) and
 `entities`. Domain models, in general, are designed to be highly reusable and
