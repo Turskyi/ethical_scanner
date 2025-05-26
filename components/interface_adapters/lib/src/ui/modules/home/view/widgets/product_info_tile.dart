@@ -9,6 +9,7 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
 import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
+import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProductInfoTile extends StatelessWidget {
@@ -34,28 +35,32 @@ class ProductInfoTile extends StatelessWidget {
     final bool isIngredientsImageAdded = type.isIngredients &&
         value.isEmpty &&
         info.imageIngredientsUrl.isNotEmpty;
-    final bool isCameraSupported =
+    final bool isCameraGenerallySupported =
         kIsWeb || Platform.isAndroid || Platform.isIOS;
+    final double screenWidth = MediaQuery.sizeOf(context).width;
+    const double webNarrowScreenWidthThreshold = kWideScreenThreshold;
+
+    // This is TRUE if it's web AND the screen is narrow.
+    final bool isWebAndNarrow =
+        kIsWeb && screenWidth < webNarrowScreenWidthThreshold;
+
+    final bool canSnapIngredients =
+        isIngredientsMissing && isCameraGenerallySupported && !isWebAndNarrow;
+    if (isIngredientsMissing && !canSnapIngredients) {
+      return const SizedBox.shrink();
+    }
+
     return ListTile(
       textColor: color,
       iconColor: color,
       leading: IconButton(
         icon: Icon(
-          () {
-            if (type.isCompanyWarSponsor) {
-              return Icons.question_mark;
-            } else if (isCameraSupported && isIngredientsMissing) {
-              return Icons.camera_alt_outlined;
-            } else if (isIngredientsImageAdded) {
-              return Icons.construction;
-            } else {
-              return Icons.star;
-            }
-            // Call the function immediately `()` and use the returned value as
-            // the `icon` parameter.
-          }(),
+          _getIconData(
+            canSnapIngredients: canSnapIngredients,
+            isIngredientsImageAdded: isIngredientsImageAdded,
+          ),
         ),
-        onPressed: isIngredientsMissing && isCameraSupported
+        onPressed: canSnapIngredients
             ? () => context.read<HomePresenter>().add(
                   const SnapIngredientsEvent(),
                 )
@@ -163,5 +168,24 @@ class ProductInfoTile extends StatelessWidget {
               )
           : null,
     );
+  }
+
+  IconData _getIconData({
+    required bool canSnapIngredients,
+    required bool isIngredientsImageAdded,
+  }) {
+    return () {
+      if (type.isCompanyWarSponsor) {
+        return Icons.question_mark;
+      } else if (canSnapIngredients) {
+        return Icons.camera_alt_outlined;
+      } else if (isIngredientsImageAdded) {
+        return Icons.construction;
+      } else {
+        return Icons.star;
+      }
+      // Call the function immediately `()` and use the returned value as
+      // the `icon` parameter.
+    }();
   }
 }
