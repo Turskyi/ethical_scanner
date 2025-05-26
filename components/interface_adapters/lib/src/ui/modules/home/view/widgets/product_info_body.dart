@@ -26,7 +26,7 @@ class ProductInfoBody extends StatelessWidget {
         top: kToolbarHeight,
       ),
       child: BlocBuilder<HomePresenter, HomeViewModel>(
-        builder: (_, HomeViewModel viewModel) {
+        builder: (BuildContext _, HomeViewModel viewModel) {
           if (viewModel is ProductInfoState) {
             return ListView.builder(
               padding: EdgeInsets.only(
@@ -44,7 +44,7 @@ class ProductInfoBody extends StatelessWidget {
                     return const SizedBox();
                   }
                 } else {
-                  ProductInfoType type =
+                  final ProductInfoType type =
                       viewModel.productInfoMap.keys.elementAt(
                     index,
                   );

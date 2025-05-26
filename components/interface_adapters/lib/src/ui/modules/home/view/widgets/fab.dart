@@ -48,7 +48,7 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
     final bool isWide = screenWidth > kWideScreenThreshold;
     return BlocConsumer<HomePresenter, HomeViewModel>(
       listener: _viewModelListener,
-      builder: (_, HomeViewModel viewModel) {
+      builder: (BuildContext _, HomeViewModel viewModel) {
         return AnimatedPadding(
           padding: EdgeInsets.only(bottom: _bottomPadding),
           duration: Duration(seconds: DurationSeconds.short.time),
