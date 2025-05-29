@@ -47,7 +47,7 @@ class LoadingHomeState extends HomeViewModel {
 
 class ReadyToScanState extends HomeViewModel {
   const ReadyToScanState({
-    super.language,
+    required super.language,
     super.isPrecipitationFalls,
   });
 
@@ -79,8 +79,8 @@ class ScanState extends HomeViewModel {
 
 class LoadingProductInfoState extends ProductInfoState {
   const LoadingProductInfoState({
+    required super.language,
     super.productInfoMap,
-    super.language,
     super.isPrecipitationFalls,
   });
 

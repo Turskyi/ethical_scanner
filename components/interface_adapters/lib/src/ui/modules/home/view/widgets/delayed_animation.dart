@@ -5,9 +5,9 @@ import 'package:interface_adapters/interface_adapters.dart';
 
 class DelayedAnimation extends StatefulWidget {
   const DelayedAnimation({
-    super.key,
     required this.delay,
     required this.child,
+    super.key,
   });
 
   final int delay;

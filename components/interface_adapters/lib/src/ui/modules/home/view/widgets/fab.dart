@@ -8,17 +8,19 @@ import 'package:interface_adapters/src/ui/res/values/constants.dart';
 
 class Fab extends StatefulWidget {
   const Fab({
-    super.key,
-    this.bottomPadding = 140.0,
+    required this.barcode,
     required this.onPressed,
     required this.onClose,
+    this.bottomPadding = 140.0,
     this.expandedBody = const SizedBox(),
+    super.key,
   });
 
   final double bottomPadding;
   final VoidCallback onPressed;
   final VoidCallback onClose;
   final Widget expandedBody;
+  final String barcode;
 
   @override
   State<Fab> createState() => _FabState();
@@ -39,7 +41,12 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _initBreathAnimation();
+
+    if (widget.barcode.isEmpty) {
+      _initBreathAnimation();
+    } else {
+      _toggleFabExpansion();
+    }
   }
 
   @override
@@ -74,7 +81,7 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
                               elevation: 0,
                               backgroundColor: Colors.transparent,
                               shape: const CircleBorder(),
-                              onPressed: isEnabled ? _onPressed : null,
+                              onPressed: isEnabled ? _toggleFabExpansion : null,
                             );
                           },
                         ),
@@ -105,7 +112,7 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
                       ) {
                         final double iconSize = 78.0;
                         return IconButton(
-                          onPressed: isEnabled ? _onPressed : null,
+                          onPressed: isEnabled ? _toggleFabExpansion : null,
                           icon: Container(
                             width: iconSize,
                             height: iconSize,
@@ -207,7 +214,9 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
   @override
   void dispose() {
     _animationController.dispose();
+
     _isEnabledNotifier.dispose();
+
     super.dispose();
   }
 
@@ -215,6 +224,7 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
     if (_isExpandedNotifier.value && viewModel is ReadyToScanState) {
       _animationController.reverse().whenComplete(() {
         _isExpandedNotifier.value = !_isExpandedNotifier.value;
+
         // It's necessary to use `setState` to trigger a rebuild of the
         // widget and update the UI, because the `_onPressed` method
         // involves changing the internal state of the widget
@@ -232,15 +242,18 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
+
     _animation = Tween<double>(
       begin: 1.0,
       end: 0.0,
     ).animate(_animationController);
+
     _animationController.repeat(reverse: true);
   }
 
-  void _onPressed() {
+  void _toggleFabExpansion() {
     HapticFeedback.vibrate();
+
     if (_isExpandedNotifier.value) {
       widget.onClose.call();
     } else {
@@ -251,6 +264,7 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
       _animation = Tween<double>(begin: 0, end: 84).animate(
         _animationController,
       );
+
       _animationController.forward().whenComplete(() {
         _isExpandedNotifier.value = !_isExpandedNotifier.value;
         widget.onPressed.call();

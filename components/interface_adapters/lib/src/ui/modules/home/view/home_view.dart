@@ -18,6 +18,8 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Resources resources = Resources.of(context);
+    // Extract the arguments from the current ModalRoute settings.
+    final Object? args = ModalRoute.of(context)?.settings.arguments;
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: resources.gradients.unauthorizedConstructionGradient,
@@ -121,6 +123,7 @@ class HomeView extends StatelessWidget {
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,
             floatingActionButton: Fab(
+              barcode: args is String ? args : '',
               expandedBody: const ProductInfoBody(),
               onPressed: () => context
                   .read<HomePresenter>()

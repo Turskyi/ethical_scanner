@@ -9,8 +9,8 @@ import 'package:interface_adapters/src/ui/res/resources.dart';
 
 class CodeTile extends StatefulWidget {
   const CodeTile({
-    super.key,
     required this.value,
+    super.key,
   });
 
   final String value;
@@ -20,7 +20,7 @@ class CodeTile extends StatefulWidget {
 }
 
 class _CodeTileState extends State<CodeTile> {
-  /// Define a controller for the barcode text field
+  /// Define a controller for the barcode text field.
   final TextEditingController _codeController = TextEditingController();
   final ValueNotifier<bool> _editNotifier = ValueNotifier<bool>(false);
   bool _isDisposing = false;

@@ -245,21 +245,56 @@ class RemoteDataSourceImpl implements RemoteDataSource {
             response.status != 0 ? '' : response.ingredientsTextFromImage ?? '',
       );
 
+  bool _isWebsite(String input) {
+    final RegExp regex = RegExp(
+      r'^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]'
+      r'{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$',
+    );
+    return regex.hasMatch(input);
+  }
+
+  /// Checks if the provided [barcode] is a valid Amazon ASIN.
+  ///
+  /// Amazon ASINs typically follow the pattern: A followed by 10 characters,
+  /// which are typically alphanumeric.
+  ///
+  /// Returns `true` if [barcode] is a valid Amazon ASIN, and `false` otherwise.
+  bool _isAmazonAsin(String barcode) {
+    final RegExp asinPattern = RegExp(r'^[A-Z0-9]{10}$');
+    return asinPattern.hasMatch(barcode);
+  }
+
+  bool _isBarcode(String input) {
+    // Typical barcodes are between 8 and 14 digits long.
+    if (input.length < 8 || input.length > 14) {
+      return false;
+    }
+    // Check if the string contains only digits
+    for (int i = 0; i < input.length; i++) {
+      if (input.codeUnitAt(i) < '0'.codeUnitAt(0) ||
+          input.codeUnitAt(i) > '9'.codeUnitAt(0)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   /// Extract the ingredients of an existing product of the OpenFoodFacts
   /// database that does not have ingredient image and then save it back to the
   /// OFF server.
-  Future<void> saveAndExtractIngredient(ProductPhoto photo) async {
+  // ignore: unused_element
+  Future<void> _saveAndExtractIngredient(ProductPhoto photo) async {
     // A registered user login for https://world.openfoodfacts.org/ is required.
-    User user = OpenFoodAPIConfiguration.globalUser ??
+    final User user = OpenFoodAPIConfiguration.globalUser ??
         const User(
           userId: Env.openFoodUserId,
           password: Env.openFoodPassword,
           comment: constants.openFoodUserComment,
         );
-    OpenFoodFactsLanguage language = photo.info.language.isEnglish
+    final OpenFoodFactsLanguage language = photo.info.language.isEnglish
         ? OpenFoodFactsLanguage.ENGLISH
         : OpenFoodFactsLanguage.UKRAINIAN;
-    SendImage image = SendImage(
+    final SendImage image = SendImage(
       barcode: photo.info.barcode,
       imageUri: Uri.parse(photo.path),
       imageField: ImageField.INGREDIENTS,
@@ -272,7 +307,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       throw Exception('Adding image failed');
     }
 
-    OcrIngredientsResult ocrResponse =
+    final OcrIngredientsResult ocrResponse =
         await OpenFoodAPIClient.extractIngredients(
       user,
       photo.info.barcode,
@@ -283,8 +318,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       throw Exception("Text can't be extracted.");
     }
 
-    ProductInfo product = photo.info;
-    String ingredientsText = ocrResponse.ingredientsTextFromImage ??
+    final ProductInfo product = photo.info;
+    final String ingredientsText = ocrResponse.ingredientsTextFromImage ??
         photo.info.ingredientList.join(',');
     final Product editedProduct = Product(
       barcode: product.barcode,
@@ -358,39 +393,5 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         'product not found, please insert data for ${photo.info.barcode}',
       );
     }
-  }
-
-  bool _isWebsite(String input) {
-    final RegExp regex = RegExp(
-      r'^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]'
-      r'{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$',
-    );
-    return regex.hasMatch(input);
-  }
-
-  /// Checks if the provided [barcode] is a valid Amazon ASIN.
-  ///
-  /// Amazon ASINs typically follow the pattern: A followed by 10 characters,
-  /// which are typically alphanumeric.
-  ///
-  /// Returns `true` if [barcode] is a valid Amazon ASIN, and `false` otherwise.
-  bool _isAmazonAsin(String barcode) {
-    RegExp asinPattern = RegExp(r'^[A-Z0-9]{10}$');
-    return asinPattern.hasMatch(barcode);
-  }
-
-  bool _isBarcode(String input) {
-    // Typical barcodes are between 8 and 14 digits long
-    if (input.length < 8 || input.length > 14) {
-      return false;
-    }
-    // Check if the string contains only digits
-    for (int i = 0; i < input.length; i++) {
-      if (input.codeUnitAt(i) < '0'.codeUnitAt(0) ||
-          input.codeUnitAt(i) > '9'.codeUnitAt(0)) {
-        return false;
-      }
-    }
-    return true;
   }
 }

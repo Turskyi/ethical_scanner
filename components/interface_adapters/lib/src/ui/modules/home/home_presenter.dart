@@ -34,8 +34,6 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
     on<LaunchUrlEvent>(_handleLaunchUrl);
 
-    on<ShowHomeEvent>(_onShowHomeEvent);
-
     on<PrecipitationToggleEvent>(_togglePrecipitationSetting);
 
     on<SnapIngredientsEvent>(_startPhotoMaker);
@@ -54,13 +52,6 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
   final UseCase<bool, Null> _getPrecipitationStateUseCase;
   final UseCase<Future<bool>, String> _saveLanguageUseCase;
   final UseCase<Language, Null> _getLanguageUseCase;
-
-  FutureOr<void> _onShowHomeEvent(
-    ShowHomeEvent _,
-    Emitter<HomeViewModel> emit,
-  ) {
-    emit(const ReadyToScanState());
-  }
 
   FutureOr<void> _handleError(
     HomeErrorEvent event,
@@ -171,31 +162,31 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     ShowProductInfoEvent event,
     Emitter<HomeViewModel> emit,
   ) async {
-    final Map<ProductInfoType, String> modifiableProductInfo =
-        Map<ProductInfoType, String>.from(
-      <ProductInfoType, String>{
-        ProductInfoType.code: event.productInfo.barcode,
-      },
-    );
-    emit(
-      LoadingProductInfoState(
-        productInfoMap: modifiableProductInfo,
-        language: state.language,
-        isPrecipitationFalls: state.isPrecipitationFalls,
-      ),
-    );
-
     // The `productInfo` variable is intentionally kept mutable here.
     // Making it `final` would require additional variables and complexity
     // to handle reassignment, which would reduce the readability and
     // simplicity of the code.
     ProductInfo productInfo = event.productInfo;
+    final Map<ProductInfoType, String> modifiableProductInfo =
+        Map<ProductInfoType, String>.from(
+      <ProductInfoType, String>{
+        ProductInfoType.code: productInfo.barcode,
+      },
+    );
+
+    emit(
+      LoadingProductInfoState(
+        productInfoMap: modifiableProductInfo,
+        language: productInfo.language,
+        isPrecipitationFalls: state.isPrecipitationFalls,
+      ),
+    );
+
     try {
-      if (_isWebsite(event.productInfo.barcode)) {
-        modifiableProductInfo[ProductInfoType.website] =
-            event.productInfo.barcode;
+      if (_isWebsite(productInfo.barcode)) {
+        modifiableProductInfo[ProductInfoType.website] = productInfo.barcode;
       } else {
-        modifiableProductInfo[ProductInfoType.code] = event.productInfo.barcode;
+        modifiableProductInfo[ProductInfoType.code] = productInfo.barcode;
         if (state is LoadingProductInfoState) {
           LoadingProductInfoState loadingState =
               state as LoadingProductInfoState;
@@ -204,14 +195,14 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           );
         }
 
-        productInfo = event.productInfo.ingredientList.isEmpty
+        productInfo = productInfo.ingredientList.isEmpty
             ? await _getProductInfoUseCase.call(
                 LocalizedCode(
-                  code: event.productInfo.barcode,
-                  language: event.productInfo.language,
+                  code: productInfo.barcode,
+                  language: productInfo.language,
                 ),
               )
-            : event.productInfo;
+            : productInfo;
         if (productInfo.name.isNotEmpty) {
           modifiableProductInfo[ProductInfoType.productName] = productInfo.name;
           if (state is LoadingProductInfoState) {
@@ -293,7 +284,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
         if (productInfo.isFromRussia) {
           modifiableProductInfo[ProductInfoType.countryTerrorismSponsor] =
-              'Yes';
+              state.language.isEnglish ? 'Yes' : 'Так';
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;

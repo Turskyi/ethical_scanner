@@ -14,10 +14,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ProductInfoTile extends StatelessWidget {
   const ProductInfoTile({
-    super.key,
     required this.type,
     required this.info,
     this.value = '',
+    super.key,
   });
 
   final ProductInfoType type;

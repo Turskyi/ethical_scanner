@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:entities/entities.dart';
 import 'package:flutter/foundation.dart';
@@ -16,21 +17,35 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
 
   @override
   Future<ProductInfo> getProductInfoAsFuture(LocalizedCode input) {
+    final String inputCode = input.code;
     return _remoteDataSource
         .getProductInfoAsFuture(input)
         .onError((Object? error, StackTrace stackTrace) {
-      if (error is FormatException && error.source is String) {
-        debugPrint(
-          'Error in $runtimeType: ${extractErrorMessage(error.source)}.'
-          '\nStacktrace: $stackTrace',
-        );
+      if (error is FormatException) {
+        final Object? source = error.source;
+        if (source is String) {
+          debugPrint(
+            'Error in $runtimeType: ${extractErrorMessage(source)}.'
+            '\nStacktrace: $stackTrace',
+          );
+        }
+      } else if (error is SocketException) {
+        debugPrint('Error in $runtimeType: '
+            '\nerror.message: ${error.message}.'
+            '\nerror.address: ${error.address}.'
+            '\nerror.osError: ${error.osError}.'
+            '\nerror.port: ${error.port}.');
+      } else {
+        debugPrint('Error in $runtimeType: $error.');
       }
-      if (_isBarcode(input.code)) {
-        return ProductInfo(barcode: input.code);
-      } else if (_isWebsite(input.code)) {
-        return ProductInfo(website: input.code);
-      } else if (_isAmazonAsin(input.code)) {
-        return const ProductInfo(brand: 'Amazon');
+
+      final Language inputLanguage = input.language;
+      if (_isBarcode(inputCode)) {
+        return ProductInfo(barcode: inputCode, language: inputLanguage);
+      } else if (_isWebsite(inputCode)) {
+        return ProductInfo(website: inputCode, language: inputLanguage);
+      } else if (_isAmazonAsin(inputCode)) {
+        return ProductInfo(brand: 'Amazon', language: inputLanguage);
       } else if (error is NotFoundException) {
         throw error;
       } else {
@@ -41,8 +56,8 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
     }).then((ProductInfo info) {
       if (info.origin.isNotEmpty || info.countrySold.isNotEmpty) {
         return info;
-      } else if (_localDataSource.isEnglishBook(input.code)) {
-        final String eanPrefix = input.code.substring(0, 3);
+      } else if (_localDataSource.isEnglishBook(inputCode)) {
+        final String eanPrefix = inputCode.substring(0, 3);
         return info.copyWith(
           origin: translate(
             'product_info.initial_book_code_description',
@@ -51,15 +66,13 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
         );
       } else {
         final ProductInfo localInfo = info.copyWith(
-          origin: _localDataSource.getCountryFromBarcode(input.code),
+          origin: _localDataSource.getCountryFromBarcode(inputCode),
         );
         if (localInfo.origin.isNotEmpty) {
           return localInfo;
         } else {
-          return _remoteDataSource.getCountryFromAiAsFuture(input.code).then(
-                (String country) => info.copyWith(
-                  countryAi: country,
-                ),
+          return _remoteDataSource.getCountryFromAiAsFuture(inputCode).then(
+                (String country) => info.copyWith(countryAi: country),
               );
         }
       }

@@ -17,9 +17,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 class PhotoView extends StatefulWidget {
   const PhotoView({
-    super.key,
     required this.productInfo,
     required this.cameraDescriptions,
+    super.key,
   });
 
   final ProductInfo productInfo;
