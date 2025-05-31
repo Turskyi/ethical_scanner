@@ -32,5 +32,7 @@
     <string>This app uses the camera to scan barcodes.</string>
     <key>CFBundleDisplayName</key>
     <string>Ethical Scanner</string>
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.lifestyle</string>
 </dict>
 </plist>
