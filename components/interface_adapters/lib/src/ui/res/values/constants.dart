@@ -6,3 +6,4 @@ const String kSupportEmail = 'support@$_developerDomain';
 const double kWideScreenThreshold = 600.0;
 const String kDomain = 'ethical-scanner.com';
 const String kWebsite = 'https://$kDomain';
+const String kImagesPath = 'components/interface_adapters/assets/images/';

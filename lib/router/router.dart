@@ -139,7 +139,7 @@ void _scanViewModelListener(BuildContext context, ScanViewModel viewModel) {
       arguments: viewModel.barcode,
     );
   } else if (viewModel is CanceledScanningState) {
-    Navigator.of(context).pushReplacementNamed(targetRouteName);
+    Navigator.popUntil(context, ModalRoute.withName(targetRouteName));
   }
 }
 
@@ -151,42 +151,36 @@ PageRouteBuilder<String> _getHomePageRouteBuilder(RouteSettings settings) {
       Animation<double> _,
       Animation<double> animation,
     ) {
-      return Transform.translate(
-        offset: Offset(
-          AnimationConstants.transparentOpacityAnimation.value,
-          animation.value * AnimationConstants.maxTranslationOffset.value,
-        ),
-        child: BlocProvider<HomePresenter>(
-          create: (BuildContext context) {
-            final Dependencies dependencies = DependenciesScope.of(context);
-            final HomePresenter homePresenter = HomePresenter(
-              dependencies.productInfoUseCase,
-              dependencies.savePrecipitationStateUseCase,
-              dependencies.getPrecipitationStateUseCase,
-              dependencies.saveLanguageUseCase,
-              dependencies.getLanguageUseCase,
+      return BlocProvider<HomePresenter>(
+        create: (BuildContext context) {
+          final Dependencies dependencies = DependenciesScope.of(context);
+          final HomePresenter homePresenter = HomePresenter(
+            dependencies.productInfoUseCase,
+            dependencies.savePrecipitationStateUseCase,
+            dependencies.getPrecipitationStateUseCase,
+            dependencies.saveLanguageUseCase,
+            dependencies.getLanguageUseCase,
+          );
+          final Object? arguments = settings.arguments;
+
+          if (arguments is String) {
+            final Language language = Language.fromIsoLanguageCode(
+              LocalizedApp.of(context).delegate.currentLocale.languageCode,
             );
-            final Object? arguments = settings.arguments;
 
-            if (arguments is String) {
-              final Language language = Language.fromIsoLanguageCode(
-                LocalizedApp.of(context).delegate.currentLocale.languageCode,
-              );
-
-              final ProductInfo productInfo = ProductInfo(
-                // Assume that the arguments is a barcode.
-                barcode: arguments,
-                language: language,
-              );
-              return homePresenter..add(ShowProductInfoEvent(productInfo));
-            } else {
-              return homePresenter..add(const LoadHomeEvent());
-            }
-          },
-          child: BlocListener<HomePresenter, HomeViewModel>(
-            listener: _homeViewModelListener,
-            child: const HomeView(),
-          ),
+            final ProductInfo productInfo = ProductInfo(
+              // Assume that the arguments is a barcode.
+              barcode: arguments,
+              language: language,
+            );
+            return homePresenter..add(ShowProductInfoEvent(productInfo));
+          } else {
+            return homePresenter..add(const LoadHomeEvent());
+          }
+        },
+        child: BlocListener<HomePresenter, HomeViewModel>(
+          listener: _homeViewModelListener,
+          child: const HomeView(),
         ),
       );
     },

@@ -20,37 +20,37 @@ class HomeView extends StatelessWidget {
     final Resources resources = Resources.of(context);
     // Extract the arguments from the current ModalRoute settings.
     final Object? args = ModalRoute.of(context)?.settings.arguments;
+
+    final MaterialColors colors = resources.colors;
+    final Dimens dimens = resources.dimens;
+
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: resources.gradients.unauthorizedConstructionGradient,
       ),
-      child: BlocBuilder<HomePresenter, HomeViewModel>(
-        builder: (BuildContext context, HomeViewModel viewModel) {
-          final MaterialColors colors = resources.colors;
-          final Dimens dimens = resources.dimens;
-          final String displayText = viewModel is HomeErrorState
-              ? viewModel.errorMessage
-              : translate('home.scan_barcode');
-          return Scaffold(
-            extendBody: true,
-            // We need to set transparent background explicitly, because
-            // Scaffold does not support gradient backgrounds, so we program it
-            // to remove any default background, so that the custom background
-            // above will be visible.
-            backgroundColor: AppColor.cetaceanBlue.value.withAlpha(5),
-            resizeToAvoidBottomInset: true,
-            extendBodyBehindAppBar: true,
-            // Add an appBar with the language selector dropdown.
-            appBar: AppBar(
-              backgroundColor: AppColor.cetaceanBlue.value.withAlpha(5),
-              //TODO: should I add this (scrolledUnderElevation: 0.0)?
-              // scrolledUnderElevation: 0.0,
-              actions: const <Widget>[
-                // Use the `LanguageSelector` widget as an action.
-                LanguageSelector(),
-              ],
-            ),
-            body: Stack(
+      child: Scaffold(
+        extendBody: true,
+        // We need to set transparent background explicitly, because
+        // Scaffold does not support gradient backgrounds, so we program it
+        // to remove any default background, so that the custom background
+        // above will be visible.
+        backgroundColor: AppColor.cetaceanBlue.value.withAlpha(5),
+        resizeToAvoidBottomInset: true,
+        extendBodyBehindAppBar: true,
+        // Add an appBar with the language selector dropdown.
+        appBar: AppBar(
+          backgroundColor: AppColor.cetaceanBlue.value.withAlpha(5),
+          actions: const <Widget>[
+            // Use the `LanguageSelector` widget as an action.
+            LanguageSelector(),
+          ],
+        ),
+        body: BlocBuilder<HomePresenter, HomeViewModel>(
+          builder: (BuildContext context, HomeViewModel viewModel) {
+            final String displayText = viewModel is HomeErrorState
+                ? viewModel.errorMessage
+                : translate('home.scan_barcode');
+            return Stack(
               children: <Widget>[
                 Container(
                   alignment: Alignment.center,
@@ -119,21 +119,19 @@ class HomeView extends StatelessWidget {
                   else if (_isSpring)
                     const SakuraPetalAnimation(),
               ],
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerFloat,
-            floatingActionButton: Fab(
-              barcode: args is String ? args : '',
-              expandedBody: const ProductInfoBody(),
-              onPressed: () => context
-                  .read<HomePresenter>()
-                  .add(const NavigateToScanViewEvent()),
-              onClose: () => context
-                  .read<HomePresenter>()
-                  .add(const ClearProductInfoEvent()),
-            ),
-          );
-        },
+            );
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: Fab(
+          barcode: args is String ? args : '',
+          expandedBody: const ProductInfoBody(),
+          onPressed: () => context
+              .read<HomePresenter>()
+              .add(const NavigateToScanViewEvent()),
+          onClose: () =>
+              context.read<HomePresenter>().add(const ClearProductInfoEvent()),
+        ),
       ),
     );
   }

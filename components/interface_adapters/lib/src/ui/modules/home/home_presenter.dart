@@ -77,7 +77,10 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     }
   }
 
-  FutureOr<void> _startPhotoMaker(_, Emitter<HomeViewModel> emit) {
+  FutureOr<void> _startPhotoMaker(
+    SnapIngredientsEvent _,
+    Emitter<HomeViewModel> emit,
+  ) {
     if (state is ProductInfoState) {
       final ProductInfoState productInfoState = state as ProductInfoState;
       emit(
@@ -90,8 +93,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     }
   }
 
-  FutureOr<void> _togglePrecipitationSetting(
-    _,
+  FutureOr<void> _togglePrecipitationSetting(PrecipitationToggleEvent _,
     Emitter<HomeViewModel> emit,
   ) async {
     if (state is ReadyToScanState) {
@@ -128,7 +130,10 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     }
   }
 
-  FutureOr<void> _onClearProductInfoEvent(_, Emitter<HomeViewModel> emit) {
+  FutureOr<void> _onClearProductInfoEvent(
+    ClearProductInfoEvent _,
+    Emitter<HomeViewModel> emit,
+  ) {
     emit(
       ReadyToScanState(
         language: state.language,
@@ -137,7 +142,10 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     );
   }
 
-  FutureOr<void> _onLoadHomeEvent(_, Emitter<HomeViewModel> emit) {
+  FutureOr<void> _onLoadHomeEvent(
+    LoadHomeEvent _,
+    Emitter<HomeViewModel> emit,
+  ) {
     emit(
       ReadyToScanState(
         isPrecipitationFalls: _getPrecipitationStateUseCase.call(),
@@ -146,7 +154,10 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     );
   }
 
-  FutureOr<void> _onNavigateToScanViewEvent(_, Emitter<HomeViewModel> emit) {
+  FutureOr<void> _onNavigateToScanViewEvent(
+    NavigateToScanViewEvent _,
+    Emitter<HomeViewModel> emit,
+  ) {
     if (state is ReadyToScanState) {
       final ReadyToScanState readyToScanState = state as ReadyToScanState;
       emit(
@@ -400,7 +411,10 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     }
   }
 
-  FutureOr<void> _onFeedbackRequested(_, Emitter<HomeViewModel> emit) {
+  FutureOr<void> _onFeedbackRequested(
+    BugReportPressedEvent _,
+    Emitter<HomeViewModel> emit,
+  ) {
     if (state is LoadedProductInfoState) {
       final LoadedProductInfoState viewModel = state as LoadedProductInfoState;
       emit(

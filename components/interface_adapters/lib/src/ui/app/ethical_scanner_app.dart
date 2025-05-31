@@ -15,7 +15,7 @@ class EthicalScannerApp extends StatelessWidget implements App {
   final RouteFactory routeFactory;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext _) {
     return Resources(
       colors: MaterialColors(),
       gradients: Gradients(),
