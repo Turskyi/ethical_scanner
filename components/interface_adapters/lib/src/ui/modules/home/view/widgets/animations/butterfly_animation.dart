@@ -14,6 +14,29 @@ class ButterflyAnimation extends StatefulWidget {
 
 class _ButterflyAnimationState extends State<ButterflyAnimation>
     with SingleTickerProviderStateMixin {
+  static const double _initialDirectionForward = 1.0;
+  static const double _initialDirectionBackward = -1.0;
+
+  /// Base speed added to random speed.
+  static const double _minBaseSpeed = 0.5;
+  static const int _maxFlutterPhase = 60;
+
+  /// For 2 * PI calculations.
+  static const double _fullCircleMultiplier = 2.0;
+  static const double _fullCycleRadians = _fullCircleMultiplier * pi;
+  static const double _flapAngleIncrement = 0.05;
+  static const double _swayMultiplier = 1.5;
+  static const double _verticalDriftAngleFactor = 1.3;
+  static const double _verticalDriftMagnitude = 1.2;
+
+  /// 0.5% chance.
+  static const double _reverseDirectionProbability = 0.005;
+  static const double _flipYProbability = 0.005;
+
+  /// Per-tick rotation change.
+  static const double _rotationAngleIncrement = 0.01;
+  static const double _blinkPhaseIncrement = 0.02;
+
   final Random _random = Random();
   final int _butterflyCount = 20;
   final double _minSize = 24.0;
@@ -23,6 +46,7 @@ class _ButterflyAnimationState extends State<ButterflyAnimation>
 
   List<Butterfly> _butterflies = <Butterfly>[];
   Ticker? _ticker;
+  int _frameCount = 0;
 
   @override
   void initState() {
@@ -36,10 +60,15 @@ class _ButterflyAnimationState extends State<ButterflyAnimation>
             _random.nextDouble() * size.height,
           ),
           size: _random.nextDouble() * (_maxSize - _minSize) + _minSize,
-          direction: _random.nextBool() ? 1.0 : -1.0,
+          direction: _random.nextBool()
+              ? _initialDirectionForward
+              : _initialDirectionBackward,
           flapAngle: _random.nextDouble() * _maxRotation,
-          speed: _random.nextDouble() * _maxSpeed + 0.5,
+          speed: _random.nextDouble() * _maxSpeed + _minBaseSpeed,
           rotationAngle: _random.nextDouble() * _maxRotation,
+          isUpsideDown: _random.nextBool(),
+          flutterPhase: _random.nextInt(_maxFlutterPhase),
+          blinkPhase: _random.nextDouble() * _fullCycleRadians,
         );
       });
 
@@ -49,7 +78,7 @@ class _ButterflyAnimationState extends State<ButterflyAnimation>
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(painter: ButterflyPainter(_butterflies));
+    return CustomPaint(painter: ButterflyPainter(_butterflies, _frameCount));
   }
 
   @override
@@ -60,16 +89,19 @@ class _ButterflyAnimationState extends State<ButterflyAnimation>
 
   void _onTick(Duration elapsed) {
     final Size size = MediaQuery.sizeOf(context);
+    _frameCount++;
 
     setState(() {
       _butterflies = _butterflies.map((Butterfly b) {
-        final double newFlapAngle = b.flapAngle + 0.05;
-        final double sway = sin(newFlapAngle) * 1.5;
-        final double verticalDrift = sin(newFlapAngle * 1.3) * 1.2;
+        final double newFlapAngle = b.flapAngle + _flapAngleIncrement;
+        final double sway = sin(newFlapAngle) * _swayMultiplier;
+        final double verticalDrift =
+            sin(newFlapAngle * _verticalDriftAngleFactor) *
+                _verticalDriftMagnitude;
 
         // Occasionally reverse direction (simulate flutter).
-        // 0.5% chance per frame.
-        final bool shouldReverse = _random.nextDouble() < 0.005;
+        final bool shouldReverse =
+            _random.nextDouble() < _reverseDirectionProbability;
         final double newDirection = shouldReverse ? -b.direction : b.direction;
 
         Offset newOffset = Offset(
@@ -77,16 +109,27 @@ class _ButterflyAnimationState extends State<ButterflyAnimation>
           (b.offset.dy + verticalDrift) % size.height,
         );
 
-        // Wrap around horizontally
+        // Boundary checks (these `0`s are usually okay as they represent
+        // edges).
         if (newOffset.dx < 0) newOffset = Offset(size.width, newOffset.dy);
         if (newOffset.dx > size.width) newOffset = Offset(0, newOffset.dy);
         if (newOffset.dy < 0) newOffset = Offset(newOffset.dx, size.height);
+        // The number `0` here refers to the minimum coordinate (left/top edge)
+        // and is generally not considered a "magic number" in the same way
+        // arbitrary multipliers or probabilities are.
+
+        final bool flipY = _random.nextDouble() < _flipYProbability
+            ? !_random.nextBool()
+            : b.isUpsideDown;
 
         return b.copyWith(
           offset: newOffset,
           flapAngle: newFlapAngle,
-          rotationAngle: b.rotationAngle + 0.01,
+          rotationAngle: b.rotationAngle + _rotationAngleIncrement,
           direction: newDirection,
+          isUpsideDown: flipY,
+          blinkPhase:
+              (b.blinkPhase + _blinkPhaseIncrement) % (_fullCycleRadians),
         );
       }).toList();
     });
