@@ -8,10 +8,10 @@ class SnowPainter extends CustomPainter {
 
   final List<Snowflake> snowflakes;
 
-  /// Constant for maximum rotation speed
+  /// Constant for maximum rotation speed.
   static const double _maxRotationSpeed = 0.03;
 
-  /// Constant for size adjustment factor
+  /// Constant for size adjustment factor.
   static const double _sizeAdjustmentFactor = 2;
 
   @override

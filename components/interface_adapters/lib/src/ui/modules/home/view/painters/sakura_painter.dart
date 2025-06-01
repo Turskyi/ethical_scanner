@@ -6,6 +6,8 @@ class SakuraPainter extends CustomPainter {
 
   final List<SakuraPetal> petals;
 
+  static const double _halfDivisor = 2.0;
+
   @override
   void paint(Canvas canvas, Size size) {
     for (final SakuraPetal petal in petals) {
@@ -24,7 +26,10 @@ class SakuraPainter extends CustomPainter {
         textDirection: TextDirection.ltr,
       )
         ..layout()
-        ..paint(canvas, Offset(-fontSize / 2, -fontSize / 2));
+        ..paint(
+          canvas,
+          Offset(-fontSize / _halfDivisor, -fontSize / _halfDivisor),
+        );
 
       canvas.restore();
     }

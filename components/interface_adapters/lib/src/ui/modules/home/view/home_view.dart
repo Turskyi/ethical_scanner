@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/animations/butterfly_animation.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/animations/sakura_petal_animation.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/animations/snow_animation.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/fab.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/language_selector.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/product_info_body.dart';
-import 'package:interface_adapters/src/ui/modules/home/view/widgets/sakura_petal_animation.dart';
-import 'package:interface_adapters/src/ui/modules/home/view/widgets/snow_animation.dart';
 import 'package:interface_adapters/src/ui/res/color/app_color.dart';
-import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
-import 'package:interface_adapters/src/ui/res/values/dimens.dart';
+
+import 'widgets/interactive_home_prompt.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -20,9 +21,6 @@ class HomeView extends StatelessWidget {
     final Resources resources = Resources.of(context);
     // Extract the arguments from the current ModalRoute settings.
     final Object? args = ModalRoute.of(context)?.settings.arguments;
-
-    final MaterialColors colors = resources.colors;
-    final Dimens dimens = resources.dimens;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -46,78 +44,21 @@ class HomeView extends StatelessWidget {
           ],
         ),
         body: BlocBuilder<HomePresenter, HomeViewModel>(
-          builder: (BuildContext context, HomeViewModel viewModel) {
+          builder: (BuildContext _, HomeViewModel viewModel) {
             final String displayText = viewModel is HomeErrorState
                 ? viewModel.errorMessage
                 : translate('home.scan_barcode');
             return Stack(
               children: <Widget>[
-                Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.only(bottom: dimens.bodyBottomMargin),
-                  child: GestureDetector(
-                    onHorizontalDragEnd: (DragEndDetails details) {
-                      final double? primaryVelocity = details.primaryVelocity;
-                      if (primaryVelocity != null && primaryVelocity > 0) {
-                        context
-                            .read<HomePresenter>()
-                            .add(const PrecipitationToggleEvent());
-                      }
-                    },
-                    child: ShaderMask(
-                      shaderCallback: (Rect bounds) {
-                        return LinearGradient(
-                          colors: <Color>[
-                            colors.columbiaBlue,
-                            colors.verdigris,
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ).createShader(bounds);
-                      },
-                      child: AnimatedSwitcher(
-                        duration: resources.durations.animatedSwitcher,
-                        transitionBuilder: (
-                          Widget child,
-                          Animation<double> animation,
-                        ) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: child,
-                          );
-                        },
-                        child: Text(
-                          displayText,
-                          key: ValueKey<String>(displayText),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: Theme.of(
-                              context,
-                            ).textTheme.headlineLarge?.fontSize,
-                            fontWeight: FontWeight.bold,
-                            shadows: <Shadow>[
-                              Shadow(
-                                blurRadius: dimens.bodyBlurRadius,
-                                color: Colors.black,
-                                offset: Offset(
-                                  dimens.bodyTitleOffset,
-                                  dimens.bodyTitleOffset,
-                                ),
-                              ),
-                            ],
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                InteractiveHomePrompt(displayText: displayText),
                 if (viewModel is ReadyToScanState &&
-                    viewModel.isPrecipitationFalls)
+                    viewModel.isSeasonalEffectEnabled)
                   if (_isWinter)
                     const SnowAnimation()
                   else if (_isSpring)
-                    const SakuraPetalAnimation(),
+                    const SakuraPetalAnimation()
+                  else if (_isSummer)
+                    const ButterflyAnimation(),
               ],
             );
           },
@@ -150,5 +91,13 @@ class HomeView extends StatelessWidget {
     return currentMonth == DateTime.march ||
         currentMonth == DateTime.april ||
         currentMonth == DateTime.may;
+  }
+
+  bool get _isSummer {
+    final DateTime currentDate = DateTime.now();
+    final int currentMonth = currentDate.month;
+    return currentMonth == DateTime.june ||
+        currentMonth == DateTime.july ||
+        currentMonth == DateTime.august;
   }
 }

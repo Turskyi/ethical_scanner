@@ -87,25 +87,26 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
         PhotoMakerState(
           productInfo: productInfoState.productInfo,
           language: state.language,
-          isPrecipitationFalls: state.isPrecipitationFalls,
+          isSeasonalEffectEnabled: state.isSeasonalEffectEnabled,
         ),
       );
     }
   }
 
-  FutureOr<void> _togglePrecipitationSetting(PrecipitationToggleEvent _,
+  FutureOr<void> _togglePrecipitationSetting(
+    PrecipitationToggleEvent _,
     Emitter<HomeViewModel> emit,
   ) async {
     if (state is ReadyToScanState) {
       final bool toggledValue =
-          !(state as ReadyToScanState).isPrecipitationFalls;
+          !(state as ReadyToScanState).isSeasonalEffectEnabled;
       final bool isSaved = await _savePrecipitationStateUseCase.call(
         toggledValue,
       );
       if (isSaved) {
         emit(
           (state as ReadyToScanState).copyWith(
-            isPrecipitationFalls: toggledValue,
+            isSeasonalEffectEnabled: toggledValue,
           ),
         );
       } else {
@@ -137,7 +138,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     emit(
       ReadyToScanState(
         language: state.language,
-        isPrecipitationFalls: state.isPrecipitationFalls,
+        isSeasonalEffectEnabled: state.isSeasonalEffectEnabled,
       ),
     );
   }
@@ -148,7 +149,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
   ) {
     emit(
       ReadyToScanState(
-        isPrecipitationFalls: _getPrecipitationStateUseCase.call(),
+        isSeasonalEffectEnabled: _getPrecipitationStateUseCase.call(),
         language: _getLanguageUseCase.call(),
       ),
     );
@@ -163,7 +164,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
       emit(
         ScanState(
           language: readyToScanState.language,
-          isPrecipitationFalls: readyToScanState.isPrecipitationFalls,
+          isSeasonalEffectEnabled: readyToScanState.isSeasonalEffectEnabled,
         ),
       );
     }
@@ -189,7 +190,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
       LoadingProductInfoState(
         productInfoMap: modifiableProductInfo,
         language: productInfo.language,
-        isPrecipitationFalls: state.isPrecipitationFalls,
+        isSeasonalEffectEnabled: state.isSeasonalEffectEnabled,
       ),
     );
 
@@ -402,7 +403,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     } finally {
       emit(
         LoadedProductInfoState(
-          isPrecipitationFalls: state.isPrecipitationFalls,
+          isSeasonalEffectEnabled: state.isSeasonalEffectEnabled,
           language: state.language,
           productInfoMap: modifiableProductInfo,
           productInfo: productInfo,
@@ -422,7 +423,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           productInfoMap: viewModel.productInfoMap,
           productInfo: viewModel.productInfo,
           language: viewModel.language,
-          isPrecipitationFalls: viewModel.isPrecipitationFalls,
+          isSeasonalEffectEnabled: viewModel.isSeasonalEffectEnabled,
         ),
       );
     }

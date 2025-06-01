@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:interface_adapters/src/ui/models/sakura_petal.dart';
-import 'package:interface_adapters/src/ui/modules/home/view/sakura_painter.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/painters/sakura_painter.dart';
 
 class SakuraPetalAnimation extends StatefulWidget {
   const SakuraPetalAnimation({super.key});
@@ -14,6 +14,18 @@ class SakuraPetalAnimation extends StatefulWidget {
 
 class _SakuraPetalAnimationState extends State<SakuraPetalAnimation>
     with SingleTickerProviderStateMixin {
+  static const double _minPetalSize = 16.0;
+
+  /// Max size will be [_minPetalSize] + [_petalSizeVariation].
+  static const double _petalSizeVariation = 16.0;
+
+  /// For 2 * pi.
+  static const double _maxRotationAngleMultiplier = 2.0;
+  static const double _maxInitialRotationSpeed = 0.01;
+
+  /// Sideways movement factor.
+  static const double _swayFactor = 0.2;
+
   final Random _random = Random();
   final int _initialPetalCount = 30;
   final double _fallSpeed = 0.7;
@@ -32,28 +44,14 @@ class _SakuraPetalAnimationState extends State<SakuraPetalAnimation>
             _random.nextDouble() * size.width,
             _random.nextDouble() * size.height,
           ),
-          size: _random.nextDouble() * 16 + 16,
-          rotationAngle: _random.nextDouble() * 2 * pi,
-          rotationSpeed: _random.nextDouble() * 0.01,
+          size: _random.nextDouble() * _petalSizeVariation + _minPetalSize,
+          rotationAngle:
+              _random.nextDouble() * _maxRotationAngleMultiplier * pi,
+          rotationSpeed: _random.nextDouble() * _maxInitialRotationSpeed,
         );
       });
 
       _ticker = Ticker(_onTick)..start();
-    });
-  }
-
-  void _onTick(Duration _) {
-    setState(() {
-      final Size screenSize = MediaQuery.sizeOf(context);
-      _petals = _petals.map((SakuraPetal petal) {
-        return petal.copyWith(
-          offset: Offset(
-            petal.offset.dx + sin(petal.rotationAngle) * 0.2,
-            (petal.offset.dy + _fallSpeed) % screenSize.height,
-          ),
-          rotationAngle: petal.rotationAngle + petal.rotationSpeed,
-        );
-      }).toList();
     });
   }
 
@@ -66,5 +64,20 @@ class _SakuraPetalAnimationState extends State<SakuraPetalAnimation>
   void dispose() {
     _ticker?.dispose();
     super.dispose();
+  }
+
+  void _onTick(Duration _) {
+    setState(() {
+      final Size screenSize = MediaQuery.sizeOf(context);
+      _petals = _petals.map((SakuraPetal petal) {
+        return petal.copyWith(
+          offset: Offset(
+            petal.offset.dx + sin(petal.rotationAngle) * _swayFactor,
+            (petal.offset.dy + _fallSpeed) % screenSize.height,
+          ),
+          rotationAngle: petal.rotationAngle + petal.rotationSpeed,
+        );
+      }).toList();
+    });
   }
 }

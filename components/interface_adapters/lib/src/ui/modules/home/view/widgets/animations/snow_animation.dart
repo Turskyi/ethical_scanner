@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:interface_adapters/src/ui/models/snowflake.dart';
-import 'package:interface_adapters/src/ui/modules/home/view/snow_painter.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/painters/snow_painter.dart';
 
 class SnowAnimation extends StatefulWidget {
   const SnowAnimation({super.key});

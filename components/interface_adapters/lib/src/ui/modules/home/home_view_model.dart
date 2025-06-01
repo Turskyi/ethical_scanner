@@ -2,17 +2,17 @@ part of 'home_presenter.dart';
 
 abstract class HomeViewModel {
   const HomeViewModel({
-    this.isPrecipitationFalls = true,
+    this.isSeasonalEffectEnabled = true,
     this.language = Language.en,
   });
 
   final Language language;
-  final bool isPrecipitationFalls;
+  final bool isSeasonalEffectEnabled;
 
   @override
   String toString() {
     return 'HomeViewModel(language: $language, '
-        'isPrecipitationFalls: $isPrecipitationFalls)';
+        'isPrecipitationFalls: $isSeasonalEffectEnabled)';
   }
 }
 
@@ -21,7 +21,7 @@ abstract class ProductInfoState extends HomeViewModel {
     this.productInfoMap = const <ProductInfoType, String>{},
     this.productInfo = const ProductInfo(),
     super.language,
-    super.isPrecipitationFalls,
+    super.isSeasonalEffectEnabled,
   });
 
   final Map<ProductInfoType, String> productInfoMap;
@@ -31,7 +31,7 @@ abstract class ProductInfoState extends HomeViewModel {
   String toString() {
     return 'ProductInfoState(productInfoMap: $productInfoMap, '
         'productInfo: $productInfo, language: $language, '
-        'isPrecipitationFalls: $isPrecipitationFalls)';
+        'isPrecipitationFalls: $isSeasonalEffectEnabled)';
   }
 }
 
@@ -41,39 +41,40 @@ class LoadingHomeState extends HomeViewModel {
   @override
   String toString() {
     return 'LoadingHomeState(language: $language, '
-        'isPrecipitationFalls: $isPrecipitationFalls)';
+        'isPrecipitationFalls: $isSeasonalEffectEnabled)';
   }
 }
 
 class ReadyToScanState extends HomeViewModel {
   const ReadyToScanState({
     required super.language,
-    super.isPrecipitationFalls,
+    super.isSeasonalEffectEnabled,
   });
 
   ReadyToScanState copyWith({
     Language? language,
-    bool? isPrecipitationFalls,
+    bool? isSeasonalEffectEnabled,
   }) =>
       ReadyToScanState(
         language: language ?? this.language,
-        isPrecipitationFalls: isPrecipitationFalls ?? this.isPrecipitationFalls,
+        isSeasonalEffectEnabled:
+            isSeasonalEffectEnabled ?? this.isSeasonalEffectEnabled,
       );
 
   @override
   String toString() {
     return 'ReadyToScanState(language: $language, '
-        'isPrecipitationFalls: $isPrecipitationFalls)';
+        'isPrecipitationFalls: $isSeasonalEffectEnabled)';
   }
 }
 
 class ScanState extends HomeViewModel {
-  const ScanState({super.language, super.isPrecipitationFalls});
+  const ScanState({super.language, super.isSeasonalEffectEnabled});
 
   @override
   String toString() {
     return 'ScanState(language: $language, '
-        'isPrecipitationFalls: $isPrecipitationFalls)';
+        'isPrecipitationFalls: $isSeasonalEffectEnabled)';
   }
 }
 
@@ -81,24 +82,25 @@ class LoadingProductInfoState extends ProductInfoState {
   const LoadingProductInfoState({
     required super.language,
     super.productInfoMap,
-    super.isPrecipitationFalls,
+    super.isSeasonalEffectEnabled,
   });
 
   LoadingProductInfoState copyWith({
     Map<ProductInfoType, String>? productInfoMap,
     Language? language,
-    bool? isPrecipitationFalls,
+    bool? isSeasonalEffectEnabled,
   }) =>
       LoadingProductInfoState(
         productInfoMap: productInfoMap ?? this.productInfoMap,
         language: language ?? this.language,
-        isPrecipitationFalls: isPrecipitationFalls ?? this.isPrecipitationFalls,
+        isSeasonalEffectEnabled:
+            isSeasonalEffectEnabled ?? this.isSeasonalEffectEnabled,
       );
 
   @override
   String toString() {
     return 'LoadingProductInfoState(productInfoMap: $productInfoMap, '
-        'language: $language, isPrecipitationFalls: $isPrecipitationFalls)';
+        'language: $language, isPrecipitationFalls: $isSeasonalEffectEnabled)';
   }
 }
 
@@ -107,14 +109,14 @@ class LoadedProductInfoState extends ProductInfoState {
     super.productInfoMap,
     super.productInfo,
     super.language,
-    super.isPrecipitationFalls,
+    super.isSeasonalEffectEnabled,
   });
 
   @override
   String toString() {
     return 'LoadedProductInfoState(productInfoMap: $productInfoMap, '
         'productInfo: $productInfo, language: $language, '
-        'isPrecipitationFalls: $isPrecipitationFalls)';
+        'isSeasonalEffectEnabled: $isSeasonalEffectEnabled)';
   }
 }
 
@@ -126,7 +128,7 @@ class HomeErrorState extends HomeViewModel {
   @override
   String toString() {
     return 'HomeErrorState(errorMessage: $errorMessage, language: $language, '
-        'isPrecipitationFalls: $isPrecipitationFalls)';
+        'isPrecipitationFalls: $isSeasonalEffectEnabled)';
   }
 }
 
@@ -134,13 +136,13 @@ class PhotoMakerState extends ProductInfoState {
   const PhotoMakerState({
     required super.productInfo,
     super.language,
-    super.isPrecipitationFalls,
+    super.isSeasonalEffectEnabled,
   });
 
   @override
   String toString() {
     return 'PhotoMakerState(productInfo: $productInfo, language: $language, '
-        'isPrecipitationFalls: $isPrecipitationFalls)';
+        'isSeasonalEffectEnabled: $isSeasonalEffectEnabled)';
   }
 }
 
@@ -149,7 +151,7 @@ final class FeedbackState extends LoadedProductInfoState {
     super.productInfoMap,
     super.productInfo,
     super.language,
-    super.isPrecipitationFalls,
+    super.isSeasonalEffectEnabled,
   });
 
   @override
