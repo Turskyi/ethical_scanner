@@ -19,7 +19,7 @@ class _ButterflyAnimationState extends State<ButterflyAnimation>
 
   /// Base speed added to random speed.
   static const double _minBaseSpeed = 0.5;
-  static const int _maxFlutterPhase = 60;
+  static const int _maxFlutterPhase = 240;
 
   /// For 2 * PI calculations.
   static const double _fullCircleMultiplier = 2.0;

@@ -27,7 +27,7 @@ class Fab extends StatefulWidget {
 }
 
 class _FabState extends State<Fab> with TickerProviderStateMixin {
-  late AnimationController _animationController;
+  AnimationController? _animationController;
   late Animation<double> _animation;
 
   /// Define the width and height of the widget.
@@ -62,34 +62,36 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
           child: Stack(
             alignment: AlignmentDirectional.center,
             children: <Widget>[
-              AnimatedBuilder(
-                animation: _animationController,
-                builder: (BuildContext _, Widget? __) {
-                  return Transform.scale(
-                    scale: 1.0 + (_animation.value * (isWide ? 0.28 : 0.2)),
-                    child: Semantics(
-                      label: translate('home.fab'),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 600),
-                        width: _size,
-                        height: _size,
-                        decoration: _getBoxDecoration(viewModel),
-                        child: ValueListenableBuilder<bool>(
-                          valueListenable: _isEnabledNotifier,
-                          builder: (_, bool isEnabled, __) {
-                            return FloatingActionButton(
-                              elevation: 0,
-                              backgroundColor: Colors.transparent,
-                              shape: const CircleBorder(),
-                              onPressed: isEnabled ? _toggleFabExpansion : null,
-                            );
-                          },
+              if (_animationController != null)
+                AnimatedBuilder(
+                  animation: _animationController!,
+                  builder: (BuildContext _, Widget? __) {
+                    return Transform.scale(
+                      scale: 1.0 + (_animation.value * (isWide ? 0.28 : 0.2)),
+                      child: Semantics(
+                        label: translate('home.fab'),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 600),
+                          width: _size,
+                          height: _size,
+                          decoration: _getBoxDecoration(viewModel),
+                          child: ValueListenableBuilder<bool>(
+                            valueListenable: _isEnabledNotifier,
+                            builder: (_, bool isEnabled, __) {
+                              return FloatingActionButton(
+                                elevation: 0,
+                                backgroundColor: Colors.transparent,
+                                shape: const CircleBorder(),
+                                onPressed:
+                                    isEnabled ? _toggleFabExpansion : null,
+                              );
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
+                    );
+                  },
+                ),
               ValueListenableBuilder<bool>(
                 valueListenable: _isExpandedNotifier,
                 builder: (_, bool isExpanded, __) => Visibility(
@@ -213,8 +215,8 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _animationController.dispose();
-
+    _animationController?.dispose();
+    _animationController = null;
     _isEnabledNotifier.dispose();
 
     super.dispose();
@@ -222,7 +224,7 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
 
   void _viewModelListener(BuildContext _, HomeViewModel viewModel) {
     if (_isExpandedNotifier.value && viewModel is ReadyToScanState) {
-      _animationController.reverse().whenComplete(() {
+      _animationController?.reverse().whenComplete(() {
         _isExpandedNotifier.value = !_isExpandedNotifier.value;
 
         // It's necessary to use `setState` to trigger a rebuild of the
@@ -246,9 +248,9 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
     _animation = Tween<double>(
       begin: 1.0,
       end: 0.0,
-    ).animate(_animationController);
+    ).animate(_animationController!);
 
-    _animationController.repeat(reverse: true);
+    _animationController?.repeat(reverse: true);
   }
 
   void _toggleFabExpansion() {
@@ -257,19 +259,29 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
     if (_isExpandedNotifier.value) {
       widget.onClose.call();
     } else {
-      _animationController = AnimationController(
-        vsync: this,
-        duration: const Duration(milliseconds: 360),
-      );
-      _animation = Tween<double>(begin: 0, end: 84).animate(
-        _animationController,
-      );
+      if (_animationController == null) {
+        _startExpansionAnimation();
+      } else {
+        _animationController?.dispose();
+        _animationController = null;
 
-      _animationController.forward().whenComplete(() {
-        _isExpandedNotifier.value = !_isExpandedNotifier.value;
-        widget.onPressed.call();
-        _isEnabledNotifier.value = _isExpandedNotifier.value;
-      });
+        _startExpansionAnimation();
+      }
     }
+  }
+
+  void _startExpansionAnimation() {
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 360),
+    );
+    _animation = Tween<double>(begin: 0, end: 84).animate(
+      _animationController!,
+    );
+    _animationController?.forward().whenComplete(() {
+      _isExpandedNotifier.value = !_isExpandedNotifier.value;
+      widget.onPressed.call();
+      _isEnabledNotifier.value = _isExpandedNotifier.value;
+    });
   }
 }

@@ -134,8 +134,9 @@ void _scanViewModelListener(BuildContext context, ScanViewModel viewModel) {
   final String targetRouteName = route.homePath;
 
   if (viewModel is ScanSuccessState) {
-    Navigator.of(context).pushReplacementNamed(
+    Navigator.of(context).pushNamedAndRemoveUntil(
       targetRouteName,
+      (Route<Object?> _) => false,
       arguments: viewModel.barcode,
     );
   } else if (viewModel is CanceledScanningState) {
@@ -173,6 +174,7 @@ PageRouteBuilder<String> _getHomePageRouteBuilder(RouteSettings settings) {
               barcode: arguments,
               language: language,
             );
+
             return homePresenter..add(ShowProductInfoEvent(productInfo));
           } else {
             return homePresenter..add(const LoadHomeEvent());

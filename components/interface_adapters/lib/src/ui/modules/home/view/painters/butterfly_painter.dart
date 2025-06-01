@@ -7,10 +7,10 @@ class ButterflyPainter extends CustomPainter {
   final List<Butterfly> butterflies;
   final int frameCount;
 
-  static const int _flutterCycle = 60;
+  static const int _flutterCycle = 240;
 
   /// Portion of the cycle the butterfly is visible.
-  static const double _flutterOnDurationPortion = 0.5;
+  static const double _flutterOnDurationPortion = 10;
 
   /// Scale factor for Y-axis when upside down.
   static const double _scaleFactorFlip = -1.0;
