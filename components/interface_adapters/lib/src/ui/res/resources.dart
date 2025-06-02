@@ -9,13 +9,13 @@ import 'package:interface_adapters/src/ui/res/values/strings.dart';
 
 class Resources extends InheritedWidget {
   const Resources({
-    super.key,
     required this.colors,
     required this.gradients,
+    required super.child,
     this.strings = const Strings(),
     this.dimens = const Dimens(),
     this.durations = const AppDurations(),
-    required super.child,
+    super.key,
   });
 
   final MaterialColors colors;

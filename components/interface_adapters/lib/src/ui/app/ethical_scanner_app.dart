@@ -6,13 +6,16 @@ import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 
 class EthicalScannerApp extends StatelessWidget implements App {
-  const EthicalScannerApp({super.key, required this.routeFactory});
+  const EthicalScannerApp({
+    required this.routeFactory,
+    super.key,
+  });
 
   /// {@macro flutter.widgets.widgetsApp.onGenerateRoute}
   final RouteFactory routeFactory;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext _) {
     return Resources(
       colors: MaterialColors(),
       gradients: Gradients(),

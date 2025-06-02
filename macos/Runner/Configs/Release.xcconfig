@@ -1,2 +1,5 @@
 #include "../../Flutter/Flutter-Release.xcconfig"
 #include "Warnings.xcconfig"
+
+DART_VM_OPTIONS = "--disable-service-auth-codes"
+ENABLE_VM_SERVICE = false

@@ -15,6 +15,7 @@ import 'package:interface_adapters/src/ui/modules/scan/view/scanner_overlay.dart
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
+import 'package:interface_adapters/src/ui/res/widgets/leading_widget.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class ScanView extends StatefulWidget {
@@ -87,13 +88,19 @@ class _HomeViewState extends State<ScanView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        IconButton(
-                          icon: const Icon(
-                            Icons.arrow_back_ios,
-                            color: Colors.white,
-                          ),
-                          onPressed: _onBackPressed,
-                        ),
+                        kIsWeb
+                            ? LeadingWidget(
+                                logoPath:
+                                    '${kImagesPath}ethical_scanner_logo.jpeg',
+                                onTap: _onBackPressed,
+                              )
+                            : IconButton(
+                                icon: const Icon(
+                                  Icons.arrow_back_ios,
+                                  color: Colors.white,
+                                ),
+                                onPressed: _onBackPressed,
+                              ),
                         IconButton(
                           icon: BlocConsumer<ScanPresenter, ScanViewModel>(
                             listener: _viewModelListener,

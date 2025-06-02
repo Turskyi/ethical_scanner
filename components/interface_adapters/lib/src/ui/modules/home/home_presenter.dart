@@ -34,8 +34,6 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
     on<LaunchUrlEvent>(_handleLaunchUrl);
 
-    on<ShowHomeEvent>(_onShowHomeEvent);
-
     on<PrecipitationToggleEvent>(_togglePrecipitationSetting);
 
     on<SnapIngredientsEvent>(_startPhotoMaker);
@@ -54,13 +52,6 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
   final UseCase<bool, Null> _getPrecipitationStateUseCase;
   final UseCase<Future<bool>, String> _saveLanguageUseCase;
   final UseCase<Language, Null> _getLanguageUseCase;
-
-  FutureOr<void> _onShowHomeEvent(
-    ShowHomeEvent _,
-    Emitter<HomeViewModel> emit,
-  ) {
-    emit(const ReadyToScanState());
-  }
 
   FutureOr<void> _handleError(
     HomeErrorEvent event,
@@ -86,33 +77,36 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     }
   }
 
-  FutureOr<void> _startPhotoMaker(_, Emitter<HomeViewModel> emit) {
+  FutureOr<void> _startPhotoMaker(
+    SnapIngredientsEvent _,
+    Emitter<HomeViewModel> emit,
+  ) {
     if (state is ProductInfoState) {
       final ProductInfoState productInfoState = state as ProductInfoState;
       emit(
         PhotoMakerState(
           productInfo: productInfoState.productInfo,
           language: state.language,
-          isPrecipitationFalls: state.isPrecipitationFalls,
+          isSeasonalEffectEnabled: state.isSeasonalEffectEnabled,
         ),
       );
     }
   }
 
   FutureOr<void> _togglePrecipitationSetting(
-    _,
+    PrecipitationToggleEvent _,
     Emitter<HomeViewModel> emit,
   ) async {
     if (state is ReadyToScanState) {
       final bool toggledValue =
-          !(state as ReadyToScanState).isPrecipitationFalls;
+          !(state as ReadyToScanState).isSeasonalEffectEnabled;
       final bool isSaved = await _savePrecipitationStateUseCase.call(
         toggledValue,
       );
       if (isSaved) {
         emit(
           (state as ReadyToScanState).copyWith(
-            isPrecipitationFalls: toggledValue,
+            isSeasonalEffectEnabled: toggledValue,
           ),
         );
       } else {
@@ -137,31 +131,40 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     }
   }
 
-  FutureOr<void> _onClearProductInfoEvent(_, Emitter<HomeViewModel> emit) {
+  FutureOr<void> _onClearProductInfoEvent(
+    ClearProductInfoEvent _,
+    Emitter<HomeViewModel> emit,
+  ) {
     emit(
       ReadyToScanState(
         language: state.language,
-        isPrecipitationFalls: state.isPrecipitationFalls,
+        isSeasonalEffectEnabled: state.isSeasonalEffectEnabled,
       ),
     );
   }
 
-  FutureOr<void> _onLoadHomeEvent(_, Emitter<HomeViewModel> emit) {
+  FutureOr<void> _onLoadHomeEvent(
+    LoadHomeEvent _,
+    Emitter<HomeViewModel> emit,
+  ) {
     emit(
       ReadyToScanState(
-        isPrecipitationFalls: _getPrecipitationStateUseCase.call(),
+        isSeasonalEffectEnabled: _getPrecipitationStateUseCase.call(),
         language: _getLanguageUseCase.call(),
       ),
     );
   }
 
-  FutureOr<void> _onNavigateToScanViewEvent(_, Emitter<HomeViewModel> emit) {
+  FutureOr<void> _onNavigateToScanViewEvent(
+    NavigateToScanViewEvent _,
+    Emitter<HomeViewModel> emit,
+  ) {
     if (state is ReadyToScanState) {
       final ReadyToScanState readyToScanState = state as ReadyToScanState;
       emit(
         ScanState(
           language: readyToScanState.language,
-          isPrecipitationFalls: readyToScanState.isPrecipitationFalls,
+          isSeasonalEffectEnabled: readyToScanState.isSeasonalEffectEnabled,
         ),
       );
     }
@@ -171,31 +174,31 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     ShowProductInfoEvent event,
     Emitter<HomeViewModel> emit,
   ) async {
-    final Map<ProductInfoType, String> modifiableProductInfo =
-        Map<ProductInfoType, String>.from(
-      <ProductInfoType, String>{
-        ProductInfoType.code: event.productInfo.barcode,
-      },
-    );
-    emit(
-      LoadingProductInfoState(
-        productInfoMap: modifiableProductInfo,
-        language: state.language,
-        isPrecipitationFalls: state.isPrecipitationFalls,
-      ),
-    );
-
     // The `productInfo` variable is intentionally kept mutable here.
     // Making it `final` would require additional variables and complexity
     // to handle reassignment, which would reduce the readability and
     // simplicity of the code.
     ProductInfo productInfo = event.productInfo;
+    final Map<ProductInfoType, String> modifiableProductInfo =
+        Map<ProductInfoType, String>.from(
+      <ProductInfoType, String>{
+        ProductInfoType.code: productInfo.barcode,
+      },
+    );
+
+    emit(
+      LoadingProductInfoState(
+        productInfoMap: modifiableProductInfo,
+        language: productInfo.language,
+        isSeasonalEffectEnabled: state.isSeasonalEffectEnabled,
+      ),
+    );
+
     try {
-      if (_isWebsite(event.productInfo.barcode)) {
-        modifiableProductInfo[ProductInfoType.website] =
-            event.productInfo.barcode;
+      if (_isWebsite(productInfo.barcode)) {
+        modifiableProductInfo[ProductInfoType.website] = productInfo.barcode;
       } else {
-        modifiableProductInfo[ProductInfoType.code] = event.productInfo.barcode;
+        modifiableProductInfo[ProductInfoType.code] = productInfo.barcode;
         if (state is LoadingProductInfoState) {
           LoadingProductInfoState loadingState =
               state as LoadingProductInfoState;
@@ -204,14 +207,14 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           );
         }
 
-        productInfo = event.productInfo.ingredientList.isEmpty
+        productInfo = productInfo.ingredientList.isEmpty
             ? await _getProductInfoUseCase.call(
                 LocalizedCode(
-                  code: event.productInfo.barcode,
-                  language: event.productInfo.language,
+                  code: productInfo.barcode,
+                  language: productInfo.language,
                 ),
               )
-            : event.productInfo;
+            : productInfo;
         if (productInfo.name.isNotEmpty) {
           modifiableProductInfo[ProductInfoType.productName] = productInfo.name;
           if (state is LoadingProductInfoState) {
@@ -293,7 +296,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
         if (productInfo.isFromRussia) {
           modifiableProductInfo[ProductInfoType.countryTerrorismSponsor] =
-              'Yes';
+              state.language.isEnglish ? 'Yes' : 'Так';
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
@@ -400,7 +403,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     } finally {
       emit(
         LoadedProductInfoState(
-          isPrecipitationFalls: state.isPrecipitationFalls,
+          isSeasonalEffectEnabled: state.isSeasonalEffectEnabled,
           language: state.language,
           productInfoMap: modifiableProductInfo,
           productInfo: productInfo,
@@ -409,7 +412,10 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     }
   }
 
-  FutureOr<void> _onFeedbackRequested(_, Emitter<HomeViewModel> emit) {
+  FutureOr<void> _onFeedbackRequested(
+    BugReportPressedEvent _,
+    Emitter<HomeViewModel> emit,
+  ) {
     if (state is LoadedProductInfoState) {
       final LoadedProductInfoState viewModel = state as LoadedProductInfoState;
       emit(
@@ -417,7 +423,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           productInfoMap: viewModel.productInfoMap,
           productInfo: viewModel.productInfo,
           language: viewModel.language,
-          isPrecipitationFalls: viewModel.isPrecipitationFalls,
+          isSeasonalEffectEnabled: viewModel.isSeasonalEffectEnabled,
         ),
       );
     }

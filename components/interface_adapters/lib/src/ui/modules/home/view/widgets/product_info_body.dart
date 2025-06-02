@@ -2,8 +2,8 @@ import 'package:entities/entities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:interface_adapters/interface_adapters.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/animations/delayed_animation.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/code_tile.dart';
-import 'package:interface_adapters/src/ui/modules/home/view/widgets/delayed_animation.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/loading_indicator_widget.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/product_info_tile.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
@@ -26,7 +26,7 @@ class ProductInfoBody extends StatelessWidget {
         top: kToolbarHeight,
       ),
       child: BlocBuilder<HomePresenter, HomeViewModel>(
-        builder: (_, HomeViewModel viewModel) {
+        builder: (BuildContext _, HomeViewModel viewModel) {
           if (viewModel is ProductInfoState) {
             return ListView.builder(
               padding: EdgeInsets.only(
@@ -44,7 +44,7 @@ class ProductInfoBody extends StatelessWidget {
                     return const SizedBox();
                   }
                 } else {
-                  ProductInfoType type =
+                  final ProductInfoType type =
                       viewModel.productInfoMap.keys.elementAt(
                     index,
                   );

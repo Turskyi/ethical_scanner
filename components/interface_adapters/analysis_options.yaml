@@ -27,6 +27,13 @@ linter:
     sort_pub_dependencies: true
     avoid_classes_with_only_static_members: true
     sort_constructors_first: true
+    always_put_required_named_parameters_first: true
+    avoid_print: true
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true
+    avoid_void_async: true
+    cancel_subscriptions: true
+    avoid_as: true
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

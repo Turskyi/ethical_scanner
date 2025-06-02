@@ -30,10 +30,6 @@ class LaunchUrlEvent extends HomeEvent {
   final Language language;
 }
 
-class ShowHomeEvent extends HomeEvent {
-  const ShowHomeEvent();
-}
-
 class PrecipitationToggleEvent extends HomeEvent {
   const PrecipitationToggleEvent();
 }
