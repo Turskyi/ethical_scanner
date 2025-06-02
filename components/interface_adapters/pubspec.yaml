@@ -38,8 +38,8 @@ dependencies:
   flutter_translate: any
 
   html: ^0.15.6
-  # Set to specific version when this error is gone: "Because every version of flutter_test from sdk depends on meta 1.12.0 and laozi_ai depends on meta ^1.15.0, flutter_test from sdk is forbidden.
-  # So, because laozi_ai depends on flutter_test from sdk, version solving failed.".
+
+  http: ^1.4.0
   meta: any
   mobile_scanner: ^7.0.0
 

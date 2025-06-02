@@ -17,6 +17,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   @override
   Future<ProductInfo> getProductInfoAsFuture(LocalizedCode input) {
     final String code = input.code;
+
     return OpenFoodAPIClient.getProductV3(
       ProductQueryConfiguration(
         code,
