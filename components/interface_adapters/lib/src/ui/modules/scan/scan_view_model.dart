@@ -2,6 +2,9 @@ part of 'scan_presenter.dart';
 
 sealed class ScanViewModel {
   const ScanViewModel();
+
+  bool get isScanningWithSound =>
+      this is ScanningState && (this as ScanningState).isSoundOn;
 }
 
 class LoadingScanningState extends ScanViewModel {
