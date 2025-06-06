@@ -11,6 +11,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+
       - name: Write .env and env.g.dart files.
         run: |
           cd components/interface_adapters
@@ -18,6 +19,7 @@ jobs:
         shell: bash
         env:
           ENV: ${{ secrets.ENV }}
+
       - run: >-
           cd components/interface_adapters && flutter pub get && dart run build_runner build
           --delete-conflicting-outputs
