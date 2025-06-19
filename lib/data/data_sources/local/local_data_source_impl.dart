@@ -631,7 +631,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '834': 'Tanzania',
       '835': 'Italy, San Marino and Vatican City',
       '836': 'Italy, San Marino and Vatican City',
-      '837': 'Italy, San Marino and Vatican City',
+      '837': 'Italy, San Marino and Vatican City. '
+          'Reportedly used for some products made in China',
       '838': 'Italy, San Marino and Vatican City',
       '839': 'Italy, San Marino and Vatican City',
       // 840 is ISO 3166-1 numeric code for the United States or GS1 code for

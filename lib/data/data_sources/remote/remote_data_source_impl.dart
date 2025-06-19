@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
@@ -6,6 +7,8 @@ import 'package:entities/entities.dart';
 import 'package:ethical_scanner/data/data_mappers/product_data_mapper.dart';
 import 'package:ethical_scanner/data/data_mappers/product_result_data_mapper.dart';
 import 'package:ethical_scanner/res/values/constants.dart' as constants;
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 
@@ -162,10 +165,42 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     );
 
     if (result.status == HttpStatus.badRequest) {
+      String formattedProductDetails = 'Product details not available or too '
+          'large to print directly.';
+      try {
+        // Attempt to serialize the product to JSON for better readability if
+        // it's complex.
+        formattedProductDetails = jsonEncode(newProduct.toJson());
+      } catch (e) {
+        formattedProductDetails = 'Could not serialize product to JSON: $e. '
+            'Basic details: Barcode: ${newProduct.barcode}, '
+            'Name: ${newProduct.productName}';
+      }
+
+      final String debugMessage = """
+      ===============================================================
+      ERROR: Failed to save product to OpenFoodFacts (BadRequest)
+      ---------------------------------------------------------------
+      User ID: ${openFoodUser.userId}
+      ---------------------------------------------------------------
+      Product Sent (summary or full JSON if possible):
+      $formattedProductDetails 
+      ---------------------------------------------------------------
+      API Response Status Code: ${result.status}
+      API Response Status Details: 
+      ${result.statusVerbose ?? 'No verbose status'}
+      API Response Error Message: 
+      ${result.error ?? 'No specific error message from API.'}
+      API Response Body:
+      ${result.body ?? 'No response body.'}
+      ===============================================================
+      """;
+      debugPrint(debugMessage);
       throw BadRequestError(
         result.body != null
-            ? '${result.body}'
-            : 'Product could not be added.\n${result.error ?? ''}',
+            ? 'Failed to save product. Server response: ${result.body}'
+            : 'Product could not be added.\n${result.error ?? ''}. '
+                'Status: ${result.status}',
       );
     } else if (result.status != 1) {
       throw Exception(
@@ -175,7 +210,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<void> addIngredients(ProductPhoto photo) async {
+  Future<void> addIngredients(ProductPhoto photo) {
     final SendImage image = SendImage(
       barcode: photo.info.barcode,
       imageUri: Uri.parse(photo.path),
@@ -188,7 +223,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           comment: constants.openFoodUserComment,
         );
 
-    await _uploadProductImageToOpenFoodFacts(
+    return _uploadProductImageToOpenFoodFacts(
       image: image,
       openFoodUser: openFoodUser,
     );
@@ -198,30 +233,168 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     required SendImage image,
     required User openFoodUser,
   }) async {
-    final Status status = await OpenFoodAPIClient.addProductImage(
-      openFoodUser,
-      image,
-    );
+    try {
+      final Status status = await OpenFoodAPIClient.addProductImage(
+        openFoodUser,
+        image,
+      );
 
-    if (status.status == HttpStatus.internalServerError) {
-      throw InternalServerError(
-        'Image could not be uploaded: ${status.error}.\n'
-        '${status.imageId != null ? status.imageId.toString() : ''}',
-      );
-    } else if (status.status == HttpStatus.forbidden) {
-      await _uploadProductImageToOpenFoodFacts(
-        image: image,
-        openFoodUser: const User(
-          userId: Env.openFoodBackupUserId,
-          password: Env.openFoodPassword,
-          comment: constants.openFoodUserComment,
-        ),
-      );
-    } else if (status.status != 'status ok') {
-      throw Exception(
-        'image could not be uploaded: ${status.error}.\n'
-        '${status.imageId != null ? status.imageId.toString() : ''}',
-      );
+      if (status.status == HttpStatus.internalServerError) {
+        throw InternalServerError(
+          'Image could not be uploaded: ${status.error}.\n'
+          '${status.imageId != null ? status.imageId.toString() : ''}',
+        );
+      } else if (status.status == HttpStatus.forbidden &&
+          openFoodUser.userId != Env.openFoodBackupUserId) {
+        debugPrint(
+          'WARN: Image upload forbidden for primary user '
+          "'${openFoodUser.userId}' (barcode: ${image.barcode}). Attempting "
+          "with backup user '${Env.openFoodBackupUserId}'.",
+        );
+        await _uploadProductImageToOpenFoodFacts(
+          image: image,
+          openFoodUser: const User(
+            userId: Env.openFoodBackupUserId,
+            password: Env.openFoodPassword,
+            comment: constants.openFoodUserComment,
+          ),
+        );
+      } else if (status.status == HttpStatus.forbidden) {
+        // This means the upload was forbidden EVEN FOR THE BACKUP USER.
+        // This is a critical failure for this operation. Log and throw a
+        // specific error.
+        final String errorMessage =
+            'Image upload failed: Forbidden for both primary user and backup '
+            "user ('${Env.openFoodBackupUserId}').";
+        final String debugMessage = """
+        ===============================================================
+        CRITICAL ERROR: Image upload forbidden even for Backup User
+        ---------------------------------------------------------------
+        Attempted Backup User ID: ${openFoodUser.userId} (which is Env.openFoodBackupUserId)
+        Barcode: ${image.barcode}
+        Image URI: ${image.imageUri}
+        Image Field: ${image.imageField}
+        ---------------------------------------------------------------
+        API Response Status Code: ${status.status}
+        API Response Status Details: ${status.statusVerbose ?? 'No verbose status'}
+        API Response Error Message: ${status.error ?? 'No specific error message from API.'}
+        API Response Body: ${status.body ?? 'No response body.'}
+        ===============================================================
+        """;
+        debugPrint(debugMessage);
+        throw BackupUserForbiddenException(
+          message: errorMessage,
+          barcode: image.barcode,
+          attemptedUserId: openFoodUser.userId,
+        );
+      } else if (status.status != 'status ok') {
+        throw Exception(
+          'image could not be uploaded: ${status.error}.\n'
+          '${status.imageId != null ? status.imageId.toString() : ''}',
+        );
+      }
+    } on ClientException catch (e, s) {
+      // Specifically catch ClientException.
+
+      final String caughtExceptionType = e.runtimeType.toString();
+      String additionalContext = '';
+
+      // Check for Connection Refused specifically.
+      if (e.message.toLowerCase().contains('connection refused')) {
+        additionalContext =
+            '\nPOSSIBLE CAUSE: Network issue, server (world.openfoodfacts.org) down/misconfigured, or incorrect API '
+            'endpoint/port being used by the HTTP client. Ensure the endpoint is correct and accessible (usually HTTPS port 443).';
+
+        if (e.uri != null) {
+          additionalContext += '\nAttempted URI: ${e.uri}';
+
+          if ('${e.uri}' ==
+              'https://world.openfoodfacts.org/cgi/product_image_upload.pl') {
+            final String detailedMessage =
+                'Could not connect to the Open Food Facts image upload server. '
+                'Please check your internet connection or try again later. '
+                '(Details: Connection refused to ${e.uri})';
+
+            String debugLog = '''
+          ===============================================================
+          CRITICAL ERROR (ApiConnectionRefusedException Thrown)
+          ---------------------------------------------------------------
+          Exception Type: ApiConnectionRefusedException (wrapping $caughtExceptionType)
+          Exception Message: $detailedMessage
+          Original Exception: $e
+          $additionalContext
+          ---------------------------------------------------------------
+          User ID: ${openFoodUser.userId}
+          Barcode: ${image.barcode}
+          Image URI: ${image.imageUri}
+          Image Field: ${image.imageField}
+          ---------------------------------------------------------------
+          Stack Trace for original ClientException:
+          $s
+          ===============================================================
+          ''';
+            debugPrint(debugLog);
+
+            // Throw custom, more specific exception.
+            throw ApiConnectionRefusedException(
+              message: detailedMessage,
+              attemptedUri: e.uri,
+              // Store the original raw message.
+              originalExceptionMessage: e.message,
+            );
+          }
+        }
+      }
+      // Fallback logging for other ClientExceptions or if the specific URI
+      // condition wasn't met.
+      String debugMessage = '''
+    ===============================================================
+    CLIENT EXCEPTION during _uploadProductImageToOpenFoodFacts
+    ---------------------------------------------------------------
+    Exception Type: $caughtExceptionType
+    Exception Message: $e
+    $additionalContext
+    ---------------------------------------------------------------
+    User ID: ${openFoodUser.userId}
+    Barcode: ${image.barcode}
+    Image URI: ${image.imageUri}
+    Image Field: ${image.imageField}
+    ---------------------------------------------------------------
+    Stack Trace: $s
+    ===============================================================
+    ''';
+      debugPrint(debugMessage);
+      // Rethrow the original ClientException if not handled by custom
+      // exception.
+      rethrow;
+    } catch (e, s) {
+      // Catch ANY exception from OpenFoodAPIClient.addProductImage or
+      // subsequent logic.
+
+      final String caughtExceptionType = e.runtimeType.toString();
+      String additionalContext = '';
+
+      String debugMessage = '''
+      ===============================================================
+      CRITICAL ERROR during _uploadProductImageToOpenFoodFacts
+      ---------------------------------------------------------------
+      Exception Type: $caughtExceptionType
+      Exception Message: $e
+      $additionalContext
+      ---------------------------------------------------------------
+      User ID: ${openFoodUser.userId}
+      Barcode: ${image.barcode}
+      Image URI: ${image.imageUri}
+      Image Field: ${image.imageField}
+      ---------------------------------------------------------------
+      Stack Trace: $s
+      ===============================================================
+      ''';
+
+      debugPrint(debugMessage);
+      // Rethrow the error to be handled by the calling method
+      // (_onAddIngredientsPhoto).
+      rethrow;
     }
   }
 

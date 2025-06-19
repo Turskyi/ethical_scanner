@@ -2,6 +2,7 @@
   "title": "Ethical Scanner",
   "app_feedback": "App Feedback",
   "copied_to_clipboard": "Copied to clipboard",
+  "could_not_launch": "Could not launch",
   "menu": {
     "home": "Home",
     "scan": "Scan",

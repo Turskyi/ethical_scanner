@@ -234,6 +234,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				uk,
 				Base,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
@@ -469,7 +470,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = 26QZ8BPZFL;
 				ENABLE_BITCODE = NO;
 				FLUTTER_BUILD_NAME = 0.1.4;
@@ -482,7 +483,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.5;
+				MARKETING_VERSION = 0.1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.turskyi.ethicalScanner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -660,7 +661,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = 26QZ8BPZFL;
 				ENABLE_BITCODE = NO;
 				FLUTTER_BUILD_NAME = 0.1.4;
@@ -673,7 +674,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.5;
+				MARKETING_VERSION = 0.1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.turskyi.ethicalScanner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -692,7 +693,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = 26QZ8BPZFL;
 				ENABLE_BITCODE = NO;
 				FLUTTER_BUILD_NAME = 0.1.4;
@@ -705,7 +706,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.5;
+				MARKETING_VERSION = 0.1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.turskyi.ethicalScanner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
