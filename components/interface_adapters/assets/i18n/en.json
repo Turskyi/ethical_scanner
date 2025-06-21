@@ -34,7 +34,8 @@
     "here": "here",
     "or": " or ",
     "to_know_more": " to know more.",
-    "initial_book_code_description": "The initial {eanPrefix} in this barcode is the Book-land EAN prefix, indicating that it is a book. The {eanPrefix} prefix, in this case, is assigned to the English language, but it doesn't specify a particular country."
+    "initial_book_code_description": "The initial {eanPrefix} in this barcode is the Book-land EAN prefix, indicating that it is a book. The {eanPrefix} prefix, in this case, is assigned to the English language, but it doesn't specify a particular country.",
+    "russian": "russian"
   },
   "scan": {
     "scan_screen": "Scan screen",

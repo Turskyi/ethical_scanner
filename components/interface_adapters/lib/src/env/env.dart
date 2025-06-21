@@ -12,6 +12,4 @@ abstract class Env {
   static const String openFoodBackupUserId = _Env.openFoodBackupUserId;
   @EnviedField(varName: 'OPEN_FOOD_PASSWORD')
   static const String openFoodPassword = _Env.openFoodPassword;
-  @EnviedField(varName: 'SUPPORT_EMAIL')
-  static const String supportEmail = _Env.supportEmail;
 }

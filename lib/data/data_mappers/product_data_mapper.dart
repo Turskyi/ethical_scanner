@@ -1,27 +1,34 @@
 import 'package:entities/entities.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 
 extension ProductExtension on Product {
-  ProductInfo toProductInfo() => ProductInfo(
-        barcode: barcode ?? '',
-        origin: origins ?? '',
-        countrySold: _countryName,
-        countryTags: _countryNames,
-        name: productName ?? '',
-        brand: brands ?? '',
-        categoryTags: _categories,
-        packaging: packaging ?? '',
-        ingredientList: _ingredientNames,
-        vegan: _vegan,
-        vegetarian: _vegetarian,
-        website: website ?? '',
-        imageIngredientsUrl: imageIngredientsUrl ?? '',
-      );
+  ProductInfo toProductInfo() {
+    return ProductInfo(
+      barcode: barcode ?? '',
+      origin: ((origins == null || origins?.isEmpty == true) &&
+              (barcode?.isNotEmpty == true) &&
+              (barcode?.startsWith('460') == true))
+          ? translate('product_info.russian')
+          : origins ?? '',
+      countrySold: _countryName,
+      countryTags: _countryNames,
+      name: productName ?? '',
+      brand: brands ?? '',
+      categoryTags: _categories,
+      packaging: packaging ?? '',
+      ingredientList: _ingredientNames,
+      vegan: _vegan,
+      vegetarian: _vegetarian,
+      website: website ?? '',
+      imageIngredientsUrl: imageIngredientsUrl ?? '',
+    );
+  }
 
   String get _countryName {
     if (countries != null && countries!.isNotEmpty) {
       if (countries!.contains(':')) {
-        String countryName = countries!.split(':')[1];
+        final String countryName = countries!.split(':')[1];
         return countryName[0].toUpperCase() + countryName.substring(1);
       }
       return countries!;
@@ -33,7 +40,7 @@ extension ProductExtension on Product {
   List<String> get _countryNames =>
       countriesTags?.map((String countryTag) {
         if (countryTag.contains(':')) {
-          String countryName = countryTag.split(':')[1];
+          final String countryName = countryTag.split(':')[1];
           return countryName[0].toUpperCase() + countryName.substring(1);
         }
         return countryTag;
@@ -43,7 +50,7 @@ extension ProductExtension on Product {
   List<String> get _categories =>
       categoriesTags?.map((String categoryTag) {
         if (categoryTag.contains(':')) {
-          String categoryName = categoryTag.split(':')[1];
+          final String categoryName = categoryTag.split(':')[1];
           return categoryName;
         }
         return categoryTag;
@@ -74,7 +81,7 @@ extension ProductExtension on Product {
     } else if (_isUnknownIngredients || _isUnknownVeganStatus) {
       return Vegan.unknown;
     } else {
-      bool isVegan = ingredients!.every((Ingredient ingredient) {
+      final bool isVegan = ingredients!.every((Ingredient ingredient) {
         return ingredient.vegan == IngredientSpecialPropertyStatus.POSITIVE;
       });
       return isVegan ? Vegan.positive : Vegan.negative;
@@ -90,7 +97,7 @@ extension ProductExtension on Product {
     } else if (_isUnknownIngredients || _isUnknownVegetarianStatus) {
       return Vegetarian.unknown;
     } else {
-      bool isVegetarian = ingredients!.every((Ingredient ingredient) {
+      final bool isVegetarian = ingredients!.every((Ingredient ingredient) {
         return ingredient.vegetarian ==
             IngredientSpecialPropertyStatus.POSITIVE;
       });

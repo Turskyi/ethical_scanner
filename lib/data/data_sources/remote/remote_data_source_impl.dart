@@ -21,10 +21,18 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   Future<ProductInfo> getProductInfoAsFuture(LocalizedCode input) {
     final String code = input.code;
 
+    final OpenFoodFactsLanguage language =
+        OpenFoodFactsLanguage.values.firstWhereOrNull(
+              (OpenFoodFactsLanguage lang) {
+                return lang.code == input.language.isoLanguageCode;
+              },
+            ) ??
+            OpenFoodFactsLanguage.ENGLISH;
+
     return OpenFoodAPIClient.getProductV3(
       ProductQueryConfiguration(
         code,
-        language: OpenFoodFactsLanguage.ENGLISH,
+        language: language,
         fields: <ProductField>[ProductField.ALL],
         version: ProductQueryVersion.v3,
       ),
@@ -41,15 +49,17 @@ class RemoteDataSourceImpl implements RemoteDataSource {
               product,
             );
 
-            final String origin = product.origin;
             return product.copyWith(
               isCompanyTerrorismSponsor: isCompanyTerrorismSponsor,
-              origin:
-                  (origin.isEmpty && code.isNotEmpty && code.startsWith('460'))
-                      ? 'russian'
-                      : origin,
             );
-          }).onError((_, __) => product);
+          }).onError((Object? error, StackTrace _) {
+            debugPrint(
+              'Error fetching terrorism sponsors for product code: $code. '
+              'Defaulting to product information without sponsor check. '
+              'Error: $error',
+            );
+            return product;
+          });
         } else {
           return product;
         }

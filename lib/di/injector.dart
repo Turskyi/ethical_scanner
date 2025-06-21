@@ -13,6 +13,14 @@ import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 Future<Dependencies> injectAndGetDependencies() async {
+  OpenAI.apiKey = Env.openAiApiKey;
+
+  OpenFoodAPIConfiguration.globalUser = const User(
+    userId: Env.openFoodUserId,
+    password: Env.openFoodPassword,
+    comment: constants.openFoodUserComment,
+  );
+
   // Filter the `OpenFoodFactsLanguage` values based on the `Language` enum.
   OpenFoodAPIConfiguration.globalLanguages = OpenFoodFactsLanguage.values
       .where(
@@ -26,14 +34,6 @@ Future<Dependencies> injectAndGetDependencies() async {
       .toList();
 
   OpenFoodAPIConfiguration.globalCountry = OpenFoodFactsCountry.CANADA;
-
-  OpenAI.apiKey = Env.openAiApiKey;
-
-  OpenFoodAPIConfiguration.globalUser = const User(
-    userId: Env.openFoodUserId,
-    password: Env.openFoodPassword,
-    comment: constants.openFoodUserComment,
-  );
 
   // Needed for `Dependencies`, `PackageInfo.fromPlatform()` and
   // `availableCameras`.
