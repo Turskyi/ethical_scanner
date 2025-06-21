@@ -2,6 +2,7 @@
   "title": "Ethical Scanner",
   "app_feedback": "App Feedback",
   "copied_to_clipboard": "Copied to clipboard",
+  "could_not_launch": "Could not launch",
   "menu": {
     "home": "Home",
     "scan": "Scan",
@@ -33,11 +34,20 @@
     "here": "here",
     "or": " or ",
     "to_know_more": " to know more.",
-    "initial_book_code_description": "The initial {eanPrefix} in this barcode is the Book-land EAN prefix, indicating that it is a book. The {eanPrefix} prefix, in this case, is assigned to the English language, but it doesn't specify a particular country."
+    "initial_book_code_description": "The initial {eanPrefix} in this barcode is the Book-land EAN prefix, indicating that it is a book. The {eanPrefix} prefix, in this case, is assigned to the English language, but it doesn't specify a particular country.",
+    "russian": "russian"
   },
   "scan": {
     "scan_screen": "Scan screen",
-    "scanning": "Scanning..."
+    "scanning": "Scanning...",
+    "limited_on_web": "⚠\uFE0F Limited functionality on Web. Product details may be incomplete due to technical restrictions.",
+    "get_it_on_google_play": "Get it on Google Play",
+    "get_it_on_app_store": "Get it on App Store",
+    "unable_on_web": "Unable to read barcode on web. This may be a known issue. Try adjusting the barcode position or use a different device.",
+    "no_valid_barcode_detected": "No valid barcode detected. Please try again.",
+    "something_went_wrong": "Something went wrong!",
+    "no_camera_found": "No camera found or failed to open camera!",
+    "could_not_launch": "Could not launch"
   },
   "photo": {
     "capture_ingredients": "Make a photo of the ingredients.",

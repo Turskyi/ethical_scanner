@@ -33,6 +33,9 @@ class HomeView extends StatelessWidget {
         // to remove any default background, so that the custom background
         // above will be visible.
         backgroundColor: AppColor.cetaceanBlue.value.withAlpha(5),
+        // When `resizeToAvoidBottomInset` set to true (which is the default),
+        // the Scaffold's body will resize to make space for the keyboard,
+        // typically by shrinking its content area.
         resizeToAvoidBottomInset: true,
         extendBodyBehindAppBar: true,
         // Add an appBar with the language selector dropdown.

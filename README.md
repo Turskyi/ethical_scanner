@@ -6,6 +6,8 @@
 [![codecov](https://codecov.io/gh/Turskyi/ethical_scanner/graph/badge.svg?token=8PSVNC8TES)](https://codecov.io/gh/Turskyi/ethical_scanner)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/Turskyi/ethical_scanner)
 [![wakatime](https://wakatime.com/badge/user/f9df5074-b4ea-4c17-b001-fff428ab82aa/project/86650e58-a90e-4d79-b0c7-d46631f8c1a8.svg)](https://wakatime.com/badge/user/f9df5074-b4ea-4c17-b001-fff428ab82aa/project/86650e58-a90e-4d79-b0c7-d46631f8c1a8)
+[![Deploy to Firebase Hosting on PR](https://github.com/Turskyi/ethical_scanner/actions/workflows/firebase-hosting-pull-request.yml/badge.svg)](https://github.com/Turskyi/ethical_scanner/actions/workflows/firebase-hosting-pull-request.yml)
+[![Deploy to Firebase Hosting on merge](https://github.com/Turskyi/ethical_scanner/actions/workflows/firebase-hosting-merge.yml/badge.svg)](https://github.com/Turskyi/ethical_scanner/actions/workflows/firebase-hosting-merge.yml)
 <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/Turskyi/ethical_scanner">
 
 # Ethical Scanner

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:entities/entities.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:http/http.dart';
 import 'package:interface_adapters/src/data_sources/local/local_data_source.dart';
 import 'package:interface_adapters/src/data_sources/remote/remote_data_source.dart';
 import 'package:interface_adapters/src/error_message_extractor.dart';
@@ -25,18 +26,33 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
         final Object? source = error.source;
         if (source is String) {
           debugPrint(
-            'Error in $runtimeType: ${extractErrorMessage(source)}.'
+            'FormatException in $runtimeType caught at '
+            '"getProductInfoAsFuture": ${extractErrorMessage(source)}.'
+            '\nInput that caused error: "$source"'
             '\nStacktrace: $stackTrace',
           );
         }
       } else if (error is SocketException) {
         debugPrint('Error in $runtimeType: '
+            '\nerror: ${error.runtimeType}.'
             '\nerror.message: ${error.message}.'
             '\nerror.address: ${error.address}.'
             '\nerror.osError: ${error.osError}.'
             '\nerror.port: ${error.port}.');
+      } else if (error is ClientException) {
+        debugPrint(
+          'ClientException in $runtimeType during "getProductInfoAsFuture":'
+          '\n  Message: ${error.message}'
+          '\n  URI: ${error.uri}'
+          '\n  Stacktrace: $stackTrace',
+        );
       } else {
-        debugPrint('Error in $runtimeType: $error.');
+        debugPrint(
+          'Unhandled error of type "${error.runtimeType}" in $runtimeType '
+          'during "getProductInfoAsFuture":'
+          '\n  Error: $error'
+          '\n  Stacktrace: $stackTrace',
+        );
       }
 
       final Language inputLanguage = input.language;

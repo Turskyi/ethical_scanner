@@ -34,5 +34,7 @@
     <string>Ethical Scanner</string>
     <key>LSApplicationCategoryType</key>
     <string>public.app-category.lifestyle</string>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
 </dict>
 </plist>

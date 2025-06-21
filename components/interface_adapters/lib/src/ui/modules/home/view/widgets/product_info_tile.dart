@@ -9,7 +9,6 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
 import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
-import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProductInfoTile extends StatelessWidget {
@@ -37,15 +36,11 @@ class ProductInfoTile extends StatelessWidget {
         info.imageIngredientsUrl.isNotEmpty;
     final bool isCameraGenerallySupported =
         kIsWeb || Platform.isAndroid || Platform.isIOS;
-    final double screenWidth = MediaQuery.sizeOf(context).width;
-    const double webNarrowScreenWidthThreshold = kWideScreenThreshold;
 
-    // This is TRUE if it's web AND the screen is narrow.
-    final bool isWebAndNarrow =
-        kIsWeb && screenWidth < webNarrowScreenWidthThreshold;
-
+    // We do not want to show the camera button on web, because OpenFoodFacts
+    // do not support CORS.
     final bool canSnapIngredients =
-        isIngredientsMissing && isCameraGenerallySupported && !isWebAndNarrow;
+        isIngredientsMissing && isCameraGenerallySupported && !kIsWeb;
     if (isIngredientsMissing && !canSnapIngredients) {
       return const SizedBox.shrink();
     }

@@ -33,6 +33,11 @@ class _CameraScreenState extends State<PhotoView> {
   final double _zoomStep = 0.4;
   final RegExp _emailExp = RegExp(r'\b[\w.-]+@[\w.-]+\.\w{2,}\b');
 
+  final RegExp _urlExp = RegExp(
+    r'(?:(?:https?|ftp)://)?[\w/\-?=%.]+\.[\w/\-?=%.]+',
+    caseSensitive: false,
+  );
+
   // Initial zoom level.
   double _currentZoomLevel = 1.0;
 
@@ -190,6 +195,7 @@ class _CameraScreenState extends State<PhotoView> {
           title: Text(
             translate('photo.capture_ingredients'),
             textAlign: TextAlign.center,
+            maxLines: 2,
             style: TextStyle(
               color: Colors.white,
               fontSize: Theme.of(context).textTheme.titleLarge?.fontSize,
@@ -226,7 +232,8 @@ class _CameraScreenState extends State<PhotoView> {
 
             // to prevent scaling down, invert the value
             if (scale < 1) scale = 1 / scale;
-
+            final double? bodyLargeFontSize =
+                Theme.of(context).textTheme.bodyLarge?.fontSize;
             final Stack cameraStack = Stack(
               alignment: Alignment.topCenter,
               children: <Widget>[
@@ -324,16 +331,15 @@ class _CameraScreenState extends State<PhotoView> {
                           ),
                         );
                       },
-                      child: RichText(
+                      child: SelectableText.rich(
+                        _getTextSpan(
+                          viewModel.errorMessage,
+                          bodyLargeFontSize,
+                        ),
                         textAlign: TextAlign.center,
                         strutStyle: StrutStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize:
-                              Theme.of(context).textTheme.bodyLarge?.fontSize,
-                        ),
-                        text: _getTextSpan(
-                          viewModel.errorMessage,
-                          Theme.of(context).textTheme.bodyLarge?.fontSize,
+                          fontSize: bodyLargeFontSize,
                         ),
                       ),
                     ),
@@ -455,8 +461,35 @@ class _CameraScreenState extends State<PhotoView> {
   }
 
   TextSpan _getTextSpan(String text, double? fontSize) {
-    final Iterable<Match> matches = _emailExp.allMatches(text);
-    if (matches.isEmpty) {
+    if (text.isEmpty) {
+      return const TextSpan();
+    }
+
+    final List<Match> emailMatches = _emailExp.allMatches(text).toList();
+    final List<Match> urlMatches = _urlExp.allMatches(text).toList();
+
+    // Combine and sort all matches by their start index
+    final List<Match> allMatches = <Match>[...emailMatches, ...urlMatches];
+    allMatches.sort((Match a, Match b) => a.start.compareTo(b.start));
+
+    // Filter out overlapping matches, preferring longer ones or a specific
+    // type if needed.
+    // For simplicity here, we'll filter out matches fully contained within
+    // another, preferring the container.
+    final List<Match> filteredMatches = <Match>[];
+    if (allMatches.isNotEmpty) {
+      filteredMatches.add(allMatches.first);
+      for (int i = 1; i < allMatches.length; i++) {
+        final Match current = allMatches[i];
+        final Match previous = filteredMatches.last;
+        // If current match starts after previous one ends, add it.
+        if (current.start >= previous.end) {
+          filteredMatches.add(current);
+        }
+      }
+    }
+
+    if (filteredMatches.isEmpty) {
       return TextSpan(
         text: text,
         style: TextStyle(
@@ -468,13 +501,14 @@ class _CameraScreenState extends State<PhotoView> {
     }
 
     final List<TextSpan> spans = <TextSpan>[];
-    int start = 0;
+    int currentPosition = 0;
 
-    for (final Match match in matches) {
-      if (match.start != start) {
+    for (final Match match in filteredMatches) {
+      // Add text before the match.
+      if (match.start > currentPosition) {
         spans.add(
           TextSpan(
-            text: text.substring(start, match.start),
+            text: text.substring(currentPosition, match.start),
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -484,42 +518,85 @@ class _CameraScreenState extends State<PhotoView> {
         );
       }
 
-      final String? email = match.group(0);
-      spans.add(
-        TextSpan(
-          text: email,
-          style: TextStyle(
-            color: Colors.lightBlueAccent,
-            fontWeight: FontWeight.bold,
-            fontSize: fontSize,
-            decoration: TextDecoration.underline,
-          ),
-          recognizer: TapGestureRecognizer()
-            ..onTap = () async {
-              final Uri emailLaunchUri = Uri(
-                scheme: kMailToScheme,
-                path: email,
-              );
+      final String matchedText = match.group(0)!;
+      final bool isEmail = _emailExp.hasMatch(matchedText) &&
+          emailMatches.any(
+            (Match m) => m.start == match.start && m.end == match.end,
+          );
+      // Note: A simple URL regex might also match an email. Prioritize email
+      // if it's a full email match.
+      // If an email is also a URL (e.g. user@example.com), this logic treats
+      // it as an email.
 
-              if (await canLaunchUrl(emailLaunchUri)) {
-                await launchUrl(emailLaunchUri);
-              } else {
-                throw PlatformException(
-                  code: 'UNABLE_TO_LAUNCH_URL',
-                  message: 'Could not launch $emailLaunchUri',
+      if (isEmail) {
+        spans.add(
+          TextSpan(
+            text: matchedText,
+            style: TextStyle(
+              color: Colors.lightBlueAccent, // Email link color
+              fontWeight: FontWeight.bold,
+              fontSize: fontSize,
+              decoration: TextDecoration.underline,
+            ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () async {
+                final Uri emailLaunchUri = Uri(
+                  scheme: kMailToScheme, // Make sure kMailToScheme is defined
+                  path: matchedText,
                 );
-              }
-            },
-        ),
-      );
-
-      start = match.end;
+                if (await canLaunchUrl(emailLaunchUri)) {
+                  await launchUrl(emailLaunchUri);
+                } else {
+                  debugPrint('Could not launch $emailLaunchUri');
+                  // Consider showing a Snackbar to the user
+                  throw PlatformException(
+                    // Keep throwing for internal handling if needed.
+                    code: 'UNABLE_TO_LAUNCH_URL',
+                    message: 'Could not launch $emailLaunchUri',
+                  );
+                }
+              },
+          ),
+        );
+      } else {
+        // It's a URL (that wasn't primarily identified as an email).
+        spans.add(
+          TextSpan(
+            text: matchedText,
+            style: TextStyle(
+              color: Colors.greenAccent,
+              // URL link color (differentiate from email)
+              fontWeight: FontWeight.bold,
+              fontSize: fontSize,
+              decoration: TextDecoration.underline,
+            ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () async {
+                String urlToLaunch = matchedText;
+                if (!urlToLaunch.startsWith('http://') &&
+                    !urlToLaunch.startsWith('https://')) {
+                  // Default to https.
+                  urlToLaunch = 'https://$urlToLaunch';
+                }
+                final Uri urlLaunchUri = Uri.parse(urlToLaunch);
+                if (await canLaunchUrl(urlLaunchUri)) {
+                  await launchUrl(urlLaunchUri);
+                } else {
+                  debugPrint('Could not launch $urlLaunchUri');
+                  _showUnableToLaunchUrlSnackbar(urlLaunchUri.toString());
+                }
+              },
+          ),
+        );
+      }
+      currentPosition = match.end;
     }
 
-    if (start != text.length) {
+    // Add any remaining text after the last match.
+    if (currentPosition < text.length) {
       spans.add(
         TextSpan(
-          text: text.substring(start),
+          text: text.substring(currentPosition),
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -546,5 +623,15 @@ class _CameraScreenState extends State<PhotoView> {
       });
       _controller?.setFocusMode(FocusMode.auto);
     }
+  }
+
+  /// Helper function to show [SnackBar].
+  void _showUnableToLaunchUrlSnackbar(String url) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${translate('could_not_launch')} $url'),
+      ),
+    );
   }
 }

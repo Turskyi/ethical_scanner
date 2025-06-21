@@ -59,6 +59,37 @@ class PhotoPresenter extends Bloc<PhotoEvent, PhotoViewModel> {
 
       await _addIngredientsUseCase(event.productPhoto);
       emit(const IngredientsAddedSuccessState());
+    } on BackupUserForbiddenException catch (error, stacktrace) {
+      emit(
+        AddIngredientsErrorState(
+          barcode: event.productPhoto.info.barcode,
+          errorMessage: error.message,
+        ),
+      );
+      debugPrint(
+        'Caught BackupUserForbiddenException in _onAddIngredientsPhoto: $error',
+      );
+      debugPrint('Stacktrace for BackupUserForbiddenException:\n$stacktrace');
+    } on ApiConnectionRefusedException catch (error, stacktrace) {
+      emit(
+        AddIngredientsErrorState(
+          barcode: event.productPhoto.info.barcode,
+          errorMessage: error.message,
+        ),
+      );
+      debugPrint(
+        'Caught ApiConnectionRefusedException in _onAddIngredientsPhoto: '
+        '$error',
+      );
+      debugPrint('Stacktrace for ApiConnectionRefusedException:\n$stacktrace');
+    } on BadRequestError catch (error, stacktrace) {
+      emit(
+        AddIngredientsErrorState(
+          barcode: event.productPhoto.info.barcode,
+          errorMessage: extractErrorMessage(error.message),
+        ),
+      );
+      debugPrint('Caught BadRequestError: $error\n$stacktrace');
     } catch (error, stacktrace) {
       emit(
         AddIngredientsErrorState(
@@ -68,7 +99,7 @@ class PhotoPresenter extends Bloc<PhotoEvent, PhotoViewModel> {
               : error.toString(),
         ),
       );
-      debugPrint('Stacktrace: $stacktrace');
+      debugPrint('Caught general error: $error\n$stacktrace');
     }
   }
 }

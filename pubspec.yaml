@@ -23,7 +23,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions, while build-number is used as the build
 # suffix.
-version: 0.1.5+15
+version: 0.1.8+18
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
@@ -73,12 +73,13 @@ dependencies:
   # Localization / internationalization (i18n) library.
   flutter_translate: ^4.1.0
 
+  http: ^1.4.0
   interface_adapters:
     path: ./components/interface_adapters
 
   json_annotation: ^4.9.0
   logger: ^2.5.0
-  openfoodfacts: ^3.22.0
+  openfoodfacts: ^3.23.0
 
   package_info_plus: ^8.3.0
   path: ^1.9.1
@@ -92,7 +93,7 @@ dependencies:
 
 dev_dependencies:
   # A build system for Dart code generation and modular compilation.
-  build_runner: ^2.4.15
+  build_runner: ^2.5.3
 
   # Generator for the Envied package. See https://pub.dev/packages/envied.
   envied_generator: ^1.1.1

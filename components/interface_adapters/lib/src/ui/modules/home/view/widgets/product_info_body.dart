@@ -28,9 +28,18 @@ class ProductInfoBody extends StatelessWidget {
       child: BlocBuilder<HomePresenter, HomeViewModel>(
         builder: (BuildContext _, HomeViewModel viewModel) {
           if (viewModel is ProductInfoState) {
+            final EdgeInsets edgeInsets = MediaQuery.viewInsetsOf(context);
             return ListView.builder(
               padding: EdgeInsets.only(
-                top: dimens.productInfoListTopPadding,
+                top: dimens.productInfoListTopPadding +
+                    MediaQuery.paddingOf(context).top +
+                    edgeInsets.top +
+                    // Without it the code tile will be pushed up outside of the
+                    // window screen when the keyboard is opened, without
+                    // ability to scroll down. What it does is adds the padding
+                    // on top of the size of the keyboard, so this way code
+                    // tile remains on the same place.
+                    edgeInsets.bottom,
                 bottom: dimens.productInfoListBottomPadding,
               ),
               itemCount:
@@ -48,7 +57,7 @@ class ProductInfoBody extends StatelessWidget {
                       viewModel.productInfoMap.keys.elementAt(
                     index,
                   );
-                  String value = viewModel.productInfoMap[type] ?? '';
+                  final String value = viewModel.productInfoMap[type] ?? '';
                   return DelayedAnimation(
                     delay: index * animationDelay,
                     child: type.isCode

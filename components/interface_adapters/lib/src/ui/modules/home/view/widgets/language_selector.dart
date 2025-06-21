@@ -12,7 +12,7 @@ class LanguageSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<DropdownMenuItem<Language>> languageOptions = Language.values
+    final List<DropdownMenuItem<Language>> languageOptions = Language.values
         .map(
           (Language language) => DropdownMenuItem<Language>(
             alignment: Alignment.center,

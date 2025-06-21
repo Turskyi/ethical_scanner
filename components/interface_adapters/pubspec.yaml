@@ -38,10 +38,10 @@ dependencies:
   flutter_translate: any
 
   html: ^0.15.6
-  # Set to specific version when this error is gone: "Because every version of flutter_test from sdk depends on meta 1.12.0 and laozi_ai depends on meta ^1.15.0, flutter_test from sdk is forbidden.
-  # So, because laozi_ai depends on flutter_test from sdk, version solving failed.".
+
+  http: ^1.4.0
   meta: any
-  mobile_scanner: ^7.0.0
+  mobile_scanner: ^7.0.1
 
   # For launching a URL. Supports web, phone, SMS, and email schemes.
   package_info_plus: ^8.3.0
@@ -53,7 +53,7 @@ dependencies:
 
 dev_dependencies:
   # A build system for Dart code generation and modular compilation.
-  build_runner: ^2.4.15
+  build_runner: ^2.5.2
 
   envied_generator: ^1.1.1
   flutter_lints: ^6.0.0

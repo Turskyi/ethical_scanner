@@ -10,8 +10,11 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/scanner_error_widget.dart';
 import 'package:interface_adapters/src/ui/modules/scan/scan_event.dart';
 import 'package:interface_adapters/src/ui/modules/scan/scan_presenter.dart';
-import 'package:interface_adapters/src/ui/modules/scan/view/scan_placeholder_widget.dart';
 import 'package:interface_adapters/src/ui/modules/scan/view/scanner_overlay.dart';
+import 'package:interface_adapters/src/ui/modules/scan/view/widgets/scan_placeholder_widget.dart';
+import 'package:interface_adapters/src/ui/modules/scan/view/widgets/screen_title.dart';
+import 'package:interface_adapters/src/ui/modules/scan/view/widgets/sound_toggle_button.dart';
+import 'package:interface_adapters/src/ui/modules/scan/view/widgets/store_badge.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
@@ -70,15 +73,62 @@ class _HomeViewState extends State<ScanView> {
             children: <Widget>[
               MobileScanner(
                 controller: _scannerController,
-                errorBuilder: (_, MobileScannerException error) {
-                  _restartScannerOnError();
+                onDetectError: _restartScannerOnError,
+                errorBuilder: (BuildContext _, MobileScannerException error) {
                   return ScannerErrorWidget(error: error);
                 },
                 fit: currentFit,
                 onDetect: _onBarcodeDetect,
-                placeholderBuilder: (_) => const ScanPlaceholderWidget(),
+                placeholderBuilder: (BuildContext _) {
+                  return const ScanPlaceholderWidget();
+                },
               ),
               CustomPaint(painter: ScannerOverlay(_scanWindow)),
+              if (kIsWeb)
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(16.0, 48.0, 16, 12),
+                    decoration: BoxDecoration(
+                      gradient: resources.gradients.abstractLoveGradient,
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          translate('scan.limited_on_web'),
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Wrap(
+                          alignment: WrapAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 12,
+                          children: <Widget>[
+                            StoreBadge(
+                              url: kGooglePlayUrl,
+                              assetPath: '${kImagesPath}play_store_badge.png',
+                              height: 60,
+                              width: 150,
+                            ),
+                            StoreBadge(
+                              url: kAppStoreUrl,
+                              assetPath: '$kImagesPath'
+                                  'Download_on_the_App_Store_Badge.png',
+                              height: 60,
+                              width: 120,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               Padding(
                 padding: paddingTop,
                 child: Column(
@@ -88,43 +138,11 @@ class _HomeViewState extends State<ScanView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        kIsWeb
-                            ? LeadingWidget(
-                                logoPath:
-                                    '${kImagesPath}ethical_scanner_logo.jpeg',
-                                onTap: _onBackPressed,
-                              )
-                            : IconButton(
-                                icon: const Icon(
-                                  Icons.arrow_back_ios,
-                                  color: Colors.white,
-                                ),
-                                onPressed: _onBackPressed,
-                              ),
-                        IconButton(
-                          icon: BlocConsumer<ScanPresenter, ScanViewModel>(
-                            listener: _viewModelListener,
-                            builder: (
-                              _,
-                              ScanViewModel viewModel,
-                            ) {
-                              if (kIsWeb || Platform.isMacOS) {
-                                return const SizedBox.shrink();
-                              } else {
-                                return Icon(
-                                  viewModel is ScanningState &&
-                                          viewModel.isSoundOn
-                                      ? Icons.music_note_outlined
-                                      : Icons.music_off_outlined,
-                                  color: Colors.white,
-                                );
-                              }
-                            },
-                          ),
-                          onPressed: () => context
-                              .read<ScanPresenter>()
-                              .add(const SoundToggleEvent()),
+                        LeadingWidget(
+                          logoPath: '${kImagesPath}ethical_scanner_logo.jpeg',
+                          onTap: _onBackPressed,
                         ),
+                        SoundToggleButton(listener: _viewModelListener),
                       ],
                     ),
                     Container(
@@ -135,39 +153,37 @@ class _HomeViewState extends State<ScanView> {
                         children: <Widget>[
                           ValueListenableBuilder<MobileScannerState>(
                             valueListenable: _scannerController,
-                            builder: (_, MobileScannerState scannerState, __) {
+                            builder: (
+                              BuildContext _,
+                              MobileScannerState scannerState,
+                              Widget? __,
+                            ) {
                               if (!scannerState.isInitialized ||
                                   !scannerState.isRunning) {
                                 return const SizedBox.shrink();
                               }
-
+                              final double torchIconSize = 32.0;
                               switch (scannerState.torchState) {
                                 case TorchState.auto:
                                   return IconButton(
                                     color: Colors.white,
-                                    iconSize: 32.0,
+                                    iconSize: torchIconSize,
                                     icon: const Icon(Icons.flash_auto),
-                                    onPressed: () async {
-                                      await _scannerController.toggleTorch();
-                                    },
+                                    onPressed: _toggleTorch,
                                   );
                                 case TorchState.off:
                                   return IconButton(
                                     color: Colors.white,
-                                    iconSize: 32.0,
+                                    iconSize: torchIconSize,
                                     icon: const Icon(Icons.flash_off),
-                                    onPressed: () async {
-                                      await _scannerController.toggleTorch();
-                                    },
+                                    onPressed: _toggleTorch,
                                   );
                                 case TorchState.on:
                                   return IconButton(
                                     color: Colors.white,
-                                    iconSize: 32.0,
+                                    iconSize: torchIconSize,
                                     icon: const Icon(Icons.flash_on),
-                                    onPressed: () async {
-                                      await _scannerController.toggleTorch();
-                                    },
+                                    onPressed: _toggleTorch,
                                   );
                                 case TorchState.unavailable:
                                   return const Icon(
@@ -191,29 +207,7 @@ class _HomeViewState extends State<ScanView> {
                   ],
                 ),
               ),
-              Container(
-                alignment: Alignment.topCenter,
-                padding: paddingTop,
-                child: Text(
-                  translate('title'),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: Theme.of(context).textTheme.titleLarge?.fontSize,
-                    fontWeight: FontWeight.bold,
-                    shadows: <Shadow>[
-                      Shadow(
-                        blurRadius: Resources.of(context).dimens.bodyBlurRadius,
-                        color: Colors.white30,
-                        offset: Offset(
-                          dimens.bodyTitleOffset,
-                          dimens.bodyTitleOffset,
-                        ),
-                      ),
-                    ],
-                  ),
-                  textScaler: const TextScaler.linear(1.4),
-                ),
-              ),
+              const ScreenTitle(),
             ],
           ),
         ),
@@ -229,7 +223,11 @@ class _HomeViewState extends State<ScanView> {
     _scannerController.dispose();
   }
 
-  void _restartScannerOnError() {
+  Future<void> _toggleTorch() async {
+    await _scannerController.toggleTorch();
+  }
+
+  void _restartScannerOnError(Object _, StackTrace __) {
     _scannerController.stop().whenComplete(() {
       _scannerController
           .start()
@@ -238,9 +236,7 @@ class _HomeViewState extends State<ScanView> {
           'Warning: an error occurred in $runtimeType: $error\n'
           'Stacktrace: $stacktrace',
         );
-        throw const NotFoundException(
-          'No camera found or failed to open camera!',
-        );
+        throw NotFoundException(translate('scan.no_camera_found'));
       });
     });
   }
@@ -268,9 +264,7 @@ class _HomeViewState extends State<ScanView> {
       _closeCamera().whenComplete(() {
         if (context.mounted) {
           context.read<ScanPresenter>().add(
-                PopBarcodeEvent(
-                  viewModel.barcodeValue,
-                ),
+                PopBarcodeEvent(viewModel.barcodeValue),
               );
         }
       });
@@ -285,18 +279,15 @@ class _HomeViewState extends State<ScanView> {
     if (barcodeValue.isEmpty) {
       if (kIsWeb) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Unable to read barcode on web. This may be a known issue. Try '
-              'adjusting the barcode position or use a different device.',
-            ),
+          SnackBar(
+            content: Text(translate('scan.unable_on_web')),
           ),
         );
       } else {
         // Mobile — shouldn't happen often, but still fallback.
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('No valid barcode detected. Please try again.'),
+          SnackBar(
+            content: Text(translate('scan.no_valid_barcode_detected')),
           ),
         );
       }
@@ -313,7 +304,7 @@ class _HomeViewState extends State<ScanView> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Something went wrong! $error'),
+            content: Text('${translate('scan.something_went_wrong')} $error'),
             backgroundColor: Colors.red,
           ),
         );
