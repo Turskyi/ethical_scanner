@@ -10,3 +10,5 @@ const String kGooglePlayUrl =
     'https://play.google.com/store/apps/details?id=com.turskyi.ethical_scanner';
 const String kAppStoreUrl =
     'https://apps.apple.com/ca/app/ethical-scanner/id6743681663';
+const String kSubjectParameter = 'subject';
+const String kBodyParameter = 'body';

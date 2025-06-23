@@ -6,6 +6,7 @@ import 'package:entities/entities.dart';
 import 'package:feedback/feedback.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/error_message_extractor.dart';
 import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -121,13 +122,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
   ) async {
     final Uri url = Uri.parse(event.uri);
     if (!await launchUrl(url)) {
-      emit(
-        HomeErrorState(
-          event.language.isEnglish
-              ? 'Could not launch $url'
-              : 'Не вдалося запустити $url',
-        ),
-      );
+      emit(HomeErrorState('${translate('could_not_launch')} $url'));
     }
   }
 
@@ -281,10 +276,8 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
         if (productInfo.isCompanyTerrorismSponsor) {
           modifiableProductInfo[ProductInfoType.companyTerrorismSponsor] =
               productInfo.isCompanyTerrorismSponsor
-                  ? (state.language.isEnglish
-                      ? 'Probably yes. '
-                      : 'Напевно так. ')
-                  : 'No';
+                  ? translate('probably_yes')
+                  : translate('no');
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
@@ -296,7 +289,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
         if (productInfo.isFromRussia) {
           modifiableProductInfo[ProductInfoType.countryTerrorismSponsor] =
-              state.language.isEnglish ? 'Yes' : 'Так';
+              translate('yes');
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
@@ -308,7 +301,9 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
         if (productInfo.vegetarian != Vegetarian.unknown) {
           modifiableProductInfo[ProductInfoType.isVegetarian] =
-              productInfo.vegetarian == Vegetarian.positive ? 'Yes' : 'No';
+              productInfo.vegetarian == Vegetarian.positive
+                  ? translate('yes')
+                  : translate('no');
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
@@ -320,7 +315,9 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
         if (productInfo.vegan != Vegan.unknown) {
           modifiableProductInfo[ProductInfoType.isVegan] =
-              productInfo.vegan == Vegan.positive ? 'Yes' : 'No';
+              productInfo.vegan == Vegan.positive
+                  ? translate('yes')
+                  : translate('no');
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
@@ -456,28 +453,27 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
       final bool isFeedbackRating = rating is FeedbackRating;
       // Construct the feedback text with details from `extra'.
       final StringBuffer feedbackBody = StringBuffer()
-        ..writeln('${isFeedbackType ? 'Feedback Type' : ''}:'
+        ..writeln('${isFeedbackType ? translate('feedback_type') : ''}:'
             ' ${isFeedbackType ? type.value : ''}')
         ..writeln()
         ..writeln(feedback.text)
-        ..writeln()
-        ..writeln('${isFeedbackRating ? 'Rating' : ''}'
+        ..writeln()..writeln('${isFeedbackRating ? translate('rating') : ''}'
             '${isFeedbackRating ? ':' : ''}'
             ' ${isFeedbackRating ? rating.value : ''}')
-        ..writeln()
-        ..writeln('App id: ${packageInfo.packageName}')
-        ..writeln('App version: ${packageInfo.version}')
-        ..writeln('Build number: ${packageInfo.buildNumber}')
-        ..writeln()
-        ..writeln('Platform: $platform')
+        ..writeln()..writeln(
+            '${translate('app_id')}: ${packageInfo.packageName}')..writeln(
+            '${translate('app_version')}: ${packageInfo.version}')..writeln(
+            '${translate('build_number')}: ${packageInfo.buildNumber}')
+        ..writeln()..writeln('${translate('platform')}: $platform')
         ..writeln();
       if (kIsWeb || Platform.isMacOS) {
         final Uri emailLaunchUri = Uri(
-          scheme: 'mailto',
+          scheme: kMailToScheme,
           path: kSupportEmail,
           queryParameters: <String, Object?>{
-            'subject': 'App Feedback: ${packageInfo.appName}',
-            'body': feedbackBody.toString(),
+            kSubjectParameter:
+                '${translate('app_feedback')}: ${packageInfo.appName}',
+            kBodyParameter: feedbackBody.toString(),
           },
         );
         try {
@@ -499,7 +495,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           feedback.screenshot,
         );
         final Email email = Email(
-          subject: 'App Feedback: ${packageInfo.appName}',
+          subject: '${translate('app_feedback')}: ${packageInfo.appName}',
           body: feedbackBody.toString(),
           recipients: <String>[kSupportEmail],
           attachmentPaths: <String>[screenshotFilePath],
@@ -514,16 +510,12 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
       }
     } catch (e, stackTrace) {
       debugPrint('SettingsErrorEvent: $e\nStackTrace: $stackTrace');
-      add(
-        const HomeErrorEvent(
-          'An unexpected error occurred. Please try again.',
-        ),
-      );
+      add(HomeErrorEvent(translate('unexpected_error')));
     }
   }
 
   bool _isWebsite(String input) {
-    // Regular expression for URL validation
+    // Regular expression for URL validation.
     final RegExp regex = RegExp(
       r'^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]'
       r'{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$',

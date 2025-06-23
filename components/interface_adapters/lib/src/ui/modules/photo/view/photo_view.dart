@@ -541,7 +541,7 @@ class _CameraScreenState extends State<PhotoView> {
             recognizer: TapGestureRecognizer()
               ..onTap = () async {
                 final Uri emailLaunchUri = Uri(
-                  scheme: kMailToScheme, // Make sure kMailToScheme is defined
+                  scheme: kMailToScheme,
                   path: matchedText,
                 );
                 if (await canLaunchUrl(emailLaunchUri)) {

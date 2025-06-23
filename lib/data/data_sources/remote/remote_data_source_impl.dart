@@ -41,6 +41,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       if (resultProduct != null && result.hasSuccessfulStatus) {
         final ProductInfo product = resultProduct.toProductInfo();
         if (product.brand.isNotEmpty || product.name.isNotEmpty) {
+          //TODO: move to use case.
           return _restClient
               .getTerrorismSponsors()
               .then((List<TerrorismSponsor> terrorismSponsors) {

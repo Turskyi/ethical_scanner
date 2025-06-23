@@ -71,7 +71,7 @@ class ProductInfoTile extends StatelessWidget {
       subtitle: type.isCompanyWarSponsor
           ? RichText(
               text: TextSpan(
-                text: value + translate('product_info.click'),
+                text: '$value ${translate('product_info.click')}',
                 style: TextStyle(
                   fontStyle: FontStyle.italic,
                   fontSize: textTheme.bodyLarge?.fontSize,
