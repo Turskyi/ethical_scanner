@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:dart_openai/dart_openai.dart';
 import 'package:entities/entities.dart';
+import 'package:ethical_scanner/data/data_mappers/language_data_mapper.dart';
 import 'package:ethical_scanner/data/data_mappers/product_data_mapper.dart';
 import 'package:ethical_scanner/data/data_mappers/product_result_data_mapper.dart';
 import 'package:ethical_scanner/res/values/constants.dart' as constants;
@@ -20,26 +21,21 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   @override
   Future<ProductInfo> getProductInfoAsFuture(LocalizedCode input) {
     final String code = input.code;
-
-    final OpenFoodFactsLanguage language =
-        OpenFoodFactsLanguage.values.firstWhereOrNull(
-              (OpenFoodFactsLanguage lang) {
-                return lang.code == input.language.isoLanguageCode;
-              },
-            ) ??
-            OpenFoodFactsLanguage.ENGLISH;
+    final Language language = input.language;
+    final OpenFoodFactsLanguage openFoodFactsLanguage =
+        language.toOpenFoodFactsLanguage;
 
     return OpenFoodAPIClient.getProductV3(
       ProductQueryConfiguration(
         code,
-        language: language,
+        language: openFoodFactsLanguage,
         fields: <ProductField>[ProductField.ALL],
         version: ProductQueryVersion.v3,
       ),
     ).then((ProductResultV3 result) {
       final Product? resultProduct = result.product;
       if (resultProduct != null && result.hasSuccessfulStatus) {
-        final ProductInfo product = resultProduct.toProductInfo();
+        final ProductInfo product = resultProduct.toProductInfo(language);
         if (product.brand.isNotEmpty || product.name.isNotEmpty) {
           //TODO: move to use case.
           return _restClient

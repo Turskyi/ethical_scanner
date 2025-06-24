@@ -59,12 +59,14 @@ extension TerrorismSponsorList on List<TerrorismSponsor> {
 
   bool _isSponsoredByTerrorismSponsor(
     TerrorismSponsor terrorismSponsor,
-    ProductInfo product,) {
-    return terrorismSponsor.status != 'Withdrawal' &&
+    ProductInfo product,
+  ) {
+    final String status = terrorismSponsor.status;
+    return (status != 'Withdrawal' && status != 'Suspension') &&
         (_isSponsorNameNotEmptyAndMatchesProductBrandOrName(
-          terrorismSponsor,
-          product,
-        ) ||
+              terrorismSponsor,
+              product,
+            ) ||
             _isSponsorBrandsNotEmptyAndContainsProductBrand(
               terrorismSponsor,
               product,
@@ -73,9 +75,10 @@ extension TerrorismSponsorList on List<TerrorismSponsor> {
 
   bool _isSponsorNameNotEmptyAndMatchesProductBrandOrName(
     TerrorismSponsor terrorismSponsor,
-    ProductInfo product,) {
+    ProductInfo product,
+  ) {
     final String normalizedSponsorName =
-    terrorismSponsor.name.toLowerCase().trim();
+        terrorismSponsor.name.toLowerCase().trim();
     final String normalizedProductBrand = product.brand.toLowerCase().trim();
     final String normalizedProductName = product.name.toLowerCase().trim();
 
@@ -103,7 +106,8 @@ extension TerrorismSponsorList on List<TerrorismSponsor> {
 
   bool _isSponsorBrandsNotEmptyAndContainsProductBrand(
     TerrorismSponsor terrorismSponsor,
-    ProductInfo product,) {
+    ProductInfo product,
+  ) {
     return terrorismSponsor.brands.isNotEmpty &&
         product.brand.isNotEmpty &&
         _doesSponsorBrandsContainProductBrand(terrorismSponsor, product);

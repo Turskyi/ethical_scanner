@@ -78,7 +78,7 @@ dependencies:
     path: ./components/interface_adapters
 
   json_annotation: ^4.9.0
-  logger: ^2.5.0
+
   openfoodfacts: ^3.23.0
 
   package_info_plus: ^8.3.0
@@ -93,7 +93,7 @@ dependencies:
 
 dev_dependencies:
   # A build system for Dart code generation and modular compilation.
-  build_runner: ^2.5.3
+  build_runner: ^2.5.4
 
   # Generator for the Envied package. See https://pub.dev/packages/envied.
   envied_generator: ^1.1.1

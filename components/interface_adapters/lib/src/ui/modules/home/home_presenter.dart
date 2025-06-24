@@ -456,15 +456,15 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
         ..writeln('${isFeedbackType ? translate('feedback_type') : ''}:'
             ' ${isFeedbackType ? type.value : ''}')
         ..writeln()
-        ..writeln(feedback.text)
-        ..writeln()..writeln('${isFeedbackRating ? translate('rating') : ''}'
+        ..writeln(feedback.text)..writeln()..writeln(
+            '${isFeedbackRating ? translate('rating') : ''}'
             '${isFeedbackRating ? ':' : ''}'
-            ' ${isFeedbackRating ? rating.value : ''}')
-        ..writeln()..writeln(
+            ' ${isFeedbackRating ? rating.value : ''}')..writeln()..writeln(
             '${translate('app_id')}: ${packageInfo.packageName}')..writeln(
             '${translate('app_version')}: ${packageInfo.version}')..writeln(
-            '${translate('build_number')}: ${packageInfo.buildNumber}')
-        ..writeln()..writeln('${translate('platform')}: $platform')
+            '${translate('build_number')}: ${packageInfo
+                .buildNumber}')..writeln()..writeln(
+            '${translate('platform')}: $platform')
         ..writeln();
       if (kIsWeb || Platform.isMacOS) {
         final Uri emailLaunchUri = Uri(

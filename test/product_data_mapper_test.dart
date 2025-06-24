@@ -24,12 +24,12 @@ void main() {
           ),
         ],
         ingredientsAnalysisTags: IngredientsAnalysisTags(
-          <dynamic>[VeganStatus.VEGAN],
+          <Object?>[VeganStatus.VEGAN],
         ),
       );
 
       // Act
-      final ProductInfo productInfo = product.toProductInfo();
+      final ProductInfo productInfo = product.toProductInfo(Language.en);
 
       // Assert
       expect(productInfo.barcode, '123456789');
