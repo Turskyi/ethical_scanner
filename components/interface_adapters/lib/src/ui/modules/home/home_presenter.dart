@@ -455,8 +455,10 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
       final StringBuffer feedbackBody = StringBuffer()
         ..writeln('${isFeedbackType ? translate('feedback_type') : ''}:'
             ' ${isFeedbackType ? type.value : ''}')
-        ..writeln()..writeln(feedback.text)..writeln()..writeln(
-            '${isFeedbackRating ? translate('rating') : ''}'
+        ..writeln()
+        ..writeln(feedback.text)
+        ..writeln()
+        ..writeln('${isFeedbackRating ? translate('rating') : ''}'
             '${isFeedbackRating ? ':' : ''}'
             ' ${isFeedbackRating ? rating.value : ''}')
         ..writeln()
