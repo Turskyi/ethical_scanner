@@ -243,23 +243,6 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
               loadingState.copyWith(productInfoMap: modifiableProductInfo),
             );
           }
-        } else if (productInfo.categoryTags.isNotEmpty) {
-          final StringBuffer stringBuffer = StringBuffer();
-          for (final String countryTag in productInfo.categoryTags) {
-            stringBuffer.write(countryTag);
-            if (countryTag != productInfo.categoryTags.last) {
-              stringBuffer.write(', ');
-            }
-          }
-          modifiableProductInfo[ProductInfoType.countryWhereSold] =
-              stringBuffer.toString();
-          if (state is LoadingProductInfoState) {
-            LoadingProductInfoState loadingState =
-                state as LoadingProductInfoState;
-            emit(
-              loadingState.copyWith(productInfoMap: modifiableProductInfo),
-            );
-          }
         }
 
         if (productInfo.brand.isNotEmpty) {

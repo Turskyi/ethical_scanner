@@ -76,7 +76,7 @@ extension ProductExtension on Product {
   }
 
   String get _countryName {
-    if (countries != null && countries!.isNotEmpty) {
+    if (countries != null && countries?.isNotEmpty == true) {
       if (countries!.contains(':')) {
         final String countryName = countries!.split(':')[1];
         return countryName[0].toUpperCase() + countryName.substring(1);
