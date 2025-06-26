@@ -127,12 +127,12 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
   }
 
   FutureOr<void> _onClearProductInfoEvent(
-    ClearProductInfoEvent _,
+    ClearProductInfoEvent event,
     Emitter<HomeViewModel> emit,
   ) {
     emit(
       ReadyToScanState(
-        language: state.language,
+        language: event.language,
         isSeasonalEffectEnabled: state.isSeasonalEffectEnabled,
       ),
     );

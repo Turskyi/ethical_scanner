@@ -16,7 +16,8 @@ class ShowProductInfoEvent extends HomeEvent {
 }
 
 class ClearProductInfoEvent extends HomeEvent {
-  const ClearProductInfoEvent();
+  const ClearProductInfoEvent(this.language);
+  final Language language;
 }
 
 class NavigateToScanViewEvent extends HomeEvent {

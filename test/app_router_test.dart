@@ -10,7 +10,7 @@ void main() {
       const RouteSettings settings = RouteSettings(name: route.homePath);
 
       // Act
-      final Route<String> pageRoute = generateRoute(settings);
+      final Route<Object> pageRoute = generateRoute(settings);
 
       // Assert
       expect(pageRoute is PageRouteBuilder<String>, true);
@@ -22,7 +22,7 @@ void main() {
       const RouteSettings settings = RouteSettings(name: route.scanPath);
 
       // Act
-      final Route<String> pageRoute = generateRoute(settings);
+      final Route<Object> pageRoute = generateRoute(settings);
 
       // Assert
       expect(pageRoute is PageRouteBuilder<String>, true);
@@ -34,7 +34,7 @@ void main() {
       const RouteSettings settings = RouteSettings(name: 'unknown_route');
 
       // Act
-      final Route<String> route = generateRoute(settings);
+      final Route<Object> route = generateRoute(settings);
 
       // Assert
       expect(route is PageRouteBuilder<String>, true);

@@ -11,8 +11,10 @@ abstract class HomeViewModel {
 
   @override
   String toString() {
-    return 'HomeViewModel(language: $language, '
-        'isPrecipitationFalls: $isSeasonalEffectEnabled)';
+    return 'HomeViewModel('
+        'language: $language, '
+        'isPrecipitationFalls: $isSeasonalEffectEnabled,'
+        ')';
   }
 }
 
@@ -29,9 +31,12 @@ abstract class ProductInfoState extends HomeViewModel {
 
   @override
   String toString() {
-    return 'ProductInfoState(productInfoMap: $productInfoMap, '
-        'productInfo: $productInfo, language: $language, '
-        'isPrecipitationFalls: $isSeasonalEffectEnabled)';
+    return 'ProductInfoState('
+        'productInfoMap: $productInfoMap, '
+        'productInfo: $productInfo, '
+        'language: $language, '
+        'isPrecipitationFalls: $isSeasonalEffectEnabled,'
+        ')';
   }
 }
 
@@ -40,8 +45,10 @@ class LoadingHomeState extends HomeViewModel {
 
   @override
   String toString() {
-    return 'LoadingHomeState(language: $language, '
-        'isPrecipitationFalls: $isSeasonalEffectEnabled)';
+    return 'LoadingHomeState('
+        'language: $language, '
+        'isPrecipitationFalls: $isSeasonalEffectEnabled,'
+        ')';
   }
 }
 
@@ -63,8 +70,10 @@ class ReadyToScanState extends HomeViewModel {
 
   @override
   String toString() {
-    return 'ReadyToScanState(language: $language, '
-        'isPrecipitationFalls: $isSeasonalEffectEnabled)';
+    return 'ReadyToScanState('
+        'language: $language, '
+        'isPrecipitationFalls: $isSeasonalEffectEnabled,'
+        ')';
   }
 }
 
@@ -73,8 +82,10 @@ class ScanState extends HomeViewModel {
 
   @override
   String toString() {
-    return 'ScanState(language: $language, '
-        'isPrecipitationFalls: $isSeasonalEffectEnabled)';
+    return 'ScanState('
+        'language: $language, '
+        'isPrecipitationFalls: $isSeasonalEffectEnabled,'
+        ')';
   }
 }
 
@@ -99,8 +110,11 @@ class LoadingProductInfoState extends ProductInfoState {
 
   @override
   String toString() {
-    return 'LoadingProductInfoState(productInfoMap: $productInfoMap, '
-        'language: $language, isPrecipitationFalls: $isSeasonalEffectEnabled)';
+    return 'LoadingProductInfoState('
+        'productInfoMap: $productInfoMap, '
+        'language: $language, '
+        'isPrecipitationFalls: $isSeasonalEffectEnabled,'
+        ')';
   }
 }
 
@@ -114,9 +128,12 @@ class LoadedProductInfoState extends ProductInfoState {
 
   @override
   String toString() {
-    return 'LoadedProductInfoState(productInfoMap: $productInfoMap, '
-        'productInfo: $productInfo, language: $language, '
-        'isSeasonalEffectEnabled: $isSeasonalEffectEnabled)';
+    return 'LoadedProductInfoState('
+        'productInfoMap: $productInfoMap, '
+        'productInfo: $productInfo, '
+        'language: $language, '
+        'isSeasonalEffectEnabled: $isSeasonalEffectEnabled,'
+        ')';
   }
 }
 
@@ -127,8 +144,11 @@ class HomeErrorState extends HomeViewModel {
 
   @override
   String toString() {
-    return 'HomeErrorState(errorMessage: $errorMessage, language: $language, '
-        'isPrecipitationFalls: $isSeasonalEffectEnabled)';
+    return 'HomeErrorState('
+        'errorMessage: $errorMessage, '
+        'language: $language, '
+        'isPrecipitationFalls: $isSeasonalEffectEnabled,'
+        ')';
   }
 }
 
@@ -141,8 +161,11 @@ class PhotoMakerState extends ProductInfoState {
 
   @override
   String toString() {
-    return 'PhotoMakerState(productInfo: $productInfo, language: $language, '
-        'isSeasonalEffectEnabled: $isSeasonalEffectEnabled)';
+    return 'PhotoMakerState('
+        'productInfo: $productInfo, '
+        'language: $language, '
+        'isSeasonalEffectEnabled: $isSeasonalEffectEnabled,'
+        ')';
   }
 }
 

@@ -8,8 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/language_selector.dart';
 import 'package:interface_adapters/src/ui/modules/photo/photo_event.dart';
 import 'package:interface_adapters/src/ui/modules/photo/photo_presenter.dart';
+import 'package:interface_adapters/src/ui/res/color/gradients.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
@@ -26,10 +28,10 @@ class PhotoView extends StatefulWidget {
   final List<CameraDescription> cameraDescriptions;
 
   @override
-  State<PhotoView> createState() => _CameraScreenState();
+  State<PhotoView> createState() => _PhotoViewState();
 }
 
-class _CameraScreenState extends State<PhotoView> {
+class _PhotoViewState extends State<PhotoView> {
   final double _zoomStep = 0.4;
   final RegExp _emailExp = RegExp(r'\b[\w.-]+@[\w.-]+\.\w{2,}\b');
 
@@ -83,11 +85,14 @@ class _CameraScreenState extends State<PhotoView> {
   @override
   Widget build(BuildContext context) {
     final Resources resources = Resources.of(context);
+    final Gradients gradients = resources.gradients;
     final Dimens dimens = resources.dimens;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final TextStyle? titleLarge = textTheme.titleLarge;
     if (_noCameraAvailable) {
       return DecoratedBox(
         decoration: BoxDecoration(
-          gradient: resources.gradients.unauthorizedConstructionGradient,
+          gradient: gradients.unauthorizedConstructionGradient,
         ),
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -106,7 +111,7 @@ class _CameraScreenState extends State<PhotoView> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
-                fontSize: Theme.of(context).textTheme.titleLarge?.fontSize,
+                fontSize: titleLarge?.fontSize,
                 fontWeight: FontWeight.bold,
                 shadows: <Shadow>[
                   Shadow(
@@ -120,10 +125,24 @@ class _CameraScreenState extends State<PhotoView> {
                 ],
               ),
             ),
-            titleTextStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+            titleTextStyle: titleLarge?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+            actions: <Widget>[
+              BlocBuilder<PhotoPresenter, PhotoViewModel>(
+                builder: (BuildContext context, PhotoViewModel viewModel) {
+                  return LanguageSelector(
+                    currentLanguage: viewModel.language,
+                    onLanguageSelected: (Language newLanguage) {
+                      context.read<PhotoPresenter>().add(
+                            ChangeLanguageEvent(newLanguage),
+                          );
+                    },
+                  );
+                },
+              ),
+            ],
           ),
           body: Center(
             child: Padding(
@@ -168,7 +187,7 @@ class _CameraScreenState extends State<PhotoView> {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        gradient: resources.gradients.violetTwilightGradient,
+        gradient: gradients.violetTwilightGradient,
       ),
       child: Scaffold(
         // We need to set transparent background explicitly, because
@@ -198,11 +217,11 @@ class _CameraScreenState extends State<PhotoView> {
             maxLines: 2,
             style: TextStyle(
               color: Colors.white,
-              fontSize: Theme.of(context).textTheme.titleLarge?.fontSize,
+              fontSize: titleLarge?.fontSize,
               fontWeight: FontWeight.bold,
               shadows: <Shadow>[
                 Shadow(
-                  blurRadius: Resources.of(context).dimens.bodyBlurRadius,
+                  blurRadius: dimens.bodyBlurRadius,
                   color: Colors.white30,
                   offset: Offset(
                     dimens.bodyTitleOffset,
@@ -213,6 +232,37 @@ class _CameraScreenState extends State<PhotoView> {
             ),
             textScaler: const TextScaler.linear(1.2),
           ),
+          actions: <Widget>[
+            BlocBuilder<PhotoPresenter, PhotoViewModel>(
+              builder: (BuildContext context, PhotoViewModel viewModel) {
+                return LanguageSelector(
+                  currentLanguage: viewModel.language,
+                  onLanguageSelected: (Language newLanguage) {
+                    // Dispatch event to the presenter to handle language
+                    // change logic and update its state (which might also
+                    // update this screen's language).
+                    context.read<PhotoPresenter>().add(
+                          ChangeLanguageEvent(newLanguage),
+                        );
+                    // Force a rebuild of the current screen's state
+                    // (`_PhotoViewState`).
+                    // This is necessary because the `AppBar`'s title `Text`
+                    // widget, which uses
+                    // `translate('photo.capture_ingredients')`, needs to be
+                    // reconstructed with the new locale provided by the
+                    // `flutter_translate` package after `changeLocale`
+                    // (implicitly called) has taken effect.
+                    // While the `PhotoPresenter`'s state will update, that
+                    // not directly trigger a rebuild of the `AppBar` title
+                    // without this explicit `setState`.
+                    // This ensures the title immediately reflects the newly
+                    // selected language.
+                    setState(() {});
+                  },
+                );
+              },
+            ),
+          ],
         ),
         body: BlocBuilder<PhotoPresenter, PhotoViewModel>(
           builder: (BuildContext context, PhotoViewModel viewModel) {
@@ -232,8 +282,7 @@ class _CameraScreenState extends State<PhotoView> {
 
             // to prevent scaling down, invert the value
             if (scale < 1) scale = 1 / scale;
-            final double? bodyLargeFontSize =
-                Theme.of(context).textTheme.bodyLarge?.fontSize;
+            final double? bodyLargeFontSize = textTheme.bodyLarge?.fontSize;
             final Stack cameraStack = Stack(
               alignment: Alignment.topCenter,
               children: <Widget>[
