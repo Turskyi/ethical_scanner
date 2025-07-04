@@ -18,7 +18,7 @@
         android:name="${applicationName}"
         android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="Ethical Scanner"
+        android:label="@string/ethical_scanner"
         tools:targetApi="tiramisu">
         <!--suppress AndroidDomInspection -->
         <activity

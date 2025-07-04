@@ -42,7 +42,7 @@ void main() async {
   runApp(
     BetterFeedback(
       feedbackBuilder: (
-        BuildContext context,
+        BuildContext _,
         OnSubmit onSubmit,
         ScrollController? scrollController,
       ) {

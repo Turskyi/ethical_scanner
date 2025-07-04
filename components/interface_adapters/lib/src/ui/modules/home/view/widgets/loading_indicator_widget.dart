@@ -8,9 +8,9 @@ class LoadingIndicatorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Resources resources = Resources.of(context);
-    MaterialColors colors = resources.colors;
-    Dimens dimens = resources.dimens;
+    final Resources resources = Resources.of(context);
+    final MaterialColors colors = resources.colors;
+    final Dimens dimens = resources.dimens;
     return Padding(
       padding: EdgeInsets.all(dimens.circularProgressPadding),
       child: Center(

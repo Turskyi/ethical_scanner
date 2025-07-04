@@ -84,8 +84,8 @@ dependencies:
   package_info_plus: ^8.3.0
   path: ^1.9.1
   path_provider: ^2.1.5
-  retrofit: ^4.4.2
-  retrofit_generator: ^9.2.0
+  retrofit: ^4.5.0
+  retrofit_generator: ^9.3.0
   shared_preferences: ^2.5.3
   use_cases:
     path: ./components/domain/use_cases
@@ -93,7 +93,7 @@ dependencies:
 
 dev_dependencies:
   # A build system for Dart code generation and modular compilation.
-  build_runner: ^2.5.4
+  build_runner: any
 
   # Generator for the Envied package. See https://pub.dev/packages/envied.
   envied_generator: ^1.1.1
