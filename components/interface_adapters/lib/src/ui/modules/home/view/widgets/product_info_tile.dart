@@ -36,11 +36,16 @@ class ProductInfoTile extends StatelessWidget {
         info.imageIngredientsUrl.isNotEmpty;
     final bool isCameraGenerallySupported =
         kIsWeb || Platform.isAndroid || Platform.isIOS;
+    final ProductResponseType responseType = info.responseType;
 
     // We do not want to show the camera button on web, because OpenFoodFacts
     // do not support CORS.
-    final bool canSnapIngredients =
-        isIngredientsMissing && isCameraGenerallySupported && !kIsWeb;
+    // See https://github.com/openfoodfacts/openfoodfacts-dart/issues/1089
+    final bool canSnapIngredients = isIngredientsMissing &&
+        isCameraGenerallySupported &&
+        !kIsWeb &&
+        responseType.isSupportedByOpenFoodFacts;
+
     if (isIngredientsMissing && !canSnapIngredients) {
       return const SizedBox.shrink();
     }

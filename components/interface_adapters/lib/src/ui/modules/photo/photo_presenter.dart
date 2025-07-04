@@ -100,16 +100,28 @@ class PhotoPresenter extends Bloc<PhotoEvent, PhotoViewModel> {
       );
       debugPrint('Caught BadRequestError: $error\n$stacktrace');
     } catch (error, stacktrace) {
+      final String errorMessage;
+      String errorType = error.runtimeType.toString();
+
+      if (error is BadRequestError) {
+        errorMessage = extractErrorMessage(error.message);
+        errorType = 'BadRequestError (runtimeType: $errorType)';
+      } else {
+        errorMessage = error.toString();
+      }
+
       emit(
         AddIngredientsErrorState(
           language: state.language,
           barcode: event.productPhoto.info.barcode,
-          errorMessage: error is BadRequestError
-              ? extractErrorMessage(error.message)
-              : error.toString(),
+          errorMessage: errorMessage,
         ),
       );
-      debugPrint('Caught general error: $error\n$stacktrace');
+      debugPrint(
+        'Caught general error of type: $errorType\n'
+        'Error: $error\n'
+        'Stacktrace:\n$stacktrace',
+      );
     }
   }
 

@@ -9,6 +9,7 @@ import 'package:ethical_scanner/data/data_mappers/product_data_mapper.dart';
 import 'package:ethical_scanner/data/data_mappers/product_result_data_mapper.dart';
 import 'package:ethical_scanner/res/values/constants.dart' as constants;
 import 'package:flutter/foundation.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:http/http.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
@@ -61,19 +62,32 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           return product;
         }
       } else if (result.status == ProductResultV3.statusFailure) {
-        if (_isBarcode(input.code)) {
-          return ProductInfo(barcode: input.code);
-        } else if (_isWebsite(input.code)) {
-          return ProductInfo(website: input.code);
-        } else if (_isAmazonAsin(input.code)) {
-          return const ProductInfo(brand: 'Amazon');
+        if (_isBarcode(code)) {
+          final bool cannotHveIngredients = result.result?.id ==
+              'product_found_with_a_different_product_type';
+          return ProductInfo(
+            barcode: code,
+            responseType: cannotHveIngredients
+                ? ProductResponseType.error
+                : ProductResponseType.barcodeOnly,
+          );
+        } else if (_isWebsite(code)) {
+          return ProductInfo(
+            website: code,
+            responseType: ProductResponseType.websiteOnly,
+          );
+        } else if (_isAmazonAsin(code)) {
+          return const ProductInfo(
+            brand: 'Amazon',
+            responseType: ProductResponseType.amazonAsinFallback,
+          );
         }
       }
       throw NotFoundException(
-        input.language.isEnglish
-            ? 'Product information not found for barcode: ${input.code}.'
-            : 'Інформація про продукт не знайдена для штрих-коду: '
-                '${input.code}',
+        translate(
+          'product_info_not_found_for_barcode',
+          args: <String, Object?>{'barcode': code},
+        ),
       );
     });
   }
@@ -277,14 +291,17 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         ===============================================================
         CRITICAL ERROR: Image upload forbidden even for Backup User
         ---------------------------------------------------------------
-        Attempted Backup User ID: ${openFoodUser.userId} (which is Env.openFoodBackupUserId)
+        Attempted Backup User ID: 
+        ${openFoodUser.userId} (which is Env.openFoodBackupUserId)
         Barcode: ${image.barcode}
         Image URI: ${image.imageUri}
         Image Field: ${image.imageField}
         ---------------------------------------------------------------
         API Response Status Code: ${status.status}
-        API Response Status Details: ${status.statusVerbose ?? 'No verbose status'}
-        API Response Error Message: ${status.error ?? 'No specific error message from API.'}
+        API Response Status Details: 
+        ${status.statusVerbose ?? 'No verbose status'}
+        API Response Error Message: 
+        ${status.error ?? 'No specific error message from API.'}
         API Response Body: ${status.body ?? 'No response body.'}
         ===============================================================
         """;
@@ -295,10 +312,34 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           attemptedUserId: openFoodUser.userId,
         );
       } else if (status.status != 'status ok') {
-        throw Exception(
-          'image could not be uploaded: ${status.error}.\n'
-          '${status.imageId != null ? status.imageId.toString() : ''}',
-        );
+        // This is a catch-all for unexpected non-OK statuses.
+        final String errorMessage =
+            'Image upload failed with an unexpected status: ${status.status}\n.'
+            'Error: ${status.error ?? 'No specific error message from API.'} '
+            '${status.imageId != null ? 'Image ID (if available): '
+                '${status.imageId}' : ''}';
+
+        final String debugMessage = """
+        ===============================================================
+        ERROR: Unexpected status during image upload
+        ---------------------------------------------------------------
+        User ID: ${openFoodUser.userId}
+        Barcode: ${image.barcode}
+        Image URI: ${image.imageUri}
+        Image Field: ${image.imageField}
+        ---------------------------------------------------------------
+        API Response Status Code: ${status.status}
+        API Response Status Details: 
+        ${status.statusVerbose ?? 'No verbose status'}
+        API Response Error Message: 
+        ${status.error ?? 'No specific error message from API.'}
+        API Response Body: ${status.body ?? 'No response body.'}
+        API Response Image ID: ${status.imageId?.toString() ?? 'N/A'}
+        ===============================================================
+        """;
+        debugPrint(debugMessage);
+
+        throw Exception(errorMessage);
       }
     } on ClientException catch (e, s) {
       // Specifically catch ClientException.
@@ -308,9 +349,12 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
       // Check for Connection Refused specifically.
       if (e.message.toLowerCase().contains('connection refused')) {
-        additionalContext =
-            '\nPOSSIBLE CAUSE: Network issue, server (world.openfoodfacts.org) down/misconfigured, or incorrect API '
-            'endpoint/port being used by the HTTP client. Ensure the endpoint is correct and accessible (usually HTTPS port 443).';
+        additionalContext = '\nPOSSIBLE CAUSE: Network issue, '
+            'server (world.openfoodfacts.org) down/misconfigured, '
+            'or incorrect API '
+            'endpoint/port being used by the HTTP client. '
+            'Ensure the endpoint is correct and accessible '
+            '(usually HTTPS port 443).';
 
         if (e.uri != null) {
           additionalContext += '\nAttempted URI: ${e.uri}';
@@ -326,7 +370,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           ===============================================================
           CRITICAL ERROR (ApiConnectionRefusedException Thrown)
           ---------------------------------------------------------------
-          Exception Type: ApiConnectionRefusedException (wrapping $caughtExceptionType)
+          Exception Type: 
+          ApiConnectionRefusedException (wrapping $caughtExceptionType)
           Exception Message: $detailedMessage
           Original Exception: $e
           $additionalContext

@@ -13,6 +13,7 @@
   "build_number": "Build number",
   "platform": "Platform",
   "unexpected_error": "An unexpected error occurred. Please try again.",
+  "product_info_not_found_for_barcode": "Product information not found for barcode: {barcode}.",
   "menu": {
     "home": "Home",
     "scan": "Scan",

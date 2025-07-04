@@ -13,6 +13,7 @@
   "build_number": "Номер збірки",
   "platform": "Платформа",
   "unexpected_error": "Виникла помилка. Будь ласка, спробуйте ще раз.",
+  "product_info_not_found_for_barcode": "Інформація про продукт не знайдена для штрих-коду: {barcode}.",
   "menu": {
     "home": "Домашня сторінка",
     "scan": "Сканер",

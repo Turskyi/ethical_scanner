@@ -14,6 +14,7 @@ export 'src/enums/feedback_rating.dart';
 export 'src/enums/feedback_type.dart';
 export 'src/enums/language.dart';
 export 'src/enums/product_info_type.dart';
+export 'src/enums/product_response_type.dart';
 export 'src/enums/vegan.dart';
 export 'src/enums/vegetarian.dart';
 export 'src/exceptions/bad_request_error.dart';
