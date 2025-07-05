@@ -131,25 +131,27 @@ class ProductInfoTile extends StatelessWidget {
                 ],
               ),
             )
-          : Text(
-              value +
-                  (type.isWebsite || type.isTerrorismSponsor
-                      ? translate('product_info.click_to_know')
-                      : isIngredientsMissing
-                          ? translate('product_info.ingredients_missing')
-                          : isIngredientsImageAdded
-                              ? translate(
-                                  'product_info.ingredients_image_added',
-                                )
-                              : ''),
-              style: TextStyle(
-                fontStyle: FontStyle.italic,
-                fontSize: textTheme.bodyLarge?.fontSize,
-                decoration: type.isWebsite ||
-                        type.isCompanyWarSponsor ||
-                        type.isTerrorismSponsor
-                    ? TextDecoration.underline
-                    : null,
+          : SelectionArea(
+              child: Text(
+                value +
+                    (type.isWebsite || type.isTerrorismSponsor
+                        ? translate('product_info.click_to_know')
+                        : isIngredientsMissing
+                            ? translate('product_info.ingredients_missing')
+                            : isIngredientsImageAdded
+                                ? translate(
+                                    'product_info.ingredients_image_added',
+                                  )
+                                : ''),
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  fontSize: textTheme.bodyLarge?.fontSize,
+                  decoration: type.isWebsite ||
+                          type.isCompanyWarSponsor ||
+                          type.isTerrorismSponsor
+                      ? TextDecoration.underline
+                      : null,
+                ),
               ),
             ),
       onTap: type.isWebsite || type.isTerrorismSponsor
