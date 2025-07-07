@@ -36,11 +36,16 @@ class ProductInfoTile extends StatelessWidget {
         info.imageIngredientsUrl.isNotEmpty;
     final bool isCameraGenerallySupported =
         kIsWeb || Platform.isAndroid || Platform.isIOS;
+    final ProductResponseType responseType = info.responseType;
 
     // We do not want to show the camera button on web, because OpenFoodFacts
     // do not support CORS.
-    final bool canSnapIngredients =
-        isIngredientsMissing && isCameraGenerallySupported && !kIsWeb;
+    // See https://github.com/openfoodfacts/openfoodfacts-dart/issues/1089
+    final bool canSnapIngredients = isIngredientsMissing &&
+        isCameraGenerallySupported &&
+        !kIsWeb &&
+        responseType.isSupportedByOpenFoodFacts;
+
     if (isIngredientsMissing && !canSnapIngredients) {
       return const SizedBox.shrink();
     }
@@ -71,7 +76,7 @@ class ProductInfoTile extends StatelessWidget {
       subtitle: type.isCompanyWarSponsor
           ? RichText(
               text: TextSpan(
-                text: value + translate('product_info.click'),
+                text: '$value ${translate('product_info.click')}',
                 style: TextStyle(
                   fontStyle: FontStyle.italic,
                   fontSize: textTheme.bodyLarge?.fontSize,
@@ -126,25 +131,27 @@ class ProductInfoTile extends StatelessWidget {
                 ],
               ),
             )
-          : Text(
-              value +
-                  (type.isWebsite || type.isTerrorismSponsor
-                      ? translate('product_info.click_to_know')
-                      : isIngredientsMissing
-                          ? translate('product_info.ingredients_missing')
-                          : isIngredientsImageAdded
-                              ? translate(
-                                  'product_info.ingredients_image_added',
-                                )
-                              : ''),
-              style: TextStyle(
-                fontStyle: FontStyle.italic,
-                fontSize: textTheme.bodyLarge?.fontSize,
-                decoration: type.isWebsite ||
-                        type.isCompanyWarSponsor ||
-                        type.isTerrorismSponsor
-                    ? TextDecoration.underline
-                    : null,
+          : SelectionArea(
+              child: Text(
+                value +
+                    (type.isWebsite || type.isTerrorismSponsor
+                        ? translate('product_info.click_to_know')
+                        : isIngredientsMissing
+                            ? translate('product_info.ingredients_missing')
+                            : isIngredientsImageAdded
+                                ? translate(
+                                    'product_info.ingredients_image_added',
+                                  )
+                                : ''),
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  fontSize: textTheme.bodyLarge?.fontSize,
+                  decoration: type.isWebsite ||
+                          type.isCompanyWarSponsor ||
+                          type.isTerrorismSponsor
+                      ? TextDecoration.underline
+                      : null,
+                ),
               ),
             ),
       onTap: type.isWebsite || type.isTerrorismSponsor

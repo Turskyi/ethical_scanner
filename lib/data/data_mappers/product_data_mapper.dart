@@ -1,23 +1,21 @@
+import 'package:collection/collection.dart';
 import 'package:entities/entities.dart';
+import 'package:ethical_scanner/data/data_mappers/language_data_mapper.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 
 extension ProductExtension on Product {
-  ProductInfo toProductInfo() {
+  ProductInfo toProductInfo(Language language) {
     return ProductInfo(
       barcode: barcode ?? '',
-      origin: ((origins == null || origins?.isEmpty == true) &&
-              (barcode?.isNotEmpty == true) &&
-              (barcode?.startsWith('460') == true))
-          ? translate('product_info.russian')
-          : origins ?? '',
+      origin: _origin,
       countrySold: _countryName,
       countryTags: _countryNames,
-      name: productName ?? '',
+      name: _getProductName(language),
       brand: brands ?? '',
       categoryTags: _categories,
       packaging: packaging ?? '',
-      ingredientList: _ingredientNames,
+      ingredientList: _getIngredientNames(language),
       vegan: _vegan,
       vegetarian: _vegetarian,
       website: website ?? '',
@@ -25,8 +23,60 @@ extension ProductExtension on Product {
     );
   }
 
+  String get _origin {
+    return ((origins == null || origins?.isEmpty == true) &&
+            (barcode?.isNotEmpty == true) &&
+            (barcode?.startsWith('460') == true))
+        ? translate('product_info.russian')
+        : origins ?? '';
+  }
+
+  String _getProductName(Language language) {
+    if (productNameInLanguages != null &&
+        productNameInLanguages?.isNotEmpty == true &&
+        productNameInLanguages?.keys.any(
+              (OpenFoodFactsLanguage languageKey) {
+                return Language.values.any((Language appLanguage) {
+                  return appLanguage.toOpenFoodFactsLanguage == languageKey;
+                });
+              },
+            ) ==
+            true) {
+      final OpenFoodFactsLanguage targetOpenFoodFactsLanguage =
+          language.toOpenFoodFactsLanguage;
+      if (productNameInLanguages?.containsKey(targetOpenFoodFactsLanguage) ==
+          true) {
+        final String? localizedProductName =
+            productNameInLanguages?[targetOpenFoodFactsLanguage];
+
+        if (localizedProductName != null && localizedProductName.isNotEmpty) {
+          return localizedProductName;
+        }
+      } else {
+        // Try the first available name from a language key that matches one of
+        // our app's Language enums.
+        final MapEntry<OpenFoodFactsLanguage, String>? firstSupportedEntry =
+            productNameInLanguages!.entries.firstWhereOrNull(
+          (MapEntry<OpenFoodFactsLanguage, String> entry) {
+            final bool isSupportedAppLanguage =
+                Language.values.any((Language appLang) {
+              return appLang.toOpenFoodFactsLanguage == entry.key;
+            });
+            return isSupportedAppLanguage && entry.value.isNotEmpty;
+          },
+        );
+
+        if (firstSupportedEntry != null) {
+          return firstSupportedEntry.value;
+        }
+      }
+    }
+
+    return productName ?? '';
+  }
+
   String get _countryName {
-    if (countries != null && countries!.isNotEmpty) {
+    if (countries != null && countries?.isNotEmpty == true) {
       if (countries!.contains(':')) {
         final String countryName = countries!.split(':')[1];
         return countryName[0].toUpperCase() + countryName.substring(1);
@@ -47,30 +97,89 @@ extension ProductExtension on Product {
       }).toList() ??
       <String>[];
 
-  List<String> get _categories =>
-      categoriesTags?.map((String categoryTag) {
-        if (categoryTag.contains(':')) {
-          final String categoryName = categoryTag.split(':')[1];
-          return categoryName;
-        }
-        return categoryTag;
-      }).toList() ??
-      <String>[];
+  List<String> get _categories {
+    return categoriesTags?.map((String categoryTag) {
+          if (categoryTag.contains(':')) {
+            final String categoryName = categoryTag.split(':')[1];
+            return categoryName;
+          }
+          return categoryTag;
+        }).toList() ??
+        <String>[];
+  }
 
-  List<String> get _ingredientNames {
+  List<String> _getIngredientNames(Language language) {
     if (_isUnknownIngredients) {
       return <String>[];
-    } else {
-      return ingredients!.map((Ingredient ingredient) {
-        if (ingredient.text != null && ingredient.text!.isNotEmpty) {
-          return ingredient.text!;
-        } else if (ingredient.id != null && ingredient.id!.contains(':')) {
-          return ingredient.id!.split(':')[1];
-        } else {
-          return ingredient.id ?? '';
+    } else if (ingredientsTextInLanguages != null &&
+        ingredientsTextInLanguages?.isNotEmpty == true &&
+        ingredientsTextInLanguages?.keys.any(
+              (OpenFoodFactsLanguage languageKey) {
+                return Language.values.any((Language appLanguage) {
+                  return appLanguage.toOpenFoodFactsLanguage == languageKey;
+                });
+              },
+            ) ==
+            true) {
+      final OpenFoodFactsLanguage targetOffLanguage =
+          language.toOpenFoodFactsLanguage;
+      String? localizedIngredientsText;
+
+      // 1. Try to get the ingredients string for the requested language.
+      if (ingredientsTextInLanguages?.containsKey(targetOffLanguage) == true) {
+        localizedIngredientsText =
+            ingredientsTextInLanguages?[targetOffLanguage];
+      }
+
+      // 2. If not available, try the first available language from a supported
+      // app language.
+      if (localizedIngredientsText == null ||
+          localizedIngredientsText.isEmpty) {
+        final MapEntry<OpenFoodFactsLanguage, String>? firstSupportedEntry =
+            ingredientsTextInLanguages?.entries.firstWhereOrNull(
+          (MapEntry<OpenFoodFactsLanguage, String> entry) {
+            final bool isSupportedAppLanguage =
+                Language.values.any((Language appLang) {
+              return appLang.toOpenFoodFactsLanguage == entry.key;
+            });
+            return isSupportedAppLanguage && entry.value.isNotEmpty;
+          },
+        );
+
+        if (firstSupportedEntry != null) {
+          localizedIngredientsText = firstSupportedEntry.value;
         }
-      }).toList();
+      }
+
+      // 3. If a string was found, split it by comma and trim.
+      if (localizedIngredientsText != null &&
+          localizedIngredientsText.isNotEmpty) {
+        final List<String> parsedIngredients = localizedIngredientsText
+            .split(',')
+            .map((String ingredient) => ingredient.trim())
+            .where((String ingredient) => ingredient.isNotEmpty)
+            .toList();
+        // If parsing resulted in a non-empty list, return it.
+        // Otherwise, we'll fall through to the structured ingredients list.
+        if (parsedIngredients.isNotEmpty) {
+          return parsedIngredients;
+        }
+      }
     }
+    return ingredients?.map((Ingredient ingredient) {
+          final String? ingredientText = ingredient.text;
+
+          final String? ingredientId = ingredient.id;
+
+          if (ingredientText != null && ingredientText.isNotEmpty) {
+            return ingredientText;
+          } else if (ingredientId != null && ingredientId.contains(':')) {
+            return ingredientId.split(':')[1];
+          } else {
+            return ingredientId ?? '';
+          }
+        }).toList() ??
+        <String>[];
   }
 
   Vegan get _vegan {

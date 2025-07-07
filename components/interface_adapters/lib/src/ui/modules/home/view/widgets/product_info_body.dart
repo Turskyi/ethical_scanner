@@ -29,10 +29,11 @@ class ProductInfoBody extends StatelessWidget {
         builder: (BuildContext _, HomeViewModel viewModel) {
           if (viewModel is ProductInfoState) {
             final EdgeInsets edgeInsets = MediaQuery.viewInsetsOf(context);
+            final EdgeInsets padding = MediaQuery.paddingOf(context);
             return ListView.builder(
               padding: EdgeInsets.only(
                 top: dimens.productInfoListTopPadding +
-                    MediaQuery.paddingOf(context).top +
+                    padding.top +
                     edgeInsets.top +
                     // Without it the code tile will be pushed up outside of the
                     // window screen when the keyboard is opened, without
@@ -40,7 +41,9 @@ class ProductInfoBody extends StatelessWidget {
                     // on top of the size of the keyboard, so this way code
                     // tile remains on the same place.
                     edgeInsets.bottom,
-                bottom: dimens.productInfoListBottomPadding,
+                bottom: dimens.productInfoListBottomPadding +
+                    padding.bottom +
+                    edgeInsets.bottom,
               ),
               itemCount:
                   viewModel.productInfoMap.keys.length + loadingIndicatorCount,

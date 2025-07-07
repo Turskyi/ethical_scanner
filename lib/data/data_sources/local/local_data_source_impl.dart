@@ -783,11 +783,21 @@ class LocalDataSourceImpl implements LocalDataSource {
       false;
 
   @override
-  String getLanguageIsoCode() =>
-      _sharedPrefs.getString(Settings.languageIsoCode.key) ??
-      Language.fromIsoLanguageCode(
-        PlatformDispatcher.instance.locale.languageCode,
-      ).isoLanguageCode;
+  String getLanguageIsoCode() {
+    final String? savedLanguageIsoCode = _sharedPrefs.getString(
+      Settings.languageIsoCode.key,
+    );
+
+    String defaultLanguageCode =
+        PlatformDispatcher.instance.locale.languageCode;
+
+    final String host = Uri.base.host;
+    if (host.startsWith('${Language.uk.isoLanguageCode}.')) {
+      defaultLanguageCode = Language.uk.isoLanguageCode;
+    }
+
+    return savedLanguageIsoCode ?? defaultLanguageCode;
+  }
 
   @override
   Future<bool> saveLanguageIsoCode(String languageIsoCode) =>

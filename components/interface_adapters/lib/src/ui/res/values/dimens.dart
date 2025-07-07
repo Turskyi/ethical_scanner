@@ -30,7 +30,7 @@ class Dimens {
   final double leftPadding = 8.0;
   final double productInfoHorizontalMargin = 12.0;
   final double borderRadius = 12.0;
-  final double productInfoListBottomPadding = 16.0;
+  final double productInfoListBottomPadding = 80.0;
   final double circularProgressPadding = 16.0;
   final double bodyBottomMargin = 200.0;
 }

@@ -90,7 +90,7 @@ class _HomeViewState extends State<ScanView> {
                   left: 0,
                   right: 0,
                   child: Container(
-                    padding: const EdgeInsets.fromLTRB(16.0, 48.0, 16, 12),
+                    padding: const EdgeInsets.fromLTRB(16.0, 52.0, 16.0, 12.0),
                     decoration: BoxDecoration(
                       gradient: resources.gradients.abstractLoveGradient,
                     ),

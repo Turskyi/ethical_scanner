@@ -24,56 +24,123 @@ extension TerrorismSponsorList on List<TerrorismSponsor> {
   }
 
   bool _isSponsoredByOtherRussiaSponsors(ProductInfo product) {
-    final String brand = product.brand.toLowerCase();
+    final String productBrandString = product.brand.toLowerCase().trim();
 
-    return _otherTerrorismSponsors.contains(brand);
+    if (productBrandString.isEmpty) {
+      return false;
+    }
+
+    // Split the product's brand string by comma, trim whitespace,
+    // and remove empty strings.
+    final List<String> productIndividualBrands = productBrandString
+        .split(',')
+        .map((String brand) => brand.trim())
+        .where((String brand) => brand.isNotEmpty)
+        .toList();
+
+    // Check if any of the product's individual brands are present in the
+    // _otherTerrorismSponsors list.
+    for (final String pBrand in productIndividualBrands) {
+      if (_otherTerrorismSponsors.contains(pBrand)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   bool _isSponsoredByAnyTerrorismSponsor(ProductInfo product) {
     return any(
-      (TerrorismSponsor terrorismSponsor) =>
-          _isSponsoredByTerrorismSponsor(terrorismSponsor, product),
+      (TerrorismSponsor terrorismSponsor) {
+        return _isSponsoredByTerrorismSponsor(terrorismSponsor, product);
+      },
     );
   }
 
   bool _isSponsoredByTerrorismSponsor(
     TerrorismSponsor terrorismSponsor,
     ProductInfo product,
-  ) =>
-      terrorismSponsor.status != 'Withdrawal' &&
-      (_isSponsorNameNotEmptyAndMatchesProductBrandOrName(
-            terrorismSponsor,
-            product,
-          ) ||
-          _isSponsorBrandsNotEmptyAndContainsProductBrand(
-            terrorismSponsor,
-            product,
-          ));
+  ) {
+    final String status = terrorismSponsor.status;
+    return (status != 'Withdrawal' && status != 'Suspension') &&
+        (_isSponsorNameNotEmptyAndMatchesProductBrandOrName(
+              terrorismSponsor,
+              product,
+            ) ||
+            _isSponsorBrandsNotEmptyAndContainsProductBrand(
+              terrorismSponsor,
+              product,
+            ));
+  }
 
   bool _isSponsorNameNotEmptyAndMatchesProductBrandOrName(
     TerrorismSponsor terrorismSponsor,
     ProductInfo product,
-  ) =>
-      terrorismSponsor.name.isNotEmpty &&
-      (product.brand.toLowerCase().trim() ==
-              terrorismSponsor.name.toLowerCase().trim() ||
-          product.name.toLowerCase().trim() ==
-              terrorismSponsor.name.toLowerCase().trim());
+  ) {
+    final String normalizedSponsorName =
+        terrorismSponsor.name.toLowerCase().trim();
+    final String normalizedProductBrand = product.brand.toLowerCase().trim();
+    final String normalizedProductName = product.name.toLowerCase().trim();
+
+    if (normalizedSponsorName.isEmpty) {
+      return false;
+    }
+
+    // Split the product's brand string by comma, trim whitespace, and remove
+    // empty strings.
+    final List<String> productBrands = normalizedProductBrand
+        .split(',')
+        .map((String brand) => brand.trim())
+        .where((String brand) => brand.isNotEmpty)
+        .toList();
+
+    // Check if the sponsor name is present in any of the individual product
+    // brands.
+    if (productBrands.any((String brand) => brand == normalizedSponsorName)) {
+      return true;
+    }
+
+    // Check if the sponsor name matches the product name.
+    return normalizedProductName == normalizedSponsorName;
+  }
 
   bool _isSponsorBrandsNotEmptyAndContainsProductBrand(
     TerrorismSponsor terrorismSponsor,
     ProductInfo product,
-  ) =>
-      terrorismSponsor.brands.isNotEmpty &&
-      product.brand.isNotEmpty &&
-      _doesSponsorBrandsContainProductBrand(terrorismSponsor, product);
+  ) {
+    return terrorismSponsor.brands.isNotEmpty &&
+        product.brand.isNotEmpty &&
+        _doesSponsorBrandsContainProductBrand(terrorismSponsor, product);
+  }
 
   bool _doesSponsorBrandsContainProductBrand(
     TerrorismSponsor terrorismSponsor,
     ProductInfo product,
   ) {
-    final List<String> lowerCaseBrands = _getLowerCaseBrands(terrorismSponsor);
-    return lowerCaseBrands.contains(product.brand.toLowerCase());
+    // Already lowercase.
+    final List<String> sponsorBrandList = _getLowerCaseBrands(terrorismSponsor);
+    final String productBrandString = product.brand.toLowerCase().trim();
+
+    if (sponsorBrandList.isEmpty || productBrandString.isEmpty) {
+      return false;
+    }
+
+    // Split the product's brand string by comma, trim whitespace, and remove
+    // empty strings.
+    final List<String> productIndividualBrands = productBrandString
+        .split(',')
+        .map((String brand) => brand.trim())
+        .where((String brand) => brand.isNotEmpty)
+        .toList();
+
+    // Check if any of the product's individual brands are present in the
+    // sponsor's brand list.
+    for (final String pBrand in productIndividualBrands) {
+      if (sponsorBrandList.contains(pBrand)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   List<String> _getLowerCaseBrands(TerrorismSponsor terrorismSponsor) =>

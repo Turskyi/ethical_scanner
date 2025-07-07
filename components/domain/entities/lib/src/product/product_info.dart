@@ -1,4 +1,5 @@
 import 'package:entities/src/enums/language.dart';
+import 'package:entities/src/enums/product_response_type.dart';
 import 'package:entities/src/enums/vegan.dart';
 import 'package:entities/src/enums/vegetarian.dart';
 
@@ -21,6 +22,7 @@ class ProductInfo {
     this.language = Language.en,
     this.quantity = '',
     this.imageIngredientsUrl = '',
+    this.responseType = ProductResponseType.openFoodFacts,
   });
 
   final String barcode;
@@ -62,6 +64,7 @@ class ProductInfo {
   final Language language;
   final String quantity;
   final String imageIngredientsUrl;
+  final ProductResponseType responseType;
 
   bool get isVegan => vegan == Vegan.positive;
 
@@ -94,27 +97,30 @@ class ProductInfo {
     Language? language,
     String? quantity,
     String? imageIngredientsUrl,
-  }) =>
-      ProductInfo(
-        barcode: barcode ?? this.barcode,
-        origin: origin ?? this.origin,
-        countryTags: countryTags ?? this.countryTags,
-        countrySold: countrySold ?? this.countrySold,
-        countryAi: countryAi ?? this.countryAi,
-        name: name ?? this.name,
-        brand: brand ?? this.brand,
-        isCompanyTerrorismSponsor:
-            isCompanyTerrorismSponsor ?? this.isCompanyTerrorismSponsor,
-        categoryTags: categoryTags ?? this.categoryTags,
-        packaging: packaging ?? this.packaging,
-        ingredientList: ingredientList ?? this.ingredientList,
-        vegan: vegan ?? this.vegan,
-        vegetarian: vegetarian ?? this.vegetarian,
-        website: website ?? this.website,
-        language: language ?? this.language,
-        quantity: quantity ?? this.quantity,
-        imageIngredientsUrl: imageIngredientsUrl ?? this.imageIngredientsUrl,
-      );
+    ProductResponseType? responseType,
+  }) {
+    return ProductInfo(
+      barcode: barcode ?? this.barcode,
+      origin: origin ?? this.origin,
+      countryTags: countryTags ?? this.countryTags,
+      countrySold: countrySold ?? this.countrySold,
+      countryAi: countryAi ?? this.countryAi,
+      name: name ?? this.name,
+      brand: brand ?? this.brand,
+      isCompanyTerrorismSponsor:
+          isCompanyTerrorismSponsor ?? this.isCompanyTerrorismSponsor,
+      categoryTags: categoryTags ?? this.categoryTags,
+      packaging: packaging ?? this.packaging,
+      ingredientList: ingredientList ?? this.ingredientList,
+      vegan: vegan ?? this.vegan,
+      vegetarian: vegetarian ?? this.vegetarian,
+      website: website ?? this.website,
+      language: language ?? this.language,
+      quantity: quantity ?? this.quantity,
+      imageIngredientsUrl: imageIngredientsUrl ?? this.imageIngredientsUrl,
+      responseType: responseType ?? this.responseType,
+    );
+  }
 
   bool get isEnglishBook {
     final List<int> digits = barcode.codeUnits
@@ -153,6 +159,8 @@ class ProductInfo {
         'website: $website, '
         'language: ${language.name}, '
         'quantity: $quantity,'
+        'imageIngredientsUrl: $imageIngredientsUrl,'
+        'responseType: $responseType'
         '}';
   }
 }

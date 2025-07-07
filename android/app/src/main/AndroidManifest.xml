@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.turskyi.ethical_scanner"
-    android:versionCode="18"
-    android:versionName="0.1.8">
+    android:versionCode="19"
+    android:versionName="0.1.9">
 
     <queries>
         <intent>
@@ -18,7 +18,7 @@
         android:name="${applicationName}"
         android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="Ethical Scanner"
+        android:label="@string/ethical_scanner"
         tools:targetApi="tiramisu">
         <!--suppress AndroidDomInspection -->
         <activity

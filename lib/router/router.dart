@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 
-Route<String> generateRoute(RouteSettings settings) {
+Route<Object> generateRoute(RouteSettings settings) {
   final String? routePath = settings.name;
 
   return switch (routePath) {
@@ -53,15 +53,27 @@ Route<String> generateRoute(RouteSettings settings) {
           );
         },
       ),
-    route.photoPath => PageRouteBuilder<String>(
+    route.photoPath => PageRouteBuilder<Language>(
         settings: settings,
-        pageBuilder: (BuildContext context, Animation<double> animation, __) {
+        pageBuilder: (
+          BuildContext context,
+          Animation<double> animation,
+          Animation<double> __,
+        ) {
           final Object? args = settings.arguments;
           if (args is ProductInfo) {
+            final Dependencies dependencies = DependenciesScope.of(context);
             return BlocProvider<PhotoPresenter>(
-              create: (_) => PhotoPresenter(
-                DependenciesScope.of(context).addIngredientsUseCase,
-              ),
+              create: (BuildContext context) {
+                final Language initialLanguage = Language.fromIsoLanguageCode(
+                  LocalizedApp.of(context).delegate.currentLocale.languageCode,
+                );
+                return PhotoPresenter(
+                  dependencies.addIngredientsUseCase,
+                  dependencies.saveLanguageUseCase,
+                  initialLanguage,
+                );
+              },
               child: BlocListener<PhotoPresenter, PhotoViewModel>(
                 listener: _photoViewModelListener,
                 child: FadeTransition(
@@ -126,7 +138,7 @@ void _photoViewModelListener(BuildContext context, PhotoViewModel viewModel) {
     );
     Navigator.pop(context);
   } else if (viewModel is CanceledPhotoState) {
-    Navigator.pop(context);
+    Navigator.of(context).pop(viewModel.language);
   }
 }
 
@@ -217,15 +229,15 @@ void _homeViewModelListener(BuildContext context, HomeViewModel viewModel) {
       },
     );
   } else if (viewModel is PhotoMakerState) {
-    Navigator.pushNamed<void>(
+    Navigator.pushNamed<Language>(
       context,
       route.photoPath,
       arguments: viewModel.productInfo,
     ).then(
-      (_) {
+      (Language? language) {
         if (context.mounted) {
           context.read<HomePresenter>().add(
-                const ClearProductInfoEvent(),
+                ClearProductInfoEvent(language ?? Language.en),
               );
         }
       },
@@ -255,6 +267,8 @@ void _displayProductInfoOrHome({
   if (productInfo.barcode.isNotEmpty) {
     context.read<HomePresenter>().add(ShowProductInfoEvent(productInfo));
   } else {
-    context.read<HomePresenter>().add(const ClearProductInfoEvent());
+    context.read<HomePresenter>().add(
+          ClearProductInfoEvent(productInfo.language),
+        );
   }
 }

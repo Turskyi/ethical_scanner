@@ -6,6 +6,7 @@ sealed class PhotoEvent {
 
 class AddIngredientsPhotoEvent extends PhotoEvent {
   const AddIngredientsPhotoEvent(this.productPhoto);
+
   final ProductPhoto productPhoto;
 }
 
@@ -19,9 +20,16 @@ class TakePhotoEvent extends PhotoEvent {
 
 class TakenPhotoEvent extends PhotoEvent {
   const TakenPhotoEvent(this.imagePath);
+
   final String imagePath;
 }
 
 class RemovePhotoEvent extends PhotoEvent {
   const RemovePhotoEvent();
+}
+
+class ChangeLanguageEvent extends PhotoEvent {
+  const ChangeLanguageEvent(this.language);
+
+  final Language language;
 }

@@ -1,3 +1,4 @@
+import 'package:entities/entities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
@@ -41,9 +42,19 @@ class HomeView extends StatelessWidget {
         // Add an appBar with the language selector dropdown.
         appBar: AppBar(
           backgroundColor: AppColor.cetaceanBlue.value.withAlpha(5),
-          actions: const <Widget>[
-            // Use the `LanguageSelector` widget as an action.
-            LanguageSelector(),
+          actions: <Widget>[
+            BlocBuilder<HomePresenter, HomeViewModel>(
+              builder: (BuildContext context, HomeViewModel viewModel) {
+                return LanguageSelector(
+                  currentLanguage: viewModel.language,
+                  onLanguageSelected: (Language newLanguage) {
+                    context.read<HomePresenter>().add(
+                          ChangeLanguageEvent(newLanguage),
+                        );
+                  },
+                );
+              },
+            ),
           ],
         ),
         body: BlocBuilder<HomePresenter, HomeViewModel>(
@@ -73,8 +84,13 @@ class HomeView extends StatelessWidget {
           onPressed: () => context
               .read<HomePresenter>()
               .add(const NavigateToScanViewEvent()),
-          onClose: () =>
-              context.read<HomePresenter>().add(const ClearProductInfoEvent()),
+          onClose: () {
+            context.read<HomePresenter>().add(
+                  ClearProductInfoEvent(
+                    context.read<HomePresenter>().state.language,
+                  ),
+                );
+          },
         ),
       ),
     );
