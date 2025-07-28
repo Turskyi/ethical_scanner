@@ -173,7 +173,8 @@ class LocalDataSourceImpl implements LocalDataSource {
           'Reportedly used for products made in China.',
       '196': 'Cyprus',
       '197': 'Not officially assigned by GS1.\n'
-          'Reportedly used for products made in Cambodia and Vietnam.',
+          'Reportedly used for products made in '
+          'Cambodia, Bangladesh or Vietnam.',
       '198': 'Not officially assigned by GS1.\n'
           'Reportedly used for products made in China.',
       '203': 'Czechia (Czech Republic)',
@@ -487,7 +488,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       '624': 'Libya',
       '625': 'Jordan',
       '626': 'Iran',
-      '627': 'Kuwait',
+      '627': 'Kuwait (GS1).\nReportedly used for some products made in China.',
       // “628” is the GS1 barcode of Saudi Arabia.
       '628': 'Saudi Arabia',
       '629': 'United Arab Emirates',
