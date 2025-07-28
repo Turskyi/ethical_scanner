@@ -55,26 +55,12 @@ class _CodeTileState extends State<CodeTile> {
       leading: ValueListenableBuilder<bool>(
         valueListenable: _editNotifier,
         child: const Icon(Icons.star),
-        builder: (BuildContext context, bool isEdited, Widget? defaultIcon) {
+        builder: (BuildContext _, bool isEdited, Widget? defaultIcon) {
           return IconButton(
             icon: isEdited
                 ? const Icon(Icons.save)
                 : (defaultIcon ?? const SizedBox()),
-            onPressed: isEdited
-                ? () => context.read<HomePresenter>().add(
-                      ShowProductInfoEvent(
-                        ProductInfo(
-                          barcode: _codeController.text,
-                          language: Language.fromIsoLanguageCode(
-                            LocalizedApp.of(context)
-                                .delegate
-                                .currentLocale
-                                .languageCode,
-                          ),
-                        ),
-                      ),
-                    )
-                : null,
+            onPressed: isEdited ? _saveAndShowProductInfo : null,
           );
         },
       ),
@@ -155,5 +141,22 @@ class _CodeTileState extends State<CodeTile> {
         duration: Duration(seconds: 2),
       ),
     );
+  }
+
+  void _saveAndShowProductInfo() {
+    final String languageCode = LocalizedApp.of(
+      context,
+    ).delegate.currentLocale.languageCode;
+    final Language language = Language.fromIsoLanguageCode(
+      languageCode,
+    );
+    context.read<HomePresenter>().add(
+          ShowProductInfoEvent(
+            ProductInfo(
+              barcode: _codeController.text,
+              language: language,
+            ),
+          ),
+        );
   }
 }

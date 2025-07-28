@@ -484,6 +484,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       '629': 'United Arab Emirates',
       '630': 'Qatar',
       '631': 'Namibia',
+      '632': 'Peru (GS1). Reportedly used for some products made in China.',
       '634': 'Reunion',
       '64': 'Finland',
       '640': 'Finland',
@@ -763,11 +764,12 @@ class LocalDataSourceImpl implements LocalDataSource {
       );
 
   @override
-  bool getPrecipitationState() =>
-      _sharedPrefs.getBool(
-        Settings.precipitationFalling.key,
-      ) ??
-      true;
+  bool getPrecipitationState() {
+    return _sharedPrefs.getBool(
+          Settings.precipitationFalling.key,
+        ) ??
+        true;
+  }
 
   @override
   Future<bool> saveSoundPreference(bool isSoundOn) => _sharedPrefs.setBool(
@@ -776,11 +778,12 @@ class LocalDataSourceImpl implements LocalDataSource {
       );
 
   @override
-  bool getSoundPreference() =>
-      _sharedPrefs.getBool(
-        Settings.sound.key,
-      ) ??
-      false;
+  bool getSoundPreference() {
+    return _sharedPrefs.getBool(
+          Settings.sound.key,
+        ) ??
+        false;
+  }
 
   @override
   String getLanguageIsoCode() {
@@ -800,6 +803,10 @@ class LocalDataSourceImpl implements LocalDataSource {
   }
 
   @override
-  Future<bool> saveLanguageIsoCode(String languageIsoCode) =>
-      _sharedPrefs.setString(Settings.languageIsoCode.key, languageIsoCode);
+  Future<bool> saveLanguageIsoCode(String languageIsoCode) {
+    return _sharedPrefs.setString(
+      Settings.languageIsoCode.key,
+      languageIsoCode,
+    );
+  }
 }
