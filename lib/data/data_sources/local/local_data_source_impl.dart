@@ -49,7 +49,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       '016': 'United States',
       '017': 'United States',
       '018': 'United States',
-      '019': 'United States and Canada',
+      '019': 'United States or Canada',
       '020': 'Andorra(ISO 3166-1)',
       '024': 'Angola(ISO 3166-1)',
       '028': 'Antigua and Barbuda(ISO 3166-1)',
@@ -167,8 +167,15 @@ class LocalDataSourceImpl implements LocalDataSource {
       '191': 'Unassigned GS1 prefix.\n'
           'Reportedly used for some products made in China.',
       '192': 'Cuba',
+      '194': 'Not officially assigned by GS1.\n'
+          'Reportedly used for products made in Bangladesh.',
+      '195': 'Not officially assigned by GS1.\n'
+          'Reportedly used for products made in China.',
       '196': 'Cyprus',
-      '198': 'United States (GS1). Reportedly used on products made in China.',
+      '197': 'Not officially assigned by GS1.\n'
+          'Reportedly used for products made in Cambodia and Vietnam.',
+      '198': 'Not officially assigned by GS1.\n'
+          'Reportedly used for products made in China.',
       '203': 'Czechia (Czech Republic)',
       '204': 'Benin',
       '208': 'Denmark',
@@ -501,6 +508,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '649': 'Finland',
       '652': 'Saint Barthelemy',
       '654': 'Saint Helena',
+      '655': 'Unassigned GS1 prefix.\n'
+          'Reportedly used for some products made in China.',
       '659': 'Saint Kitts and Nevis',
       '662': 'Anguilla',
       '663': 'Saint Lucia',
