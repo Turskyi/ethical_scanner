@@ -55,28 +55,7 @@ class _PhotoViewState extends State<PhotoView> {
   void initState() {
     super.initState();
     if (widget.cameraDescriptions.isNotEmpty) {
-      _controller = CameraController(
-        widget.cameraDescriptions.first,
-        ResolutionPreset.high,
-      );
-
-      _initializeControllerFuture = _controller?.initialize().then((_) {
-        // The returned value in `then` is always `null`
-        if (!mounted) {
-          return;
-        }
-        _configureCamera();
-        setState(() {});
-      }).catchError((Object e) {
-        if (e is CameraException) {
-          switch (e.code) {
-            case 'CameraAccessDenied':
-              break;
-            default:
-              break;
-          }
-        }
-      });
+      _initializeAndConfigureCamera();
     } else {
       _noCameraAvailable = true;
     }
@@ -493,6 +472,31 @@ class _PhotoViewState extends State<PhotoView> {
   void dispose() {
     _controller?.dispose();
     super.dispose();
+  }
+
+  void _initializeAndConfigureCamera() {
+    _controller = CameraController(
+      widget.cameraDescriptions.first,
+      ResolutionPreset.high,
+    );
+
+    _initializeControllerFuture = _controller?.initialize().then((_) {
+      // The returned value in `then` is always `null`
+      if (!mounted) {
+        return;
+      }
+      _configureCamera();
+      setState(() {});
+    }).catchError((Object e) {
+      if (e is CameraException) {
+        switch (e.code) {
+          case 'CameraAccessDenied':
+            break;
+          default:
+            break;
+        }
+      }
+    });
   }
 
   void _adjustZoomLevel(double delta) {

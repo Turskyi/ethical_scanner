@@ -35,14 +35,14 @@ dependencies:
 
   # localization / internationalization (i18n) library
   flutter_email_sender: ^7.0.0
-  flutter_translate: ^4.1.0
+  flutter_translate: any
 
   html: ^0.15.6
 
   http: ^1.4.0
   # Because every version of flutter_test from sdk depends on meta 1.16.0 and
   # every version of interface_adapters from path depends on meta ^1.17.0.
-  meta: ^1.16.0
+  meta: any
   mobile_scanner: ^7.0.1
 
   # For launching a URL. Supports web, phone, SMS, and email schemes.
@@ -53,20 +53,11 @@ dependencies:
   use_cases:
     path: ../domain/use_cases
 
-dependency_overrides:
-  #  Because envied_generator >=0.5.0 depends on build ^2.4.1
-  build: ^2.4.1
-  #  Because flutter_translate >=4.1.0 <5.0.0-dev.1 depends on intl ^0.19.0 and
-  #  every version of flutter_localizations from sdk depends on intl 0.20.2
-  intl: '0.20.2'
-  #   meta is pinned to version 1.16.0 by flutter_test from the flutter SDK.
-  meta: 1.16.0
-
 dev_dependencies:
   # A build system for Dart code generation and modular compilation.
-  build_runner: ^2.6.0
+  build_runner: any
 
-  envied_generator: ^1.1.1
+  envied_generator: any
   flutter_lints: ^6.0.0
 
   flutter_test:
