@@ -93,7 +93,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<String> getCountryFromAiAsFuture(String barcode) {
+  Future<String> getInfoFromAiAsFuture(String barcode) {
     return OpenAI.instance.chat.create(
       model: 'gpt-3.5-turbo',
       seed: 6,
@@ -104,17 +104,22 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         OpenAIChatCompletionChoiceMessageModel(
           content: <OpenAIChatCompletionChoiceMessageContentItemModel>[
             OpenAIChatCompletionChoiceMessageContentItemModel.text(
-              'The country encoded in the barcode $barcode is',
+              'Please provide any information that can be inferred from the '
+              'barcode "$barcode". '
+              'This could include the GS1 country prefix or known usage '
+              'patterns. '
+              'If nothing is definitive, mention possible origins or usage '
+              'notes. ',
             ),
           ],
           role: OpenAIChatMessageRole.user,
         ),
       ],
     ).then((OpenAIChatCompletionModel completion) {
-      final String? country = completion
+      final String? info = completion
           .choices.firstOrNull?.message.content?.firstOrNull?.text
           ?.trim();
-      return country ?? '';
+      return info ?? '';
     }).onError((_, __) => '');
   }
 

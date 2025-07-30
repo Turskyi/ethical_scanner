@@ -87,7 +87,7 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
         if (localInfo.origin.isNotEmpty) {
           return localInfo;
         } else {
-          return _remoteDataSource.getCountryFromAiAsFuture(inputCode).then(
+          return _remoteDataSource.getInfoFromAiAsFuture(inputCode).then(
                 (String country) => info.copyWith(countryAi: country),
               );
         }

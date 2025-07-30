@@ -136,7 +136,7 @@ void _photoViewModelListener(BuildContext context, PhotoViewModel viewModel) {
         ),
       ),
     );
-    Navigator.pop(context);
+    Navigator.of(context).pop(viewModel.language);
   } else if (viewModel is CanceledPhotoState) {
     Navigator.of(context).pop(viewModel.language);
   }

@@ -21,12 +21,12 @@ dependencies:
   # state management package that helps implement the Business Logic Component design pattern.
   bloc: ^9.0.0
 
-  camera: ^0.11.1
+  camera: ^0.11.2
   entities:
     path: ../domain/entities
 
   envied: ^1.1.1
-  feedback: ^3.1.0
+  feedback: ^3.2.0
   flutter:
     sdk: flutter
 
@@ -40,22 +40,24 @@ dependencies:
   html: ^0.15.6
 
   http: ^1.4.0
+  # Because every version of flutter_test from sdk depends on meta 1.16.0 and
+  # every version of interface_adapters from path depends on meta ^1.17.0.
   meta: any
   mobile_scanner: ^7.0.1
 
   # For launching a URL. Supports web, phone, SMS, and email schemes.
   package_info_plus: ^8.3.0
   path_provider: ^2.1.5
-  url_launcher: ^6.3.1
+  url_launcher: ^6.3.2
 
   use_cases:
     path: ../domain/use_cases
 
 dev_dependencies:
   # A build system for Dart code generation and modular compilation.
-  build_runner: ^2.5.4
+  build_runner: any
 
-  envied_generator: ^1.1.1
+  envied_generator: any
   flutter_lints: ^6.0.0
 
   flutter_test:

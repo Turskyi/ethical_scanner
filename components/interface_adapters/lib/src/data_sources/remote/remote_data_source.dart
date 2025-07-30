@@ -7,7 +7,7 @@ abstract interface class RemoteDataSource {
 
   Future<String> getIngredientsText(LocalizedCode barcode);
 
-  Future<String> getCountryFromAiAsFuture(String barcode);
+  Future<String> getInfoFromAiAsFuture(String barcode);
 
   Future<void> addProduct(ProductInfo productInfo);
 

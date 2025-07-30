@@ -49,7 +49,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       '016': 'United States',
       '017': 'United States',
       '018': 'United States',
-      '019': 'United States and Canada',
+      '019': 'United States or Canada',
       '020': 'Andorra(ISO 3166-1)',
       '024': 'Angola(ISO 3166-1)',
       '028': 'Antigua and Barbuda(ISO 3166-1)',
@@ -164,9 +164,19 @@ class LocalDataSourceImpl implements LocalDataSource {
       '180': 'Congo (Congo-Kinshasa)',
       '184': 'Cook Islands',
       '188': 'Costa Rica',
-      '191': 'Croatia',
+      '191': 'Unassigned GS1 prefix.\n'
+          'Reportedly used for some products made in China.',
       '192': 'Cuba',
+      '194': 'Not officially assigned by GS1.\n'
+          'Reportedly used for products made in Bangladesh.',
+      '195': 'Not officially assigned by GS1.\n'
+          'Reportedly used for products made in China.',
       '196': 'Cyprus',
+      '197': 'Not officially assigned by GS1.\n'
+          'Reportedly used for products made in '
+          'Cambodia, Bangladesh or Vietnam.',
+      '198': 'Not officially assigned by GS1.\n'
+          'Reportedly used for products made in China.',
       '203': 'Czechia (Czech Republic)',
       '204': 'Benin',
       '208': 'Denmark',
@@ -261,8 +271,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '357': 'France and Monaco',
       '358': 'France and Monaco',
       '359': 'France and Monaco',
-      '36': 'France & Monaco',
-      '360': 'Indonesia',
+      '36': 'France or Monaco',
+      '360': 'Reportedly used for some products made in USA',
       '361': 'France and Monaco',
       '362': 'France and Monaco',
       '363': 'France and Monaco',
@@ -472,18 +482,19 @@ class LocalDataSourceImpl implements LocalDataSource {
       '617': 'Cameroon',
       '618': 'Ivory Coast',
       '619': 'Tunisia',
-      '620': 'Tanzania',
+      '620': 'Tanzania (GS1). Reportedly used on products made in China.',
       '621': 'Syria',
       '622': 'Egypt',
       '624': 'Libya',
       '625': 'Jordan',
       '626': 'Iran',
-      '627': 'Kuwait',
+      '627': 'Kuwait (GS1).\nReportedly used for some products made in China.',
       // “628” is the GS1 barcode of Saudi Arabia.
       '628': 'Saudi Arabia',
       '629': 'United Arab Emirates',
       '630': 'Qatar',
       '631': 'Namibia',
+      '632': 'Peru (GS1). Reportedly used for some products made in China.',
       '634': 'Reunion',
       '64': 'Finland',
       '640': 'Finland',
@@ -498,9 +509,13 @@ class LocalDataSourceImpl implements LocalDataSource {
       '649': 'Finland',
       '652': 'Saint Barthelemy',
       '654': 'Saint Helena',
+      '655': 'Unassigned GS1 prefix.\n'
+          'Reportedly used for some products made in China.',
       '659': 'Saint Kitts and Nevis',
       '662': 'Anguilla',
       '663': 'Saint Lucia',
+      '665': 'Unassigned GS1 prefix.\n'
+          'Reportedly used for some products made in China.',
       '666': 'Saint Martin',
       '670': 'Saint Pierre and Miquelon',
       '674': 'Saint Vincent and the Grenadines',
@@ -763,11 +778,12 @@ class LocalDataSourceImpl implements LocalDataSource {
       );
 
   @override
-  bool getPrecipitationState() =>
-      _sharedPrefs.getBool(
-        Settings.precipitationFalling.key,
-      ) ??
-      true;
+  bool getPrecipitationState() {
+    return _sharedPrefs.getBool(
+          Settings.precipitationFalling.key,
+        ) ??
+        true;
+  }
 
   @override
   Future<bool> saveSoundPreference(bool isSoundOn) => _sharedPrefs.setBool(
@@ -776,11 +792,12 @@ class LocalDataSourceImpl implements LocalDataSource {
       );
 
   @override
-  bool getSoundPreference() =>
-      _sharedPrefs.getBool(
-        Settings.sound.key,
-      ) ??
-      false;
+  bool getSoundPreference() {
+    return _sharedPrefs.getBool(
+          Settings.sound.key,
+        ) ??
+        false;
+  }
 
   @override
   String getLanguageIsoCode() {
@@ -800,6 +817,10 @@ class LocalDataSourceImpl implements LocalDataSource {
   }
 
   @override
-  Future<bool> saveLanguageIsoCode(String languageIsoCode) =>
-      _sharedPrefs.setString(Settings.languageIsoCode.key, languageIsoCode);
+  Future<bool> saveLanguageIsoCode(String languageIsoCode) {
+    return _sharedPrefs.setString(
+      Settings.languageIsoCode.key,
+      languageIsoCode,
+    );
+  }
 }
