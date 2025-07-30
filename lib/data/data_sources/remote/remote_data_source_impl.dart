@@ -63,11 +63,11 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         }
       } else if (result.status == ProductResultV3.statusFailure) {
         if (_isBarcode(code)) {
-          final bool cannotHveIngredients = result.result?.id ==
+          final bool cannotHaveIngredients = result.result?.id ==
               'product_found_with_a_different_product_type';
           return ProductInfo(
             barcode: code,
-            responseType: cannotHveIngredients
+            responseType: cannotHaveIngredients
                 ? ProductResponseType.error
                 : ProductResponseType.barcodeOnly,
           );

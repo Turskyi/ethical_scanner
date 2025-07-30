@@ -354,9 +354,8 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
             );
           }
         }
-        if (productInfo.countryAi.isNotEmpty) {
-          modifiableProductInfo[ProductInfoType.countryAi] =
-              productInfo.countryAi;
+        if (productInfo.infoAi.isNotEmpty) {
+          modifiableProductInfo[ProductInfoType.countryAi] = productInfo.infoAi;
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
