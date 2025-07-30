@@ -23,6 +23,18 @@ extension TerrorismSponsorList on List<TerrorismSponsor> {
         _isSponsoredByAnyTerrorismSponsor(product);
   }
 
+  List<String> get _otherTerrorismSponsors => <String>[
+        // added to response
+        'quaker',
+        'nestlé',
+        'pepsi cola',
+        'mars inc.',
+        // not added, as it looks like exception
+        'bacardi, martini',
+        'quakerquaker oats',
+        'bounty chocolate',
+      ];
+
   bool _isSponsoredByOtherRussiaSponsors(ProductInfo product) {
     final String productBrandString = product.brand.toLowerCase().trim();
 
@@ -68,6 +80,10 @@ extension TerrorismSponsorList on List<TerrorismSponsor> {
               product,
             ) ||
             _isSponsorBrandsNotEmptyAndContainsProductBrand(
+              terrorismSponsor,
+              product,
+            ) ||
+            _isSponsorBrandsNotEmptyAndContainsProductName(
               terrorismSponsor,
               product,
             ));
@@ -149,13 +165,32 @@ extension TerrorismSponsorList on List<TerrorismSponsor> {
           .map((String brand) => brand.toLowerCase())
           .toList();
 
-  List<String> get _otherTerrorismSponsors => <String>[
-        'quaker',
-        'nestlé',
-        'pepsi cola',
-        'bacardi, martini',
-        'quakerquaker oats',
-        'bounty chocolate',
-        'mars inc.',
-      ];
+  bool _isSponsorBrandsNotEmptyAndContainsProductName(
+    TerrorismSponsor terrorismSponsor,
+    ProductInfo product,
+  ) {
+    return terrorismSponsor.brands.isNotEmpty &&
+        product.name.isNotEmpty &&
+        _doesSponsorBrandsContainProductName(terrorismSponsor, product);
+  }
+
+  bool _doesSponsorBrandsContainProductName(
+    TerrorismSponsor terrorismSponsor,
+    ProductInfo product,
+  ) {
+    final List<String> sponsorBrandList = _getLowerCaseBrands(terrorismSponsor);
+    final String productNameString = product.name.toLowerCase().trim();
+
+    if (sponsorBrandList.isEmpty || productNameString.isEmpty) {
+      return false;
+    }
+
+    // Check if any of the product's name is present in the
+    // sponsor's brand list.
+    if (sponsorBrandList.contains(productNameString)) {
+      return true;
+    }
+
+    return false;
+  }
 }
