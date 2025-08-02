@@ -24,9 +24,14 @@ Route<Object> generateRoute(RouteSettings settings) {
           return BlocProvider<ScanPresenter>(
             create: (BuildContext context) {
               final Dependencies dependencies = DependenciesScope.of(context);
+              final Language initialLanguage = Language.fromIsoLanguageCode(
+                LocalizedApp.of(context).delegate.currentLocale.languageCode,
+              );
               return ScanPresenter(
                 dependencies.saveSoundPreferenceUseCase,
                 dependencies.getSoundPreferenceUseCase,
+                dependencies.saveLanguageUseCase,
+                initialLanguage,
               )..add(const LoadScannerEvent());
             },
             child: BlocListener<ScanPresenter, ScanViewModel>(

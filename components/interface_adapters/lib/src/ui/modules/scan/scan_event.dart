@@ -1,3 +1,5 @@
+import 'package:entities/entities.dart';
+
 sealed class ScanEvent {
   const ScanEvent();
 }
@@ -24,4 +26,10 @@ class DetectedBarcodeEvent extends ScanEvent {
   const DetectedBarcodeEvent(this.barcodeValue);
 
   final String barcodeValue;
+}
+
+class ChangeScanLanguageEvent extends ScanEvent {
+  const ChangeScanLanguageEvent(this.language);
+
+  final Language language;
 }
