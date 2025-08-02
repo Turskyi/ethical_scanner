@@ -19,36 +19,46 @@ class Dependencies {
     return Dependencies._(localDataSource);
   }
 
-  UseCase<bool, Null> get getPrecipitationStateUseCase =>
-      GetPrecipitationStateUseCase(_settingsGateway);
+  UseCase<bool, Null> get getPrecipitationStateUseCase {
+    return GetPrecipitationStateUseCase(_settingsGateway);
+  }
 
-  UseCase<Future<bool>, bool> get savePrecipitationStateUseCase =>
-      SavePrecipitationStateUseCase(_settingsGateway);
+  UseCase<Future<bool>, bool> get savePrecipitationStateUseCase {
+    return SavePrecipitationStateUseCase(_settingsGateway);
+  }
 
-  UseCase<Language, Null> get getLanguageUseCase =>
-      GetLanguageUseCase(_settingsGateway);
+  UseCase<Language, Null> get getLanguageUseCase {
+    return GetLanguageUseCase(_settingsGateway);
+  }
 
-  UseCase<Future<bool>, String> get saveLanguageUseCase =>
-      SaveLanguageUseCase(_settingsGateway);
+  UseCase<Future<bool>, String> get saveLanguageUseCase {
+    return SaveLanguageUseCase(_settingsGateway);
+  }
 
-  UseCase<Future<ProductInfo>, LocalizedCode> get productInfoUseCase =>
-      GetProductInfoUseCase(_productInfoGateway);
+  UseCase<Future<ProductInfo>, LocalizedCode> get productInfoUseCase {
+    return GetProductInfoUseCase(_productInfoGateway);
+  }
 
-  UseCase<Future<void>, ProductPhoto> get addIngredientsUseCase =>
-      AddIngredientsUseCase(_productInfoGateway);
+  UseCase<Future<void>, ProductPhoto> get addIngredientsUseCase {
+    return AddIngredientsUseCase(_productInfoGateway);
+  }
 
-  GetSoundPreferenceUseCase get getSoundPreferenceUseCase =>
-      GetSoundPreferenceUseCase(_settingsGateway);
+  GetSoundPreferenceUseCase get getSoundPreferenceUseCase {
+    return GetSoundPreferenceUseCase(_settingsGateway);
+  }
 
-  SaveSoundPreferenceUseCase get saveSoundPreferenceUseCase =>
-      SaveSoundPreferenceUseCase(_settingsGateway);
+  SaveSoundPreferenceUseCase get saveSoundPreferenceUseCase {
+    return SaveSoundPreferenceUseCase(_settingsGateway);
+  }
 
   SettingsGateway get _settingsGateway => SettingsGatewayImpl(_localDataSource);
 
-  ProductInfoGateway get _productInfoGateway => ProductInfoGatewayImpl(
-        RemoteDataSourceImpl(_restClient),
-        _localDataSource,
-      );
+  ProductInfoGateway get _productInfoGateway {
+    return ProductInfoGatewayImpl(
+      RemoteDataSourceImpl(_restClient),
+      _localDataSource,
+    );
+  }
 
   RestClient get _restClient {
     final Dio dio = Dio();

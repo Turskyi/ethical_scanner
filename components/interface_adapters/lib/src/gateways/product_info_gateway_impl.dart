@@ -70,8 +70,12 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
         );
       }
     }).then((ProductInfo info) {
-      if (info.origin.isNotEmpty || info.countrySold.isNotEmpty) {
+      if (info.origin.isNotEmpty) {
         return info;
+      } else if (info.countrySold.isNotEmpty) {
+        return info.copyWith(
+          origin: _localDataSource.getCountryFromBarcode(inputCode),
+        );
       } else if (_localDataSource.isEnglishBook(inputCode)) {
         final String eanPrefix = inputCode.substring(0, 3);
         return info.copyWith(
@@ -88,7 +92,7 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
           return localInfo;
         } else {
           return _remoteDataSource.getInfoFromAiAsFuture(inputCode).then(
-                (String country) => info.copyWith(countryAi: country),
+                (String country) => info.copyWith(infoAi: country),
               );
         }
       }

@@ -10,11 +10,13 @@ class LocalDataSourceImpl implements LocalDataSource {
   LocalDataSourceImpl._internal();
 
   static final LocalDataSourceImpl _instance = LocalDataSourceImpl._internal();
-  late final SharedPreferences _sharedPrefs;
+  late final SharedPreferences _preferences;
 
   @override
-  Future<void> init() => SharedPreferences.getInstance()
-      .then((SharedPreferences prefs) => _sharedPrefs = prefs);
+  Future<void> init() {
+    return SharedPreferences.getInstance()
+        .then((SharedPreferences prefs) => _preferences = prefs);
+  }
 
   /// Function to retrieve the country from barcode.
   ///
@@ -25,24 +27,22 @@ class LocalDataSourceImpl implements LocalDataSource {
   /// https://en.wikipedia.org/wiki/ISO_3166-1_numeric
   @override
   String getCountryFromBarcode(String barcode) {
-    // List of countries with corresponding barcode prefixes
+    // List of countries with corresponding barcode prefixes.
     Map<String, String> countryCodeMap = <String, String>{
       '0': 'USA / Canada',
       '000': 'United States and Canada',
       '001': 'United States',
       '002': 'United States',
       '003': 'United States',
-      // ISO 3166-1 numeric for Afghanistan and GS1 USA country code
-      '004': 'USA(GS1)/Afghanistan(ISO 3166-1)',
+      '004': 'USA(GS1)',
       '005': 'United States',
       '006': 'United States',
       '007': 'United States',
-      // ISO 3166-1 numeric for Albania and GS1 USA country code
-      '008': 'USA(GS1)/Albania(ISO 3166-1)',
+      '008': 'USA(GS1)',
       '009': 'United States',
       '010': 'United States',
       '011': 'United States',
-      '012': 'USA(GS1)/Algeria(ISO 3166-1)',
+      '012': 'USA(GS1)',
       '013': 'United States',
       '014': 'United States',
       '015': 'United States',
@@ -55,22 +55,22 @@ class LocalDataSourceImpl implements LocalDataSource {
       '028': 'Antigua and Barbuda(ISO 3166-1)',
       '030': 'United States',
       '031': 'United States',
-      '032': 'USA(GS1)/Argentina(ISO 3166-1)',
+      '032': 'USA(GS1)',
       '033': 'United States',
       '034': 'United States',
       '035': 'United States',
-      '036': 'USA(GS1)/Australia(ISO 3166-1)',
+      '036': 'USA(GS1)',
       '037': 'United States',
       '038': 'United States',
       '039': 'United States',
       '040': 'Austria(ISO 3166-1)',
       '044': 'Bahamas(ISO 3166-1)',
       '048': 'Bahrain(ISO 3166-1)',
-      '050': 'US(GS1)/Bangladesh(ISO 3166-1)',
-      '051': 'US(GS1)/Armenia(ISO 3166-1)',
-      '052': 'US(GS1)/Barbados(ISO 3166-1)',
-      '056': 'US(GS1)/Belgium(ISO 3166-1)',
-      // 057 is EAN-13 barcode prefix for the United States
+      '050': 'US(GS1)',
+      '051': 'US(GS1)',
+      '052': 'US(GS1)',
+      '056': 'US(GS1)',
+      // 057 is EAN-13 barcode prefix for the United States.
       '057': 'United States',
       '060': 'United States and Canada',
       '061': 'United States',
@@ -517,6 +517,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       '665': 'Unassigned GS1 prefix.\n'
           'Reportedly used for some products made in China.',
       '666': 'Saint Martin',
+      '667': 'Reportedly used for some products made in Vietnam.',
       '670': 'Saint Pierre and Miquelon',
       '674': 'Saint Vincent and the Grenadines',
       '678': 'San Marino',
@@ -754,9 +755,12 @@ class LocalDataSourceImpl implements LocalDataSource {
 
   @override
   bool isEnglishBook(String barcode) {
+    const int asciiZero = 48;
+    const int asciiNine = 57;
+
     final List<int> digits = barcode.codeUnits
-        .where((int char) => char >= 48 && char <= 57)
-        .map((int char) => char - 48)
+        .where((int char) => char >= asciiZero && char <= asciiNine)
+        .map((int char) => char - asciiZero)
         .toList();
 
     if (digits.length != 13) {
@@ -771,29 +775,32 @@ class LocalDataSourceImpl implements LocalDataSource {
   }
 
   @override
-  Future<bool> savePrecipitationState(bool isPrecipitationFalling) =>
-      _sharedPrefs.setBool(
-        Settings.precipitationFalling.key,
-        isPrecipitationFalling,
-      );
+  Future<bool> savePrecipitationState(bool isPrecipitationFalling) {
+    return _preferences.setBool(
+      Settings.precipitationFalling.key,
+      isPrecipitationFalling,
+    );
+  }
 
   @override
   bool getPrecipitationState() {
-    return _sharedPrefs.getBool(
+    return _preferences.getBool(
           Settings.precipitationFalling.key,
         ) ??
         true;
   }
 
   @override
-  Future<bool> saveSoundPreference(bool isSoundOn) => _sharedPrefs.setBool(
-        Settings.sound.key,
-        isSoundOn,
-      );
+  Future<bool> saveSoundPreference(bool isSoundOn) {
+    return _preferences.setBool(
+      Settings.sound.key,
+      isSoundOn,
+    );
+  }
 
   @override
   bool getSoundPreference() {
-    return _sharedPrefs.getBool(
+    return _preferences.getBool(
           Settings.sound.key,
         ) ??
         false;
@@ -801,26 +808,46 @@ class LocalDataSourceImpl implements LocalDataSource {
 
   @override
   String getLanguageIsoCode() {
-    final String? savedLanguageIsoCode = _sharedPrefs.getString(
+    final String? savedLanguageIsoCode = _preferences.getString(
       Settings.languageIsoCode.key,
     );
 
-    String defaultLanguageCode =
+    final bool isSavedLanguageSupported = savedLanguageIsoCode != null &&
+        Language.values.any(
+          (Language lang) => lang.isoLanguageCode == savedLanguageIsoCode,
+        );
+
+    final String systemLanguageCode =
         PlatformDispatcher.instance.locale.languageCode;
+
+    String defaultLanguageCode = Language.values.any(
+      (Language lang) => lang.isoLanguageCode == systemLanguageCode,
+    )
+        ? systemLanguageCode
+        : Language.en.isoLanguageCode;
 
     final String host = Uri.base.host;
     if (host.startsWith('${Language.uk.isoLanguageCode}.')) {
       defaultLanguageCode = Language.uk.isoLanguageCode;
     }
 
-    return savedLanguageIsoCode ?? defaultLanguageCode;
+    return isSavedLanguageSupported
+        ? savedLanguageIsoCode
+        : defaultLanguageCode;
   }
 
   @override
   Future<bool> saveLanguageIsoCode(String languageIsoCode) {
-    return _sharedPrefs.setString(
+    final bool isSupported = Language.values.any(
+      (Language lang) => lang.isoLanguageCode == languageIsoCode,
+    );
+
+    final String safeLanguageCode =
+        isSupported ? languageIsoCode : Language.en.isoLanguageCode;
+
+    return _preferences.setString(
       Settings.languageIsoCode.key,
-      languageIsoCode,
+      safeLanguageCode,
     );
   }
 }

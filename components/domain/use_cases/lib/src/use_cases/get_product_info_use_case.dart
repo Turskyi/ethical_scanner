@@ -10,6 +10,7 @@ class GetProductInfoUseCase
   @override
   Future<ProductInfo> call([
     LocalizedCode barcode = const LocalizedCode(code: ''),
-  ]) =>
-      _productInfoGateway.getProductInfoAsFuture(barcode);
+  ]) {
+    return _productInfoGateway.getProductInfoAsFuture(barcode);
+  }
 }
