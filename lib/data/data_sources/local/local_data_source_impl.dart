@@ -10,12 +10,12 @@ class LocalDataSourceImpl implements LocalDataSource {
   LocalDataSourceImpl._internal();
 
   static final LocalDataSourceImpl _instance = LocalDataSourceImpl._internal();
-  late final SharedPreferences _sharedPrefs;
+  late final SharedPreferences _preferences;
 
   @override
   Future<void> init() {
     return SharedPreferences.getInstance()
-        .then((SharedPreferences prefs) => _sharedPrefs = prefs);
+        .then((SharedPreferences prefs) => _preferences = prefs);
   }
 
   /// Function to retrieve the country from barcode.
@@ -517,6 +517,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       '665': 'Unassigned GS1 prefix.\n'
           'Reportedly used for some products made in China.',
       '666': 'Saint Martin',
+      '667': 'Reportedly used for some products made in Vietnam.',
       '670': 'Saint Pierre and Miquelon',
       '674': 'Saint Vincent and the Grenadines',
       '678': 'San Marino',
@@ -754,9 +755,12 @@ class LocalDataSourceImpl implements LocalDataSource {
 
   @override
   bool isEnglishBook(String barcode) {
+    const int asciiZero = 48;
+    const int asciiNine = 57;
+
     final List<int> digits = barcode.codeUnits
-        .where((int char) => char >= 48 && char <= 57)
-        .map((int char) => char - 48)
+        .where((int char) => char >= asciiZero && char <= asciiNine)
+        .map((int char) => char - asciiZero)
         .toList();
 
     if (digits.length != 13) {
@@ -771,29 +775,32 @@ class LocalDataSourceImpl implements LocalDataSource {
   }
 
   @override
-  Future<bool> savePrecipitationState(bool isPrecipitationFalling) =>
-      _sharedPrefs.setBool(
-        Settings.precipitationFalling.key,
-        isPrecipitationFalling,
-      );
+  Future<bool> savePrecipitationState(bool isPrecipitationFalling) {
+    return _preferences.setBool(
+      Settings.precipitationFalling.key,
+      isPrecipitationFalling,
+    );
+  }
 
   @override
   bool getPrecipitationState() {
-    return _sharedPrefs.getBool(
+    return _preferences.getBool(
           Settings.precipitationFalling.key,
         ) ??
         true;
   }
 
   @override
-  Future<bool> saveSoundPreference(bool isSoundOn) => _sharedPrefs.setBool(
-        Settings.sound.key,
-        isSoundOn,
-      );
+  Future<bool> saveSoundPreference(bool isSoundOn) {
+    return _preferences.setBool(
+      Settings.sound.key,
+      isSoundOn,
+    );
+  }
 
   @override
   bool getSoundPreference() {
-    return _sharedPrefs.getBool(
+    return _preferences.getBool(
           Settings.sound.key,
         ) ??
         false;
@@ -801,26 +808,46 @@ class LocalDataSourceImpl implements LocalDataSource {
 
   @override
   String getLanguageIsoCode() {
-    final String? savedLanguageIsoCode = _sharedPrefs.getString(
+    final String? savedLanguageIsoCode = _preferences.getString(
       Settings.languageIsoCode.key,
     );
 
-    String defaultLanguageCode =
+    final bool isSavedLanguageSupported = savedLanguageIsoCode != null &&
+        Language.values.any(
+          (Language lang) => lang.isoLanguageCode == savedLanguageIsoCode,
+        );
+
+    final String systemLanguageCode =
         PlatformDispatcher.instance.locale.languageCode;
+
+    String defaultLanguageCode = Language.values.any(
+      (Language lang) => lang.isoLanguageCode == systemLanguageCode,
+    )
+        ? systemLanguageCode
+        : Language.en.isoLanguageCode;
 
     final String host = Uri.base.host;
     if (host.startsWith('${Language.uk.isoLanguageCode}.')) {
       defaultLanguageCode = Language.uk.isoLanguageCode;
     }
 
-    return savedLanguageIsoCode ?? defaultLanguageCode;
+    return isSavedLanguageSupported
+        ? savedLanguageIsoCode
+        : defaultLanguageCode;
   }
 
   @override
   Future<bool> saveLanguageIsoCode(String languageIsoCode) {
-    return _sharedPrefs.setString(
+    final bool isSupported = Language.values.any(
+      (Language lang) => lang.isoLanguageCode == languageIsoCode,
+    );
+
+    final String safeLanguageCode =
+        isSupported ? languageIsoCode : Language.en.isoLanguageCode;
+
+    return _preferences.setString(
       Settings.languageIsoCode.key,
-      languageIsoCode,
+      safeLanguageCode,
     );
   }
 }

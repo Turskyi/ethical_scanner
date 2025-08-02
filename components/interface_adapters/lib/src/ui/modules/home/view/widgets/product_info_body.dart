@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:entities/entities.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:interface_adapters/interface_adapters.dart';
@@ -30,9 +33,23 @@ class ProductInfoBody extends StatelessWidget {
           if (viewModel is ProductInfoState) {
             final EdgeInsets edgeInsets = MediaQuery.viewInsetsOf(context);
             final EdgeInsets padding = MediaQuery.paddingOf(context);
+
+            const double androidSpecificTopAdjustment = 16.0;
+            const double defaultPlatformTopAdjustment = 0.0;
+
+            // Determine platform-specific adjustment in a web-safe way
+            double platformSpecificBasePadding;
+            if (kIsWeb) {
+              platformSpecificBasePadding = defaultPlatformTopAdjustment;
+            } else if (Platform.isAndroid) {
+              platformSpecificBasePadding = androidSpecificTopAdjustment;
+            } else {
+              platformSpecificBasePadding = defaultPlatformTopAdjustment;
+            }
+
             return ListView.builder(
               padding: EdgeInsets.only(
-                top: dimens.productInfoListTopPadding +
+                top: platformSpecificBasePadding +
                     padding.top +
                     edgeInsets.top +
                     // Without it the code tile will be pushed up outside of the

@@ -24,7 +24,6 @@ class Dimens {
   final double bodyTitleOffset = 2.0;
   final double bodyBlurRadius = 3.0;
   final double circularProgressStrokeWidth = 5.0;
-  final double productInfoListTopPadding = 8.0;
 
   /// Adjust the left padding
   final double leftPadding = 8.0;
