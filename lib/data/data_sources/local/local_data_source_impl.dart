@@ -487,10 +487,10 @@ class LocalDataSourceImpl implements LocalDataSource {
       '622': 'Egypt',
       '624': 'Libya',
       '625': 'Jordan',
-      '626': 'Iran',
+      '626': 'Barcode registered in Iran. '
+          'Reportedly used for some products made in Canada.',
       '627': 'Kuwait (GS1).\nReportedly used for some products made in China.',
-      // “628” is the GS1 barcode of Saudi Arabia.
-      '628': 'Saudi Arabia',
+      '628': 'Saudi Arabia (GS1)',
       '629': 'United Arab Emirates',
       '630': 'Qatar',
       '631': 'Namibia',
