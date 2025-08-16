@@ -21,10 +21,10 @@ class LocalDataSourceImpl implements LocalDataSource {
   /// Function to retrieve the country from barcode.
   ///
   /// References:
-  /// https://www.barcodestalk.com/learn-about-barcodes/resources/barcode-country-codes
   /// https://internationalbarcodes.com/barcode-country-codes/
   /// https://en.wikipedia.org/wiki/List_of_GS1_country_codes
   /// https://en.wikipedia.org/wiki/ISO_3166-1_numeric
+  /// https://www.barcodestalk.com/learn-about-barcodes/resources/barcode-country-codes
   @override
   String getCountryFromBarcode(String barcode) {
     // List of countries with corresponding barcode prefixes.
@@ -70,8 +70,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '051': 'US(GS1)',
       '052': 'US(GS1)',
       '056': 'US(GS1)',
-      // 057 is EAN-13 barcode prefix for the United States.
-      '057': 'United States',
+      '057': 'United States (GS1).\n'
+          'Some products with this code are made in China.',
       '060': 'United States and Canada',
       '061': 'United States',
       '062': 'United States',
@@ -663,8 +663,10 @@ class LocalDataSourceImpl implements LocalDataSource {
       '847': 'Spain and Andorra',
       '848': 'Spain and Andorra',
       '849': 'Spain and Andorra',
-      '850': 'Cuba',
+      '850': 'Cuba (GS1-registered prefix).\n'
+          'Reportedly also found on products labeled as made in the U.S.A.',
       '854': 'Burkina Faso',
+      '856': 'Reportedly used on products from Colombia.',
       '858': 'Slovakia',
       '859': 'Czech Republic',
       '860': 'Serbia',
