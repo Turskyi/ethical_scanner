@@ -72,8 +72,10 @@ class LocalDataSourceImpl implements LocalDataSource {
       '056': 'US(GS1)',
       '057': 'United States (GS1).\n'
           'Some products with this code are made in China.',
-      '060': 'United States and Canada',
-      '061': 'United States',
+      '060': 'United States and Canada (barcode registered).\n'
+          'Some products with this code are labeled as Product of Switzerland.',
+      '061': 'United States (GS1).\n'
+          'Some products with this code are produced and packed in Greece.',
       '062': 'United States',
       '063': 'United States',
       '064': 'Bhutan',
