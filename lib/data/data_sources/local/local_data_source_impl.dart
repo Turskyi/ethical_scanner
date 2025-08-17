@@ -681,7 +681,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '871': 'Netherlands',
       '872': 'Netherlands',
       '873': 'Netherlands',
-      '874': 'Netherlands',
+      '874': 'Netherlands (GS1).\n'
+          'Some products with this code are labeled as Product of Canada.',
       '875': 'Netherlands',
       '876': 'Wallis and Futuna',
       '877': 'Netherlands',
