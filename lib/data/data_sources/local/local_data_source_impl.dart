@@ -80,7 +80,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '063': 'United States',
       '064': 'Bhutan',
       '065': 'United States',
-      '066': 'United States',
+      '066': 'United States (GS1).\n'
+          'Reportedly used on products from Columbia and/or packed in Canada.',
       '067': 'United States',
       '068': 'Bolivia',
       '069': 'United States',
