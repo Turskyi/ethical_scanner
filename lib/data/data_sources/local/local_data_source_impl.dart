@@ -23,6 +23,7 @@ class LocalDataSourceImpl implements LocalDataSource {
   /// References:
   /// https://internationalbarcodes.com/barcode-country-codes/
   /// https://en.wikipedia.org/wiki/List_of_GS1_country_codes
+  /// https://gs1.se/en/guides/documentation/code-lists/t3784-country-code/
   /// https://en.wikipedia.org/wiki/ISO_3166-1_numeric
   /// https://www.barcodestalk.com/learn-about-barcodes/resources/barcode-country-codes
   @override
@@ -502,8 +503,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '64': 'Finland',
       '640': 'Finland',
       '641': 'Finland',
-      '642': 'Romania',
-      '643': 'Russia',
+      '642': 'Romania (T3784)',
+      '643': 'Russia (T3784)',
       '644': 'Finland',
       '645': 'Finland',
       '646': 'Rwanda',
