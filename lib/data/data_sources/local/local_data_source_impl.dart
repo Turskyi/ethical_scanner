@@ -599,7 +599,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '770': 'Colombia',
       '771': 'Colombia',
       '772': 'Tokelau',
-      '773': 'Uruguay',
+      '773': 'Uruguay (GS1).\n'
+          'Found on products made in China.',
       '775': 'Peru',
       '776': 'Tonga',
       '777': 'Bolivia',
