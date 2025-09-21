@@ -86,8 +86,7 @@ android {
         //noinspection GroovyAssignabilityCheck
         applicationId rootProject.application_id
 
-        //TODO: change to dynamic "flutter.minSdkVersion" value, when it will be possible.
-        minSdkVersion 23
+        minSdkVersion flutter.minSdkVersion
         //noinspection GroovyAssignabilityCheck
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
@@ -159,6 +158,6 @@ flutter {
 }
 
 dependencies {
-    implementation 'com.google.firebase:firebase-crashlytics:20.0.0'
+    implementation 'com.google.firebase:firebase-crashlytics:20.0.2'
     implementation 'com.google.firebase:firebase-analytics:23.0.0'
 }

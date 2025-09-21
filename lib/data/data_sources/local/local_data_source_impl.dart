@@ -83,7 +83,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       '065': 'United States',
       '066': 'United States (GS1).\n'
           'Reportedly used on products from Columbia and/or packed in Canada.',
-      '067': 'United States',
+      '067': 'United States (GS1)',
       '068': 'Bolivia',
       '069': 'United States',
       '070': 'Bosnia and Herzegovina',
@@ -249,7 +249,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '333': 'France and Monaco',
       '334': 'Heard Island and McDonald Islands',
       '335': 'France and Monaco',
-      '336': 'Vatican City (Holy See)',
+      '336': 'France (GS1).\n'
+          'Reportedly used on products manufactured in China.',
       '337': 'France and Monaco',
       '338': 'France and Monaco',
       '339': 'France and Monaco',

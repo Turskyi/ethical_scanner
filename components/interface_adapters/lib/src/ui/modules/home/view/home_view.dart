@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/animations/butterfly_animation.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/animations/maple_leaf_animation.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/animations/sakura_petal_animation.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/animations/snow_animation.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/fab.dart';
@@ -72,7 +73,9 @@ class HomeView extends StatelessWidget {
                   else if (_isSpring)
                     const SakuraPetalAnimation()
                   else if (_isSummer)
-                    const ButterflyAnimation(),
+                    const ButterflyAnimation()
+                  else if (_isAutumn)
+                    const MapleLeafAnimation(),
               ],
             );
           },
@@ -118,5 +121,13 @@ class HomeView extends StatelessWidget {
     return currentMonth == DateTime.june ||
         currentMonth == DateTime.july ||
         currentMonth == DateTime.august;
+  }
+
+  bool get _isAutumn {
+    final DateTime currentDate = DateTime.now();
+    final int currentMonth = currentDate.month;
+    return currentMonth == DateTime.september ||
+        currentMonth == DateTime.october ||
+        currentMonth == DateTime.november;
   }
 }
