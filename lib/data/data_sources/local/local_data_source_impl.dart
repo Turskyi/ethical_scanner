@@ -21,10 +21,11 @@ class LocalDataSourceImpl implements LocalDataSource {
   /// Function to retrieve the country from barcode.
   ///
   /// References:
-  /// https://www.barcodestalk.com/learn-about-barcodes/resources/barcode-country-codes
   /// https://internationalbarcodes.com/barcode-country-codes/
   /// https://en.wikipedia.org/wiki/List_of_GS1_country_codes
+  /// https://gs1.se/en/guides/documentation/code-lists/t3784-country-code/
   /// https://en.wikipedia.org/wiki/ISO_3166-1_numeric
+  /// https://www.barcodestalk.com/learn-about-barcodes/resources/barcode-country-codes
   @override
   String getCountryFromBarcode(String barcode) {
     // List of countries with corresponding barcode prefixes.
@@ -70,16 +71,19 @@ class LocalDataSourceImpl implements LocalDataSource {
       '051': 'US(GS1)',
       '052': 'US(GS1)',
       '056': 'US(GS1)',
-      // 057 is EAN-13 barcode prefix for the United States.
-      '057': 'United States',
-      '060': 'United States and Canada',
-      '061': 'United States',
+      '057': 'United States (GS1).\n'
+          'Some products with this code are made in China.',
+      '060': 'United States and Canada (barcode registered).\n'
+          'Some products with this code are labeled as Product of Switzerland.',
+      '061': 'United States (GS1).\n'
+          'Some products with this code are produced and packed in Greece.',
       '062': 'United States',
       '063': 'United States',
       '064': 'Bhutan',
       '065': 'United States',
-      '066': 'United States',
-      '067': 'United States',
+      '066': 'United States (GS1).\n'
+          'Reportedly used on products from Columbia and/or packed in Canada.',
+      '067': 'United States (GS1)',
       '068': 'Bolivia',
       '069': 'United States',
       '070': 'Bosnia and Herzegovina',
@@ -245,7 +249,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '333': 'France and Monaco',
       '334': 'Heard Island and McDonald Islands',
       '335': 'France and Monaco',
-      '336': 'Vatican City (Holy See)',
+      '336': 'France (GS1).\n'
+          'Reportedly used on products manufactured in China.',
       '337': 'France and Monaco',
       '338': 'France and Monaco',
       '339': 'France and Monaco',
@@ -487,10 +492,10 @@ class LocalDataSourceImpl implements LocalDataSource {
       '622': 'Egypt',
       '624': 'Libya',
       '625': 'Jordan',
-      '626': 'Iran',
+      '626': 'Barcode registered in Iran. '
+          'Reportedly used for some products made in Canada.',
       '627': 'Kuwait (GS1).\nReportedly used for some products made in China.',
-      // “628” is the GS1 barcode of Saudi Arabia.
-      '628': 'Saudi Arabia',
+      '628': 'Saudi Arabia (GS1)',
       '629': 'United Arab Emirates',
       '630': 'Qatar',
       '631': 'Namibia',
@@ -499,8 +504,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '64': 'Finland',
       '640': 'Finland',
       '641': 'Finland',
-      '642': 'Romania',
-      '643': 'Russia',
+      '642': 'Romania (T3784)',
+      '643': 'Russia (T3784)',
       '644': 'Finland',
       '645': 'Finland',
       '646': 'Rwanda',
@@ -583,7 +588,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '76': 'United States',
       '760': 'Syria',
       '761': 'Switzerland and Liechtenstein',
-      '762': 'Tajikistan',
+      '762': 'Switzerland and Liechtenstein (GS1).\n'
+          'Reportedly used on some produce grown in Canada.',
       '763': 'Switzerland and Liechtenstein',
       '764': 'Thailand',
       '765': 'Switzerland and Liechtenstein',
@@ -594,7 +600,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '770': 'Colombia',
       '771': 'Colombia',
       '772': 'Tokelau',
-      '773': 'Uruguay',
+      '773': 'Uruguay (GS1).\n'
+          'Found on products made in China.',
       '775': 'Peru',
       '776': 'Tonga',
       '777': 'Bolivia',
@@ -663,8 +670,10 @@ class LocalDataSourceImpl implements LocalDataSource {
       '847': 'Spain and Andorra',
       '848': 'Spain and Andorra',
       '849': 'Spain and Andorra',
-      '850': 'Cuba',
+      '850': 'Cuba (GS1-registered prefix).\n'
+          'Reportedly also found on products labeled as made in the U.S.A.',
       '854': 'Burkina Faso',
+      '856': 'Reportedly used on products from Colombia.',
       '858': 'Slovakia',
       '859': 'Czech Republic',
       '860': 'Serbia',
@@ -677,7 +686,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '871': 'Netherlands',
       '872': 'Netherlands',
       '873': 'Netherlands',
-      '874': 'Netherlands',
+      '874': 'Netherlands (GS1).\n'
+          'Some products with this code are labeled as Product of Canada.',
       '875': 'Netherlands',
       '876': 'Wallis and Futuna',
       '877': 'Netherlands',

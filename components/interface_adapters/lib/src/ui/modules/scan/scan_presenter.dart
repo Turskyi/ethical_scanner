@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:entities/entities.dart';
 import 'package:interface_adapters/src/ui/modules/scan/scan_event.dart';
 import 'package:use_cases/use_cases.dart';
 
@@ -10,7 +11,9 @@ class ScanPresenter extends Bloc<ScanEvent, ScanViewModel> {
   ScanPresenter(
     this._saveSoundPreferenceUseCase,
     this._getSoundPreferenceUseCase,
-  ) : super(const LoadingScanningState()) {
+    this._saveLanguageUseCase,
+    Language initialLanguage,
+  ) : super(LoadingScanningState(language: initialLanguage)) {
     on<LoadScannerEvent>(_onLoadScannerEvent);
 
     on<PopBarcodeEvent>(_onPopBarcodeEvent);
@@ -20,10 +23,13 @@ class ScanPresenter extends Bloc<ScanEvent, ScanViewModel> {
     on<SoundToggleEvent>(_onSoundToggleEvent);
 
     on<DetectedBarcodeEvent>(_onDetectedBarcodeEvent);
+
+    on<ChangeScanLanguageEvent>(_changeLanguage);
   }
 
   final SaveSoundPreferenceUseCase _saveSoundPreferenceUseCase;
   final GetSoundPreferenceUseCase _getSoundPreferenceUseCase;
+  final UseCase<Future<bool>, String> _saveLanguageUseCase;
 
   FutureOr<void> _onDetectedBarcodeEvent(
     DetectedBarcodeEvent event,
@@ -34,6 +40,7 @@ class ScanPresenter extends Bloc<ScanEvent, ScanViewModel> {
         DetectedBarcodeState(
           barcodeValue: event.barcodeValue,
           isSoundOn: (state as ScanningState).isSoundOn,
+          language: state.language,
         ),
       );
     }
@@ -47,9 +54,9 @@ class ScanPresenter extends Bloc<ScanEvent, ScanViewModel> {
       bool isSoundOn = !(state as ScanningState).isSoundOn;
       bool isSaved = await _saveSoundPreferenceUseCase.call(isSoundOn);
       if (isSaved) {
-        emit((state as ScanningState).copyWith(isSoundOn));
+        emit((state as ScanningState).copyWith(isSoundOn: isSoundOn));
       } else {
-        emit(const LoadingScanningState());
+        emit(LoadingScanningState(language: state.language));
       }
     }
   }
@@ -58,7 +65,8 @@ class ScanPresenter extends Bloc<ScanEvent, ScanViewModel> {
     LoadScannerEvent _,
     Emitter<ScanViewModel> emit,
   ) {
-    emit(ScanningState(_getSoundPreferenceUseCase.call()));
+    final bool isSoundOn = _getSoundPreferenceUseCase.call();
+    emit(ScanningState(language: state.language, isSoundOn: isSoundOn));
   }
 
   FutureOr<void> _onPopBarcodeEvent(
@@ -66,9 +74,9 @@ class ScanPresenter extends Bloc<ScanEvent, ScanViewModel> {
     Emitter<ScanViewModel> emit,
   ) {
     if (event.barcode.isEmpty) {
-      emit(const CanceledScanningState());
+      emit(CanceledScanningState(language: state.language));
     } else {
-      emit(ScanSuccessState(event.barcode));
+      emit(ScanSuccessState(language: state.language, barcode: event.barcode));
     }
   }
 
@@ -76,6 +84,23 @@ class ScanPresenter extends Bloc<ScanEvent, ScanViewModel> {
     NavigateBackEvent _,
     Emitter<ScanViewModel> emit,
   ) {
-    emit(const CanceledScanningState());
+    emit(CanceledScanningState(language: state.language));
+  }
+
+  FutureOr<void> _changeLanguage(
+    ChangeScanLanguageEvent event,
+    Emitter<ScanViewModel> emit,
+  ) async {
+    final Language language = event.language;
+    if (language != state.language) {
+      final bool isSaved = await _saveLanguageUseCase.call(
+        language.isoLanguageCode,
+      );
+      if (isSaved && state is ScanningState) {
+        emit((state as ScanningState).copyWith(language: language));
+      } else {
+        emit(LoadingScanningState(language: state.language));
+      }
+    }
   }
 }

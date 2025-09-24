@@ -1,6 +1,6 @@
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://stand-with-ukraine.pp.ua)
 [![Codemagic build status](https://api.codemagic.io/apps/659998e6caf611b8969ad389/659998e6caf611b8969ad388/status_badge.svg)](https://play.google.com/store/apps/details?id=com.turskyi.ethical_scanner)
-[![Build & upload to Firebase App Distribution](https://github.com/Turskyi/ethical_scanner/actions/workflows/flutter_ci.yml/badge.svg)](https://github.com/Turskyi/ethical_scanner/actions/workflows/flutter_ci.yml)
+[![Upload Android build to App Tester.](https://github.com/Turskyi/ethical_scanner/actions/workflows/flutter_android_ci.yml/badge.svg)](https://github.com/Turskyi/ethical_scanner/actions/workflows/flutter_android_ci.yml)
 [![Code Quality](https://github.com/Turskyi/ethical_scanner/actions/workflows/code-quality-tests.yml/badge.svg?branch=master&event=push)](https://github.com/flutter/flutter/wiki/Style-guide-for-Flutter-repo)
 [![style: flutter lints](https://img.shields.io/badge/style-flutter__lints-blue)](https://pub.dev/packages/flutter_lints)
 [![codecov](https://codecov.io/gh/Turskyi/ethical_scanner/graph/badge.svg?token=8PSVNC8TES)](https://codecov.io/gh/Turskyi/ethical_scanner)

@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/language_selector.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/scanner_error_widget.dart';
 import 'package:interface_adapters/src/ui/modules/scan/scan_event.dart';
 import 'package:interface_adapters/src/ui/modules/scan/scan_presenter.dart';
@@ -143,6 +144,42 @@ class _HomeViewState extends State<ScanView> {
                           onTap: _onBackPressed,
                         ),
                         SoundToggleButton(listener: _viewModelListener),
+                        if (kIsWeb)
+                          BlocBuilder<ScanPresenter, ScanViewModel>(
+                            builder: (
+                              BuildContext context,
+                              ScanViewModel viewModel,
+                            ) {
+                              return LanguageSelector(
+                                currentLanguage: viewModel.language,
+                                onLanguageSelected: (Language newLanguage) {
+                                  // Dispatch event to the presenter to handle
+                                  // language change logic and update its
+                                  // state (which might also update this
+                                  // screen's language).
+                                  context.read<ScanPresenter>().add(
+                                        ChangeScanLanguageEvent(newLanguage),
+                                      );
+                                  // Force a rebuild of the current screen's
+                                  // state (`_HomeViewState`).
+                                  // This is necessary because the `AppBar`'s
+                                  // title `Text` widget, which uses
+                                  // `translate('...')`, needs to be
+                                  // reconstructed with the new locale provided
+                                  // by the `flutter_translate` package after
+                                  // `changeLocale` (implicitly called) has
+                                  // taken effect.
+                                  // While the presenter's state will update,
+                                  // that not directly trigger a rebuild of
+                                  // the `AppBar` title without this explicit
+                                  // `setState`.
+                                  // This ensures the title immediately
+                                  // reflects the newly selected language.
+                                  setState(() {});
+                                },
+                              );
+                            },
+                          ),
                       ],
                     ),
                     Container(
@@ -207,7 +244,9 @@ class _HomeViewState extends State<ScanView> {
                   ],
                 ),
               ),
-              const ScreenTitle(),
+              // We pass `widget.key`, so that `ScreenTitle` would be rebuilt
+              // together with his parent after we change language.
+              ScreenTitle(key: widget.key),
             ],
           ),
         ),
