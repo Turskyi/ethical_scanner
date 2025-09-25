@@ -1,11 +1,11 @@
 name: Upload Android build to App Tester.
 
-on:
-  workflow_run:
-    workflows:
-      - Code Quality and Tests
-    types:
-      - completed
+'on':
+  push:
+    branches-ignore:
+      - master
+    branches:
+      - 24
 
 jobs:
   build_apk:

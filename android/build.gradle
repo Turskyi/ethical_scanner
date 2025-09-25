@@ -23,14 +23,44 @@ allprojects {
         google()
         mavenCentral()
     }
-    subprojects {
-        afterEvaluate { project ->
-            if (project.hasProperty('android')) {
-                project.android {
-                    if (namespace == null) {
-                        namespace project.group
+    afterEvaluate { project ->
+        if (project.hasProperty('android') && project.android != null) {
+            // Namespace logic: Set namespace if it's not already defined
+            // (Uses 'group' property as a fallback, ensure your modules have a 'group' defined or namespace is set in their own build.gradle)
+            if ((!project.android.hasProperty('namespace') || project.android.namespace == null) && project.hasProperty('group') && project.group != null) {
+                project.android.namespace = project.group.toString()
+                project.logger.info("Project ${project.name}: Set namespace to '''${project.group.toString()}'''")
+            }
+
+            // Compile SDK version logic
+            def targetCompileSdk = 34 // As required by the dependencies
+            def currentCompileSdkValue = project.android.getProperties().get('compileSdkVersion')
+
+            if (currentCompileSdkValue != null) {
+                def currentCompileSdkInt = -1
+                if (currentCompileSdkValue instanceof String && currentCompileSdkValue.startsWith("android-")) {
+                    currentCompileSdkInt = currentCompileSdkValue.substring("android-".length()).toInteger()
+                } else if (currentCompileSdkValue instanceof Number) {
+                    currentCompileSdkInt = currentCompileSdkValue.toInteger()
+                } else if (currentCompileSdkValue instanceof String) {
+                    try {
+                        currentCompileSdkInt = currentCompileSdkValue.toInteger()
+                    } catch (NumberFormatException ignored) {
+                        project.logger.warn("Project ${project.name}: Could not parse compileSdkVersion '''${currentCompileSdkValue}'''. Skipping override for this project.")
+                        // Potentially return from closure or handle error appropriately
                     }
+                } else {
+                    project.logger.warn("Project ${project.name}: Unknown compileSdkVersion format '''${currentCompileSdkValue}'''. Skipping override for this project.")
                 }
+
+                if (currentCompileSdkInt != -1 && currentCompileSdkInt < targetCompileSdk) {
+                    project.android.compileSdkVersion = targetCompileSdk
+                    project.logger.warn("Project ${project.name}: Overriding compileSdkVersion from ${currentCompileSdkValue} to ${targetCompileSdk}")
+                }
+            } else {
+                // If compileSdkVersion is not defined at all for the subproject
+                project.android.compileSdkVersion = targetCompileSdk
+                project.logger.warn("Project ${project.name}: Setting compileSdkVersion to ${targetCompileSdk} as it was not previously defined.")
             }
         }
     }

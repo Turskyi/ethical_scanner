@@ -67,3 +67,4 @@ ios/Runner/GoogleService-Info.plist
 coverage
 /ios/Podfile.lock
 .metadata
+android/.kotlin/sessions
