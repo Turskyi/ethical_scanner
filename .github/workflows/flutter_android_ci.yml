@@ -2,8 +2,6 @@ name: Upload Android build to App Tester.
 
 'on':
   push:
-    branches-ignore:
-      - master
     branches:
       - 24
 
