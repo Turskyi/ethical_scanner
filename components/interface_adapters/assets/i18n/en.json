@@ -63,5 +63,35 @@
   "photo": {
     "capture_ingredients": "Make a photo of the ingredients.",
     "image_upload_successful": "Image upload successful!"
+  },
+  "privacy_policy": {
+    "main_title": "Privacy Policy for \"Ethical Scanner\" App",
+    "subtitle": "Your privacy is important to us. This page outlines our privacy policy.",
+    "introduction": "This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our application, whether on mobile, web, or desktop platforms.",
+    "information_we_collect": {
+      "title": "Information We Collect",
+      "content": "We do not collect any personal information. We do not use cookies or similar tracking technologies."
+    },
+    "permissions": {
+      "title": "Permissions and Device Access",
+      "content": "The app uses the device's camera solely for barcode scanning. No images or personal content are captured, stored, or transmitted. The app also requires internet access to retrieve product data from external databases. No personal information is transmitted during this process."
+    },
+    "information_sharing": {
+      "title": "Information Sharing",
+      "content": "We do not sell, trade, or otherwise transfer your personal information to third parties. Any data processed by the app is related to usage interactions and is not shared with third parties."
+    },
+    "security": {
+      "title": "Security",
+      "content": "We implement reasonable security measures to protect your personal information. However, no method of transmission or storage is 100% secure, and we cannot guarantee the absolute security of your information."
+    },
+    "changes": {
+      "title": "Changes to This Privacy Policy",
+      "content": "We may update our Privacy Policy from time to time. You are advised to review this page periodically for any changes."
+    },
+    "contact": {
+      "title": "How can you contact us?",
+      "content_part1": "If you have any questions, comments, or concerns about our Privacy Policy or our data practices, please contact us at",
+      "content_part2": ". We will respond to your inquiry as soon as possible."
+    }
   }
 }

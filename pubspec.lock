@@ -639,10 +639,10 @@ packages:
     dependency: "direct main"
     description:
       name: openfoodfacts
-      sha256: "91ad7ff90ead54d16874a04c9a43a131d3c72669807dddc08513b5f2c24466a4"
+      sha256: d77ca677d906ddf8ab3b23567a12e53eca93298b6d62a42503215d91233ef5e4
       url: "https://pub.dev"
     source: hosted
-    version: "3.24.0"
+    version: "3.26.0"
   package_config:
     dependency: transitive
     description:

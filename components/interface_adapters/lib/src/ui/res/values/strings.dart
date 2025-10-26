@@ -1,8 +1,8 @@
 class Strings {
   const Strings();
 
-  final String warSponsorsSource = 'https://squeezingputin.com';
-  final String russiaSponsorsSource =
+  final String russiaSponsorsSource2 = 'https://leave-russia.org';
+  final String russiaSponsorsSource1 =
       'https://www.yalerussianbusinessretreat.com';
   // https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:52022IP0405
   final String russiaTerrorismSponsorSource =

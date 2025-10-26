@@ -1,11 +1,12 @@
 import 'dart:io';
 
+import 'package:entities/entities.dart';
 import 'package:ethical_scanner/di/dependencies.dart';
 import 'package:ethical_scanner/di/dependencies_scope.dart';
 import 'package:ethical_scanner/di/injector.dart';
 import 'package:ethical_scanner/localization_delelegate_getter.dart';
 import 'package:ethical_scanner/res/layout/feedback_form.dart';
-import 'package:ethical_scanner/router/router.dart';
+import 'package:ethical_scanner/router/app_router.dart';
 import 'package:feedback/feedback.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,23 @@ void main() async {
     setWindowMaxSize(Size.infinite);
   }
 
+  final Language savedLanguage = dependencies.getLanguageUseCase();
+  final Language currentLanguage = Language.fromIsoLanguageCode(
+    localizationDelegate.currentLocale.languageCode,
+  );
+
+  if (savedLanguage != currentLanguage) {
+    final Locale savedLocale = localeFromString(savedLanguage.isoLanguageCode);
+
+    localizationDelegate.changeLocale(savedLocale);
+
+    // Notify listeners that the savedLocale has changed so they can update.
+    localizationDelegate.onLocaleChanged?.call(savedLocale);
+  }
+
+  // Create an instance of the router.
+  final AppRouter appRouter = AppRouter(savedLanguage: savedLanguage);
+
   runApp(
     BetterFeedback(
       feedbackBuilder: (
@@ -56,7 +74,7 @@ void main() async {
         localizationDelegate,
         DependenciesScope(
           dependencies: dependencies,
-          child: App.factory(generateRoute),
+          child: App.factory(appRouter.generateRoute),
         ),
       ),
     ),
