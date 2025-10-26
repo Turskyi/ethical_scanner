@@ -16,7 +16,9 @@ jobs:
     name: Build Flutter (Android)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Write .env file
         run: |
