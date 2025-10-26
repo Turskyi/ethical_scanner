@@ -27,8 +27,9 @@ class MockDependencies extends Mock implements Dependencies {
       GetPrecipitationStateUseCase(_settingsGateway);
 
   @override
-  UseCase<Language, Null> get getLanguageUseCase =>
-      GetLanguageUseCase(_settingsGateway);
+  UseCase<Language, Object?> get getLanguageUseCase {
+    return GetLanguageUseCase(_settingsGateway);
+  }
 
   @override
   UseCase<Future<bool>, bool> get savePrecipitationStateUseCase =>

@@ -27,7 +27,7 @@ class Dependencies {
     return SavePrecipitationStateUseCase(_settingsGateway);
   }
 
-  UseCase<Language, Null> get getLanguageUseCase {
+  UseCase<Language, Object?> get getLanguageUseCase {
     return GetLanguageUseCase(_settingsGateway);
   }
 

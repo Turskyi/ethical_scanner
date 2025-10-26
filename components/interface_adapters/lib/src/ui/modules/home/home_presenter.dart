@@ -52,7 +52,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
   final UseCase<Future<bool>, bool> _savePrecipitationStateUseCase;
   final UseCase<bool, Null> _getPrecipitationStateUseCase;
   final UseCase<Future<bool>, String> _saveLanguageUseCase;
-  final UseCase<Language, Null> _getLanguageUseCase;
+  final UseCase<Language, Object?> _getLanguageUseCase;
 
   FutureOr<void> _handleError(
     HomeErrorEvent event,

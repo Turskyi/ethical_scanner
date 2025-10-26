@@ -2,16 +2,23 @@ name: Upload Android build to App Tester.
 
 'on':
   push:
-    branches:
-      - 24
+    branches-ignore:
+      - master
+  workflow_run:
+    workflows:
+      - Code Quality and Tests
+    types:
+      - completed
 
 jobs:
   build_apk:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch != 'master' }}
     name: Build Flutter (Android)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Write .env file
         run: |

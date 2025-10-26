@@ -1,3 +1,4 @@
+// Expires and auto-renew on May 10, 2026.
 const String webPage = 'https://ethical-scanner.com';
 const String baseUrl = '$webPage/api/';
 const String localizationPath = 'components/interface_adapters/assets/i18n/';
