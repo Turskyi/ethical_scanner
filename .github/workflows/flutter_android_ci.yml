@@ -4,10 +4,15 @@ name: Upload Android build to App Tester.
   push:
     branches:
       - 24
+  workflow_run:
+    workflows:
+      - Code Quality and Tests
+    types:
+      - completed
 
 jobs:
   build_apk:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch != 'master' }}
     name: Build Flutter (Android)
     runs-on: ubuntu-latest
     steps:
