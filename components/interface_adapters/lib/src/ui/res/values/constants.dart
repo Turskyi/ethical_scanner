@@ -12,3 +12,4 @@ const String kAppStoreUrl =
     'https://apps.apple.com/ca/app/ethical-scanner/id6743681663';
 const String kSubjectParameter = 'subject';
 const String kBodyParameter = 'body';
+const String kTelegramChannel = 'https://t.me/+B5gN1BLsVPo3M2My';

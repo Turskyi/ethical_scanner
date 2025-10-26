@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:interface_adapters/src/ui/widgets/home_app_bar_button.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -42,7 +43,7 @@ class _SupportViewState extends State<SupportView> {
     final TextStyle linkStyle = bodyTextStyle!.copyWith(
       color: linkColor,
     );
-
+    final Resources resources = Resources.of(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -60,12 +61,8 @@ class _SupportViewState extends State<SupportView> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF000C40), Color(0xFFF0F2F0)],
-          ),
+        decoration: BoxDecoration(
+          gradient: resources.gradients.unauthorizedConstructionGradient,
         ),
         child: SafeArea(
           child: SingleChildScrollView(
@@ -77,7 +74,7 @@ class _SupportViewState extends State<SupportView> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
+                    children: <Widget>[
                       Text(
                         translate('support.title'),
                         style: textTheme.headlineMedium?.copyWith(
@@ -96,7 +93,7 @@ class _SupportViewState extends State<SupportView> {
                         textAlign: TextAlign.center,
                         text: TextSpan(
                           style: bodyTextStyle,
-                          children: [
+                          children: <InlineSpan>[
                             TextSpan(text: translate('support.email_prefix')),
                             TextSpan(
                               text: kSupportEmail,
@@ -113,18 +110,19 @@ class _SupportViewState extends State<SupportView> {
                         textAlign: TextAlign.center,
                         text: TextSpan(
                           style: bodyTextStyle,
-                          children: [
+                          children: <InlineSpan>[
                             TextSpan(
-                                text: translate('support.telegram_prefix')),
+                              text: translate('support.telegram_prefix'),
+                            ),
                             TextSpan(
                               text: translate('support.telegram_link_text'),
                               style: linkStyle,
                               recognizer: TapGestureRecognizer()
-                                ..onTap = () => _launchUrl(
-                                    'https://t.me/+B5gN1BLsVPo3M2My'),
+                                ..onTap = () => _launchUrl(kTelegramChannel),
                             ),
                             TextSpan(
-                                text: translate('support.telegram_suffix')),
+                              text: translate('support.telegram_suffix'),
+                            ),
                           ],
                         ),
                       ),
@@ -133,7 +131,7 @@ class _SupportViewState extends State<SupportView> {
                         textAlign: TextAlign.center,
                         text: TextSpan(
                           style: bodyTextStyle,
-                          children: [
+                          children: <InlineSpan>[
                             TextSpan(text: translate('support.website_prefix')),
                             TextSpan(
                               text: translate('support.website_link_text'),
