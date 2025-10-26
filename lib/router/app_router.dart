@@ -157,6 +157,30 @@ class AppRouter {
             );
           },
         ),
+      kSupportPath => PageRouteBuilder<String>(
+          settings: settings,
+          pageBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> __,
+          ) {
+            return SupportView(initialLanguage: savedLanguage);
+          },
+          transitionsBuilder: (
+            _,
+            Animation<double> animation,
+            __,
+            Widget child,
+          ) {
+            return FadeTransition(
+              opacity: CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeInOut,
+              ),
+              child: child,
+            );
+          },
+        ),
       String? _ => _getHomePageRouteBuilder(settings),
     };
   }

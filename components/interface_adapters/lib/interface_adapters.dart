@@ -22,5 +22,6 @@ export 'src/ui/modules/privacy/view/privacy_view.dart';
 export 'src/ui/modules/scan/scan_event.dart';
 export 'src/ui/modules/scan/scan_presenter.dart';
 export 'src/ui/modules/scan/view/scan_view.dart';
+export 'src/ui/modules/support/view/support_view.dart';
 export 'src/ui/res/enums/animation_constants.dart';
 export 'src/ui/res/enums/duration_seconds.dart';

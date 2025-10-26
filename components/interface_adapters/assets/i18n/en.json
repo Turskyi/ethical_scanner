@@ -93,5 +93,18 @@
       "content_part1": "If you have any questions, comments, or concerns about our Privacy Policy or our data practices, please contact us at",
       "content_part2": ". We will respond to your inquiry as soon as possible."
     }
+  },
+  "support": {
+    "title": "Support",
+    "intro": "If you have any questions, feedback, or need assistance with the Ethical Scanner app, please don’t hesitate to contact us.",
+    "email_prefix": "📧 Email us at: ",
+    "telegram_prefix": "💬 Join our support group on ",
+    "telegram_link_text": "Telegram",
+    "telegram_suffix": " to ask questions or chat with other users.",
+    "website_prefix": "🌐 You can also visit the ",
+    "website_link_text": "support page on turskyi.com",
+    "website_suffix": " for more help.",
+    "future_plans": "We're always working to improve Ethical Scanner. Offline functionality and support for personal ethical preferences are planned for 2025.",
+    "back_to_home": "← Back to Home"
   }
 }
