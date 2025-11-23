@@ -23,20 +23,14 @@ class LeadingWidget extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               onTap: onTap,
-              child: Ink.image(
-                image: AssetImage(logoPath),
-                fit: BoxFit.cover,
-              ),
+              child: Ink.image(image: AssetImage(logoPath), fit: BoxFit.cover),
             ),
           ),
         ),
       );
     } else {
       return IconButton(
-        icon: const Icon(
-          Icons.arrow_back_ios,
-          color: Colors.white,
-        ),
+        icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
         onPressed: onTap,
       );
     }

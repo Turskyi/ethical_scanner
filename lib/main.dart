@@ -59,16 +59,17 @@ void main() async {
 
   runApp(
     BetterFeedback(
-      feedbackBuilder: (
-        BuildContext _,
-        OnSubmit onSubmit,
-        ScrollController? scrollController,
-      ) {
-        return FeedbackForm(
-          onSubmit: onSubmit,
-          scrollController: scrollController,
-        );
-      },
+      feedbackBuilder:
+          (
+            BuildContext _,
+            OnSubmit onSubmit,
+            ScrollController? scrollController,
+          ) {
+            return FeedbackForm(
+              onSubmit: onSubmit,
+              scrollController: scrollController,
+            );
+          },
       theme: FeedbackThemeData(feedbackSheetColor: Colors.grey.shade50),
       child: LocalizedApp(
         localizationDelegate,

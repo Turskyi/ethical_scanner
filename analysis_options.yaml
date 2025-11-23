@@ -41,6 +41,11 @@ linter:
     sort_pub_dependencies: true
     avoid_classes_with_only_static_members: true
     sort_constructors_first: true
+    prefer_final_fields: true
+    prefer_const_constructors_in_immutables: true
+    prefer_final_locals: true
+    prefer_final_in_for_each: true
+    prefer_const_literals_to_create_immutables: true
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

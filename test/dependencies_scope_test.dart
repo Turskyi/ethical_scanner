@@ -20,14 +20,16 @@ void main() {
       );
     });
 
-    testWidgets('of method should retrieve dependencies',
-        (WidgetTester tester) async {
+    testWidgets('of method should retrieve dependencies', (
+      WidgetTester tester,
+    ) async {
       // Act
       await tester.pumpWidget(dependenciesScope);
 
       // Assert
-      final Dependencies retrievedDependencies =
-          DependenciesScope.of(tester.element(find.byType(SizedBox)));
+      final Dependencies retrievedDependencies = DependenciesScope.of(
+        tester.element(find.byType(SizedBox)),
+      );
 
       expect(retrievedDependencies, equals(dependencies));
     });
@@ -38,8 +40,9 @@ void main() {
 
       dependenciesScope.debugFillProperties(properties);
 
-      final DiagnosticsNode property = properties.properties
-          .firstWhere((DiagnosticsNode p) => p.name == 'dependencies');
+      final DiagnosticsNode property = properties.properties.firstWhere(
+        (DiagnosticsNode p) => p.name == 'dependencies',
+      );
       expect(property.value, equals(dependencies));
     });
     test('updateShouldNotify returns false', () {

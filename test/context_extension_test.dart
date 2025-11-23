@@ -4,8 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('ContextExtension', () {
-    testWidgets('maybeFindInheritedWidget should return null if not found',
-        (WidgetTester tester) async {
+    testWidgets('maybeFindInheritedWidget should return null if not found', (
+      WidgetTester tester,
+    ) async {
       // Arrange
       await tester.pumpWidget(const SizedBox());
 
@@ -18,14 +19,11 @@ void main() {
       expect(result, isNull);
     });
 
-    testWidgets('maybeFindInheritedWidget should return the widget if found',
-        (WidgetTester tester) async {
+    testWidgets('maybeFindInheritedWidget should return the widget if found', (
+      WidgetTester tester,
+    ) async {
       // Arrange
-      await tester.pumpWidget(
-        const MyInheritedWidget(
-          child: SizedBox(),
-        ),
-      );
+      await tester.pumpWidget(const MyInheritedWidget(child: SizedBox()));
 
       // Act
       final MyInheritedWidget? result = tester
@@ -36,8 +34,9 @@ void main() {
       expect(result, isNotNull);
     });
 
-    testWidgets('findInheritedWidgetOrThrow should throw if not found',
-        (WidgetTester tester) async {
+    testWidgets('findInheritedWidgetOrThrow should throw if not found', (
+      WidgetTester tester,
+    ) async {
       // Arrange
       await tester.pumpWidget(const SizedBox());
 
@@ -50,26 +49,25 @@ void main() {
       );
     });
 
-    testWidgets('findInheritedWidgetOrThrow should return the widget if found',
-        (WidgetTester tester) async {
-      // Arrange
-      await tester.pumpWidget(
-        const MyInheritedWidget(
-          child: SizedBox(),
-        ),
-      );
+    testWidgets(
+      'findInheritedWidgetOrThrow should return the widget if found',
+      (WidgetTester tester) async {
+        // Arrange
+        await tester.pumpWidget(const MyInheritedWidget(child: SizedBox()));
 
-      // Act
-      final MyInheritedWidget result = tester
-          .element(find.byType(SizedBox))
-          .findInheritedWidgetOrThrow<MyInheritedWidget>();
+        // Act
+        final MyInheritedWidget result = tester
+            .element(find.byType(SizedBox))
+            .findInheritedWidgetOrThrow<MyInheritedWidget>();
 
-      // Assert
-      expect(result, isNotNull);
-    });
+        // Assert
+        expect(result, isNotNull);
+      },
+    );
 
-    testWidgets('inheritFrom should throw if not found',
-        (WidgetTester tester) async {
+    testWidgets('inheritFrom should throw if not found', (
+      WidgetTester tester,
+    ) async {
       // Arrange
       await tester.pumpWidget(const SizedBox());
 
@@ -82,14 +80,11 @@ void main() {
       );
     });
 
-    testWidgets('inheritFrom should return the model if found',
-        (WidgetTester tester) async {
+    testWidgets('inheritFrom should return the model if found', (
+      WidgetTester tester,
+    ) async {
       // Arrange
-      await tester.pumpWidget(
-        const MyInheritedModel(
-          child: SizedBox(),
-        ),
-      );
+      await tester.pumpWidget(const MyInheritedModel(child: SizedBox()));
 
       // Act
       final MyInheritedModel result = tester

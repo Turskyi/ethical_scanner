@@ -17,11 +17,7 @@ class Small {
 
   Map<String, dynamic> toJson() => _$SmallToJson(this);
 
-  Small copyWith({
-    String? url,
-    int? width,
-    int? height,
-  }) {
+  Small copyWith({String? url, int? width, int? height}) {
     return Small(
       url: url ?? this.url,
       width: width ?? this.width,

@@ -23,9 +23,9 @@ void main() {
             vegan: IngredientSpecialPropertyStatus.POSITIVE,
           ),
         ],
-        ingredientsAnalysisTags: IngredientsAnalysisTags(
-          <Object?>[VeganStatus.VEGAN],
-        ),
+        ingredientsAnalysisTags: IngredientsAnalysisTags(<Object?>[
+          VeganStatus.VEGAN,
+        ]),
       );
 
       // Act
@@ -37,10 +37,10 @@ void main() {
       expect(productInfo.brand, 'Brand');
       expect(productInfo.categoryTags, <String>['Category']);
       expect(productInfo.packaging, 'Packaging');
-      expect(
-        productInfo.ingredientList,
-        <String>['Ingredient 1', 'Ingredient 2'],
-      );
+      expect(productInfo.ingredientList, <String>[
+        'Ingredient 1',
+        'Ingredient 2',
+      ]);
       expect(productInfo.vegan, Vegan.positive);
       expect(productInfo.vegetarian, Vegetarian.unknown);
     });

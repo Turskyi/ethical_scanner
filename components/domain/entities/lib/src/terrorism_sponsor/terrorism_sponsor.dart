@@ -24,16 +24,16 @@ extension TerrorismSponsorList on List<TerrorismSponsor> {
   }
 
   List<String> get _otherTerrorismSponsors => <String>[
-        // added to response
-        'quaker',
-        'nestlé',
-        'pepsi cola',
-        'mars inc.',
-        // not added, as it looks like exception
-        'bacardi, martini',
-        'quakerquaker oats',
-        'bounty chocolate',
-      ];
+    // added to response
+    'quaker',
+    'nestlé',
+    'pepsi cola',
+    'mars inc.',
+    // not added, as it looks like exception
+    'bacardi, martini',
+    'quakerquaker oats',
+    'bounty chocolate',
+  ];
 
   bool _isSponsoredByOtherRussiaSponsors(ProductInfo product) {
     final String productBrandString = product.brand.toLowerCase().trim();
@@ -62,11 +62,9 @@ extension TerrorismSponsorList on List<TerrorismSponsor> {
   }
 
   bool _isSponsoredByAnyTerrorismSponsor(ProductInfo product) {
-    return any(
-      (TerrorismSponsor terrorismSponsor) {
-        return _isSponsoredByTerrorismSponsor(terrorismSponsor, product);
-      },
-    );
+    return any((TerrorismSponsor terrorismSponsor) {
+      return _isSponsoredByTerrorismSponsor(terrorismSponsor, product);
+    });
   }
 
   bool _isSponsoredByTerrorismSponsor(
@@ -93,8 +91,9 @@ extension TerrorismSponsorList on List<TerrorismSponsor> {
     TerrorismSponsor terrorismSponsor,
     ProductInfo product,
   ) {
-    final String normalizedSponsorName =
-        terrorismSponsor.name.toLowerCase().trim();
+    final String normalizedSponsorName = terrorismSponsor.name
+        .toLowerCase()
+        .trim();
     final String normalizedProductBrand = product.brand.toLowerCase().trim();
     final String normalizedProductName = product.name.toLowerCase().trim();
 

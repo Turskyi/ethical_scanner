@@ -8,10 +8,7 @@ import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 
 class CodeTile extends StatefulWidget {
-  const CodeTile({
-    required this.value,
-    super.key,
-  });
+  const CodeTile({required this.value, super.key});
 
   final String value;
 
@@ -123,13 +120,11 @@ class _CodeTileState extends State<CodeTile> {
 
   void _showFeedbackUi() {
     if (_isDisposing) return;
-    BetterFeedback.of(context).show(
-      (UserFeedback feedback) {
-        if (mounted) {
-          context.read<HomePresenter>().add(SubmitFeedbackEvent(feedback));
-        }
-      },
-    );
+    BetterFeedback.of(context).show((UserFeedback feedback) {
+      if (mounted) {
+        context.read<HomePresenter>().add(SubmitFeedbackEvent(feedback));
+      }
+    });
   }
 
   void _notifyFeedbackSent() {
@@ -147,16 +142,11 @@ class _CodeTileState extends State<CodeTile> {
     final String languageCode = LocalizedApp.of(
       context,
     ).delegate.currentLocale.languageCode;
-    final Language language = Language.fromIsoLanguageCode(
-      languageCode,
-    );
+    final Language language = Language.fromIsoLanguageCode(languageCode);
     context.read<HomePresenter>().add(
-          ShowProductInfoEvent(
-            ProductInfo(
-              barcode: _codeController.text,
-              language: language,
-            ),
-          ),
-        );
+      ShowProductInfoEvent(
+        ProductInfo(barcode: _codeController.text, language: language),
+      ),
+    );
   }
 }

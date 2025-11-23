@@ -24,7 +24,8 @@ class ButterflyPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     for (final Butterfly b in butterflies) {
-      final bool show = ((frameCount + b.flutterPhase) % _flutterCycle) <
+      final bool show =
+          ((frameCount + b.flutterPhase) % _flutterCycle) <
           (_flutterCycle - _flutterOnDurationPortion);
       if (!show) continue;
 
@@ -32,8 +33,9 @@ class ButterflyPainter extends CustomPainter {
       canvas.translate(b.offset.dx, b.offset.dy);
       canvas.rotate(b.rotationAngle);
       // Apply vertical flip if the butterfly is upside down.
-      final double scaleY =
-          b.isUpsideDown ? _scaleFactorFlip : _scaleFactorNormal;
+      final double scaleY = b.isUpsideDown
+          ? _scaleFactorFlip
+          : _scaleFactorNormal;
       canvas.scale(scaleY);
 
       final TextPainter painter = TextPainter(

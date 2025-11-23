@@ -2,8 +2,8 @@ part of 'home_presenter.dart';
 
 abstract class HomeViewModel {
   const HomeViewModel({
+    required this.language,
     this.isSeasonalEffectEnabled = true,
-    this.language = Language.en,
   });
 
   final Language language;
@@ -20,9 +20,9 @@ abstract class HomeViewModel {
 
 abstract class ProductInfoState extends HomeViewModel {
   const ProductInfoState({
+    required super.language,
     this.productInfoMap = const <ProductInfoType, String>{},
     this.productInfo = const ProductInfo(),
-    super.language,
     super.isSeasonalEffectEnabled,
   });
 
@@ -41,7 +41,7 @@ abstract class ProductInfoState extends HomeViewModel {
 }
 
 class LoadingHomeState extends HomeViewModel {
-  const LoadingHomeState();
+  const LoadingHomeState({required super.language});
 
   @override
   String toString() {
@@ -61,12 +61,11 @@ class ReadyToScanState extends HomeViewModel {
   ReadyToScanState copyWith({
     Language? language,
     bool? isSeasonalEffectEnabled,
-  }) =>
-      ReadyToScanState(
-        language: language ?? this.language,
-        isSeasonalEffectEnabled:
-            isSeasonalEffectEnabled ?? this.isSeasonalEffectEnabled,
-      );
+  }) => ReadyToScanState(
+    language: language ?? this.language,
+    isSeasonalEffectEnabled:
+        isSeasonalEffectEnabled ?? this.isSeasonalEffectEnabled,
+  );
 
   @override
   String toString() {
@@ -78,7 +77,7 @@ class ReadyToScanState extends HomeViewModel {
 }
 
 class ScanState extends HomeViewModel {
-  const ScanState({super.language, super.isSeasonalEffectEnabled});
+  const ScanState({required super.language, super.isSeasonalEffectEnabled});
 
   @override
   String toString() {
@@ -100,13 +99,12 @@ class LoadingProductInfoState extends ProductInfoState {
     Map<ProductInfoType, String>? productInfoMap,
     Language? language,
     bool? isSeasonalEffectEnabled,
-  }) =>
-      LoadingProductInfoState(
-        productInfoMap: productInfoMap ?? this.productInfoMap,
-        language: language ?? this.language,
-        isSeasonalEffectEnabled:
-            isSeasonalEffectEnabled ?? this.isSeasonalEffectEnabled,
-      );
+  }) => LoadingProductInfoState(
+    productInfoMap: productInfoMap ?? this.productInfoMap,
+    language: language ?? this.language,
+    isSeasonalEffectEnabled:
+        isSeasonalEffectEnabled ?? this.isSeasonalEffectEnabled,
+  );
 
   @override
   String toString() {
@@ -120,9 +118,9 @@ class LoadingProductInfoState extends ProductInfoState {
 
 class LoadedProductInfoState extends ProductInfoState {
   const LoadedProductInfoState({
+    required super.language,
     super.productInfoMap,
     super.productInfo,
-    super.language,
     super.isSeasonalEffectEnabled,
   });
 
@@ -138,7 +136,7 @@ class LoadedProductInfoState extends ProductInfoState {
 }
 
 class HomeErrorState extends HomeViewModel {
-  const HomeErrorState(this.errorMessage);
+  const HomeErrorState({required super.language, required this.errorMessage});
 
   final String errorMessage;
 
@@ -155,7 +153,7 @@ class HomeErrorState extends HomeViewModel {
 class PhotoMakerState extends ProductInfoState {
   const PhotoMakerState({
     required super.productInfo,
-    super.language,
+    required super.language,
     super.isSeasonalEffectEnabled,
   });
 
@@ -171,9 +169,9 @@ class PhotoMakerState extends ProductInfoState {
 
 final class FeedbackState extends LoadedProductInfoState {
   const FeedbackState({
+    required super.language,
     super.productInfoMap,
     super.productInfo,
-    super.language,
     super.isSeasonalEffectEnabled,
   });
 
@@ -182,7 +180,7 @@ final class FeedbackState extends LoadedProductInfoState {
 }
 
 final class FeedbackSent extends FeedbackState {
-  const FeedbackSent();
+  const FeedbackSent({required super.language});
 
   @override
   String toString() => 'FeedbackSent()';

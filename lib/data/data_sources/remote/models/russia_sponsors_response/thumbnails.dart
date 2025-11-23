@@ -26,11 +26,7 @@ class Thumbnails {
 
   Map<String, dynamic> toJson() => _$ThumbnailsToJson(this);
 
-  Thumbnails copyWith({
-    Small? small,
-    Large? large,
-    Full? full,
-  }) {
+  Thumbnails copyWith({Small? small, Large? large, Full? full}) {
     return Thumbnails(
       small: small ?? this.small,
       large: large ?? this.large,

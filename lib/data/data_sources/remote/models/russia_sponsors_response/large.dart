@@ -17,11 +17,7 @@ class Large {
 
   Map<String, dynamic> toJson() => _$LargeToJson(this);
 
-  Large copyWith({
-    String? url,
-    int? width,
-    int? height,
-  }) {
+  Large copyWith({String? url, int? width, int? height}) {
     return Large(
       url: url ?? this.url,
       width: width ?? this.width,

@@ -10,8 +10,8 @@ issue_tracker: https://github.com/users/Turskyi/projects/10/views/1?layout=board
 publish_to: none
 
 environment:
-  sdk: '>=3.2.3 <4.0.0'
+  sdk: '>=3.9.2 <4.0.0'
 
 dev_dependencies:
   lints: ^6.0.0
-  test: ^1.26.3
+  test: ^1.28.0

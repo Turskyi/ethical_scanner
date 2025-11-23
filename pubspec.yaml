@@ -23,10 +23,10 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions, while build-number is used as the build
 # suffix.
-version: 0.2.4+24
+version: 0.2.5+25
 
 environment:
-  sdk: '>=3.2.3 <4.0.0'
+  sdk: '>=3.9.2 <4.0.0'
 
 dependency_overrides:
   #  Note: test_api is pinned to version 0.7.4 by flutter_test from the flutter
@@ -51,13 +51,13 @@ dependencies:
   # presentation layer. You can think of the bloc package as the engine, and
   # the `flutter_bloc` package as the car body. You need both to make a
   # functional car 🚗.
-  bloc: ^9.0.0
-  camera: ^0.11.2
+  bloc: ^9.1.0
+  camera: ^0.11.3
   collection: ^1.19.1
   # Dart SDK for openAI Apis (GPT-3 & DALL-E), easily integrate the power of
   # OpenAI's state-of-the-art AI models into their Dart applications.
-  dart_openai: ^5.1.0
-  dio: ^5.8.0+1
+  dart_openai: ^6.1.1
+  dio: ^5.9.0
   entities:
     path: ./components/domain/entities
 
@@ -72,20 +72,23 @@ dependencies:
   flutter_bloc: ^9.1.1
 
   # Localization / internationalization (i18n) library.
-  flutter_translate: any
+  flutter_translate:
+    git:
+      url: https://github.com/Javernaver/flutter_translate.git
+      ref: master
 
-  http: ^1.4.0
+  http: ^1.6.0
   interface_adapters:
     path: ./components/interface_adapters
 
   json_annotation: ^4.9.0
 
-  openfoodfacts: ^3.26.0
+  openfoodfacts: ^3.27.0
 
-  package_info_plus: ^8.3.0
+  package_info_plus: ^9.0.0
   path: ^1.9.1
   path_provider: ^2.1.5
-  retrofit: ^4.7.0
+  retrofit: ^4.9.1
   retrofit_generator: any
   shared_preferences: ^2.5.3
   use_cases:
@@ -108,11 +111,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # Because json_serializable >=6.10.0 depends on source_gen ^3.0.0.
-  json_serializable: ^6.9.5
+  json_serializable: any
   # Because mockito >=5.5.0 depends on source_gen ^3.0.0.
-  mockito: ^5.4.6
-  test: ^1.26.3
+  mockito: ^5.6.1
+  test: ^1.28.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

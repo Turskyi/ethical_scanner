@@ -20,9 +20,7 @@ class DependenciesScope extends InheritedWidget {
 
   /// Get the dependencies from the [context].
   static Dependencies of(BuildContext context) => context
-      .findInheritedWidgetOrThrow<DependenciesScope>(
-        listen: false,
-      )
+      .findInheritedWidgetOrThrow<DependenciesScope>(listen: false)
       .dependencies;
 
   @override

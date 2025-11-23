@@ -3,9 +3,7 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/scan/view/scan_animation.dart';
 
 class ScanPlaceholderWidget extends StatelessWidget {
-  const ScanPlaceholderWidget({
-    super.key,
-  });
+  const ScanPlaceholderWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +15,7 @@ class ScanPlaceholderWidget extends StatelessWidget {
       padding: const EdgeInsets.all(containerPadding),
       decoration: const BoxDecoration(
         color: Colors.white30,
-        borderRadius: BorderRadius.all(
-          Radius.circular(borderRadiusValue),
-        ),
+        borderRadius: BorderRadius.all(Radius.circular(borderRadiusValue)),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -30,9 +26,7 @@ class ScanPlaceholderWidget extends StatelessWidget {
             translate('scan.scanning'),
             style: TextStyle(
               color: Colors.white,
-              fontSize: Theme.of(
-                context,
-              ).textTheme.titleLarge?.fontSize,
+              fontSize: Theme.of(context).textTheme.titleLarge?.fontSize,
             ),
           ),
         ],

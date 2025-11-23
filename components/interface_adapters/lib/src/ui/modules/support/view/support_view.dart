@@ -9,10 +9,7 @@ import 'package:interface_adapters/src/ui/widgets/home_app_bar_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SupportView extends StatefulWidget {
-  const SupportView({
-    required this.initialLanguage,
-    super.key,
-  });
+  const SupportView({required this.initialLanguage, super.key});
 
   final Language initialLanguage;
 
@@ -40,18 +37,14 @@ class _SupportViewState extends State<SupportView> {
     final TextStyle? bodyTextStyle = textTheme.titleMedium?.copyWith(
       color: Colors.white,
     );
-    final TextStyle linkStyle = bodyTextStyle!.copyWith(
-      color: linkColor,
-    );
+    final TextStyle linkStyle = bodyTextStyle!.copyWith(color: linkColor);
     final Resources resources = Resources.of(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: kIsWeb
-            ? HomeAppBarButton(
-                language: widget.initialLanguage,
-              )
+            ? HomeAppBarButton(language: widget.initialLanguage)
             : IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () => Navigator.of(context).pop(),
@@ -99,8 +92,8 @@ class _SupportViewState extends State<SupportView> {
                               text: kSupportEmail,
                               style: linkStyle,
                               recognizer: TapGestureRecognizer()
-                                ..onTap =
-                                    () => _launchUrl('mailto:$kSupportEmail'),
+                                ..onTap = () =>
+                                    _launchUrl('mailto:$kSupportEmail'),
                             ),
                           ],
                         ),
@@ -148,17 +141,16 @@ class _SupportViewState extends State<SupportView> {
                       Text(
                         translate('support.future_plans'),
                         textAlign: TextAlign.center,
-                        style:
-                            textTheme.bodyMedium?.copyWith(color: Colors.white),
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                       const SizedBox(height: 32),
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(),
                         child: Text(
                           translate('support.back_to_home'),
-                          style: TextStyle(
-                            color: Colors.blue.shade300,
-                          ),
+                          style: TextStyle(color: Colors.blue.shade300),
                         ),
                       ),
                     ],

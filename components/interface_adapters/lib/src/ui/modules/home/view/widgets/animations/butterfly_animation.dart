@@ -97,7 +97,7 @@ class _ButterflyAnimationState extends State<ButterflyAnimation>
         final double sway = sin(newFlapAngle) * _swayMultiplier;
         final double verticalDrift =
             sin(newFlapAngle * _verticalDriftAngleFactor) *
-                _verticalDriftMagnitude;
+            _verticalDriftMagnitude;
 
         // Occasionally reverse direction (simulate flutter).
         final bool shouldReverse =

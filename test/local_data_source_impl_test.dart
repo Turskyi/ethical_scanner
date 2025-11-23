@@ -37,7 +37,7 @@ void main() {
         '9789876543210',
       ];
 
-      for (String barcode in testCases) {
+      for (final String barcode in testCases) {
         final bool result = localDataSource.isEnglishBook(barcode);
         expect(result, isTrue);
       }
@@ -51,61 +51,69 @@ void main() {
         '9791234567890', // Not English book
       ];
 
-      for (String barcode in testCases) {
+      for (final String barcode in testCases) {
         final bool result = localDataSource.isEnglishBook(barcode);
         expect(result, isFalse);
       }
     });
 
-    test('savePrecipitationState should save and retrieve precipitation state',
-        () async {
-      // Arrange
-      const bool isPrecipitationFalling = true;
+    test(
+      'savePrecipitationState should save and retrieve precipitation state',
+      () async {
+        // Arrange
+        const bool isPrecipitationFalling = true;
 
-      // Act
-      await localDataSource.savePrecipitationState(isPrecipitationFalling);
-      final bool result = localDataSource.getPrecipitationState();
+        // Act
+        await localDataSource.savePrecipitationState(isPrecipitationFalling);
+        final bool result = localDataSource.getPrecipitationState();
 
-      // Assert
-      expect(result, equals(isPrecipitationFalling));
-    });
+        // Assert
+        expect(result, equals(isPrecipitationFalling));
+      },
+    );
 
-    test('saveSoundPreference should save and retrieve sound preference',
-        () async {
-      // Arrange
-      const bool isSoundOn = true;
+    test(
+      'saveSoundPreference should save and retrieve sound preference',
+      () async {
+        // Arrange
+        const bool isSoundOn = true;
 
-      // Act
-      await localDataSource.saveSoundPreference(isSoundOn);
-      final bool result = localDataSource.getSoundPreference();
+        // Act
+        await localDataSource.saveSoundPreference(isSoundOn);
+        final bool result = localDataSource.getSoundPreference();
 
-      // Assert
-      expect(result, equals(isSoundOn));
-    });
+        // Assert
+        expect(result, equals(isSoundOn));
+      },
+    );
 
-    test('saveLanguageIsoCode should save and retrieve language ISO code',
-        () async {
-      // Arrange
-      const String languageIsoCode = 'mock';
+    test(
+      'saveLanguageIsoCode should save and retrieve language ISO code',
+      () async {
+        // Arrange
+        const String languageIsoCode = 'mock';
 
-      // Act
-      await localDataSource.saveLanguageIsoCode(languageIsoCode);
-      final String result = localDataSource.getLanguageIsoCode();
+        // Act
+        await localDataSource.saveLanguageIsoCode(languageIsoCode);
+        final String result = localDataSource.getLanguageIsoCode();
 
-      // Assert
-      expect(result, equals(languageIsoCode));
-    });
+        // Assert
+        expect(result, equals(languageIsoCode));
+      },
+    );
 
-    test('getLanguageIsoCode should return platform language if not saved',
-        () async {
-      // Arrange
-      const String platformLanguage = 'mock';
+    test(
+      'getLanguageIsoCode should return platform language if not saved',
+      () async {
+        // Arrange
+        const String platformLanguage = 'mock';
 
-      // Act
-      String result = localDataSource.getLanguageIsoCode();
+        // Act
+        final String result = localDataSource.getLanguageIsoCode();
 
-      // Assert
-      expect(result, equals(platformLanguage));
-    });
+        // Assert
+        expect(result, equals(platformLanguage));
+      },
+    );
   });
 }

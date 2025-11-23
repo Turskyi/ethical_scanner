@@ -1,10 +1,7 @@
 import 'package:entities/entities.dart';
 
 class ProductPhoto {
-  const ProductPhoto({
-    this.path = '',
-    this.info = const ProductInfo(),
-  });
+  const ProductPhoto({this.path = '', this.info = const ProductInfo()});
 
   final String path;
   final ProductInfo info;

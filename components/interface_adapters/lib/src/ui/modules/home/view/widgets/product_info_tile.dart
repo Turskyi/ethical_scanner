@@ -31,7 +31,8 @@ class ProductInfoTile extends StatelessWidget {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final bool isIngredientsMissing =
         type.isIngredients && value.isEmpty && info.imageIngredientsUrl.isEmpty;
-    final bool isIngredientsImageAdded = type.isIngredients &&
+    final bool isIngredientsImageAdded =
+        type.isIngredients &&
         value.isEmpty &&
         info.imageIngredientsUrl.isNotEmpty;
     final bool isCameraGenerallySupported =
@@ -41,7 +42,8 @@ class ProductInfoTile extends StatelessWidget {
     // We do not want to show the camera button on web, because OpenFoodFacts
     // do not support CORS.
     // See https://github.com/openfoodfacts/openfoodfacts-dart/issues/1089
-    final bool canSnapIngredients = isIngredientsMissing &&
+    final bool canSnapIngredients =
+        isIngredientsMissing &&
         isCameraGenerallySupported &&
         !kIsWeb &&
         responseType.isSupportedByOpenFoodFacts;
@@ -62,8 +64,8 @@ class ProductInfoTile extends StatelessWidget {
         ),
         onPressed: canSnapIngredients
             ? () => context.read<HomePresenter>().add(
-                  const SnapIngredientsEvent(),
-                )
+                const SnapIngredientsEvent(),
+              )
             : null,
       ),
       title: Text(
@@ -137,16 +139,15 @@ class ProductInfoTile extends StatelessWidget {
                     (type.isWebsite || type.isTerrorismSponsor
                         ? translate('product_info.click_to_know')
                         : isIngredientsMissing
-                            ? translate('product_info.ingredients_missing')
-                            : isIngredientsImageAdded
-                                ? translate(
-                                    'product_info.ingredients_image_added',
-                                  )
-                                : ''),
+                        ? translate('product_info.ingredients_missing')
+                        : isIngredientsImageAdded
+                        ? translate('product_info.ingredients_image_added')
+                        : ''),
                 style: TextStyle(
                   fontStyle: FontStyle.italic,
                   fontSize: textTheme.bodyLarge?.fontSize,
-                  decoration: type.isWebsite ||
+                  decoration:
+                      type.isWebsite ||
                           type.isCompanyWarSponsor ||
                           type.isTerrorismSponsor
                       ? TextDecoration.underline
@@ -156,18 +157,15 @@ class ProductInfoTile extends StatelessWidget {
             ),
       onTap: type.isWebsite || type.isTerrorismSponsor
           ? () => context.read<HomePresenter>().add(
-                LaunchUrlEvent(
-                  uri: type.isTerrorismSponsor
-                      ? resources.strings.russiaTerrorismSponsorSource
-                      : value,
-                  language: Language.fromIsoLanguageCode(
-                    LocalizedApp.of(context)
-                        .delegate
-                        .currentLocale
-                        .languageCode,
-                  ),
+              LaunchUrlEvent(
+                uri: type.isTerrorismSponsor
+                    ? resources.strings.russiaTerrorismSponsorSource
+                    : value,
+                language: Language.fromIsoLanguageCode(
+                  LocalizedApp.of(context).delegate.currentLocale.languageCode,
                 ),
-              )
+              ),
+            )
           : null,
     );
   }

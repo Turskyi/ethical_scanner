@@ -17,21 +17,20 @@ class LanguageSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<DropdownMenuItem<Language>> languageOptions =
-        Language.values.map(
-      (Language language) {
-        return DropdownMenuItem<Language>(
-          alignment: Alignment.center,
-          // The value of each item is the language object.
-          value: language,
-          // The child of each item is a row with the flag.
-          child: Padding(
-            padding: const EdgeInsets.only(left: 24, bottom: 8.0),
-            child: Text(language.flag),
-          ),
-        );
-      },
-    ).toList();
+    final List<DropdownMenuItem<Language>> languageOptions = Language.values
+        .map((Language language) {
+          return DropdownMenuItem<Language>(
+            alignment: Alignment.center,
+            // The value of each item is the language object.
+            value: language,
+            // The child of each item is a row with the flag.
+            child: Padding(
+              padding: const EdgeInsets.only(left: 24, bottom: 8.0),
+              child: Text(language.flag),
+            ),
+          );
+        })
+        .toList();
     final Resources resources = Resources.of(context);
     final Dimens dimens = resources.dimens;
 
@@ -41,33 +40,21 @@ class LanguageSelector extends StatelessWidget {
       value: currentLanguage,
 
       // The icon of the dropdown is the flag of the current language.
-      icon: const Icon(
-        Icons.arrow_drop_down_outlined,
-        color: Colors.white,
-      ),
+      icon: const Icon(Icons.arrow_drop_down_outlined, color: Colors.white),
       selectedItemBuilder: (BuildContext context) {
-        final List<Center> languageSelectorItems = Language.values.map(
-          (Language language) {
-            return Center(
-              child: AnimatedSwitcher(
-                duration: resources.durations.animatedSwitcher,
-                transitionBuilder: (
-                  Widget child,
-                  Animation<double> animation,
-                ) {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: child,
-                  );
-                },
-                child: Text(
-                  key: ValueKey<String>(language.flag),
-                  language.flag,
-                ),
-              ),
-            );
-          },
-        ).toList();
+        final List<Center> languageSelectorItems = Language.values.map((
+          Language language,
+        ) {
+          return Center(
+            child: AnimatedSwitcher(
+              duration: resources.durations.animatedSwitcher,
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return FadeTransition(opacity: animation, child: child);
+              },
+              child: Text(key: ValueKey<String>(language.flag), language.flag),
+            ),
+          );
+        }).toList();
         return currentLanguage.isEnglish
             ? languageSelectorItems
             : languageSelectorItems.reversed.toList();
@@ -86,8 +73,8 @@ class LanguageSelector extends StatelessWidget {
         // language.
         if (newLanguage != null) {
           changeLocale(context, newLanguage.isoLanguageCode)
-              // The returned value is always `null`.
-              .then((Object? _) {
+          // The returned value is always `null`.
+          .then((Object? _) {
             onLanguageSelected(newLanguage);
           });
         }

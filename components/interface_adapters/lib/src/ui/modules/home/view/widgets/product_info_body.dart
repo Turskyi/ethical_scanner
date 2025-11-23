@@ -49,7 +49,8 @@ class ProductInfoBody extends StatelessWidget {
 
             return ListView.builder(
               padding: EdgeInsets.only(
-                top: platformSpecificBasePadding +
+                top:
+                    platformSpecificBasePadding +
                     padding.top +
                     edgeInsets.top +
                     // Without it the code tile will be pushed up outside of the
@@ -58,7 +59,8 @@ class ProductInfoBody extends StatelessWidget {
                     // on top of the size of the keyboard, so this way code
                     // tile remains on the same place.
                     edgeInsets.bottom,
-                bottom: dimens.productInfoListBottomPadding +
+                bottom:
+                    dimens.productInfoListBottomPadding +
                     padding.bottom +
                     edgeInsets.bottom,
               ),
@@ -73,10 +75,8 @@ class ProductInfoBody extends StatelessWidget {
                     return const SizedBox();
                   }
                 } else {
-                  final ProductInfoType type =
-                      viewModel.productInfoMap.keys.elementAt(
-                    index,
-                  );
+                  final ProductInfoType type = viewModel.productInfoMap.keys
+                      .elementAt(index);
                   final String value = viewModel.productInfoMap[type] ?? '';
                   return DelayedAnimation(
                     delay: index * animationDelay,

@@ -6,10 +6,7 @@ import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 
 class EthicalScannerApp extends StatelessWidget implements App {
-  const EthicalScannerApp({
-    required this.routeFactory,
-    super.key,
-  });
+  const EthicalScannerApp({required this.routeFactory, super.key});
 
   /// {@macro flutter.widgets.widgetsApp.onGenerateRoute}
   final RouteFactory routeFactory;

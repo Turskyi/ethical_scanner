@@ -14,8 +14,9 @@ class LocalDataSourceImpl implements LocalDataSource {
 
   @override
   Future<void> init() {
-    return SharedPreferences.getInstance()
-        .then((SharedPreferences prefs) => _preferences = prefs);
+    return SharedPreferences.getInstance().then(
+      (SharedPreferences prefs) => _preferences = prefs,
+    );
   }
 
   /// Function to retrieve the country from barcode.
@@ -29,7 +30,7 @@ class LocalDataSourceImpl implements LocalDataSource {
   @override
   String getCountryFromBarcode(String barcode) {
     // List of countries with corresponding barcode prefixes.
-    Map<String, String> countryCodeMap = <String, String>{
+    final Map<String, String> countryCodeMap = <String, String>{
       '0': 'USA / Canada',
       '000': 'United States and Canada',
       '001': 'United States',
@@ -71,17 +72,21 @@ class LocalDataSourceImpl implements LocalDataSource {
       '051': 'US(GS1)',
       '052': 'US(GS1)',
       '056': 'US(GS1)',
-      '057': 'United States (GS1).\n'
+      '057':
+          'United States (GS1).\n'
           'Some products with this code are made in China.',
-      '060': 'United States and Canada (barcode registered).\n'
+      '060':
+          'United States and Canada (barcode registered).\n'
           'Some products with this code are labeled as Product of Switzerland.',
-      '061': 'United States (GS1).\n'
+      '061':
+          'United States (GS1).\n'
           'Some products with this code are produced and packed in Greece.',
       '062': 'United States',
       '063': 'United States',
       '064': 'Bhutan',
       '065': 'United States',
-      '066': 'United States (GS1).\n'
+      '066':
+          'United States (GS1).\n'
           'Reportedly used on products from Columbia and/or packed in Canada.',
       '067': 'United States (GS1)',
       '068': 'Bolivia',
@@ -168,18 +173,23 @@ class LocalDataSourceImpl implements LocalDataSource {
       '180': 'Congo (Congo-Kinshasa)',
       '184': 'Cook Islands',
       '188': 'Costa Rica',
-      '191': 'Unassigned GS1 prefix.\n'
+      '191':
+          'Unassigned GS1 prefix.\n'
           'Reportedly used for some products made in China.',
       '192': 'Cuba',
-      '194': 'Not officially assigned by GS1.\n'
+      '194':
+          'Not officially assigned by GS1.\n'
           'Reportedly used for products made in Bangladesh.',
-      '195': 'Not officially assigned by GS1.\n'
+      '195':
+          'Not officially assigned by GS1.\n'
           'Reportedly used for products made in China.',
       '196': 'Cyprus',
-      '197': 'Not officially assigned by GS1.\n'
+      '197':
+          'Not officially assigned by GS1.\n'
           'Reportedly used for products made in '
           'Cambodia, Bangladesh or Vietnam.',
-      '198': 'Not officially assigned by GS1.\n'
+      '198':
+          'Not officially assigned by GS1.\n'
           'Reportedly used for products made in China.',
       '203': 'Czechia (Czech Republic)',
       '204': 'Benin',
@@ -249,7 +259,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '333': 'France and Monaco',
       '334': 'Heard Island and McDonald Islands',
       '335': 'France and Monaco',
-      '336': 'France (GS1).\n'
+      '336':
+          'France (GS1).\n'
           'Reportedly used on products manufactured in China.',
       '337': 'France and Monaco',
       '338': 'France and Monaco',
@@ -492,7 +503,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '622': 'Egypt',
       '624': 'Libya',
       '625': 'Jordan',
-      '626': 'Barcode registered in Iran. '
+      '626':
+          'Barcode registered in Iran. '
           'Reportedly used for some products made in Canada.',
       '627': 'Kuwait (GS1).\nReportedly used for some products made in China.',
       '628': 'Saudi Arabia (GS1)',
@@ -514,12 +526,14 @@ class LocalDataSourceImpl implements LocalDataSource {
       '649': 'Finland',
       '652': 'Saint Barthelemy',
       '654': 'Saint Helena',
-      '655': 'Unassigned GS1 prefix.\n'
+      '655':
+          'Unassigned GS1 prefix.\n'
           'Reportedly used for some products made in China.',
       '659': 'Saint Kitts and Nevis',
       '662': 'Anguilla',
       '663': 'Saint Lucia',
-      '665': 'Unassigned GS1 prefix.\n'
+      '665':
+          'Unassigned GS1 prefix.\n'
           'Reportedly used for some products made in China.',
       '666': 'Saint Martin',
       '667': 'Reportedly used for some products made in Vietnam.',
@@ -588,7 +602,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '76': 'United States',
       '760': 'Syria',
       '761': 'Switzerland and Liechtenstein',
-      '762': 'Switzerland and Liechtenstein (GS1).\n'
+      '762':
+          'Switzerland and Liechtenstein (GS1).\n'
           'Reportedly used on some produce grown in Canada.',
       '763': 'Switzerland and Liechtenstein',
       '764': 'Thailand',
@@ -600,7 +615,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '770': 'Colombia',
       '771': 'Colombia',
       '772': 'Tokelau',
-      '773': 'Uruguay (GS1).\n'
+      '773':
+          'Uruguay (GS1).\n'
           'Found on products made in China.',
       '775': 'Peru',
       '776': 'Tonga',
@@ -654,7 +670,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '834': 'Tanzania',
       '835': 'Italy, San Marino and Vatican City',
       '836': 'Italy, San Marino and Vatican City',
-      '837': 'Italy, San Marino and Vatican City. '
+      '837':
+          'Italy, San Marino and Vatican City. '
           'Reportedly used for some products made in China',
       '838': 'Italy, San Marino and Vatican City',
       '839': 'Italy, San Marino and Vatican City',
@@ -670,7 +687,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '847': 'Spain and Andorra',
       '848': 'Spain and Andorra',
       '849': 'Spain and Andorra',
-      '850': 'Cuba (GS1-registered prefix).\n'
+      '850':
+          'Cuba (GS1-registered prefix).\n'
           'Reportedly also found on products labeled as made in the U.S.A.',
       '854': 'Burkina Faso',
       '856': 'Reportedly used on products from Colombia.',
@@ -686,7 +704,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       '871': 'Netherlands',
       '872': 'Netherlands',
       '873': 'Netherlands',
-      '874': 'Netherlands (GS1).\n'
+      '874':
+          'Netherlands (GS1).\n'
           'Some products with this code are labeled as Product of Canada.',
       '875': 'Netherlands',
       '876': 'Wallis and Futuna',
@@ -754,7 +773,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       '958': 'Macau',
     };
 
-    String prefix = barcode.substring(0, 3);
+    final String prefix = barcode.substring(0, 3);
 
     // Check barcode format and retrieve country
     return countryCodeMap[prefix] ??
@@ -794,26 +813,17 @@ class LocalDataSourceImpl implements LocalDataSource {
 
   @override
   bool getPrecipitationState() {
-    return _preferences.getBool(
-          Settings.precipitationFalling.key,
-        ) ??
-        true;
+    return _preferences.getBool(Settings.precipitationFalling.key) ?? true;
   }
 
   @override
   Future<bool> saveSoundPreference(bool isSoundOn) {
-    return _preferences.setBool(
-      Settings.sound.key,
-      isSoundOn,
-    );
+    return _preferences.setBool(Settings.sound.key, isSoundOn);
   }
 
   @override
   bool getSoundPreference() {
-    return _preferences.getBool(
-          Settings.sound.key,
-        ) ??
-        false;
+    return _preferences.getBool(Settings.sound.key) ?? false;
   }
 
   @override
@@ -822,7 +832,8 @@ class LocalDataSourceImpl implements LocalDataSource {
       Settings.languageIsoCode.key,
     );
 
-    final bool isSavedLanguageSupported = savedLanguageIsoCode != null &&
+    final bool isSavedLanguageSupported =
+        savedLanguageIsoCode != null &&
         Language.values.any(
           (Language lang) => lang.isoLanguageCode == savedLanguageIsoCode,
         );
@@ -830,9 +841,10 @@ class LocalDataSourceImpl implements LocalDataSource {
     final String systemLanguageCode =
         PlatformDispatcher.instance.locale.languageCode;
 
-    String defaultLanguageCode = Language.values.any(
-      (Language lang) => lang.isoLanguageCode == systemLanguageCode,
-    )
+    String defaultLanguageCode =
+        Language.values.any(
+          (Language lang) => lang.isoLanguageCode == systemLanguageCode,
+        )
         ? systemLanguageCode
         : Language.en.isoLanguageCode;
 
@@ -852,8 +864,9 @@ class LocalDataSourceImpl implements LocalDataSource {
       (Language lang) => lang.isoLanguageCode == languageIsoCode,
     );
 
-    final String safeLanguageCode =
-        isSupported ? languageIsoCode : Language.en.isoLanguageCode;
+    final String safeLanguageCode = isSupported
+        ? languageIsoCode
+        : Language.en.isoLanguageCode;
 
     return _preferences.setString(
       Settings.languageIsoCode.key,

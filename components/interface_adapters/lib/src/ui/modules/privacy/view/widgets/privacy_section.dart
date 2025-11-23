@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 
 class PrivacySection extends StatelessWidget {
-  const PrivacySection({
-    required this.contentKey,
-    this.titleKey,
-    super.key,
-  });
+  const PrivacySection({required this.contentKey, this.titleKey, super.key});
 
   final String? titleKey;
   final String contentKey;

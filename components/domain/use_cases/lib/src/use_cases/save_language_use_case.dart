@@ -9,6 +9,5 @@ class SaveLanguageUseCase implements UseCase<Future<bool>, String> {
   @override
   Future<bool> call([
     String languageIsoCode = language.englishIsoLanguageCode,
-  ]) =>
-      _settingsGateway.saveLanguageIsoCodeAsFuture(languageIsoCode);
+  ]) => _settingsGateway.saveLanguageIsoCodeAsFuture(languageIsoCode);
 }

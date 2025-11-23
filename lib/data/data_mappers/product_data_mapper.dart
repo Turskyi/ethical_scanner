@@ -34,13 +34,11 @@ extension ProductExtension on Product {
   String _getProductName(Language language) {
     if (productNameInLanguages != null &&
         productNameInLanguages?.isNotEmpty == true &&
-        productNameInLanguages?.keys.any(
-              (OpenFoodFactsLanguage languageKey) {
-                return Language.values.any((Language appLanguage) {
-                  return appLanguage.toOpenFoodFactsLanguage == languageKey;
-                });
-              },
-            ) ==
+        productNameInLanguages?.keys.any((OpenFoodFactsLanguage languageKey) {
+              return Language.values.any((Language appLanguage) {
+                return appLanguage.toOpenFoodFactsLanguage == languageKey;
+              });
+            }) ==
             true) {
       final OpenFoodFactsLanguage targetOpenFoodFactsLanguage =
           language.toOpenFoodFactsLanguage;
@@ -56,15 +54,16 @@ extension ProductExtension on Product {
         // Try the first available name from a language key that matches one of
         // our app's Language enums.
         final MapEntry<OpenFoodFactsLanguage, String>? firstSupportedEntry =
-            productNameInLanguages!.entries.firstWhereOrNull(
-          (MapEntry<OpenFoodFactsLanguage, String> entry) {
-            final bool isSupportedAppLanguage =
-                Language.values.any((Language appLang) {
-              return appLang.toOpenFoodFactsLanguage == entry.key;
+            productNameInLanguages!.entries.firstWhereOrNull((
+              MapEntry<OpenFoodFactsLanguage, String> entry,
+            ) {
+              final bool isSupportedAppLanguage = Language.values.any((
+                Language appLang,
+              ) {
+                return appLang.toOpenFoodFactsLanguage == entry.key;
+              });
+              return isSupportedAppLanguage && entry.value.isNotEmpty;
             });
-            return isSupportedAppLanguage && entry.value.isNotEmpty;
-          },
-        );
 
         if (firstSupportedEntry != null) {
           return firstSupportedEntry.value;
@@ -113,13 +112,13 @@ extension ProductExtension on Product {
       return <String>[];
     } else if (ingredientsTextInLanguages != null &&
         ingredientsTextInLanguages?.isNotEmpty == true &&
-        ingredientsTextInLanguages?.keys.any(
-              (OpenFoodFactsLanguage languageKey) {
-                return Language.values.any((Language appLanguage) {
-                  return appLanguage.toOpenFoodFactsLanguage == languageKey;
-                });
-              },
-            ) ==
+        ingredientsTextInLanguages?.keys.any((
+              OpenFoodFactsLanguage languageKey,
+            ) {
+              return Language.values.any((Language appLanguage) {
+                return appLanguage.toOpenFoodFactsLanguage == languageKey;
+              });
+            }) ==
             true) {
       final OpenFoodFactsLanguage targetOffLanguage =
           language.toOpenFoodFactsLanguage;
@@ -136,15 +135,16 @@ extension ProductExtension on Product {
       if (localizedIngredientsText == null ||
           localizedIngredientsText.isEmpty) {
         final MapEntry<OpenFoodFactsLanguage, String>? firstSupportedEntry =
-            ingredientsTextInLanguages?.entries.firstWhereOrNull(
-          (MapEntry<OpenFoodFactsLanguage, String> entry) {
-            final bool isSupportedAppLanguage =
-                Language.values.any((Language appLang) {
-              return appLang.toOpenFoodFactsLanguage == entry.key;
+            ingredientsTextInLanguages?.entries.firstWhereOrNull((
+              MapEntry<OpenFoodFactsLanguage, String> entry,
+            ) {
+              final bool isSupportedAppLanguage = Language.values.any((
+                Language appLang,
+              ) {
+                return appLang.toOpenFoodFactsLanguage == entry.key;
+              });
+              return isSupportedAppLanguage && entry.value.isNotEmpty;
             });
-            return isSupportedAppLanguage && entry.value.isNotEmpty;
-          },
-        );
 
         if (firstSupportedEntry != null) {
           localizedIngredientsText = firstSupportedEntry.value;
@@ -217,18 +217,18 @@ extension ProductExtension on Product {
   bool get _isUnknownIngredients => ingredients == null || ingredients!.isEmpty;
 
   bool get _isUnknownVeganStatus => ingredients!.any(
-        (Ingredient ingredient) =>
-            ingredient.vegan == null ||
-            ingredient.vegan == IngredientSpecialPropertyStatus.IGNORE ||
-            ingredient.vegan == IngredientSpecialPropertyStatus.MAYBE,
-      );
+    (Ingredient ingredient) =>
+        ingredient.vegan == null ||
+        ingredient.vegan == IngredientSpecialPropertyStatus.IGNORE ||
+        ingredient.vegan == IngredientSpecialPropertyStatus.MAYBE,
+  );
 
   bool get _isUnknownVegetarianStatus => ingredients!.any(
-        (Ingredient ingredient) =>
-            ingredient.vegetarian == null ||
-            ingredient.vegetarian == IngredientSpecialPropertyStatus.IGNORE ||
-            ingredient.vegetarian == IngredientSpecialPropertyStatus.MAYBE,
-      );
+    (Ingredient ingredient) =>
+        ingredient.vegetarian == null ||
+        ingredient.vegetarian == IngredientSpecialPropertyStatus.IGNORE ||
+        ingredient.vegetarian == IngredientSpecialPropertyStatus.MAYBE,
+  );
 
   bool get _isNonVeganStatus =>
       ingredientsAnalysisTags?.veganStatus == VeganStatus.NON_VEGAN ||

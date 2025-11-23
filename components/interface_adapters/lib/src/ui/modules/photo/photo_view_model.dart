@@ -13,12 +13,8 @@ abstract class LoadingState extends PhotoViewModel {
 class PhotoMakerReadyState extends PhotoViewModel {
   const PhotoMakerReadyState({required super.language});
 
-  PhotoMakerReadyState copyWith({
-    Language? language,
-  }) {
-    return PhotoMakerReadyState(
-      language: language ?? this.language,
-    );
+  PhotoMakerReadyState copyWith({Language? language}) {
+    return PhotoMakerReadyState(language: language ?? this.language);
   }
 }
 

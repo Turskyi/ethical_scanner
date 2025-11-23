@@ -17,10 +17,7 @@ class SoundToggleButton extends StatelessWidget {
     return IconButton(
       icon: BlocConsumer<ScanPresenter, ScanViewModel>(
         listener: listener,
-        builder: (
-          _,
-          ScanViewModel viewModel,
-        ) {
+        builder: (_, ScanViewModel viewModel) {
           if (kIsWeb || Platform.isMacOS) {
             return const SizedBox.shrink();
           } else {
