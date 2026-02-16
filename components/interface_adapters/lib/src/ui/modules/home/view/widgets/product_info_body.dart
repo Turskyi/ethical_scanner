@@ -44,7 +44,7 @@ class ProductInfoBody extends StatelessWidget {
               platformSpecificBasePadding = defaultPlatformTopAdjustment;
             } else if (Platform.isAndroid) {
               platformSpecificBasePadding = androidSpecificTopAdjustment;
-            } else if(Platform.isIOS){
+            } else if (Platform.isIOS) {
               platformSpecificBasePadding = iOSSpecificTopAdjustment;
             } else {
               platformSpecificBasePadding = defaultPlatformTopAdjustment;
