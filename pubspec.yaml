@@ -51,19 +51,19 @@ dependencies:
   # presentation layer. You can think of the bloc package as the engine, and
   # the `flutter_bloc` package as the car body. You need both to make a
   # functional car 🚗.
-  bloc: ^9.1.0
-  camera: ^0.11.3
+  bloc: ^9.2.0
+  camera: ^0.11.3+1
   collection: ^1.19.1
   # Dart SDK for openAI Apis (GPT-3 & DALL-E), easily integrate the power of
   # OpenAI's state-of-the-art AI models into their Dart applications.
   dart_openai: ^6.1.1
-  dio: ^5.9.0
+  dio: ^5.9.1
   entities:
     path: ./components/domain/entities
 
   # Explicitly reads environment variables into a Dart file from a `.env` file
   # for more security and faster start-up times.
-  envied: any
+  envied: ^1.3.3
   feedback: ^3.2.0
   flutter:
     sdk: flutter

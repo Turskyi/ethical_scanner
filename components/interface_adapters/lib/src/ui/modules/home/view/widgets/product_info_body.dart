@@ -35,6 +35,7 @@ class ProductInfoBody extends StatelessWidget {
             final EdgeInsets padding = MediaQuery.paddingOf(context);
 
             const double androidSpecificTopAdjustment = 16.0;
+            const double iOSSpecificTopAdjustment = 48.0;
             const double defaultPlatformTopAdjustment = 0.0;
 
             // Determine platform-specific adjustment in a web-safe way
@@ -43,6 +44,8 @@ class ProductInfoBody extends StatelessWidget {
               platformSpecificBasePadding = defaultPlatformTopAdjustment;
             } else if (Platform.isAndroid) {
               platformSpecificBasePadding = androidSpecificTopAdjustment;
+            } else if(Platform.isIOS){
+              platformSpecificBasePadding = iOSSpecificTopAdjustment;
             } else {
               platformSpecificBasePadding = defaultPlatformTopAdjustment;
             }
