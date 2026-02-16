@@ -4,19 +4,24 @@ import 'package:ethical_scanner/data/data_sources/local/local_data_source_impl.d
 import 'package:ethical_scanner/data/data_sources/remote/remote_data_source_impl.dart';
 import 'package:ethical_scanner/data/data_sources/remote/rest/logging_interceptor_impl.dart';
 import 'package:ethical_scanner/data/data_sources/remote/rest/retrofit_client/retrofit_client.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:use_cases/use_cases.dart';
 
 /// Dependencies container.
 class Dependencies {
-  const Dependencies._(this._localDataSource);
+  const Dependencies._(this._localDataSource, this.localizationDelegate);
 
   final LocalDataSourceImpl _localDataSource;
 
-  static Future<Dependencies> create() async {
+  final LocalizationDelegate localizationDelegate;
+
+  static Future<Dependencies> create({
+    required LocalizationDelegate localizationDelegate,
+  }) async {
     final LocalDataSourceImpl localDataSource = LocalDataSourceImpl();
     await localDataSource.init();
-    return Dependencies._(localDataSource);
+    return Dependencies._(localDataSource, localizationDelegate);
   }
 
   UseCase<bool, Null> get getPrecipitationStateUseCase {

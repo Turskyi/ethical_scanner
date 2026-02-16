@@ -76,6 +76,7 @@ dependencies:
   interface_adapters:
     path: ./components/interface_adapters
 
+  intl: ^0.20.2
   json_annotation: any
 
   openfoodfacts: ^3.30.2

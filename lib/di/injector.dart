@@ -5,9 +5,10 @@ import 'package:dart_openai/dart_openai.dart';
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/camera_descriptions.dart' as cameras;
 import 'package:ethical_scanner/di/dependencies.dart';
+import 'package:ethical_scanner/localization_delelegate_getter.dart';
 import 'package:ethical_scanner/res/values/constants.dart' as constants;
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -35,10 +36,6 @@ Future<Dependencies> injectAndGetDependencies() async {
 
   OpenFoodAPIConfiguration.globalCountry = OpenFoodFactsCountry.CANADA;
 
-  // Needed for `Dependencies`, `PackageInfo.fromPlatform()` and
-  // `availableCameras`.
-  WidgetsFlutterBinding.ensureInitialized();
-
   final PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
   OpenFoodAPIConfiguration.userAgent = UserAgent(
@@ -58,6 +55,11 @@ Future<Dependencies> injectAndGetDependencies() async {
     debugPrint('Error: $exception\nStacktrace: $stacktrace');
   }
 
-  final Dependencies dependencies = await Dependencies.create();
+  final LocalizationDelegate localizationDelegate =
+      await getLocalizationDelegate();
+
+  final Dependencies dependencies = await Dependencies.create(
+    localizationDelegate: localizationDelegate,
+  );
   return dependencies;
 }
