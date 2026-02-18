@@ -1,10 +1,6 @@
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/di/dependencies.dart';
-import 'package:ethical_scanner/di/dependencies_scope.dart';
 import 'package:ethical_scanner/di/injector.dart';
-import 'package:ethical_scanner/res/layout/feedback_form.dart';
-import 'package:ethical_scanner/router/app_router.dart';
-import 'package:feedback/feedback.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
@@ -34,9 +30,6 @@ void main() async {
 
   final Dependencies dependencies = await injectAndGetDependencies();
 
-  final LocalizationDelegate localizationDelegate =
-      dependencies.localizationDelegate;
-
   Language initialLanguage = dependencies.getLanguageUseCase();
 
   if (kIsWeb) {
@@ -46,6 +39,9 @@ void main() async {
       saveLanguageUseCase: dependencies.saveLanguageUseCase,
     );
   }
+
+  final LocalizationDelegate localizationDelegate =
+      dependencies.localizationDelegate;
 
   final Language currentLanguage = Language.fromIsoLanguageCode(
     localizationDelegate.currentLocale.languageCode,
@@ -62,26 +58,10 @@ void main() async {
   final AppRouter appRouter = AppRouter(savedLanguage: initialLanguage);
 
   runApp(
-    BetterFeedback(
-      feedbackBuilder:
-          (
-            BuildContext _,
-            OnSubmit onSubmit,
-            ScrollController? scrollController,
-          ) {
-            return FeedbackForm(
-              onSubmit: onSubmit,
-              scrollController: scrollController,
-            );
-          },
-      theme: FeedbackThemeData(feedbackSheetColor: Colors.grey.shade50),
-      child: LocalizedApp(
-        localizationDelegate,
-        DependenciesScope(
-          dependencies: dependencies,
-          child: App.factory(appRouter.generateRoute),
-        ),
-      ),
+    App.factory(
+      dependencies: dependencies,
+      localizationDelegate: localizationDelegate,
+      onGenerateRoute: appRouter.generateRoute,
     ),
   );
 }

@@ -9,6 +9,8 @@ library;
 
 export 'src/data_sources/local/local_data_source.dart';
 export 'src/data_sources/remote/remote_data_source.dart';
+export 'src/di/app_dependencies.dart';
+export 'src/di/dependencies_scope.dart';
 export 'src/env/env.dart';
 export 'src/gateways/product_info_gateway_impl.dart';
 export 'src/gateways/settings_gateway_impl.dart';
@@ -23,5 +25,8 @@ export 'src/ui/modules/scan/scan_event.dart';
 export 'src/ui/modules/scan/scan_presenter.dart';
 export 'src/ui/modules/scan/view/scan_view.dart';
 export 'src/ui/modules/support/view/support_view.dart';
+export 'src/ui/res/camera_descriptions.dart';
 export 'src/ui/res/enums/animation_constants.dart';
 export 'src/ui/res/enums/duration_seconds.dart';
+export 'src/ui/res/layout/feedback_form.dart';
+export 'src/ui/router/app_router.dart';

@@ -9,7 +9,7 @@ import 'package:interface_adapters/interface_adapters.dart';
 import 'package:use_cases/use_cases.dart';
 
 /// Dependencies container.
-class Dependencies {
+class Dependencies implements AppDependencies {
   const Dependencies._(this._localDataSource, this.localizationDelegate);
 
   final LocalDataSourceImpl _localDataSource;
@@ -24,34 +24,42 @@ class Dependencies {
     return Dependencies._(localDataSource, localizationDelegate);
   }
 
+  @override
   UseCase<bool, Null> get getPrecipitationStateUseCase {
     return GetPrecipitationStateUseCase(_settingsGateway);
   }
 
+  @override
   UseCase<Future<bool>, bool> get savePrecipitationStateUseCase {
     return SavePrecipitationStateUseCase(_settingsGateway);
   }
 
+  @override
   UseCase<Language, Object?> get getLanguageUseCase {
     return GetLanguageUseCase(_settingsGateway);
   }
 
+  @override
   UseCase<Future<bool>, String> get saveLanguageUseCase {
     return SaveLanguageUseCase(_settingsGateway);
   }
 
+  @override
   UseCase<Future<ProductInfo>, LocalizedCode> get productInfoUseCase {
     return GetProductInfoUseCase(_productInfoGateway);
   }
 
+  @override
   UseCase<Future<void>, ProductPhoto> get addIngredientsUseCase {
     return AddIngredientsUseCase(_productInfoGateway);
   }
 
+  @override
   GetSoundPreferenceUseCase get getSoundPreferenceUseCase {
     return GetSoundPreferenceUseCase(_settingsGateway);
   }
 
+  @override
   SaveSoundPreferenceUseCase get saveSoundPreferenceUseCase {
     return SaveSoundPreferenceUseCase(_settingsGateway);
   }

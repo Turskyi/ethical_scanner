@@ -1,12 +1,22 @@
 import 'package:entities/entities.dart';
-import 'package:ethical_scanner/camera_descriptions.dart' as cameras;
-import 'package:ethical_scanner/di/dependencies.dart';
-import 'package:ethical_scanner/di/dependencies_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/interface_adapters.dart';
+import 'package:interface_adapters/src/ui/res/camera_descriptions.dart'
+    as cameras;
 
+/// The [AppRouter] is located in the `ui` directory because it serves as a
+/// **Navigation Presenter**.
+///
+/// In the context of Clean Architecture, it is an Interface Adapter responsible
+/// for transforming abstract navigation paths into the concrete UI structures
+/// (Widgets, Pages, and Transitions) required by the Flutter Framework.
+///
+/// Since it directly depends on the Flutter UI library, manages the
+/// instantiation of Views, and handles the injection of UI-specific
+/// Presenters (Blocs), it belongs alongside the other UI components of the
+/// [interface_adapters] layer.
 class AppRouter {
   const AppRouter({required this.savedLanguage});
 
@@ -24,7 +34,7 @@ class AppRouter {
             (BuildContext _, Animation<double> animation, Animation<double> _) {
               return BlocProvider<ScanPresenter>(
                 create: (BuildContext context) {
-                  final Dependencies dependencies = DependenciesScope.of(
+                  final AppDependencies dependencies = DependenciesScope.of(
                     context,
                   );
                   final Language initialLanguage = Language.fromIsoLanguageCode(
@@ -74,7 +84,9 @@ class AppRouter {
             ) {
               final Object? args = settings.arguments;
               if (args is ProductInfo) {
-                final Dependencies dependencies = DependenciesScope.of(context);
+                final AppDependencies dependencies = DependenciesScope.of(
+                  context,
+                );
                 return BlocProvider<PhotoPresenter>(
                   create: (BuildContext context) {
                     final Language initialLanguage =
@@ -104,7 +116,7 @@ class AppRouter {
               } else {
                 return BlocProvider<HomePresenter>(
                   create: (BuildContext context) {
-                    final Dependencies dependencies = DependenciesScope.of(
+                    final AppDependencies dependencies = DependenciesScope.of(
                       context,
                     );
                     return HomePresenter(
@@ -115,9 +127,9 @@ class AppRouter {
                       dependencies.getLanguageUseCase,
                     )..add(const LoadHomeEvent());
                   },
-                  child: BlocListener<HomePresenter, HomeViewModel>(
+                  child: const BlocListener<HomePresenter, HomeViewModel>(
                     listener: _homeViewModelListener,
-                    child: const HomeView(),
+                    child: HomeView(),
                   ),
                 );
               }
@@ -234,7 +246,9 @@ PageRouteBuilder<String> _getHomePageRouteBuilder(RouteSettings settings) {
         ) {
           return BlocProvider<HomePresenter>(
             create: (BuildContext context) {
-              final Dependencies dependencies = DependenciesScope.of(context);
+              final AppDependencies dependencies = DependenciesScope.of(
+                context,
+              );
               final HomePresenter homePresenter = HomePresenter(
                 dependencies.productInfoUseCase,
                 dependencies.savePrecipitationStateUseCase,
@@ -260,9 +274,9 @@ PageRouteBuilder<String> _getHomePageRouteBuilder(RouteSettings settings) {
                 return homePresenter..add(const LoadHomeEvent());
               }
             },
-            child: BlocListener<HomePresenter, HomeViewModel>(
+            child: const BlocListener<HomePresenter, HomeViewModel>(
               listener: _homeViewModelListener,
-              child: const HomeView(),
+              child: HomeView(),
             ),
           );
         },
