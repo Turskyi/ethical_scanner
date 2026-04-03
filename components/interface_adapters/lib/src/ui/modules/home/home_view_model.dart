@@ -185,3 +185,26 @@ final class FeedbackSent extends FeedbackState {
   @override
   String toString() => 'FeedbackSent()';
 }
+
+final class FeedbackFailed extends LoadedProductInfoState {
+  const FeedbackFailed({
+    required super.language,
+    required this.errorMessage,
+    super.productInfoMap,
+    super.productInfo,
+    super.isSeasonalEffectEnabled,
+  });
+
+  final String errorMessage;
+
+  @override
+  String toString() {
+    return 'FeedbackFailed('
+        'errorMessage: $errorMessage, '
+        'productInfoMap: $productInfoMap, '
+        'productInfo: $productInfo, '
+        'language: $language, '
+        'isSeasonalEffectEnabled: $isSeasonalEffectEnabled,'
+        ')';
+  }
+}

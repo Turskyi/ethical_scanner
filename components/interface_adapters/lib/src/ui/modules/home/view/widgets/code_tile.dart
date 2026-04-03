@@ -104,10 +104,12 @@ class _CodeTileState extends State<CodeTile> {
   }
 
   void _homeViewModelListener(BuildContext context, HomeViewModel state) {
-    if (state is FeedbackState) {
-      _showFeedbackUi();
-    } else if (state is FeedbackSent) {
+    if (state is FeedbackSent) {
       _notifyFeedbackSent();
+    } else if (state is FeedbackFailed) {
+      _notifyFeedbackFailed(state.errorMessage);
+    } else if (state is FeedbackState) {
+      _showFeedbackUi();
     } else if (state is HomeErrorState) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -134,6 +136,15 @@ class _CodeTileState extends State<CodeTile> {
       const SnackBar(
         content: Text('Your feedback has been sent successfully!'),
         duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _notifyFeedbackFailed(String errorMessage) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(errorMessage),
+        duration: const Duration(seconds: 2),
       ),
     );
   }

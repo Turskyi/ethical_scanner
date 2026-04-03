@@ -457,7 +457,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           debugPrint(
             '$urlLauncherErrorMessage\nStackTrace: $urlLauncherStackTrace',
           );
-          // TODO: show an error message to the user.
+          _emitFeedbackFailure(emit, translate('unexpected_error'));
         }
       } else {
         final String screenshotFilePath = await _writeImageToStorage(
@@ -475,11 +475,34 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           debugPrint(
             'Warning: an error occurred in $this: $e;\nStackTrace: $stackTrace',
           );
+          _emitFeedbackFailure(emit, translate('unexpected_error'));
         }
       }
     } catch (e, stackTrace) {
       debugPrint('SettingsErrorEvent: $e\nStackTrace: $stackTrace');
-      add(HomeErrorEvent(translate('unexpected_error')));
+      _emitFeedbackFailure(emit, translate('unexpected_error'));
+    }
+  }
+
+  void _emitFeedbackFailure(Emitter<HomeViewModel> emit, String errorMessage) {
+    final HomeViewModel currentState = state;
+    if (currentState is LoadedProductInfoState) {
+      emit(
+        FeedbackFailed(
+          language: currentState.language,
+          errorMessage: errorMessage,
+          productInfoMap: currentState.productInfoMap,
+          productInfo: currentState.productInfo,
+          isSeasonalEffectEnabled: currentState.isSeasonalEffectEnabled,
+        ),
+      );
+    } else {
+      emit(
+        HomeErrorState(
+          language: currentState.language,
+          errorMessage: errorMessage,
+        ),
+      );
     }
   }
 
