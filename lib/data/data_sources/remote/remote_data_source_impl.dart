@@ -37,29 +37,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       final Product? resultProduct = result.product;
       if (resultProduct != null && result.hasSuccessfulStatus) {
         final ProductInfo product = resultProduct.toProductInfo(language);
-        if (product.brand.isNotEmpty || product.name.isNotEmpty) {
-          //TODO: move to use case.
-          return _restClient
-              .getTerrorismSponsors()
-              .then((List<TerrorismSponsor> terrorismSponsors) {
-                final bool isCompanyTerrorismSponsor = terrorismSponsors
-                    .sponsoredBy(product);
-
-                return product.copyWith(
-                  isCompanyTerrorismSponsor: isCompanyTerrorismSponsor,
-                );
-              })
-              .onError((Object? error, StackTrace _) {
-                debugPrint(
-                  'Error fetching terrorism sponsors for product code: $code. '
-                  'Defaulting to product information without sponsor check. '
-                  'Error: $error',
-                );
-                return product;
-              });
-        } else {
-          return product;
-        }
+        return product;
       } else if (result.status == ProductResultV3.statusFailure) {
         if (_isBarcode(code)) {
           final bool cannotHaveIngredients =
@@ -90,6 +68,11 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         ),
       );
     });
+  }
+
+  @override
+  Future<List<TerrorismSponsor>> getTerrorismSponsors() {
+    return _restClient.getTerrorismSponsors();
   }
 
   @override

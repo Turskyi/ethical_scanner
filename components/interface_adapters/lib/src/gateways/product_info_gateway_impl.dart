@@ -104,6 +104,11 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
   }
 
   @override
+  Future<List<TerrorismSponsor>> getTerrorismSponsors() {
+    return _remoteDataSource.getTerrorismSponsors();
+  }
+
+  @override
   Future<void> addProduct(ProductInfo productInfo) {
     return _remoteDataSource.addProduct(productInfo);
   }

@@ -11,6 +11,23 @@ class GetProductInfoUseCase
   Future<ProductInfo> call([
     LocalizedCode barcode = const LocalizedCode(code: ''),
   ]) {
-    return _productInfoGateway.getProductInfoAsFuture(barcode);
+    return _productInfoGateway.getProductInfoAsFuture(barcode).then((
+      ProductInfo product,
+    ) {
+      if (product.brand.isNotEmpty || product.name.isNotEmpty) {
+        return _productInfoGateway
+            .getTerrorismSponsors()
+            .then((List<TerrorismSponsor> terrorismSponsors) {
+              return product.copyWith(
+                isCompanyTerrorismSponsor: terrorismSponsors.sponsoredBy(
+                  product,
+                ),
+              );
+            })
+            .onError((Object? error, StackTrace _) => product);
+      } else {
+        return product;
+      }
+    });
   }
 }
