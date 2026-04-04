@@ -133,12 +133,19 @@ class ProductInfoTile extends StatelessWidget {
                 ],
               ),
             )
+          : type.isWebsite || type.isTerrorismSponsor
+          ? Text(
+              '$value ${translate('product_info.click_to_know')}',
+              style: TextStyle(
+                fontStyle: FontStyle.italic,
+                fontSize: textTheme.bodyLarge?.fontSize,
+                decoration: TextDecoration.underline,
+              ),
+            )
           : SelectionArea(
               child: Text(
                 value +
-                    (type.isWebsite || type.isTerrorismSponsor
-                        ? translate('product_info.click_to_know')
-                        : isIngredientsMissing
+                    (isIngredientsMissing
                         ? translate('product_info.ingredients_missing')
                         : isIngredientsImageAdded
                         ? translate('product_info.ingredients_image_added')
@@ -146,27 +153,27 @@ class ProductInfoTile extends StatelessWidget {
                 style: TextStyle(
                   fontStyle: FontStyle.italic,
                   fontSize: textTheme.bodyLarge?.fontSize,
-                  decoration:
-                      type.isWebsite ||
-                          type.isCompanyWarSponsor ||
-                          type.isTerrorismSponsor
-                      ? TextDecoration.underline
-                      : null,
                 ),
               ),
             ),
       onTap: type.isWebsite || type.isTerrorismSponsor
-          ? () => context.read<HomePresenter>().add(
-              LaunchUrlEvent(
-                uri: type.isTerrorismSponsor
-                    ? resources.strings.russiaTerrorismSponsorSource
-                    : value,
-                language: Language.fromIsoLanguageCode(
-                  LocalizedApp.of(context).delegate.currentLocale.languageCode,
-                ),
-              ),
-            )
+          ? () {
+              _onLinkTap(context, resources);
+            }
           : null,
+    );
+  }
+
+  void _onLinkTap(BuildContext context, Resources resources) {
+    context.read<HomePresenter>().add(
+      LaunchUrlEvent(
+        uri: type.isTerrorismSponsor
+            ? resources.strings.russiaTerrorismSponsorSource
+            : value,
+        language: Language.fromIsoLanguageCode(
+          LocalizedApp.of(context).delegate.currentLocale.languageCode,
+        ),
+      ),
     );
   }
 
