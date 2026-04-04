@@ -30,6 +30,8 @@
     "code_colon": "Код: ",
     "product_name_colon": "Назва продукту: ",
     "origin_country_colon": "Країна походження: ",
+    "gs1_country_colon": "Країна GS1 штрих-коду: ",
+    "reported_origin_colon": "Часто виготовляється у: ",
     "country_where_sold_colon": "Країна, де продукт продається: ",
     "brand_colon": "Бренд: ",
     "is_company_terrorism_sponsor": "Чи є компанія спонсором війни? ",

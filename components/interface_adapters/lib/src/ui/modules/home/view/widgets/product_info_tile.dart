@@ -68,7 +68,7 @@ class ProductInfoTile extends StatelessWidget {
               )
             : null,
       ),
-      title: Text(
+      title: SelectableText(
         translate(type.key),
         style: TextStyle(
           fontWeight: FontWeight.bold,

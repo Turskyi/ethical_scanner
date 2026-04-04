@@ -76,10 +76,6 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
         .then((ProductInfo info) {
           if (info.origin.isNotEmpty) {
             return info;
-          } else if (info.countrySold.isNotEmpty) {
-            return info.copyWith(
-              origin: _localDataSource.getCountryFromBarcode(inputCode),
-            );
           } else if (_localDataSource.isEnglishBook(inputCode)) {
             final String eanPrefix = inputCode.substring(0, 3);
             return info.copyWith(
@@ -89,11 +85,16 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
               ),
             );
           } else {
-            final ProductInfo localInfo = info.copyWith(
-              origin: _localDataSource.getCountryFromBarcode(inputCode),
+            final String gs1Country = _localDataSource.getGs1CountryFromBarcode(
+              inputCode,
             );
-            if (localInfo.origin.isNotEmpty) {
-              return localInfo;
+            final String reportedOrigin = _localDataSource
+                .getReportedOriginFromBarcode(inputCode);
+            if (gs1Country.isNotEmpty || reportedOrigin.isNotEmpty) {
+              return info.copyWith(
+                gs1Country: gs1Country,
+                reportedOrigin: reportedOrigin,
+              );
             } else {
               return _remoteDataSource
                   .getInfoFromAiAsFuture(inputCode)

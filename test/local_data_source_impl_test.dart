@@ -12,8 +12,8 @@ void main() {
       localDataSource = MockLocalDataSourceImpl();
     });
 
-    test('getCountryFromBarcode should return the correct country', () {
-      // Test cases with known barcode prefixes and expected countries
+    test('getGs1CountryFromBarcode should return the correct GS1 country', () {
+      // Test cases with known barcode prefixes and expected GS1 countries
       final Map<String, String> testCases = <String, String>{
         '0001234567890': 'United States and Canada',
         '0571234567890': 'United States',
@@ -24,9 +24,33 @@ void main() {
       };
 
       testCases.forEach((String barcode, String expectedCountry) {
-        final String result = localDataSource.getCountryFromBarcode(barcode);
+        final String result = localDataSource.getGs1CountryFromBarcode(barcode);
         expect(result, equals(expectedCountry));
       });
+    });
+
+    test('getReportedOriginFromBarcode should return the reported origin', () {
+      final Map<String, String> testCases = <String, String>{
+        '0571234567890': 'China',
+        '0611234567890': 'Greece',
+        '6321234567890': 'China',
+        '6671234567890': 'Vietnam',
+        '8741234567890': 'Canada',
+      };
+
+      testCases.forEach((String barcode, String expectedOrigin) {
+        final String result = localDataSource.getReportedOriginFromBarcode(
+          barcode,
+        );
+        expect(result, equals(expectedOrigin));
+      });
+    });
+
+    test('getReportedOriginFromBarcode returns empty for unknown prefixes', () {
+      final String result = localDataSource.getReportedOriginFromBarcode(
+        '4601234567890',
+      );
+      expect(result, equals(''));
     });
 
     test('isEnglishBook should return true for English books', () {

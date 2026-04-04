@@ -2,6 +2,8 @@ enum ProductInfoType {
   code('product_info.code_colon'),
   productName('product_info.product_name_colon'),
   originCountry('product_info.origin_country_colon'),
+  gs1Country('product_info.gs1_country_colon'),
+  reportedOrigin('product_info.reported_origin_colon'),
   countryWhereSold('product_info.country_where_sold_colon'),
   brand('product_info.brand_colon'),
   companyTerrorismSponsor('product_info.is_company_terrorism_sponsor'),

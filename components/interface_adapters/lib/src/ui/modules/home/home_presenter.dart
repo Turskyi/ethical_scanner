@@ -235,6 +235,26 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           }
         }
 
+        if (productInfo.gs1Country.isNotEmpty) {
+          modifiableProductInfo[ProductInfoType.gs1Country] =
+              productInfo.gs1Country;
+          if (state is LoadingProductInfoState) {
+            LoadingProductInfoState loadingState =
+                state as LoadingProductInfoState;
+            emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
+          }
+        }
+
+        if (productInfo.reportedOrigin.isNotEmpty) {
+          modifiableProductInfo[ProductInfoType.reportedOrigin] =
+              productInfo.reportedOrigin;
+          if (state is LoadingProductInfoState) {
+            LoadingProductInfoState loadingState =
+                state as LoadingProductInfoState;
+            emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
+          }
+        }
+
         if (productInfo.countrySold.isNotEmpty) {
           modifiableProductInfo[ProductInfoType.countryWhereSold] =
               productInfo.countrySold;

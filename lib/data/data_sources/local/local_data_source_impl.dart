@@ -19,16 +19,17 @@ class LocalDataSourceImpl implements LocalDataSource {
     );
   }
 
-  /// Function to retrieve the country from barcode.
+  /// GS1 country associated with the barcode prefix.
+  ///
+  /// This indicates which GS1 Member Organization's country registered the
+  /// barcode - NOT the country where the product was manufactured.
   ///
   /// References:
   /// https://internationalbarcodes.com/barcode-country-codes/
   /// https://en.wikipedia.org/wiki/List_of_GS1_country_codes
   /// https://gs1.se/en/guides/documentation/code-lists/t3784-country-code/
-  /// https://en.wikipedia.org/wiki/ISO_3166-1_numeric
-  /// https://www.barcodestalk.com/learn-about-barcodes/resources/barcode-country-codes
   @override
-  String getCountryFromBarcode(String barcode) {
+  String getGs1CountryFromBarcode(String barcode) {
     // List of countries with corresponding barcode prefixes.
     final Map<String, String> countryCodeMap = <String, String>{
       '0': 'USA / Canada',
@@ -72,22 +73,14 @@ class LocalDataSourceImpl implements LocalDataSource {
       '051': 'US(GS1)',
       '052': 'US(GS1)',
       '056': 'US(GS1)',
-      '057':
-          'United States (GS1).\n'
-          'Some products with this code are made in China.',
-      '060':
-          'United States and Canada (barcode registered).\n'
-          'Some products with this code are labeled as Product of Switzerland.',
-      '061':
-          'United States (GS1).\n'
-          'Some products with this code are produced and packed in Greece.',
+      '057': 'United States',
+      '060': 'United States and Canada',
+      '061': 'United States',
       '062': 'United States',
       '063': 'United States',
       '064': 'Bhutan',
       '065': 'United States',
-      '066':
-          'United States (GS1).\n'
-          'Reportedly used on products from Columbia and/or packed in Canada.',
+      '066': 'United States',
       '067': 'United States (GS1)',
       '068': 'Bolivia',
       '069': 'United States',
@@ -173,24 +166,11 @@ class LocalDataSourceImpl implements LocalDataSource {
       '180': 'Congo (Congo-Kinshasa)',
       '184': 'Cook Islands',
       '188': 'Costa Rica',
-      '191':
-          'Unassigned GS1 prefix.\n'
-          'Reportedly used for some products made in China.',
+
       '192': 'Cuba',
-      '194':
-          'Not officially assigned by GS1.\n'
-          'Reportedly used for products made in Bangladesh.',
-      '195':
-          'Not officially assigned by GS1.\n'
-          'Reportedly used for products made in China.',
+
       '196': 'Cyprus',
-      '197':
-          'Not officially assigned by GS1.\n'
-          'Reportedly used for products made in '
-          'Cambodia, Bangladesh or Vietnam.',
-      '198':
-          'Not officially assigned by GS1.\n'
-          'Reportedly used for products made in China.',
+
       '203': 'Czechia (Czech Republic)',
       '204': 'Benin',
       '208': 'Denmark',
@@ -259,9 +239,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       '333': 'France and Monaco',
       '334': 'Heard Island and McDonald Islands',
       '335': 'France and Monaco',
-      '336':
-          'France (GS1).\n'
-          'Reportedly used on products manufactured in China.',
+      '336': 'France and Monaco',
       '337': 'France and Monaco',
       '338': 'France and Monaco',
       '339': 'France and Monaco',
@@ -288,7 +266,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       '358': 'France and Monaco',
       '359': 'France and Monaco',
       '36': 'France or Monaco',
-      '360': 'Reportedly used for some products made in USA',
+
       '361': 'France and Monaco',
       '362': 'France and Monaco',
       '363': 'France and Monaco',
@@ -403,9 +381,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       // 482 is a EAN-13 barcode prefix for Ukraine
       '482': 'Ukraine',
       '483': 'Turkmenistan',
-      // 484 is ISO 3166-1 numeric code for Mexico and EAN-13 barcode prefix for
-      // Moldova
-      '484': 'Mexico or Moldova',
+      '484': 'Moldova',
       '485': 'Armenia',
       '486': 'Georgia',
       '487': 'Kazakhstan',
@@ -498,20 +474,18 @@ class LocalDataSourceImpl implements LocalDataSource {
       '617': 'Cameroon',
       '618': 'Ivory Coast',
       '619': 'Tunisia',
-      '620': 'Tanzania (GS1). Reportedly used on products made in China.',
+      '620': 'Tanzania',
       '621': 'Syria',
       '622': 'Egypt',
       '624': 'Libya',
       '625': 'Jordan',
-      '626':
-          'Barcode registered in Iran. '
-          'Reportedly used for some products made in Canada.',
-      '627': 'Kuwait (GS1).\nReportedly used for some products made in China.',
+      '626': 'Iran',
+      '627': 'Kuwait',
       '628': 'Saudi Arabia (GS1)',
       '629': 'United Arab Emirates',
       '630': 'Qatar',
       '631': 'Namibia',
-      '632': 'Peru (GS1). Reportedly used for some products made in China.',
+      '632': 'Peru',
       '634': 'Reunion',
       '64': 'Finland',
       '640': 'Finland',
@@ -526,17 +500,13 @@ class LocalDataSourceImpl implements LocalDataSource {
       '649': 'Finland',
       '652': 'Saint Barthelemy',
       '654': 'Saint Helena',
-      '655':
-          'Unassigned GS1 prefix.\n'
-          'Reportedly used for some products made in China.',
+
       '659': 'Saint Kitts and Nevis',
       '662': 'Anguilla',
       '663': 'Saint Lucia',
-      '665':
-          'Unassigned GS1 prefix.\n'
-          'Reportedly used for some products made in China.',
+
       '666': 'Saint Martin',
-      '667': 'Reportedly used for some products made in Vietnam.',
+
       '670': 'Saint Pierre and Miquelon',
       '674': 'Saint Vincent and the Grenadines',
       '678': 'San Marino',
@@ -615,9 +585,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       '770': 'Colombia',
       '771': 'Colombia',
       '772': 'Tokelau',
-      '773':
-          'Uruguay (GS1).\n'
-          'Found on products made in China.',
+      '773': 'Uruguay',
       '775': 'Peru',
       '776': 'Tonga',
       '777': 'Bolivia',
@@ -670,14 +638,10 @@ class LocalDataSourceImpl implements LocalDataSource {
       '834': 'Tanzania',
       '835': 'Italy, San Marino and Vatican City',
       '836': 'Italy, San Marino and Vatican City',
-      '837':
-          'Italy, San Marino and Vatican City. '
-          'Reportedly used for some products made in China',
+      '837': 'Italy, San Marino and Vatican City',
       '838': 'Italy, San Marino and Vatican City',
       '839': 'Italy, San Marino and Vatican City',
-      // 840 is ISO 3166-1 numeric code for the United States or GS1 code for
-      // Spain and Andorra
-      '840': 'United States or Spain and Andorra',
+      '840': 'Spain and Andorra',
       '841': 'Spain and Andorra',
       '842': 'Spain and Andorra',
       '843': 'Spain and Andorra',
@@ -687,11 +651,9 @@ class LocalDataSourceImpl implements LocalDataSource {
       '847': 'Spain and Andorra',
       '848': 'Spain and Andorra',
       '849': 'Spain and Andorra',
-      '850':
-          'Cuba (GS1-registered prefix).\n'
-          'Reportedly also found on products labeled as made in the U.S.A.',
+      '850': 'Cuba',
       '854': 'Burkina Faso',
-      '856': 'Reportedly used on products from Colombia.',
+
       '858': 'Slovakia',
       '859': 'Czech Republic',
       '860': 'Serbia',
@@ -704,9 +666,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       '871': 'Netherlands',
       '872': 'Netherlands',
       '873': 'Netherlands',
-      '874':
-          'Netherlands (GS1).\n'
-          'Some products with this code are labeled as Product of Canada.',
+      '874': 'Netherlands',
       '875': 'Netherlands',
       '876': 'Wallis and Futuna',
       '877': 'Netherlands',
@@ -780,6 +740,41 @@ class LocalDataSourceImpl implements LocalDataSource {
         countryCodeMap[barcode.substring(0, 2)] ??
         countryCodeMap[barcode.substring(0, 1)] ??
         '';
+  }
+
+  /// Evidence-based country of origin observations tied to specific GS1
+  /// barcode prefixes, gathered from physically observed products.
+  /// One country per prefix. Add new entries as products are physically
+  /// verified.
+  static const Map<String, String> _reportedOriginMap = <String, String>{
+    '057': 'China',
+    '060': 'Switzerland',
+    '061': 'Greece',
+    '066': 'Colombia',
+    '191': 'China',
+    '194': 'Bangladesh',
+    '195': 'China',
+    '197': 'Cambodia, Bangladesh, Vietnam',
+    '198': 'China',
+    '336': 'China',
+    '360': 'United States',
+    '620': 'China',
+    '626': 'Canada',
+    '627': 'China',
+    '632': 'China',
+    '655': 'China',
+    '665': 'China',
+    '667': 'Vietnam',
+    '773': 'China',
+    '837': 'China, Canada',
+    '850': 'United States',
+    '856': 'Colombia',
+    '874': 'Canada',
+  };
+
+  @override
+  String getReportedOriginFromBarcode(String barcode) {
+    return _reportedOriginMap[barcode.substring(0, 3)] ?? '';
   }
 
   @override

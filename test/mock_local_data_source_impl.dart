@@ -26,7 +26,7 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
   /// https://en.wikipedia.org/wiki/List_of_GS1_country_codes
   /// https://en.wikipedia.org/wiki/ISO_3166-1_numeric
   @override
-  String getCountryFromBarcode(String barcode) {
+  String getGs1CountryFromBarcode(String barcode) {
     // List of countries with corresponding barcode prefixes
     final Map<String, String> countryCodeMap = <String, String>{
       '0': 'USA / Canada',
@@ -736,6 +736,36 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
         countryCodeMap[barcode.substring(0, 2)] ??
         countryCodeMap[barcode.substring(0, 1)] ??
         '';
+  }
+
+  @override
+  String getReportedOriginFromBarcode(String barcode) {
+    const Map<String, String> reportedOriginMap = <String, String>{
+      '057': 'China',
+      '060': 'Switzerland',
+      '061': 'Greece',
+      '066': 'Colombia',
+      '191': 'China',
+      '194': 'Bangladesh',
+      '195': 'China',
+      '197': 'Cambodia, Bangladesh, Vietnam',
+      '198': 'China',
+      '336': 'China',
+      '360': 'United States',
+      '620': 'China',
+      '626': 'Canada',
+      '627': 'China',
+      '632': 'China',
+      '655': 'China',
+      '665': 'China',
+      '667': 'Vietnam',
+      '773': 'China',
+      '837': 'China',
+      '850': 'United States',
+      '856': 'Colombia',
+      '874': 'Canada',
+    };
+    return reportedOriginMap[barcode.substring(0, 3)] ?? '';
   }
 
   @override
