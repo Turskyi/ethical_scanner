@@ -1,5 +1,9 @@
 # AI Agent Project Rules
 
+## Discuss before deviating
+
+If you disagree with a request, or plan to implement something the user did not explicitly ask for, stop and discuss it first. Do not silently add extra behaviour and explain it afterwards.
+
 Keep control flow readable and direct.
 
 - Prefer an explicit `else` branch over an early `return`.

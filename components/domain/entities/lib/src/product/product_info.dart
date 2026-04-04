@@ -91,6 +91,18 @@ class ProductInfo {
       origin.toLowerCase() == 'россия' ||
       barcode.startsWith('460');
 
+  /// US State Department designated state sponsors of terrorism.
+  /// Source: https://www.state.gov/state-sponsors-of-terrorism/
+  static const Set<String> _stateSponsoredTerrorismCountries = <String>{
+    'Cuba',
+    'North Korea',
+    'Iran',
+    'Syria',
+  };
+
+  bool get isGs1CountryStateSponsorOfTerrorism =>
+      _stateSponsoredTerrorismCountries.contains(gs1Country);
+
   ProductInfo copyWith({
     String? barcode,
     String? origin,

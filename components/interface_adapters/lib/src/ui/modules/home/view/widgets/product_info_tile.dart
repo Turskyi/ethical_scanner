@@ -50,6 +50,20 @@ class ProductInfoTile extends StatelessWidget {
         !kIsWeb &&
         responseType.isSupportedByOpenFoodFacts;
 
+    final bool isRedBackground =
+        info.isCompanyTerrorismSponsor || info.isFromRussia;
+    final bool isGreenBackground = info.isVegan || info.isVegetarian;
+
+    final bool isRedFlag =
+        type == ProductInfoType.gs1Country &&
+        info.isGs1CountryStateSponsorOfTerrorism &&
+        !isRedBackground;
+
+    final bool isGreenFlag =
+        ((type == ProductInfoType.isVegan && info.isVegan) ||
+            (type == ProductInfoType.isVegetarian && info.isVegetarian)) &&
+        !isGreenBackground;
+
     if (isIngredientsMissing && !canSnapIngredients) {
       return const SizedBox.shrink();
     }
@@ -62,12 +76,21 @@ class ProductInfoTile extends StatelessWidget {
           _getIconData(
             canSnapIngredients: canSnapIngredients,
             isIngredientsImageAdded: isIngredientsImageAdded,
+            isRedBackground: isRedBackground,
+            isGreenBackground: isGreenBackground,
           ),
+          color: isRedFlag
+              ? Colors.red
+              : isGreenFlag
+              ? Colors.green
+              : null,
         ),
         onPressed: canSnapIngredients
             ? () => context.read<HomePresenter>().add(
                 const SnapIngredientsEvent(),
               )
+            : isRedFlag
+            ? () => _onStateSponsorsTerrorismTap(context, resources)
             : null,
       ),
       title: SelectableText(
@@ -179,6 +202,17 @@ class ProductInfoTile extends StatelessWidget {
     );
   }
 
+  void _onStateSponsorsTerrorismTap(BuildContext context, Resources resources) {
+    context.read<HomePresenter>().add(
+      LaunchUrlEvent(
+        uri: resources.strings.stateSponsorsTerrorismSource,
+        language: Language.fromIsoLanguageCode(
+          LocalizedApp.of(context).delegate.currentLocale.languageCode,
+        ),
+      ),
+    );
+  }
+
   void _onTerrorismSponsorTap(BuildContext context) {
     final CountryDocuments countryDocs = CountryDocuments.forProductInfo(info);
     if (countryDocs.isEmpty) {
@@ -205,10 +239,24 @@ class ProductInfoTile extends StatelessWidget {
   IconData _getIconData({
     required bool canSnapIngredients,
     required bool isIngredientsImageAdded,
+    required bool isRedBackground,
+    required bool isGreenBackground,
   }) {
     return () {
       if (type.isCompanyWarSponsor) {
         return Icons.question_mark;
+      } else if (type == ProductInfoType.gs1Country &&
+          info.isGs1CountryStateSponsorOfTerrorism &&
+          !isRedBackground) {
+        return Icons.flag;
+      } else if (type == ProductInfoType.isVegan &&
+          info.isVegan &&
+          !isGreenBackground) {
+        return Icons.flag;
+      } else if (type == ProductInfoType.isVegetarian &&
+          info.isVegetarian &&
+          !isGreenBackground) {
+        return Icons.flag;
       } else if (canSnapIngredients) {
         return Icons.camera_alt_outlined;
       } else if (isIngredientsImageAdded) {
