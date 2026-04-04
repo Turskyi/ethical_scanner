@@ -14,7 +14,7 @@ repository: https://github.com/Turskyi/ethical_scanner/tree/master/components/in
 
 environment:
   sdk: '>=3.9.2 <4.0.0'
-  flutter: ">=1.17.0"
+  flutter: '>=1.17.0'
 
 dependencies:
   audiofileplayer: ^2.1.1
@@ -35,6 +35,7 @@ dependencies:
 
   # localization / internationalization (i18n) library
   flutter_email_sender: ^8.0.0
+  flutter_pdfview: ^1.3.2
   flutter_translate:
     git:
       url: https://github.com/Javernaver/flutter_translate.git
@@ -51,6 +52,7 @@ dependencies:
   # For launching a URL. Supports web, phone, SMS, and email schemes.
   package_info_plus: ^9.0.1
   path_provider: ^2.1.5
+  share_plus: ^10.1.4
   url_launcher: ^6.3.2
 
   use_cases:
@@ -71,7 +73,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

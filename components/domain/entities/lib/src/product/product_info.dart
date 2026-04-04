@@ -35,7 +35,7 @@ class ProductInfo {
   final String origin;
 
   /// The [gs1Country] parameter is the country associated with the GS1 prefix
-  /// of the barcode. It indicates which GS1 Member Organisation's country
+  /// of the barcode. It indicates which GS1 Member Organization's country
   /// registered the barcode — not where the product was manufactured.
   final String gs1Country;
 

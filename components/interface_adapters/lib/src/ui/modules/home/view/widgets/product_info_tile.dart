@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/terrorism_documents_bottom_sheet.dart';
 import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
+import 'package:interface_adapters/src/ui/res/values/country_documents.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProductInfoTile extends StatelessWidget {
@@ -133,9 +135,18 @@ class ProductInfoTile extends StatelessWidget {
                 ],
               ),
             )
-          : type.isWebsite || type.isTerrorismSponsor
+          : type.isWebsite
           ? Text(
               '$value ${translate('product_info.click_to_know')}',
+              style: TextStyle(
+                fontStyle: FontStyle.italic,
+                fontSize: textTheme.bodyLarge?.fontSize,
+                decoration: TextDecoration.underline,
+              ),
+            )
+          : type.isTerrorismSponsor
+          ? Text(
+              '$value ${translate('terrorism_sponsor.tap_for_documents')}',
               style: TextStyle(
                 fontStyle: FontStyle.italic,
                 fontSize: textTheme.bodyLarge?.fontSize,
@@ -158,10 +169,24 @@ class ProductInfoTile extends StatelessWidget {
             ),
       onTap: type.isWebsite || type.isTerrorismSponsor
           ? () {
-              _onLinkTap(context, resources);
+              if (type.isTerrorismSponsor) {
+                _onTerrorismSponsorTap(context);
+              } else {
+                _onLinkTap(context, resources);
+              }
             }
           : null,
     );
+  }
+
+  void _onTerrorismSponsorTap(BuildContext context) {
+    final CountryDocuments countryDocs = CountryDocuments.forProductInfo(info);
+    if (countryDocs.isEmpty) {
+      final Resources resources = Resources.of(context);
+      _onLinkTap(context, resources);
+    } else {
+      TerrorismDocumentsBottomSheet.show(context, documents: countryDocs);
+    }
   }
 
   void _onLinkTap(BuildContext context, Resources resources) {

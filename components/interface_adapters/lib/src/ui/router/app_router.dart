@@ -202,6 +202,39 @@ class AppRouter {
               );
             },
       ),
+      kPdfViewerPath => PageRouteBuilder<Object>(
+        settings: settings,
+        pageBuilder:
+            (
+              BuildContext context,
+              Animation<double> animation,
+              Animation<double> _,
+            ) {
+              final Object? args = settings.arguments;
+              if (args is SponsorDocument) {
+                return PdfViewerView(document: args);
+              } else {
+                return _getHomePageRouteBuilder(
+                  settings,
+                ).buildPage(context, animation, animation);
+              }
+            },
+        transitionsBuilder:
+            (
+              _,
+              Animation<double> animation,
+              Animation<double> _,
+              Widget child,
+            ) {
+              return FadeTransition(
+                opacity: CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeInOut,
+                ),
+                child: child,
+              );
+            },
+      ),
       String? _ => _getHomePageRouteBuilder(settings),
     };
   }

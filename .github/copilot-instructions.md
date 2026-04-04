@@ -23,3 +23,7 @@ if (condition) {
 
 emit(secondState);
 ```
+
+## Vertical ordering of functions
+
+If one function calls another, they should be vertically close, and the caller should be above the callee, if at all possible.
