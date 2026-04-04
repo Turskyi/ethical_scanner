@@ -67,8 +67,7 @@ android {
     namespace rootProject.application_id
     //noinspection GrDeprecatedAPIUsage
     compileSdk flutter.compileSdkVersion
-    //TODO: change to dynamic "flutter.ndkVersion" version, when the error is gone.
-    ndkVersion "27.0.12077973"
+    ndkVersion flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
