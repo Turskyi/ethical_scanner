@@ -439,8 +439,10 @@ class _PhotoViewState extends State<PhotoView> {
                                   context.read<PhotoPresenter>().add(
                                     TakenPhotoEvent(picture.path),
                                   );
-                                } else {
-                                  //TODO: add error event
+                                } else if (context.mounted) {
+                                  debugPrint(
+                                    'Failed to take picture: picture is null',
+                                  );
                                 }
                               } catch (e) {
                                 debugPrint('Error taking picture: $e');
@@ -599,7 +601,7 @@ class _PhotoViewState extends State<PhotoView> {
                   await launchUrl(emailLaunchUri);
                 } else {
                   debugPrint('Could not launch $emailLaunchUri');
-                  // Consider showing a Snackbar to the user
+                  // Consider showing a Snack-bar to the user
                   throw PlatformException(
                     // Keep throwing for internal handling if needed.
                     code: 'UNABLE_TO_LAUNCH_URL',
