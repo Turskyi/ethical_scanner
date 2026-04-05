@@ -67,6 +67,18 @@ extension TerrorismSponsorList on List<TerrorismSponsor> {
     });
   }
 
+  /// Returns `true` if [product] is associated with [terrorismSponsor] and the
+  /// sponsor has an active presence (i.e. not withdrawn or suspended).
+  ///
+  /// Possible [TerrorismSponsor.status] values from the backend:
+  /// - `Buying Time` — company announced vague or delayed exit plans.
+  /// - `Digging In` — company refuses to leave or has expanded operations.
+  /// - `Scaling Back` — company has reduced but not fully stopped operations.
+  /// - `Suspension` — company has suspended operations (treated as inactive).
+  /// - `Withdrawal` — company has fully withdrawn (treated as inactive).
+  ///
+  /// Only `Buying Time`, `Digging In`, and `Scaling Back` are considered active
+  /// sponsorship; `Suspension` and `Withdrawal` are excluded.
   bool _isSponsoredByTerrorismSponsor(
     TerrorismSponsor terrorismSponsor,
     ProductInfo product,

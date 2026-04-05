@@ -5,15 +5,11 @@
   "editor.wordWrapColumn": 80,
   "prettier.printWidth": 80,
   "prettier.trailingComma": "all",
-  "editor.rulers": [
-    80
-  ],
+  "editor.rulers": [80],
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "spellright.language": [
-    "en"
-  ],
+  "spellright.language": ["en"],
   "spellright.documentTypes": [
     "markdown",
     "latex",
