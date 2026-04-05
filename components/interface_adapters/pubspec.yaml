@@ -35,7 +35,7 @@ dependencies:
 
   # localization / internationalization (i18n) library
   flutter_email_sender: ^8.0.0
-  flutter_pdfview: ^1.3.2
+  flutter_pdfview: ^1.4.4
   flutter_translate:
     git:
       url: https://github.com/Javernaver/flutter_translate.git
@@ -52,7 +52,7 @@ dependencies:
   # For launching a URL. Supports web, phone, SMS, and email schemes.
   package_info_plus: ^9.0.1
   path_provider: ^2.1.5
-  share_plus: ^10.1.4
+  share_plus: ^12.0.2
   url_launcher: ^6.3.2
 
   use_cases:
