@@ -7,6 +7,8 @@ PODS:
     - FlutterMacOS
   - package_info_plus (0.0.1):
     - FlutterMacOS
+  - share_plus (0.0.1):
+    - FlutterMacOS
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -20,6 +22,7 @@ DEPENDENCIES:
   - mobile_scanner (from `Flutter/ephemeral/.symlinks/plugins/mobile_scanner/darwin`)
   - objective_c (from `Flutter/ephemeral/.symlinks/plugins/objective_c/macos`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
+  - share_plus (from `Flutter/ephemeral/.symlinks/plugins/share_plus/macos`)
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
   - window_size (from `Flutter/ephemeral/.symlinks/plugins/window_size/macos`)
@@ -33,6 +36,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/objective_c/macos
   package_info_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos
+  share_plus:
+    :path: Flutter/ephemeral/.symlinks/plugins/share_plus/macos
   shared_preferences_foundation:
     :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin
   url_launcher_macos:
@@ -45,6 +50,7 @@ SPEC CHECKSUMS:
   mobile_scanner: 77265f3dc8d580810e91849d4a0811a90467ed5e
   objective_c: e5f8194456e8fc943e034d1af00510a1bc29c067
   package_info_plus: 12f1c5c2cfe8727ca46cbd0b26677728972d9a5b
+  share_plus: 1fa619de8392a4398bfaf176d441853922614e89
   shared_preferences_foundation: 5086985c1d43c5ba4d5e69a4e8083a389e2909e6
   url_launcher_macos: 175a54c831f4375a6cf895875f716ee5af3888ce
   window_size: 339dafa0b27a95a62a843042038fa6c3c48de195
