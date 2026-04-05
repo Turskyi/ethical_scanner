@@ -35,6 +35,7 @@ class ProductInfoBody extends StatelessWidget {
             final EdgeInsets padding = MediaQuery.paddingOf(context);
 
             const double androidSpecificTopAdjustment = 16.0;
+            const double iOSSpecificTopAdjustment = 48.0;
             const double defaultPlatformTopAdjustment = 0.0;
 
             // Determine platform-specific adjustment in a web-safe way
@@ -43,13 +44,16 @@ class ProductInfoBody extends StatelessWidget {
               platformSpecificBasePadding = defaultPlatformTopAdjustment;
             } else if (Platform.isAndroid) {
               platformSpecificBasePadding = androidSpecificTopAdjustment;
+            } else if (Platform.isIOS) {
+              platformSpecificBasePadding = iOSSpecificTopAdjustment;
             } else {
               platformSpecificBasePadding = defaultPlatformTopAdjustment;
             }
 
             return ListView.builder(
               padding: EdgeInsets.only(
-                top: platformSpecificBasePadding +
+                top:
+                    platformSpecificBasePadding +
                     padding.top +
                     edgeInsets.top +
                     // Without it the code tile will be pushed up outside of the
@@ -58,7 +62,8 @@ class ProductInfoBody extends StatelessWidget {
                     // on top of the size of the keyboard, so this way code
                     // tile remains on the same place.
                     edgeInsets.bottom,
-                bottom: dimens.productInfoListBottomPadding +
+                bottom:
+                    dimens.productInfoListBottomPadding +
                     padding.bottom +
                     edgeInsets.bottom,
               ),
@@ -73,10 +78,8 @@ class ProductInfoBody extends StatelessWidget {
                     return const SizedBox();
                   }
                 } else {
-                  final ProductInfoType type =
-                      viewModel.productInfoMap.keys.elementAt(
-                    index,
-                  );
+                  final ProductInfoType type = viewModel.productInfoMap.keys
+                      .elementAt(index);
                   final String value = viewModel.productInfoMap[type] ?? '';
                   return DelayedAnimation(
                     delay: index * animationDelay,

@@ -54,14 +54,12 @@ class _CustomFeedbackFormState extends State<FeedbackForm> {
                       Flexible(
                         child: DropdownButton<FeedbackType>(
                           value: _customFeedback.feedbackType,
-                          items: FeedbackType.values.map(
-                            (FeedbackType type) {
-                              return DropdownMenuItem<FeedbackType>(
-                                value: type,
-                                child: Text(type.value),
-                              );
-                            },
-                          ).toList(),
+                          items: FeedbackType.values.map((FeedbackType type) {
+                            return DropdownMenuItem<FeedbackType>(
+                              value: type,
+                              child: Text(type.value),
+                            );
+                          }).toList(),
                           onChanged: (FeedbackType? feedbackType) => setState(
                             () => _customFeedback = _customFeedback.copyWith(
                               feedbackType: feedbackType,
@@ -92,9 +90,9 @@ class _CustomFeedbackFormState extends State<FeedbackForm> {
           // Disable this button until the user has specified a feedback type.
           onPressed: _customFeedback.feedbackType != null
               ? () => widget.onSubmit(
-                    _customFeedback.feedbackText ?? '',
-                    extras: _customFeedback.toMap(),
-                  )
+                  _customFeedback.feedbackText ?? '',
+                  extras: _customFeedback.toMap(),
+                )
               : null,
           child: const Text('submit'),
         ),
@@ -124,6 +122,23 @@ class _CustomFeedbackFormState extends State<FeedbackForm> {
       ),
       icon: Icon(icon),
       iconSize: 36,
+    );
+  }
+}
+
+class FeedbackSheetDragHandle extends StatelessWidget {
+  const FeedbackSheetDragHandle({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 4,
+      width: 40,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade300,
+        borderRadius: BorderRadius.circular(2),
+      ),
     );
   }
 }

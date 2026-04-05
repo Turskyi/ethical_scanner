@@ -18,10 +18,7 @@ class ScanningState extends ScanViewModel {
 
   final bool isSoundOn;
 
-  ScanningState copyWith({
-    bool? isSoundOn,
-    Language? language,
-  }) {
+  ScanningState copyWith({bool? isSoundOn, Language? language}) {
     return ScanningState(
       isSoundOn: isSoundOn ?? this.isSoundOn,
       language: language ?? this.language,

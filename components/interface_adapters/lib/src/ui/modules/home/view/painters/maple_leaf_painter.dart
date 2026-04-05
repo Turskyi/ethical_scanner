@@ -21,10 +21,7 @@ class MapleLeafPainter extends CustomPainter {
         textDirection: TextDirection.ltr,
       )..layout();
 
-      painter.paint(
-        canvas,
-        Offset(-leaf.size / 2, -leaf.size / 2),
-      );
+      painter.paint(canvas, Offset(-leaf.size / 2, -leaf.size / 2));
       canvas.restore();
     }
   }

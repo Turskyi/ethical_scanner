@@ -3,11 +3,7 @@ import 'package:entities/entities.dart';
 /// A data type holding user feedback consisting of a feedback type, free from
 /// feedback text, and a sentiment rating.
 class FeedbackDetails {
-  const FeedbackDetails({
-    this.feedbackType,
-    this.feedbackText,
-    this.rating,
-  });
+  const FeedbackDetails({this.feedbackType, this.feedbackText, this.rating});
 
   final FeedbackType? feedbackType;
   final String? feedbackText;

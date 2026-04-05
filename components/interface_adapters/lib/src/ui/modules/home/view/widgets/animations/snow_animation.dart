@@ -71,16 +71,13 @@ class _SnowAnimationState extends State<SnowAnimation>
   @pragma('vm:never-inline')
   List<Snowflake> _generateSnowflakeList() {
     if (mounted) {
-      return List<Snowflake>.generate(
-        _initialBatchSizeOfSnowflakes,
-        (int _) {
-          return Snowflake(
-            offset: _randomOffset(),
-            size: _randomSize(),
-            rotationAngle: _randomRotationAngle(),
-          );
-        },
-      );
+      return List<Snowflake>.generate(_initialBatchSizeOfSnowflakes, (int _) {
+        return Snowflake(
+          offset: _randomOffset(),
+          size: _randomSize(),
+          rotationAngle: _randomRotationAngle(),
+        );
+      });
     } else {
       return <Snowflake>[];
     }

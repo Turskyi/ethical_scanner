@@ -23,15 +23,10 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions, while build-number is used as the build
 # suffix.
-version: 0.2.4+24
+version: 0.2.5+25
 
 environment:
-  sdk: '>=3.2.3 <4.0.0'
-
-dependency_overrides:
-  #  Note: test_api is pinned to version 0.7.4 by flutter_test from the flutter
-  #  SDK.
-  test_api: any
+  sdk: '>=3.9.2 <4.0.0'
 
 # Dependencies specify other packages that your package needs to work.
 # To automatically upgrade your package dependencies to the latest versions,
@@ -51,53 +46,60 @@ dependencies:
   # presentation layer. You can think of the bloc package as the engine, and
   # the `flutter_bloc` package as the car body. You need both to make a
   # functional car 🚗.
-  bloc: ^9.0.0
-  camera: ^0.11.2
+  bloc: ^9.2.0
+  camera: ^0.12.0+1
   collection: ^1.19.1
   # Dart SDK for openAI Apis (GPT-3 & DALL-E), easily integrate the power of
   # OpenAI's state-of-the-art AI models into their Dart applications.
-  dart_openai: ^5.1.0
-  dio: ^5.8.0+1
+  dart_openai: ^6.1.1
+  dio: ^5.9.2
   entities:
     path: ./components/domain/entities
 
   # Explicitly reads environment variables into a Dart file from a `.env` file
   # for more security and faster start-up times.
-  envied: any
+  envied: ^1.3.4
   feedback: ^3.2.0
   flutter:
     sdk: flutter
 
   # Built to be used with the `bloc` state management package.
   flutter_bloc: ^9.1.1
+  flutter_pdfview: ^1.3.2
 
   # Localization / internationalization (i18n) library.
-  flutter_translate: any
+  flutter_translate:
+    git:
+      url: https://github.com/Javernaver/flutter_translate.git
+      ref: master
 
-  http: ^1.4.0
+  http: ^1.6.0
   interface_adapters:
     path: ./components/interface_adapters
 
-  json_annotation: ^4.9.0
+  intl: ^0.20.2
+  json_annotation: ^4.11.0
 
-  openfoodfacts: ^3.26.0
+  openfoodfacts: ^3.30.2
 
-  package_info_plus: ^8.3.0
+  package_info_plus: ^9.0.1
   path: ^1.9.1
   path_provider: ^2.1.5
-  retrofit: ^4.7.0
-  retrofit_generator: any
-  shared_preferences: ^2.5.3
+  retrofit: ^4.9.2
+  retrofit_generator: ^10.2.3
+  share_plus: ^10.1.4
+  shared_preferences: ^2.5.5
   use_cases:
     path: ./components/domain/use_cases
   window_size: ^0.1.0
 
 dev_dependencies:
   # A build system for Dart code generation and modular compilation.
-  build_runner: any
+  bloc_lint: ^0.4.0
+  build_runner: ^2.13.1
 
   # Generator for the Envied package. See https://pub.dev/packages/envied.
-  envied_generator: any
+  envied_generator: ^1.3.4
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -108,11 +110,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # Because json_serializable >=6.10.0 depends on source_gen ^3.0.0.
-  json_serializable: ^6.9.5
-  # Because mockito >=5.5.0 depends on source_gen ^3.0.0.
-  mockito: ^5.4.6
-  test: ^1.26.3
+  json_serializable: ^6.13.1
+
+  mockito: ^5.6.4
+  test: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -127,6 +128,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/documents/
     - components/interface_adapters/assets/i18n/
     - components/interface_adapters/assets/audio/
     - components/interface_adapters/assets/images/

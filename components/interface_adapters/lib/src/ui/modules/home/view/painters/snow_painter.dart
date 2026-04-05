@@ -26,16 +26,16 @@ class SnowPainter extends CustomPainter {
       canvas.rotate(rotationAngle);
 
       TextPainter(
-        text: TextSpan(
-          text: String.fromCharCode(Icons.ac_unit.codePoint),
-          style: TextStyle(
-            fontSize: snowflakes[i].size,
-            fontFamily: Icons.ac_unit.fontFamily,
-            color: Colors.white,
+          text: TextSpan(
+            text: String.fromCharCode(Icons.ac_unit.codePoint),
+            style: TextStyle(
+              fontSize: snowflakes[i].size,
+              fontFamily: Icons.ac_unit.fontFamily,
+              color: Colors.white,
+            ),
           ),
-        ),
-        textDirection: TextDirection.ltr,
-      )
+          textDirection: TextDirection.ltr,
+        )
         ..layout()
         ..paint(
           canvas,

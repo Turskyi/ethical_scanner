@@ -65,9 +65,9 @@ def SIGNING_KEY_RELEASE_KEY_PASSWORD = keyProperties.getProperty(
 android {
     //noinspection GroovyAssignabilityCheck
     namespace rootProject.application_id
+    //noinspection GrDeprecatedAPIUsage
     compileSdk flutter.compileSdkVersion
-    //TODO: change to dynamic "flutter.ndkVersion" version, when the error is gone.
-    ndkVersion "27.0.12077973"
+    ndkVersion flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -75,6 +75,7 @@ android {
     }
 
     kotlinOptions {
+        //noinspection GrDeprecatedAPIUsage
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
@@ -158,6 +159,6 @@ flutter {
 }
 
 dependencies {
-    implementation 'com.google.firebase:firebase-crashlytics:20.0.2'
+    implementation 'com.google.firebase:firebase-crashlytics:20.0.3'
     implementation 'com.google.firebase:firebase-analytics:23.0.0'
 }

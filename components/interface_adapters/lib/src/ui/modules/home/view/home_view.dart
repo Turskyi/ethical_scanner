@@ -8,10 +8,10 @@ import 'package:interface_adapters/src/ui/modules/home/view/widgets/animations/m
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/animations/sakura_petal_animation.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/animations/snow_animation.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/fab.dart';
-import 'package:interface_adapters/src/ui/modules/home/view/widgets/language_selector.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/product_info_body.dart';
 import 'package:interface_adapters/src/ui/res/color/app_color.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
+import 'package:interface_adapters/src/ui/widgets/language_selector.dart';
 
 import 'widgets/interactive_home_prompt.dart';
 
@@ -50,8 +50,8 @@ class HomeView extends StatelessWidget {
                   currentLanguage: viewModel.language,
                   onLanguageSelected: (Language newLanguage) {
                     context.read<HomePresenter>().add(
-                          ChangeLanguageEvent(newLanguage),
-                        );
+                      ChangeLanguageEvent(newLanguage),
+                    );
                   },
                 );
               },
@@ -84,15 +84,15 @@ class HomeView extends StatelessWidget {
         floatingActionButton: Fab(
           barcode: args is String ? args : '',
           expandedBody: const ProductInfoBody(),
-          onPressed: () => context
-              .read<HomePresenter>()
-              .add(const NavigateToScanViewEvent()),
+          onPressed: () => context.read<HomePresenter>().add(
+            const NavigateToScanViewEvent(),
+          ),
           onClose: () {
             context.read<HomePresenter>().add(
-                  ClearProductInfoEvent(
-                    context.read<HomePresenter>().state.language,
-                  ),
-                );
+              ClearProductInfoEvent(
+                context.read<HomePresenter>().state.language,
+              ),
+            );
           },
         ),
       ),

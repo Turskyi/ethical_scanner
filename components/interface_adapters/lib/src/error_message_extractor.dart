@@ -6,8 +6,9 @@ String extractErrorMessage(String exceptionSource) {
   final Document document = parse(exceptionSource);
 
   // Prioritize the main content element if it exists.
-  final Element? mainContentElement =
-      document.querySelector('div.main-content');
+  final Element? mainContentElement = document.querySelector(
+    'div.main-content',
+  );
   if (mainContentElement != null) {
     final String message = mainContentElement.text.trim();
     return message;

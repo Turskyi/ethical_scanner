@@ -27,10 +27,7 @@ class ScreenTitle extends StatelessWidget {
             Shadow(
               blurRadius: dimens.bodyBlurRadius,
               color: Colors.white30,
-              offset: Offset(
-                dimens.bodyTitleOffset,
-                dimens.bodyTitleOffset,
-              ),
+              offset: Offset(dimens.bodyTitleOffset, dimens.bodyTitleOffset),
             ),
           ],
         ),

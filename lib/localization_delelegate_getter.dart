@@ -16,13 +16,13 @@ Future<LocalizationDelegate> getLocalizationDelegate() async {
 
   final LocalizationDelegate localizationDelegate =
       await LocalizationDelegate.create(
-    fallbackLocale: Language.fromIsoLanguageCode(
-      deviceIsoLanguageCode,
-    ).isoLanguageCode,
-    supportedLocales: Language.values
-        .map((Language language) => language.isoLanguageCode)
-        .toList(),
-    basePath: constants.localizationPath,
-  );
+        fallbackLocale: Language.fromIsoLanguageCode(
+          deviceIsoLanguageCode,
+        ).isoLanguageCode,
+        supportedLocales: Language.values
+            .map((Language language) => language.isoLanguageCode)
+            .toList(),
+        basePath: constants.localizationPath,
+      );
   return localizationDelegate;
 }

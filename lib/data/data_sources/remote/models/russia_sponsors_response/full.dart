@@ -17,11 +17,7 @@ class Full {
 
   Map<String, dynamic> toJson() => _$FullToJson(this);
 
-  Full copyWith({
-    String? url,
-    int? width,
-    int? height,
-  }) {
+  Full copyWith({String? url, int? width, int? height}) {
     return Full(
       url: url ?? this.url,
       width: width ?? this.width,

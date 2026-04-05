@@ -3,7 +3,9 @@ abstract interface class LocalDataSource {
 
   Future<void> init();
 
-  String getCountryFromBarcode(String barcode);
+  String getGs1CountryFromBarcode(String barcode);
+
+  String getReportedOriginFromBarcode(String barcode);
 
   bool isEnglishBook(String barcode);
 

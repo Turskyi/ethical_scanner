@@ -26,9 +26,9 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
   /// https://en.wikipedia.org/wiki/List_of_GS1_country_codes
   /// https://en.wikipedia.org/wiki/ISO_3166-1_numeric
   @override
-  String getCountryFromBarcode(String barcode) {
+  String getGs1CountryFromBarcode(String barcode) {
     // List of countries with corresponding barcode prefixes
-    Map<String, String> countryCodeMap = <String, String>{
+    final Map<String, String> countryCodeMap = <String, String>{
       '0': 'USA / Canada',
       '000': 'United States and Canada',
       '001': 'United States',
@@ -729,7 +729,7 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
       '958': 'Macau',
     };
 
-    String prefix = barcode.substring(0, 3);
+    final String prefix = barcode.substring(0, 3);
 
     // Check barcode format and retrieve country
     return countryCodeMap[prefix] ??
@@ -739,8 +739,38 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
   }
 
   @override
+  String getReportedOriginFromBarcode(String barcode) {
+    const Map<String, String> reportedOriginMap = <String, String>{
+      '057': 'China',
+      '060': 'Switzerland',
+      '061': 'Greece',
+      '066': 'Colombia',
+      '191': 'China',
+      '194': 'Bangladesh',
+      '195': 'China',
+      '197': 'Cambodia, Bangladesh, Vietnam',
+      '198': 'China',
+      '336': 'China',
+      '360': 'United States',
+      '620': 'China',
+      '626': 'Canada',
+      '627': 'China',
+      '632': 'China',
+      '655': 'China',
+      '665': 'China',
+      '667': 'Vietnam',
+      '773': 'China',
+      '837': 'China',
+      '850': 'United States',
+      '856': 'Colombia',
+      '874': 'Canada',
+    };
+    return reportedOriginMap[barcode.substring(0, 3)] ?? '';
+  }
+
+  @override
   bool isEnglishBook(String barcode) {
-    List<int> digits = barcode.codeUnits
+    final List<int> digits = barcode.codeUnits
         .where((int char) => char >= 48 && char <= 57)
         .map((int char) => char - 48)
         .toList();
@@ -765,23 +795,15 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
 
   @override
   bool getPrecipitationState() =>
-      _sharedPrefs.getBool(
-        Settings.precipitationFalling.key,
-      ) ??
-      true;
+      _sharedPrefs.getBool(Settings.precipitationFalling.key) ?? true;
 
   @override
-  Future<bool> saveSoundPreference(bool isSoundOn) => _sharedPrefs.setBool(
-        Settings.sound.key,
-        isSoundOn,
-      );
+  Future<bool> saveSoundPreference(bool isSoundOn) =>
+      _sharedPrefs.setBool(Settings.sound.key, isSoundOn);
 
   @override
   bool getSoundPreference() =>
-      _sharedPrefs.getBool(
-        Settings.sound.key,
-      ) ??
-      false;
+      _sharedPrefs.getBool(Settings.sound.key) ?? false;
 
   @override
   String getLanguageIsoCode() => 'mock';

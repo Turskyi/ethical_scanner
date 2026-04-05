@@ -1,16 +1,17 @@
 import 'package:entities/entities.dart';
-import 'package:ethical_scanner/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:interface_adapters/interface_adapters.dart' as route;
+import 'package:interface_adapters/interface_adapters.dart' as router;
 
 void main() {
   group('App Router', () {
     test('Generate Route - Home', () {
       // Arrange
-      const RouteSettings settings = RouteSettings(name: route.kHomePath);
+      const RouteSettings settings = RouteSettings(name: router.kHomePath);
 
-      final AppRouter appRouter = AppRouter(savedLanguage: Language.en);
+      final router.AppRouter appRouter = router.AppRouter(
+        savedLanguage: Language.en,
+      );
 
       // Act
       final Route<Object> pageRoute = appRouter.generateRoute(settings);
@@ -22,9 +23,11 @@ void main() {
 
     test('Generate Route - Scan', () {
       // Arrange
-      const RouteSettings settings = RouteSettings(name: route.kScanPath);
+      const RouteSettings settings = RouteSettings(name: router.kScanPath);
 
-      final AppRouter appRouter = AppRouter(savedLanguage: Language.en);
+      final router.AppRouter appRouter = router.AppRouter(
+        savedLanguage: Language.en,
+      );
 
       // Act
       final Route<Object> pageRoute = appRouter.generateRoute(settings);
@@ -38,7 +41,9 @@ void main() {
       // Arrange
       const RouteSettings settings = RouteSettings(name: 'unknown_route');
 
-      final AppRouter appRouter = AppRouter(savedLanguage: Language.en);
+      final router.AppRouter appRouter = router.AppRouter(
+        savedLanguage: Language.en,
+      );
 
       // Act
       final Route<Object> route = appRouter.generateRoute(settings);

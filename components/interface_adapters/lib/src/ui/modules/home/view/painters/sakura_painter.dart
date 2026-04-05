@@ -17,14 +17,12 @@ class SakuraPainter extends CustomPainter {
 
       final double fontSize = petal.size;
       TextPainter(
-        text: TextSpan(
-          text: '🌸',
-          style: TextStyle(
-            fontSize: fontSize,
+          text: TextSpan(
+            text: '🌸',
+            style: TextStyle(fontSize: fontSize),
           ),
-        ),
-        textDirection: TextDirection.ltr,
-      )
+          textDirection: TextDirection.ltr,
+        )
         ..layout()
         ..paint(
           canvas,

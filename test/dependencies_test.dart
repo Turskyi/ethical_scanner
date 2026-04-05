@@ -13,8 +13,7 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       dependencies = await MockDependencies.create();
     });
-    test(
-        'getPrecipitationStateUseCase returns instance of '
+    test('getPrecipitationStateUseCase returns instance of '
         'GetPrecipitationStateUseCase', () async {
       expect(
         dependencies.getPrecipitationStateUseCase,
@@ -22,13 +21,9 @@ void main() {
       );
     });
     test('getLanguageUseCase returns instance of GetLanguageUseCase', () async {
-      expect(
-        dependencies.getLanguageUseCase,
-        isA<GetLanguageUseCase>(),
-      );
+      expect(dependencies.getLanguageUseCase, isA<GetLanguageUseCase>());
     });
-    test(
-        'savePrecipitationStateUseCas returns instance of '
+    test('savePrecipitationStateUseCas returns instance of '
         'SavePrecipitationStateUseCase', () async {
       expect(
         dependencies.savePrecipitationStateUseCase,

@@ -37,33 +37,11 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       final Product? resultProduct = result.product;
       if (resultProduct != null && result.hasSuccessfulStatus) {
         final ProductInfo product = resultProduct.toProductInfo(language);
-        if (product.brand.isNotEmpty || product.name.isNotEmpty) {
-          //TODO: move to use case.
-          return _restClient
-              .getTerrorismSponsors()
-              .then((List<TerrorismSponsor> terrorismSponsors) {
-            final bool isCompanyTerrorismSponsor =
-                terrorismSponsors.sponsoredBy(
-              product,
-            );
-
-            return product.copyWith(
-              isCompanyTerrorismSponsor: isCompanyTerrorismSponsor,
-            );
-          }).onError((Object? error, StackTrace _) {
-            debugPrint(
-              'Error fetching terrorism sponsors for product code: $code. '
-              'Defaulting to product information without sponsor check. '
-              'Error: $error',
-            );
-            return product;
-          });
-        } else {
-          return product;
-        }
+        return product;
       } else if (result.status == ProductResultV3.statusFailure) {
         if (_isBarcode(code)) {
-          final bool cannotHaveIngredients = result.result?.id ==
+          final bool cannotHaveIngredients =
+              result.result?.id ==
               'product_found_with_a_different_product_type';
           return ProductInfo(
             barcode: code,
@@ -93,34 +71,54 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
+  Future<List<TerrorismSponsor>> getTerrorismSponsors() {
+    return _restClient.getTerrorismSponsors();
+  }
+
+  @override
   Future<String> getInfoFromAiAsFuture(String barcode) {
-    return OpenAI.instance.chat.create(
-      model: 'gpt-3.5-turbo',
-      seed: 6,
-      temperature: 0.2,
-      maxTokens: 500,
-      stop: <String>['\n'],
-      messages: <OpenAIChatCompletionChoiceMessageModel>[
-        OpenAIChatCompletionChoiceMessageModel(
-          content: <OpenAIChatCompletionChoiceMessageContentItemModel>[
-            OpenAIChatCompletionChoiceMessageContentItemModel.text(
-              'Please provide any information that can be inferred from the '
-              'barcode "$barcode". '
-              'This could include the GS1 country prefix or known usage '
-              'patterns. '
-              'If nothing is definitive, mention possible origins or usage '
-              'notes. ',
+    return OpenAI.instance.chat
+        .create(
+          model: 'gpt-3.5-turbo',
+          seed: 6,
+          temperature: 0.2,
+          maxTokens: 500,
+          stop: <String>['\n'],
+          messages: <OpenAIChatCompletionChoiceMessageModel>[
+            OpenAIChatCompletionChoiceMessageModel(
+              content: <OpenAIChatCompletionChoiceMessageContentItemModel>[
+                OpenAIChatCompletionChoiceMessageContentItemModel.text(
+                  'Please provide any information that can be inferred from '
+                  'the barcode "$barcode". '
+                  'This could include the GS1 country prefix or known usage '
+                  'patterns. '
+                  'If nothing is definitive, mention possible origins or usage '
+                  'notes. ',
+                ),
+              ],
+              role: OpenAIChatMessageRole.user,
             ),
           ],
-          role: OpenAIChatMessageRole.user,
-        ),
-      ],
-    ).then((OpenAIChatCompletionModel completion) {
-      final String? info = completion
-          .choices.firstOrNull?.message.content?.firstOrNull?.text
-          ?.trim();
-      return info ?? '';
-    }).onError((_, __) => '');
+        )
+        .then((OpenAIChatCompletionModel completion) {
+          final String? info = completion
+              .choices
+              .firstOrNull
+              ?.message
+              .content
+              ?.firstOrNull
+              ?.text
+              ?.trim();
+          return info ?? '';
+        })
+        .onError((Object? error, StackTrace stackTrace) {
+          debugPrint(
+            'Error fetching info from AI for barcode: $barcode. '
+            'Error: $error'
+            'StackTrace: $stackTrace',
+          );
+          return '';
+        });
   }
 
   @override
@@ -156,7 +154,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       packagingTags: <String>[product.packaging],
     );
 
-    final User openFoodUser = OpenFoodAPIConfiguration.globalUser ??
+    final User openFoodUser =
+        OpenFoodAPIConfiguration.globalUser ??
         const User(
           userId: Env.openFoodUserId,
           password: Env.openFoodPassword,
@@ -191,19 +190,22 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     );
 
     if (result.status == HttpStatus.badRequest) {
-      String formattedProductDetails = 'Product details not available or too '
+      String formattedProductDetails =
+          'Product details not available or too '
           'large to print directly.';
       try {
         // Attempt to serialize the product to JSON for better readability if
         // it's complex.
         formattedProductDetails = jsonEncode(newProduct.toJson());
       } catch (e) {
-        formattedProductDetails = 'Could not serialize product to JSON: $e. '
+        formattedProductDetails =
+            'Could not serialize product to JSON: $e. '
             'Basic details: Barcode: ${newProduct.barcode}, '
             'Name: ${newProduct.productName}';
       }
 
-      final String debugMessage = """
+      final String debugMessage =
+          """
       ===============================================================
       ERROR: Failed to save product to OpenFoodFacts (BadRequest)
       ---------------------------------------------------------------
@@ -226,12 +228,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         result.body != null
             ? 'Failed to save product. Server response: ${result.body}'
             : 'Product could not be added.\n${result.error ?? ''}. '
-                'Status: ${result.status}',
+                  'Status: ${result.status}',
       );
     } else if (result.status != 1) {
-      throw Exception(
-        'product could not be added ${result.error ?? ''}',
-      );
+      throw Exception('product could not be added ${result.error ?? ''}');
     }
   }
 
@@ -242,7 +242,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       imageUri: Uri.parse(photo.path),
       imageField: ImageField.INGREDIENTS,
     );
-    final User openFoodUser = OpenFoodAPIConfiguration.globalUser ??
+    final User openFoodUser =
+        OpenFoodAPIConfiguration.globalUser ??
         const User(
           userId: Env.openFoodUserId,
           password: Env.openFoodPassword,
@@ -292,7 +293,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         final String errorMessage =
             'Image upload failed: Forbidden for both primary user and backup '
             "user ('${Env.openFoodBackupUserId}').";
-        final String debugMessage = """
+        final String debugMessage =
+            """
         ===============================================================
         CRITICAL ERROR: Image upload forbidden even for Backup User
         ---------------------------------------------------------------
@@ -322,9 +324,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
             'Image upload failed with an unexpected status: ${status.status}\n.'
             'Error: ${status.error ?? 'No specific error message from API.'} '
             '${status.imageId != null ? 'Image ID (if available): '
-                '${status.imageId}' : ''}';
+                      '${status.imageId}' : ''}';
 
-        final String debugMessage = """
+        final String debugMessage =
+            """
         ===============================================================
         ERROR: Unexpected status during image upload
         ---------------------------------------------------------------
@@ -354,7 +357,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
       // Check for Connection Refused specifically.
       if (e.message.toLowerCase().contains('connection refused')) {
-        additionalContext = '\nPOSSIBLE CAUSE: Network issue, '
+        additionalContext =
+            '\nPOSSIBLE CAUSE: Network issue, '
             'server (world.openfoodfacts.org) down/misconfigured, '
             'or incorrect API '
             'endpoint/port being used by the HTTP client. '
@@ -371,7 +375,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
                 'Please check your internet connection or try again later. '
                 '(Details: Connection refused to ${e.uri})';
 
-            String debugLog = '''
+            final String debugLog =
+                '''
           ===============================================================
           CRITICAL ERROR (ApiConnectionRefusedException Thrown)
           ---------------------------------------------------------------
@@ -404,7 +409,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }
       // Fallback logging for other ClientExceptions or if the specific URI
       // condition wasn't met.
-      String debugMessage = '''
+      final String debugMessage =
+          '''
     ===============================================================
     CLIENT EXCEPTION during _uploadProductImageToOpenFoodFacts
     ---------------------------------------------------------------
@@ -429,9 +435,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       // subsequent logic.
 
       final String caughtExceptionType = e.runtimeType.toString();
-      String additionalContext = '';
+      final String additionalContext = '';
 
-      String debugMessage = '''
+      final String debugMessage =
+          '''
       ===============================================================
       CRITICAL ERROR during _uploadProductImageToOpenFoodFacts
       ---------------------------------------------------------------
@@ -516,7 +523,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   // ignore: unused_element
   Future<void> _saveAndExtractIngredient(ProductPhoto photo) async {
     // A registered user login for https://world.openfoodfacts.org/ is required.
-    final User user = OpenFoodAPIConfiguration.globalUser ??
+    final User user =
+        OpenFoodAPIConfiguration.globalUser ??
         const User(
           userId: Env.openFoodUserId,
           password: Env.openFoodPassword,
@@ -540,17 +548,18 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
     final OcrIngredientsResult ocrResponse =
         await OpenFoodAPIClient.extractIngredients(
-      user,
-      photo.info.barcode,
-      language,
-    );
+          user,
+          photo.info.barcode,
+          language,
+        );
 
     if (ocrResponse.status != 0) {
       throw Exception("Text can't be extracted.");
     }
 
     final ProductInfo product = photo.info;
-    final String ingredientsText = ocrResponse.ingredientsTextFromImage ??
+    final String ingredientsText =
+        ocrResponse.ingredientsTextFromImage ??
         photo.info.ingredientList.join(',');
     final Product editedProduct = Product(
       barcode: product.barcode,
@@ -596,10 +605,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     );
 
     // Save the extracted ingredients to the product on the OFF server
-    results = await OpenFoodAPIClient.saveProduct(
-      user,
-      editedProduct,
-    );
+    results = await OpenFoodAPIClient.saveProduct(user, editedProduct);
 
     if (results.status != 1) {
       throw Exception('product could not be added');
@@ -609,9 +615,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     final ProductQueryConfiguration configurations = ProductQueryConfiguration(
       photo.info.barcode,
       language: language,
-      fields: <ProductField>[
-        ProductField.INGREDIENTS_TEXT,
-      ],
+      fields: <ProductField>[ProductField.INGREDIENTS_TEXT],
       version: ProductQueryVersion.v3,
     );
     final ProductResultV3 productResult = await OpenFoodAPIClient.getProductV3(

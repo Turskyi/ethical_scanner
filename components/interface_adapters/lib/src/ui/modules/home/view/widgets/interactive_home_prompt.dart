@@ -6,10 +6,7 @@ import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
 
 class InteractiveHomePrompt extends StatelessWidget {
-  const InteractiveHomePrompt({
-    required this.displayText,
-    super.key,
-  });
+  const InteractiveHomePrompt({required this.displayText, super.key});
 
   final String displayText;
 
@@ -31,33 +28,22 @@ class InteractiveHomePrompt extends StatelessWidget {
         child: ShaderMask(
           shaderCallback: (Rect bounds) {
             return LinearGradient(
-              colors: <Color>[
-                colors.columbiaBlue,
-                colors.verdigris,
-              ],
+              colors: <Color>[colors.columbiaBlue, colors.verdigris],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ).createShader(bounds);
           },
           child: AnimatedSwitcher(
             duration: resources.durations.animatedSwitcher,
-            transitionBuilder: (
-              Widget child,
-              Animation<double> animation,
-            ) {
-              return FadeTransition(
-                opacity: animation,
-                child: child,
-              );
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return FadeTransition(opacity: animation, child: child);
             },
             child: Text(
               displayText,
               key: ValueKey<String>(displayText),
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: Theme.of(
-                  context,
-                ).textTheme.headlineLarge?.fontSize,
+                fontSize: Theme.of(context).textTheme.headlineLarge?.fontSize,
                 fontWeight: FontWeight.bold,
                 shadows: <Shadow>[
                   Shadow(

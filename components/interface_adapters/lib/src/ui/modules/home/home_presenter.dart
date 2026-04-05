@@ -24,7 +24,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     this._getPrecipitationStateUseCase,
     this._saveLanguageUseCase,
     this._getLanguageUseCase,
-  ) : super(const LoadingHomeState()) {
+  ) : super(LoadingHomeState(language: _getLanguageUseCase.call())) {
     on<LoadHomeEvent>(_onLoadHomeEvent);
 
     on<ClearProductInfoEvent>(_onClearProductInfoEvent);
@@ -58,7 +58,12 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     HomeErrorEvent event,
     Emitter<HomeViewModel> emit,
   ) {
-    emit(HomeErrorState(event.error));
+    emit(
+      HomeErrorState(
+        errorMessage: event.error,
+        language: _getLanguageUseCase.call(),
+      ),
+    );
   }
 
   FutureOr<void> _changeLanguage(
@@ -73,7 +78,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
       if (isSaved && state is ReadyToScanState) {
         emit((state as ReadyToScanState).copyWith(language: language));
       } else {
-        emit(const LoadingHomeState());
+        emit(LoadingHomeState(language: _getLanguageUseCase.call()));
       }
     }
   }
@@ -111,7 +116,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           ),
         );
       } else {
-        emit(const LoadingHomeState());
+        emit(LoadingHomeState(language: _getLanguageUseCase.call()));
       }
     }
   }
@@ -122,7 +127,12 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
   ) async {
     final Uri url = Uri.parse(event.uri);
     if (!await launchUrl(url)) {
-      emit(HomeErrorState('${translate('could_not_launch')} $url'));
+      emit(
+        HomeErrorState(
+          language: _getLanguageUseCase.call(),
+          errorMessage: '${translate('could_not_launch')} $url',
+        ),
+      );
     }
   }
 
@@ -175,11 +185,9 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     // simplicity of the code.
     ProductInfo productInfo = event.productInfo;
     final Map<ProductInfoType, String> modifiableProductInfo =
-        Map<ProductInfoType, String>.from(
-      <ProductInfoType, String>{
-        ProductInfoType.code: productInfo.barcode,
-      },
-    );
+        Map<ProductInfoType, String>.from(<ProductInfoType, String>{
+          ProductInfoType.code: productInfo.barcode,
+        });
 
     emit(
       LoadingProductInfoState(
@@ -197,9 +205,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
         if (state is LoadingProductInfoState) {
           LoadingProductInfoState loadingState =
               state as LoadingProductInfoState;
-          emit(
-            loadingState.copyWith(productInfoMap: modifiableProductInfo),
-          );
+          emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
         }
 
         productInfo = productInfo.ingredientList.isEmpty
@@ -215,9 +221,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           if (state is LoadingProductInfoState) {
             LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
-            emit(
-              loadingState.copyWith(productInfoMap: modifiableProductInfo),
-            );
+            emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
         }
 
@@ -227,9 +231,27 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           if (state is LoadingProductInfoState) {
             LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
-            emit(
-              loadingState.copyWith(productInfoMap: modifiableProductInfo),
-            );
+            emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
+          }
+        }
+
+        if (productInfo.gs1Country.isNotEmpty) {
+          modifiableProductInfo[ProductInfoType.gs1Country] =
+              productInfo.gs1Country;
+          if (state is LoadingProductInfoState) {
+            LoadingProductInfoState loadingState =
+                state as LoadingProductInfoState;
+            emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
+          }
+        }
+
+        if (productInfo.reportedOrigin.isNotEmpty) {
+          modifiableProductInfo[ProductInfoType.reportedOrigin] =
+              productInfo.reportedOrigin;
+          if (state is LoadingProductInfoState) {
+            LoadingProductInfoState loadingState =
+                state as LoadingProductInfoState;
+            emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
         }
 
@@ -239,9 +261,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           if (state is LoadingProductInfoState) {
             LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
-            emit(
-              loadingState.copyWith(productInfoMap: modifiableProductInfo),
-            );
+            emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
         }
 
@@ -250,23 +270,19 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           if (state is LoadingProductInfoState) {
             LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
-            emit(
-              loadingState.copyWith(productInfoMap: modifiableProductInfo),
-            );
+            emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
         }
 
         if (productInfo.isCompanyTerrorismSponsor) {
           modifiableProductInfo[ProductInfoType.companyTerrorismSponsor] =
               productInfo.isCompanyTerrorismSponsor
-                  ? translate('probably_yes')
-                  : translate('no');
+              ? translate('probably_yes')
+              : translate('no');
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
-            emit(
-              loadingState.copyWith(productInfoMap: modifiableProductInfo),
-            );
+            emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
         }
 
@@ -276,37 +292,31 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
-            emit(
-              loadingState.copyWith(productInfoMap: modifiableProductInfo),
-            );
+            emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
         }
 
         if (productInfo.vegetarian != Vegetarian.unknown) {
           modifiableProductInfo[ProductInfoType.isVegetarian] =
               productInfo.vegetarian == Vegetarian.positive
-                  ? translate('yes')
-                  : translate('no');
+              ? translate('yes')
+              : translate('no');
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
-            emit(
-              loadingState.copyWith(productInfoMap: modifiableProductInfo),
-            );
+            emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
         }
 
         if (productInfo.vegan != Vegan.unknown) {
           modifiableProductInfo[ProductInfoType.isVegan] =
               productInfo.vegan == Vegan.positive
-                  ? translate('yes')
-                  : translate('no');
+              ? translate('yes')
+              : translate('no');
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
-            emit(
-              loadingState.copyWith(productInfoMap: modifiableProductInfo),
-            );
+            emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
         }
 
@@ -316,9 +326,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
-            emit(
-              loadingState.copyWith(productInfoMap: modifiableProductInfo),
-            );
+            emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
         }
 
@@ -339,9 +347,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
         if (state is LoadingProductInfoState) {
           final LoadingProductInfoState loadingState =
               state as LoadingProductInfoState;
-          emit(
-            loadingState.copyWith(productInfoMap: modifiableProductInfo),
-          );
+          emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
         }
 
         if (productInfo.website.isNotEmpty) {
@@ -349,9 +355,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
-            emit(
-              loadingState.copyWith(productInfoMap: modifiableProductInfo),
-            );
+            emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
         }
         if (productInfo.infoAi.isNotEmpty) {
@@ -359,25 +363,22 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
-            emit(
-              loadingState.copyWith(productInfoMap: modifiableProductInfo),
-            );
+            emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
         }
       }
     } catch (exception) {
       if (exception is FormatException && exception.source is String) {
-        modifiableProductInfo[ProductInfoType.error] =
-            extractErrorMessage(exception.source);
+        modifiableProductInfo[ProductInfoType.error] = extractErrorMessage(
+          exception.source,
+        );
       } else {
         modifiableProductInfo[ProductInfoType.error] = '$exception';
       }
       if (state is LoadingProductInfoState) {
         final LoadingProductInfoState loadingState =
             state as LoadingProductInfoState;
-        emit(
-          loadingState.copyWith(productInfoMap: modifiableProductInfo),
-        );
+        emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
       }
     } finally {
       emit(
@@ -435,14 +436,18 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
       final bool isFeedbackRating = rating is FeedbackRating;
       // Construct the feedback text with details from `extra'.
       final StringBuffer feedbackBody = StringBuffer()
-        ..writeln('${isFeedbackType ? translate('feedback_type') : ''}:'
-            ' ${isFeedbackType ? type.value : ''}')
+        ..writeln(
+          '${isFeedbackType ? translate('feedback_type') : ''}:'
+          ' ${isFeedbackType ? type.value : ''}',
+        )
         ..writeln()
         ..writeln(feedback.text)
         ..writeln()
-        ..writeln('${isFeedbackRating ? translate('rating') : ''}'
-            '${isFeedbackRating ? ':' : ''}'
-            ' ${isFeedbackRating ? rating.value : ''}')
+        ..writeln(
+          '${isFeedbackRating ? translate('rating') : ''}'
+          '${isFeedbackRating ? ':' : ''}'
+          ' ${isFeedbackRating ? rating.value : ''}',
+        )
         ..writeln()
         ..writeln('${translate('app_id')}: ${packageInfo.packageName}')
         ..writeln('${translate('app_version')}: ${packageInfo.version}')
@@ -472,7 +477,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           debugPrint(
             '$urlLauncherErrorMessage\nStackTrace: $urlLauncherStackTrace',
           );
-          // TODO: show an error message to the user.
+          _emitFeedbackFailure(emit, translate('unexpected_error'));
         }
       } else {
         final String screenshotFilePath = await _writeImageToStorage(
@@ -490,11 +495,34 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           debugPrint(
             'Warning: an error occurred in $this: $e;\nStackTrace: $stackTrace',
           );
+          _emitFeedbackFailure(emit, translate('unexpected_error'));
         }
       }
     } catch (e, stackTrace) {
       debugPrint('SettingsErrorEvent: $e\nStackTrace: $stackTrace');
-      add(HomeErrorEvent(translate('unexpected_error')));
+      _emitFeedbackFailure(emit, translate('unexpected_error'));
+    }
+  }
+
+  void _emitFeedbackFailure(Emitter<HomeViewModel> emit, String errorMessage) {
+    final HomeViewModel currentState = state;
+    if (currentState is LoadedProductInfoState) {
+      emit(
+        FeedbackFailed(
+          language: currentState.language,
+          errorMessage: errorMessage,
+          productInfoMap: currentState.productInfoMap,
+          productInfo: currentState.productInfo,
+          isSeasonalEffectEnabled: currentState.isSeasonalEffectEnabled,
+        ),
+      );
+    } else {
+      emit(
+        HomeErrorState(
+          language: currentState.language,
+          errorMessage: errorMessage,
+        ),
+      );
     }
   }
 

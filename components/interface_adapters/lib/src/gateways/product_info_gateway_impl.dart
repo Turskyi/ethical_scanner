@@ -22,81 +22,91 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
     return _remoteDataSource
         .getProductInfoAsFuture(input)
         .onError((Object? error, StackTrace stackTrace) {
-      if (error is FormatException) {
-        final Object? source = error.source;
-        if (source is String) {
-          debugPrint(
-            'FormatException in $runtimeType caught at '
-            '"getProductInfoAsFuture": ${extractErrorMessage(source)}.'
-            '\nInput that caused error: "$source"'
-            '\nStacktrace: $stackTrace',
-          );
-        }
-      } else if (error is SocketException) {
-        debugPrint('Error in $runtimeType: '
-            '\nerror: ${error.runtimeType}.'
-            '\nerror.message: ${error.message}.'
-            '\nerror.address: ${error.address}.'
-            '\nerror.osError: ${error.osError}.'
-            '\nerror.port: ${error.port}.');
-      } else if (error is ClientException) {
-        debugPrint(
-          'ClientException in $runtimeType during "getProductInfoAsFuture":'
-          '\n  Message: ${error.message}'
-          '\n  URI: ${error.uri}'
-          '\n  Stacktrace: $stackTrace',
-        );
-      } else {
-        debugPrint(
-          'Unhandled error of type "${error.runtimeType}" in $runtimeType '
-          'during "getProductInfoAsFuture":'
-          '\n  Error: $error'
-          '\n  Stacktrace: $stackTrace',
-        );
-      }
-
-      final Language inputLanguage = input.language;
-      if (_isBarcode(inputCode)) {
-        return ProductInfo(barcode: inputCode, language: inputLanguage);
-      } else if (_isWebsite(inputCode)) {
-        return ProductInfo(website: inputCode, language: inputLanguage);
-      } else if (_isAmazonAsin(inputCode)) {
-        return ProductInfo(brand: 'Amazon', language: inputLanguage);
-      } else if (error is NotFoundException) {
-        throw error;
-      } else {
-        throw Exception(
-          'Product information not found for barcode: $input.\nError: $error',
-        );
-      }
-    }).then((ProductInfo info) {
-      if (info.origin.isNotEmpty) {
-        return info;
-      } else if (info.countrySold.isNotEmpty) {
-        return info.copyWith(
-          origin: _localDataSource.getCountryFromBarcode(inputCode),
-        );
-      } else if (_localDataSource.isEnglishBook(inputCode)) {
-        final String eanPrefix = inputCode.substring(0, 3);
-        return info.copyWith(
-          origin: translate(
-            'product_info.initial_book_code_description',
-            args: <String, Object?>{'eanPrefix': eanPrefix},
-          ),
-        );
-      } else {
-        final ProductInfo localInfo = info.copyWith(
-          origin: _localDataSource.getCountryFromBarcode(inputCode),
-        );
-        if (localInfo.origin.isNotEmpty) {
-          return localInfo;
-        } else {
-          return _remoteDataSource.getInfoFromAiAsFuture(inputCode).then(
-                (String country) => info.copyWith(infoAi: country),
+          if (error is FormatException) {
+            final Object? source = error.source;
+            if (source is String) {
+              debugPrint(
+                'FormatException in $runtimeType caught at '
+                '"getProductInfoAsFuture": ${extractErrorMessage(source)}.'
+                '\nInput that caused error: "$source"'
+                '\nStacktrace: $stackTrace',
               );
-        }
-      }
-    });
+            }
+          } else if (error is SocketException) {
+            debugPrint(
+              'Error in $runtimeType: '
+              '\nerror: ${error.runtimeType}.'
+              '\nerror.message: ${error.message}.'
+              '\nerror.address: ${error.address}.'
+              '\nerror.osError: ${error.osError}.'
+              '\nerror.port: ${error.port}.',
+            );
+          } else if (error is ClientException) {
+            debugPrint(
+              'ClientException in $runtimeType during "getProductInfoAsFuture":'
+              '\n  Message: ${error.message}'
+              '\n  URI: ${error.uri}'
+              '\n  Stacktrace: $stackTrace',
+            );
+          } else {
+            debugPrint(
+              'Unhandled error of type "${error.runtimeType}" in $runtimeType '
+              'during "getProductInfoAsFuture":'
+              '\n  Error: $error'
+              '\n  Stacktrace: $stackTrace',
+            );
+          }
+
+          final Language inputLanguage = input.language;
+          if (_isBarcode(inputCode)) {
+            return ProductInfo(barcode: inputCode, language: inputLanguage);
+          } else if (_isWebsite(inputCode)) {
+            return ProductInfo(website: inputCode, language: inputLanguage);
+          } else if (_isAmazonAsin(inputCode)) {
+            return ProductInfo(brand: 'Amazon', language: inputLanguage);
+          } else if (error is NotFoundException) {
+            throw error;
+          } else {
+            throw Exception(
+              'Product information not found for barcode: $input.\n'
+              'Error: $error',
+            );
+          }
+        })
+        .then((ProductInfo info) {
+          if (info.origin.isNotEmpty) {
+            return info;
+          } else if (_localDataSource.isEnglishBook(inputCode)) {
+            final String eanPrefix = inputCode.substring(0, 3);
+            return info.copyWith(
+              origin: translate(
+                'product_info.initial_book_code_description',
+                args: <String, Object?>{'eanPrefix': eanPrefix},
+              ),
+            );
+          } else {
+            final String gs1Country = _localDataSource.getGs1CountryFromBarcode(
+              inputCode,
+            );
+            final String reportedOrigin = _localDataSource
+                .getReportedOriginFromBarcode(inputCode);
+            if (gs1Country.isNotEmpty || reportedOrigin.isNotEmpty) {
+              return info.copyWith(
+                gs1Country: gs1Country,
+                reportedOrigin: reportedOrigin,
+              );
+            } else {
+              return _remoteDataSource
+                  .getInfoFromAiAsFuture(inputCode)
+                  .then((String country) => info.copyWith(infoAi: country));
+            }
+          }
+        });
+  }
+
+  @override
+  Future<List<TerrorismSponsor>> getTerrorismSponsors() {
+    return _remoteDataSource.getTerrorismSponsors();
   }
 
   @override

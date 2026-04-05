@@ -10,10 +10,7 @@ import 'package:interface_adapters/src/ui/widgets/home_app_bar_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PrivacyView extends StatefulWidget {
-  const PrivacyView({
-    required this.initialLanguage,
-    super.key,
-  });
+  const PrivacyView({required this.initialLanguage, super.key});
 
   final Language initialLanguage;
 
@@ -45,9 +42,7 @@ class _PrivacyViewState extends State<PrivacyView> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: kIsWeb
-            ? HomeAppBarButton(
-                language: widget.initialLanguage,
-              )
+            ? HomeAppBarButton(language: widget.initialLanguage)
             : IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () => Navigator.of(context).pop(),
@@ -85,8 +80,9 @@ class _PrivacyViewState extends State<PrivacyView> {
                           Text(
                             translate('privacy_policy.subtitle'),
                             textAlign: TextAlign.center,
-                            style: textTheme.titleMedium
-                                ?.copyWith(color: Colors.grey[200]),
+                            style: textTheme.titleMedium?.copyWith(
+                              color: Colors.grey[200],
+                            ),
                           ),
                         ],
                       ),
@@ -141,8 +137,9 @@ class _PrivacyViewState extends State<PrivacyView> {
                           ),
                           SelectableText.rich(
                             TextSpan(
-                              style: textTheme.bodyLarge
-                                  ?.copyWith(color: Colors.white),
+                              style: textTheme.bodyLarge?.copyWith(
+                                color: Colors.white,
+                              ),
                               children: <InlineSpan>[
                                 TextSpan(
                                   text: translate(

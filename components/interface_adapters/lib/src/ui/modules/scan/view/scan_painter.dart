@@ -29,11 +29,7 @@ class ScanPainter extends CustomPainter {
     double centerY = size.height * half;
     double x = size.width * half + cos(angle) * size.width * half;
     double y = size.height * half + sin(angle) * size.height * half;
-    canvas.drawLine(
-      Offset(centerX, centerY),
-      Offset(x, y),
-      paint,
-    );
+    canvas.drawLine(Offset(centerX, centerY), Offset(x, y), paint);
     canvas.drawCircle(Offset(x, y), radiusCircle, paint);
     paint.color = Colors.white;
     paint.style = PaintingStyle.fill;

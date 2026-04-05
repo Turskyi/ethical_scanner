@@ -7,6 +7,8 @@ class ProductInfo {
   const ProductInfo({
     this.barcode = '',
     this.origin = '',
+    this.gs1Country = '',
+    this.reportedOrigin = '',
     this.countryTags = const <String>[],
     this.countrySold = '',
     this.infoAi = '',
@@ -31,6 +33,16 @@ class ProductInfo {
   /// ingredients of the product. For example, [origin]=Apples from France,
   /// Flour from Canada.
   final String origin;
+
+  /// The [gs1Country] parameter is the country associated with the GS1 prefix
+  /// of the barcode. It indicates which GS1 Member Organization's country
+  /// registered the barcode — not where the product was manufactured.
+  final String gs1Country;
+
+  /// The [reportedOrigin] parameter is a manually curated, evidence-based
+  /// country of origin derived from physical product observations tied to
+  /// specific barcode prefixes.
+  final String reportedOrigin;
 
   /// The [countryTags] parameter is a list of strings that indicates the
   /// countries where the product is sold. For example, [countryTags]=France,
@@ -79,9 +91,23 @@ class ProductInfo {
       origin.toLowerCase() == 'россия' ||
       barcode.startsWith('460');
 
+  /// US State Department designated state sponsors of terrorism.
+  /// Source: https://www.state.gov/state-sponsors-of-terrorism/
+  static const Set<String> _stateSponsoredTerrorismCountries = <String>{
+    'Cuba',
+    'North Korea',
+    'Iran',
+    'Syria',
+  };
+
+  bool get isGs1CountryStateSponsorOfTerrorism =>
+      _stateSponsoredTerrorismCountries.contains(gs1Country);
+
   ProductInfo copyWith({
     String? barcode,
     String? origin,
+    String? gs1Country,
+    String? reportedOrigin,
     List<String>? countryTags,
     String? countrySold,
     String? infoAi,
@@ -102,6 +128,8 @@ class ProductInfo {
     return ProductInfo(
       barcode: barcode ?? this.barcode,
       origin: origin ?? this.origin,
+      gs1Country: gs1Country ?? this.gs1Country,
+      reportedOrigin: reportedOrigin ?? this.reportedOrigin,
       countryTags: countryTags ?? this.countryTags,
       countrySold: countrySold ?? this.countrySold,
       infoAi: infoAi ?? this.infoAi,

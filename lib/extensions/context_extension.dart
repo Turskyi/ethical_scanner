@@ -10,10 +10,9 @@ extension ContextExtension on BuildContext {
   /// obtain new values from that widget.
   T? maybeFindInheritedWidget<T extends InheritedWidget>({
     bool listen = true,
-  }) =>
-      listen
-          ? dependOnInheritedWidgetOfExactType<T>()
-          : getInheritedWidgetOfExactType<T>();
+  }) => listen
+      ? dependOnInheritedWidgetOfExactType<T>()
+      : getInheritedWidgetOfExactType<T>();
 
   /// Obtain the nearest widget of the given type T,
   /// which must be the type of a concrete [InheritedWidget] subclass,

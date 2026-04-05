@@ -20,33 +20,20 @@ class ScannerOverlay extends CustomPainter {
     // Create a `Path` object for the rounded corners.
     final Path cornersPath = Path()
       // Start from the top left corner.
-      ..moveTo(
-        scanWindow.left + _borderRadius,
-        scanWindow.top,
-      )
-      ..lineTo(
-        scanWindow.left + _borderRadiusWithMultiplier,
-        scanWindow.top,
-      )
+      ..moveTo(scanWindow.left + _borderRadius, scanWindow.top)
+      ..lineTo(scanWindow.left + _borderRadiusWithMultiplier, scanWindow.top)
       // Move to the top right corner.
-      ..moveTo(
-        scanWindow.right - _borderRadiusWithMultiplier,
-        scanWindow.top,
-      )
+      ..moveTo(scanWindow.right - _borderRadiusWithMultiplier, scanWindow.top)
       // Move to the right.
-      ..lineTo(
-        scanWindow.right - _borderRadius,
-        scanWindow.top,
-      )
+      ..lineTo(scanWindow.right - _borderRadius, scanWindow.top)
       ..quadraticBezierTo(
-        scanWindow.right, scanWindow.top, // Control point
-        scanWindow.right, scanWindow.top + _borderRadius, // End point
+        scanWindow.right,
+        scanWindow.top, // Control point
+        scanWindow.right,
+        scanWindow.top + _borderRadius, // End point
       )
       // Move down.
-      ..lineTo(
-        scanWindow.right,
-        scanWindow.top + _borderRadiusWithMultiplier,
-      )
+      ..lineTo(scanWindow.right, scanWindow.top + _borderRadiusWithMultiplier)
       ..moveTo(
         scanWindow.right,
         scanWindow.bottom - _borderRadiusWithMultiplier,
@@ -54,42 +41,36 @@ class ScannerOverlay extends CustomPainter {
       // Move down.
       ..lineTo(scanWindow.right, scanWindow.bottom - _borderRadius)
       ..quadraticBezierTo(
-        scanWindow.right, scanWindow.bottom, // Control point
-        scanWindow.right - _borderRadius, scanWindow.bottom, // End point
+        scanWindow.right,
+        scanWindow.bottom, // Control point
+        scanWindow.right - _borderRadius,
+        scanWindow.bottom, // End point
       )
       ..lineTo(
         scanWindow.right - _borderRadiusWithMultiplier,
         scanWindow.bottom,
       )
-      ..moveTo(
-        scanWindow.left + _borderRadiusWithMultiplier,
-        scanWindow.bottom,
-      )
+      ..moveTo(scanWindow.left + _borderRadiusWithMultiplier, scanWindow.bottom)
       // Move to the left.
-      ..lineTo(
-        scanWindow.left + _borderRadius,
-        scanWindow.bottom,
-      )
+      ..lineTo(scanWindow.left + _borderRadius, scanWindow.bottom)
       ..quadraticBezierTo(
-        scanWindow.left, scanWindow.bottom, // Control point
-        scanWindow.left, scanWindow.bottom - _borderRadius, // End point
+        scanWindow.left,
+        scanWindow.bottom, // Control point
+        scanWindow.left,
+        scanWindow.bottom - _borderRadius, // End point
       )
       // Move up.
-      ..lineTo(
-        scanWindow.left,
-        scanWindow.bottom - _borderRadiusWithMultiplier,
-      )
+      ..lineTo(scanWindow.left, scanWindow.bottom - _borderRadiusWithMultiplier)
       // Move to the starting point.
-      ..moveTo(
-        scanWindow.left,
-        scanWindow.top + _borderRadiusWithMultiplier,
-      )
+      ..moveTo(scanWindow.left, scanWindow.top + _borderRadiusWithMultiplier)
       ..lineTo(scanWindow.left, scanWindow.top + _borderRadius)
       ..quadraticBezierTo(
         // Control point.
-        scanWindow.left, scanWindow.top,
+        scanWindow.left,
+        scanWindow.top,
         // End point.
-        scanWindow.left + _borderRadius, scanWindow.top,
+        scanWindow.left + _borderRadius,
+        scanWindow.top,
       );
 
     // Draw the white rounded corners

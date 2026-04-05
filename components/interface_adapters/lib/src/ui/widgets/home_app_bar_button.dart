@@ -5,10 +5,7 @@ import 'package:interface_adapters/src/ui/res/values/constants.dart'
     as constants;
 
 class HomeAppBarButton extends StatelessWidget {
-  const HomeAppBarButton({
-    required this.language,
-    super.key,
-  });
+  const HomeAppBarButton({required this.language, super.key});
 
   final Language language;
 

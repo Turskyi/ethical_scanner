@@ -26,21 +26,23 @@ class _ScanAnimationState extends State<ScanAnimation>
       vsync: this,
       duration: Duration(seconds: DurationSeconds.long.time),
     );
-    _animation = Tween<double>(
-      begin: _transparentOpacityAnimation,
-      end: _opaqueOpacityAnimation,
-    ).animate(_controller)
-      // Update the UI when the animation value changes to ensure
-      // that the `CustomPaint` widget repaints with the new animation state.
-      ..addListener(() => setState(() {}));
+    _animation =
+        Tween<double>(
+            begin: _transparentOpacityAnimation,
+            end: _opaqueOpacityAnimation,
+          ).animate(_controller)
+          // Update the UI when the animation value changes to ensure
+          // that the `CustomPaint` widget repaints with the new animation
+          // state.
+          ..addListener(() => setState(() {}));
     _controller.repeat();
   }
 
   @override
   Widget build(BuildContext context) => CustomPaint(
-        painter: ScanPainter(_animation.value),
-        size: Size(_paintSize, _paintSize),
-      );
+    painter: ScanPainter(_animation.value),
+    size: Size(_paintSize, _paintSize),
+  );
 
   @override
   void dispose() {

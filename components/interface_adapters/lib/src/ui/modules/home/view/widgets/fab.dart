@@ -65,7 +65,7 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
               if (_animationController != null)
                 AnimatedBuilder(
                   animation: _animationController!,
-                  builder: (BuildContext _, Widget? __) {
+                  builder: (BuildContext _, Widget? _) {
                     return Transform.scale(
                       scale: 1.0 + (_animation.value * (isWide ? 0.28 : 0.2)),
                       child: Semantics(
@@ -77,15 +77,17 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
                           decoration: _getBoxDecoration(viewModel),
                           child: ValueListenableBuilder<bool>(
                             valueListenable: _isEnabledNotifier,
-                            builder: (_, bool isEnabled, __) {
-                              return FloatingActionButton(
-                                elevation: 0,
-                                backgroundColor: Colors.transparent,
-                                shape: const CircleBorder(),
-                                onPressed:
-                                    isEnabled ? _toggleFabExpansion : null,
-                              );
-                            },
+                            builder:
+                                (BuildContext _, bool isEnabled, Widget? _) {
+                                  return FloatingActionButton(
+                                    elevation: 0,
+                                    backgroundColor: Colors.transparent,
+                                    shape: const CircleBorder(),
+                                    onPressed: isEnabled
+                                        ? _toggleFabExpansion
+                                        : null,
+                                  );
+                                },
                           ),
                         ),
                       ),
@@ -94,74 +96,73 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
                 ),
               ValueListenableBuilder<bool>(
                 valueListenable: _isExpandedNotifier,
-                builder: (_, bool isExpanded, __) => Visibility(
-                  visible: isExpanded,
-                  child: widget.expandedBody,
-                ),
+                builder: (BuildContext _, bool isExpanded, Widget? _) {
+                  return Visibility(
+                    visible: isExpanded,
+                    child: widget.expandedBody,
+                  );
+                },
               ),
               ValueListenableBuilder<bool>(
                 valueListenable: _isExpandedNotifier,
-                builder: (_, bool isExpanded, __) {
+                builder: (BuildContext _, bool isExpanded, Widget? _) {
                   return AnimatedPositioned(
                     bottom: isExpanded ? 0 : 2,
                     duration: Duration(seconds: DurationSeconds.short.time),
                     child: ValueListenableBuilder<bool>(
                       valueListenable: _isEnabledNotifier,
-                      builder: (
-                        BuildContext context,
-                        bool isEnabled,
-                        Widget? _,
-                      ) {
-                        final double iconSize = 78.0;
-                        return IconButton(
-                          onPressed: isEnabled ? _toggleFabExpansion : null,
-                          icon: Container(
-                            width: iconSize,
-                            height: iconSize,
-                            decoration: BoxDecoration(
-                              color: isExpanded
-                                  ? Colors.white.withValues(alpha: 0.3)
-                                  : null,
-                              shape: BoxShape.circle,
-                            ),
-                            child: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 400),
-                              transitionBuilder: (
-                                Widget child,
-                                Animation<double> anim,
-                              ) {
-                                return RotationTransition(
-                                  turns: Tween<double>(begin: 0.75, end: 1)
-                                      .animate(anim),
-                                  child: FadeTransition(
-                                    opacity: anim,
-                                    child: child,
-                                  ),
-                                );
-                              },
-                              child: isExpanded
-                                  ? Icon(
-                                      Icons.close_rounded,
-                                      key: const ValueKey<IconData>(
-                                        Icons.close_rounded,
-                                      ),
-                                      color: Resources.of(
-                                        context,
-                                      ).colors.cetaceanBlue,
-                                    )
-                                  : Icon(
-                                      Icons.barcode_reader,
-                                      key: const ValueKey<IconData>(
-                                        Icons.barcode_reader,
-                                      ),
-                                      color: Resources.of(
-                                        context,
-                                      ).colors.cetaceanBlue,
-                                    ),
-                            ),
-                          ),
-                        );
-                      },
+                      builder:
+                          (BuildContext context, bool isEnabled, Widget? _) {
+                            final double iconSize = 78.0;
+                            return IconButton(
+                              onPressed: isEnabled ? _toggleFabExpansion : null,
+                              icon: Container(
+                                width: iconSize,
+                                height: iconSize,
+                                decoration: BoxDecoration(
+                                  color: isExpanded
+                                      ? Colors.white.withValues(alpha: 0.3)
+                                      : null,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 400),
+                                  transitionBuilder:
+                                      (Widget child, Animation<double> anim) {
+                                        return RotationTransition(
+                                          turns: Tween<double>(
+                                            begin: 0.75,
+                                            end: 1,
+                                          ).animate(anim),
+                                          child: FadeTransition(
+                                            opacity: anim,
+                                            child: child,
+                                          ),
+                                        );
+                                      },
+                                  child: isExpanded
+                                      ? Icon(
+                                          Icons.close_rounded,
+                                          key: const ValueKey<IconData>(
+                                            Icons.close_rounded,
+                                          ),
+                                          color: Resources.of(
+                                            context,
+                                          ).colors.cetaceanBlue,
+                                        )
+                                      : Icon(
+                                          Icons.barcode_reader,
+                                          key: const ValueKey<IconData>(
+                                            Icons.barcode_reader,
+                                          ),
+                                          color: Resources.of(
+                                            context,
+                                          ).colors.cetaceanBlue,
+                                        ),
+                                ),
+                              ),
+                            );
+                          },
                     ),
                   );
                 },
@@ -175,32 +176,25 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
 
   BoxDecoration _getBoxDecoration(HomeViewModel viewModel) {
     return BoxDecoration(
-      gradient: viewModel is LoadedProductInfoState &&
+      gradient:
+          viewModel is LoadedProductInfoState &&
               (viewModel.productInfo.isCompanyTerrorismSponsor ||
                   viewModel.productInfo.isFromRussia)
           ? const LinearGradient(
-              colors: <Color>[
-                Colors.pinkAccent,
-                Colors.red,
-              ],
+              colors: <Color>[Colors.pinkAccent, Colors.red],
               // Set the begin and end points
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             )
           : viewModel is LoadedProductInfoState &&
-                  (viewModel.productInfo.isVegan ||
-                      viewModel.productInfo.isVegetarian)
-              ? const LinearGradient(
-                  colors: <Color>[
-                    Colors.green,
-                    Colors.lightGreen,
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                )
-              : Resources.of(
-                  context,
-                ).gradients.pinkSunriseGradientBackground,
+                (viewModel.productInfo.isVegan ||
+                    viewModel.productInfo.isVegetarian)
+          ? const LinearGradient(
+              colors: <Color>[Colors.green, Colors.lightGreen],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            )
+          : Resources.of(context).gradients.pinkSunriseGradientBackground,
       shape: BoxShape.circle,
       boxShadow: <BoxShadow>[
         BoxShadow(
@@ -275,9 +269,10 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 360),
     );
-    _animation = Tween<double>(begin: 0, end: 84).animate(
-      _animationController!,
-    );
+    _animation = Tween<double>(
+      begin: 0,
+      end: 84,
+    ).animate(_animationController!);
     _animationController?.forward().whenComplete(() {
       _isExpandedNotifier.value = !_isExpandedNotifier.value;
       widget.onPressed.call();

@@ -8,13 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
-import 'package:interface_adapters/src/ui/modules/home/view/widgets/language_selector.dart';
 import 'package:interface_adapters/src/ui/modules/photo/photo_event.dart';
 import 'package:interface_adapters/src/ui/modules/photo/photo_presenter.dart';
 import 'package:interface_adapters/src/ui/res/color/gradients.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
+import 'package:interface_adapters/src/ui/widgets/language_selector.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PhotoView extends StatefulWidget {
@@ -115,8 +115,8 @@ class _PhotoViewState extends State<PhotoView> {
                     currentLanguage: viewModel.language,
                     onLanguageSelected: (Language newLanguage) {
                       context.read<PhotoPresenter>().add(
-                            ChangeLanguageEvent(newLanguage),
-                          );
+                        ChangeLanguageEvent(newLanguage),
+                      );
                     },
                   );
                 },
@@ -136,7 +136,8 @@ class _PhotoViewState extends State<PhotoView> {
                   ),
                   children: <TextSpan>[
                     const TextSpan(
-                      text: 'Camera access is not supported on this device.\n\n'
+                      text:
+                          'Camera access is not supported on this device.\n\n'
                           'This feature is available on Web, Android, and iOS '
                           'platforms.\n\nPlease try scanning the product using '
                           'another device,\nor visit:\n',
@@ -165,9 +166,7 @@ class _PhotoViewState extends State<PhotoView> {
     }
 
     return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: gradients.violetTwilightGradient,
-      ),
+      decoration: BoxDecoration(gradient: gradients.violetTwilightGradient),
       child: Scaffold(
         // We need to set transparent background explicitly, because
         // Scaffold does not support gradient backgrounds, so we program it
@@ -182,10 +181,7 @@ class _PhotoViewState extends State<PhotoView> {
           centerTitle: true,
           backgroundColor: Colors.transparent,
           leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.white,
-            ),
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
             onPressed: () {
               context.read<PhotoPresenter>().add(const PhotoViewBackEvent());
             },
@@ -221,8 +217,8 @@ class _PhotoViewState extends State<PhotoView> {
                     // change logic and update its state (which might also
                     // update this screen's language).
                     context.read<PhotoPresenter>().add(
-                          ChangeLanguageEvent(newLanguage),
-                        );
+                      ChangeLanguageEvent(newLanguage),
+                    );
                     // Force a rebuild of the current screen's state
                     // (`_PhotoViewState`).
                     // This is necessary because the `AppBar`'s title `Text`
@@ -256,7 +252,8 @@ class _PhotoViewState extends State<PhotoView> {
             // this is actually size.aspectRatio / (1 / camera.aspectRatio)
             // because camera preview size is received as landscape
             // but we're calculating for portrait orientation.
-            double scale = size.aspectRatio *
+            double scale =
+                size.aspectRatio *
                 (camera.isInitialized ? camera.aspectRatio : 1.0);
 
             // to prevent scaling down, invert the value
@@ -292,9 +289,9 @@ class _PhotoViewState extends State<PhotoView> {
                             onTap: () {
                               // Remove the preview and reset the captured
                               // image path.
-                              context
-                                  .read<PhotoPresenter>()
-                                  .add(const RemovePhotoEvent());
+                              context.read<PhotoPresenter>().add(
+                                const RemovePhotoEvent(),
+                              );
                             },
                             child: Container(
                               width: 200.0, // Increased width
@@ -360,10 +357,7 @@ class _PhotoViewState extends State<PhotoView> {
                         );
                       },
                       child: SelectableText.rich(
-                        _getTextSpan(
-                          viewModel.errorMessage,
-                          bodyLargeFontSize,
-                        ),
+                        _getTextSpan(viewModel.errorMessage, bodyLargeFontSize),
                         textAlign: TextAlign.center,
                         strutStyle: StrutStyle(
                           fontWeight: FontWeight.bold,
@@ -420,46 +414,48 @@ class _PhotoViewState extends State<PhotoView> {
                       onPressed: viewModel is LoadingState
                           ? null
                           : viewModel is TakenPhotoState
-                              ? () {
+                          ? () {
+                              context.read<PhotoPresenter>().add(
+                                AddIngredientsPhotoEvent(
+                                  ProductPhoto(
+                                    path: viewModel.photoPath,
+                                    info: widget.productInfo,
+                                  ),
+                                ),
+                              );
+                            }
+                          : () async {
+                              context.read<PhotoPresenter>().add(
+                                const TakePhotoEvent(),
+                              );
+                              try {
+                                await _initializeControllerFuture;
+
+                                // Take a picture and get the file path.
+                                final XFile? picture = await _controller
+                                    ?.takePicture();
+
+                                if (context.mounted && picture != null) {
                                   context.read<PhotoPresenter>().add(
-                                        AddIngredientsPhotoEvent(
-                                          ProductPhoto(
-                                            path: viewModel.photoPath,
-                                            info: widget.productInfo,
-                                          ),
-                                        ),
-                                      );
+                                    TakenPhotoEvent(picture.path),
+                                  );
+                                } else if (context.mounted) {
+                                  debugPrint(
+                                    'Failed to take picture: picture is null',
+                                  );
                                 }
-                              : () async {
-                                  context
-                                      .read<PhotoPresenter>()
-                                      .add(const TakePhotoEvent());
-                                  try {
-                                    await _initializeControllerFuture;
-
-                                    // Take a picture and get the file path.
-                                    final XFile? picture =
-                                        await _controller?.takePicture();
-
-                                    if (context.mounted && picture != null) {
-                                      context
-                                          .read<PhotoPresenter>()
-                                          .add(TakenPhotoEvent(picture.path));
-                                    } else {
-                                      //TODO: add error event
-                                    }
-                                  } catch (e) {
-                                    debugPrint('Error taking picture: $e');
-                                  }
-                                },
+                              } catch (e) {
+                                debugPrint('Error taking picture: $e');
+                              }
+                            },
                       child: viewModel is TakenPhotoState
                           ? const Icon(Icons.send)
                           : viewModel is PhotoMakerReadyState ||
-                                  viewModel is AddIngredientsErrorState
-                              ? const Icon(Icons.camera)
-                              : viewModel is LoadingState
-                                  ? const Icon(Icons.stop)
-                                  : const SizedBox(),
+                                viewModel is AddIngredientsErrorState
+                          ? const Icon(Icons.camera)
+                          : viewModel is LoadingState
+                          ? const Icon(Icons.stop)
+                          : const SizedBox(),
                     ),
                   );
           },
@@ -480,23 +476,26 @@ class _PhotoViewState extends State<PhotoView> {
       ResolutionPreset.high,
     );
 
-    _initializeControllerFuture = _controller?.initialize().then((_) {
-      // The returned value in `then` is always `null`
-      if (!mounted) {
-        return;
-      }
-      _configureCamera();
-      setState(() {});
-    }).catchError((Object e) {
-      if (e is CameraException) {
-        switch (e.code) {
-          case 'CameraAccessDenied':
-            break;
-          default:
-            break;
-        }
-      }
-    });
+    _initializeControllerFuture = _controller
+        ?.initialize()
+        .then((_) {
+          // The returned value in `then` is always `null`
+          if (!mounted) {
+            return;
+          }
+          _configureCamera();
+          setState(() {});
+        })
+        .catchError((Object e) {
+          if (e is CameraException) {
+            switch (e.code) {
+              case 'CameraAccessDenied':
+                break;
+              default:
+                break;
+            }
+          }
+        });
   }
 
   void _adjustZoomLevel(double delta) {
@@ -572,7 +571,8 @@ class _PhotoViewState extends State<PhotoView> {
       }
 
       final String matchedText = match.group(0)!;
-      final bool isEmail = _emailExp.hasMatch(matchedText) &&
+      final bool isEmail =
+          _emailExp.hasMatch(matchedText) &&
           emailMatches.any(
             (Match m) => m.start == match.start && m.end == match.end,
           );
@@ -601,7 +601,7 @@ class _PhotoViewState extends State<PhotoView> {
                   await launchUrl(emailLaunchUri);
                 } else {
                   debugPrint('Could not launch $emailLaunchUri');
-                  // Consider showing a Snackbar to the user
+                  // Consider showing a Snack-bar to the user
                   throw PlatformException(
                     // Keep throwing for internal handling if needed.
                     code: 'UNABLE_TO_LAUNCH_URL',
@@ -682,9 +682,7 @@ class _PhotoViewState extends State<PhotoView> {
   void _showUnableToLaunchUrlSnackbar(String url) {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${translate('could_not_launch')} $url'),
-      ),
+      SnackBar(content: Text('${translate('could_not_launch')} $url')),
     );
   }
 }

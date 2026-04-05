@@ -11,9 +11,7 @@ void main() {
     late RemoteDataSourceImpl remoteDataSource;
 
     setUp(() {
-      OpenFoodAPIConfiguration.userAgent = UserAgent(
-        name: 'ethical_scanner',
-      );
+      OpenFoodAPIConfiguration.userAgent = UserAgent(name: 'ethical_scanner');
 
       OpenFoodAPIConfiguration.globalLanguages = <OpenFoodFactsLanguage>[
         OpenFoodFactsLanguage.ENGLISH,
@@ -41,10 +39,8 @@ void main() {
         );
 
         // Act
-        final ProductInfo result =
-            await remoteDataSource.getProductInfoAsFuture(
-          const LocalizedCode(code: input),
-        );
+        final ProductInfo result = await remoteDataSource
+            .getProductInfoAsFuture(const LocalizedCode(code: input));
 
         // Assert
         expect(result.countrySold, equals(expectedResult.countrySold));

@@ -49,9 +49,9 @@ class MockDependencies extends Mock implements Dependencies {
   }
 
   ProductInfoGateway get _productInfoGateway => ProductInfoGatewayImpl(
-        RemoteDataSourceImpl(_restClient),
-        _localDataSource,
-      );
+    RemoteDataSourceImpl(_restClient),
+    _localDataSource,
+  );
 
   SettingsGateway get _settingsGateway => SettingsGatewayImpl(_localDataSource);
 }

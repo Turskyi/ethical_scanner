@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
-import 'package:interface_adapters/src/ui/modules/home/view/widgets/language_selector.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/scanner_error_widget.dart';
 import 'package:interface_adapters/src/ui/modules/scan/scan_event.dart';
 import 'package:interface_adapters/src/ui/modules/scan/scan_presenter.dart';
@@ -16,6 +15,7 @@ import 'package:interface_adapters/src/ui/modules/scan/view/widgets/scan_placeho
 import 'package:interface_adapters/src/ui/modules/scan/view/widgets/screen_title.dart';
 import 'package:interface_adapters/src/ui/modules/scan/view/widgets/sound_toggle_button.dart';
 import 'package:interface_adapters/src/ui/modules/scan/view/widgets/store_badge.dart';
+import 'package:interface_adapters/src/ui/modules/scan/view/widgets/web_language_selector.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
@@ -58,8 +58,9 @@ class _HomeViewState extends State<ScanView> {
 
     final double screenWidth = MediaQuery.sizeOf(context).width;
     final bool isWide = screenWidth > kWideScreenThreshold;
-    final BoxFit currentFit =
-        (isWide && kIsWeb) ? BoxFit.fitWidth : BoxFit.fitHeight;
+    final BoxFit currentFit = (isWide && kIsWeb)
+        ? BoxFit.fitWidth
+        : BoxFit.fitHeight;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Semantics(
@@ -95,18 +96,9 @@ class _HomeViewState extends State<ScanView> {
                     decoration: BoxDecoration(
                       gradient: resources.gradients.abstractLoveGradient,
                     ),
-                    child: Column(
+                    child: const Column(
                       children: <Widget>[
-                        Text(
-                          translate('scan.limited_on_web'),
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        const Wrap(
+                        Wrap(
                           alignment: WrapAlignment.center,
                           crossAxisAlignment: WrapCrossAlignment.center,
                           spacing: 12,
@@ -119,7 +111,8 @@ class _HomeViewState extends State<ScanView> {
                             ),
                             StoreBadge(
                               url: kAppStoreUrl,
-                              assetPath: '$kImagesPath'
+                              assetPath:
+                                  '$kImagesPath'
                                   'Download_on_the_App_Store_Badge.png',
                               height: 60,
                               width: 120,
@@ -145,39 +138,24 @@ class _HomeViewState extends State<ScanView> {
                         ),
                         SoundToggleButton(listener: _viewModelListener),
                         if (kIsWeb)
-                          BlocBuilder<ScanPresenter, ScanViewModel>(
-                            builder: (
-                              BuildContext context,
-                              ScanViewModel viewModel,
-                            ) {
-                              return LanguageSelector(
-                                currentLanguage: viewModel.language,
-                                onLanguageSelected: (Language newLanguage) {
-                                  // Dispatch event to the presenter to handle
-                                  // language change logic and update its
-                                  // state (which might also update this
-                                  // screen's language).
-                                  context.read<ScanPresenter>().add(
-                                        ChangeScanLanguageEvent(newLanguage),
-                                      );
-                                  // Force a rebuild of the current screen's
-                                  // state (`_HomeViewState`).
-                                  // This is necessary because the `AppBar`'s
-                                  // title `Text` widget, which uses
-                                  // `translate('...')`, needs to be
-                                  // reconstructed with the new locale provided
-                                  // by the `flutter_translate` package after
-                                  // `changeLocale` (implicitly called) has
-                                  // taken effect.
-                                  // While the presenter's state will update,
-                                  // that not directly trigger a rebuild of
-                                  // the `AppBar` title without this explicit
-                                  // `setState`.
-                                  // This ensures the title immediately
-                                  // reflects the newly selected language.
-                                  setState(() {});
-                                },
-                              );
+                          WebLanguageSelector(
+                            onLanguageChanged: () {
+                              // Force a rebuild of the current screen's
+                              // state (`_HomeViewState`).
+                              // This is necessary because the `AppBar`'s
+                              // title `Text` widget, which uses
+                              // `translate('...')`, needs to be
+                              // reconstructed with the new locale provided
+                              // by the `flutter_translate` package after
+                              // `changeLocale` (implicitly called) has
+                              // taken effect.
+                              // While the presenter's state will update,
+                              // that not directly trigger a rebuild of
+                              // the `AppBar` title without this explicit
+                              // `setState`.
+                              // This ensures the title immediately
+                              // reflects the newly selected language.
+                              setState(() {});
                             },
                           ),
                       ],
@@ -190,45 +168,46 @@ class _HomeViewState extends State<ScanView> {
                         children: <Widget>[
                           ValueListenableBuilder<MobileScannerState>(
                             valueListenable: _scannerController,
-                            builder: (
-                              BuildContext _,
-                              MobileScannerState scannerState,
-                              Widget? __,
-                            ) {
-                              if (!scannerState.isInitialized ||
-                                  !scannerState.isRunning) {
-                                return const SizedBox.shrink();
-                              }
-                              final double torchIconSize = 32.0;
-                              switch (scannerState.torchState) {
-                                case TorchState.auto:
-                                  return IconButton(
-                                    color: Colors.white,
-                                    iconSize: torchIconSize,
-                                    icon: const Icon(Icons.flash_auto),
-                                    onPressed: _toggleTorch,
-                                  );
-                                case TorchState.off:
-                                  return IconButton(
-                                    color: Colors.white,
-                                    iconSize: torchIconSize,
-                                    icon: const Icon(Icons.flash_off),
-                                    onPressed: _toggleTorch,
-                                  );
-                                case TorchState.on:
-                                  return IconButton(
-                                    color: Colors.white,
-                                    iconSize: torchIconSize,
-                                    icon: const Icon(Icons.flash_on),
-                                    onPressed: _toggleTorch,
-                                  );
-                                case TorchState.unavailable:
-                                  return const Icon(
-                                    Icons.no_flash,
-                                    color: Colors.grey,
-                                  );
-                              }
-                            },
+                            builder:
+                                (
+                                  BuildContext _,
+                                  MobileScannerState scannerState,
+                                  Widget? _,
+                                ) {
+                                  if (!scannerState.isInitialized ||
+                                      !scannerState.isRunning) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  final double torchIconSize = 32.0;
+                                  switch (scannerState.torchState) {
+                                    case TorchState.auto:
+                                      return IconButton(
+                                        color: Colors.white,
+                                        iconSize: torchIconSize,
+                                        icon: const Icon(Icons.flash_auto),
+                                        onPressed: _toggleTorch,
+                                      );
+                                    case TorchState.off:
+                                      return IconButton(
+                                        color: Colors.white,
+                                        iconSize: torchIconSize,
+                                        icon: const Icon(Icons.flash_off),
+                                        onPressed: _toggleTorch,
+                                      );
+                                    case TorchState.on:
+                                      return IconButton(
+                                        color: Colors.white,
+                                        iconSize: torchIconSize,
+                                        icon: const Icon(Icons.flash_on),
+                                        onPressed: _toggleTorch,
+                                      );
+                                    case TorchState.unavailable:
+                                      return const Icon(
+                                        Icons.no_flash,
+                                        color: Colors.grey,
+                                      );
+                                  }
+                                },
                           ),
                           if (!kIsWeb && !Platform.isMacOS)
                             IconButton(
@@ -266,11 +245,12 @@ class _HomeViewState extends State<ScanView> {
     await _scannerController.toggleTorch();
   }
 
-  void _restartScannerOnError(Object _, StackTrace __) {
+  void _restartScannerOnError(Object _, StackTrace _) {
     _scannerController.stop().whenComplete(() {
-      _scannerController
-          .start()
-          .catchError((Object error, StackTrace stacktrace) {
+      _scannerController.start().catchError((
+        Object error,
+        StackTrace stacktrace,
+      ) {
         debugPrint(
           'Warning: an error occurred in $runtimeType: $error\n'
           'Stacktrace: $stacktrace',
@@ -288,10 +268,7 @@ class _HomeViewState extends State<ScanView> {
     });
   }
 
-  void _viewModelListener(
-    BuildContext context,
-    ScanViewModel viewModel,
-  ) {
+  void _viewModelListener(BuildContext context, ScanViewModel viewModel) {
     if (viewModel is DetectedBarcodeState) {
       if (!kIsWeb && !Platform.isMacOS && viewModel.isSoundOn) {
         // Play a sound as a one-shot, releasing its
@@ -303,8 +280,8 @@ class _HomeViewState extends State<ScanView> {
       _closeCamera().whenComplete(() {
         if (context.mounted) {
           context.read<ScanPresenter>().add(
-                PopBarcodeEvent(viewModel.barcodeValue),
-              );
+            PopBarcodeEvent(viewModel.barcodeValue),
+          );
         }
       });
     }
@@ -318,16 +295,12 @@ class _HomeViewState extends State<ScanView> {
     if (barcodeValue.isEmpty) {
       if (kIsWeb) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(translate('scan.unable_on_web')),
-          ),
+          SnackBar(content: Text(translate('scan.unable_on_web'))),
         );
       } else {
         // Mobile — shouldn't happen often, but still fallback.
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(translate('scan.no_valid_barcode_detected')),
-          ),
+          SnackBar(content: Text(translate('scan.no_valid_barcode_detected'))),
         );
       }
     } else {

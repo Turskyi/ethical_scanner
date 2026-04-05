@@ -11,11 +11,7 @@ class Snowflake {
   final double size;
   final double rotationAngle;
 
-  Snowflake copyWith({
-    Offset? offset,
-    double? size,
-    double? rotationAngle,
-  }) {
+  Snowflake copyWith({Offset? offset, double? size, double? rotationAngle}) {
     return Snowflake(
       offset: offset ?? this.offset,
       size: size ?? this.size,

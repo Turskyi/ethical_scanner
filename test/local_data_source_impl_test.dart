@@ -12,8 +12,8 @@ void main() {
       localDataSource = MockLocalDataSourceImpl();
     });
 
-    test('getCountryFromBarcode should return the correct country', () {
-      // Test cases with known barcode prefixes and expected countries
+    test('getGs1CountryFromBarcode should return the correct GS1 country', () {
+      // Test cases with known barcode prefixes and expected GS1 countries
       final Map<String, String> testCases = <String, String>{
         '0001234567890': 'United States and Canada',
         '0571234567890': 'United States',
@@ -24,9 +24,33 @@ void main() {
       };
 
       testCases.forEach((String barcode, String expectedCountry) {
-        final String result = localDataSource.getCountryFromBarcode(barcode);
+        final String result = localDataSource.getGs1CountryFromBarcode(barcode);
         expect(result, equals(expectedCountry));
       });
+    });
+
+    test('getReportedOriginFromBarcode should return the reported origin', () {
+      final Map<String, String> testCases = <String, String>{
+        '0571234567890': 'China',
+        '0611234567890': 'Greece',
+        '6321234567890': 'China',
+        '6671234567890': 'Vietnam',
+        '8741234567890': 'Canada',
+      };
+
+      testCases.forEach((String barcode, String expectedOrigin) {
+        final String result = localDataSource.getReportedOriginFromBarcode(
+          barcode,
+        );
+        expect(result, equals(expectedOrigin));
+      });
+    });
+
+    test('getReportedOriginFromBarcode returns empty for unknown prefixes', () {
+      final String result = localDataSource.getReportedOriginFromBarcode(
+        '4601234567890',
+      );
+      expect(result, equals(''));
     });
 
     test('isEnglishBook should return true for English books', () {
@@ -37,7 +61,7 @@ void main() {
         '9789876543210',
       ];
 
-      for (String barcode in testCases) {
+      for (final String barcode in testCases) {
         final bool result = localDataSource.isEnglishBook(barcode);
         expect(result, isTrue);
       }
@@ -51,61 +75,69 @@ void main() {
         '9791234567890', // Not English book
       ];
 
-      for (String barcode in testCases) {
+      for (final String barcode in testCases) {
         final bool result = localDataSource.isEnglishBook(barcode);
         expect(result, isFalse);
       }
     });
 
-    test('savePrecipitationState should save and retrieve precipitation state',
-        () async {
-      // Arrange
-      const bool isPrecipitationFalling = true;
+    test(
+      'savePrecipitationState should save and retrieve precipitation state',
+      () async {
+        // Arrange
+        const bool isPrecipitationFalling = true;
 
-      // Act
-      await localDataSource.savePrecipitationState(isPrecipitationFalling);
-      final bool result = localDataSource.getPrecipitationState();
+        // Act
+        await localDataSource.savePrecipitationState(isPrecipitationFalling);
+        final bool result = localDataSource.getPrecipitationState();
 
-      // Assert
-      expect(result, equals(isPrecipitationFalling));
-    });
+        // Assert
+        expect(result, equals(isPrecipitationFalling));
+      },
+    );
 
-    test('saveSoundPreference should save and retrieve sound preference',
-        () async {
-      // Arrange
-      const bool isSoundOn = true;
+    test(
+      'saveSoundPreference should save and retrieve sound preference',
+      () async {
+        // Arrange
+        const bool isSoundOn = true;
 
-      // Act
-      await localDataSource.saveSoundPreference(isSoundOn);
-      final bool result = localDataSource.getSoundPreference();
+        // Act
+        await localDataSource.saveSoundPreference(isSoundOn);
+        final bool result = localDataSource.getSoundPreference();
 
-      // Assert
-      expect(result, equals(isSoundOn));
-    });
+        // Assert
+        expect(result, equals(isSoundOn));
+      },
+    );
 
-    test('saveLanguageIsoCode should save and retrieve language ISO code',
-        () async {
-      // Arrange
-      const String languageIsoCode = 'mock';
+    test(
+      'saveLanguageIsoCode should save and retrieve language ISO code',
+      () async {
+        // Arrange
+        const String languageIsoCode = 'mock';
 
-      // Act
-      await localDataSource.saveLanguageIsoCode(languageIsoCode);
-      final String result = localDataSource.getLanguageIsoCode();
+        // Act
+        await localDataSource.saveLanguageIsoCode(languageIsoCode);
+        final String result = localDataSource.getLanguageIsoCode();
 
-      // Assert
-      expect(result, equals(languageIsoCode));
-    });
+        // Assert
+        expect(result, equals(languageIsoCode));
+      },
+    );
 
-    test('getLanguageIsoCode should return platform language if not saved',
-        () async {
-      // Arrange
-      const String platformLanguage = 'mock';
+    test(
+      'getLanguageIsoCode should return platform language if not saved',
+      () async {
+        // Arrange
+        const String platformLanguage = 'mock';
 
-      // Act
-      String result = localDataSource.getLanguageIsoCode();
+        // Act
+        final String result = localDataSource.getLanguageIsoCode();
 
-      // Assert
-      expect(result, equals(platformLanguage));
-    });
+        // Assert
+        expect(result, equals(platformLanguage));
+      },
+    );
   });
 }

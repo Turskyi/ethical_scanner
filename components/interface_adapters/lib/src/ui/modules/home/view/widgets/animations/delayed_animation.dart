@@ -4,11 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 
 class DelayedAnimation extends StatefulWidget {
-  const DelayedAnimation({
-    required this.delay,
-    required this.child,
-    super.key,
-  });
+  const DelayedAnimation({required this.delay, required this.child, super.key});
 
   final int delay;
   final Widget child;
@@ -51,10 +47,7 @@ class _DelayedAnimationState extends State<DelayedAnimation>
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: _controller,
-      child: SlideTransition(
-        position: _animOffset,
-        child: widget.child,
-      ),
+      child: SlideTransition(position: _animOffset, child: widget.child),
     );
   }
 

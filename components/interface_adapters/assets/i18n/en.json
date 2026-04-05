@@ -30,6 +30,8 @@
     "code_colon": "Code: ",
     "product_name_colon": "Product name: ",
     "origin_country_colon": "Country of origin: ",
+    "gs1_country_colon": "GS1 barcode country: ",
+    "reported_origin_colon": "Reportedly often from: ",
     "country_where_sold_colon": "Country where the product is sold: ",
     "brand_colon": "Brand: ",
     "is_company_terrorism_sponsor": "Is company sponsor of war? ",
@@ -47,6 +49,19 @@
     "to_know_more": " to know more.",
     "initial_book_code_description": "The initial {eanPrefix} in this barcode is the Book-land EAN prefix, indicating that it is a book. The {eanPrefix} prefix, in this case, is assigned to the English language, but it doesn't specify a particular country.",
     "russian": "russian"
+  },
+  "terrorism_sponsor": {
+    "tap_for_documents": " (Tap to view official documents)",
+    "documents_title": "Official Documents",
+    "external_sources": "External Sources",
+    "open": "Open",
+    "save": "Save",
+    "eu_resolution_title": "EU Parliament Resolution (2022)",
+    "eu_resolution_desc": "Recognises the Russian Federation as a state sponsor of terrorism",
+    "nato_resolution_title": "NATO Parliamentary Assembly Resolution (2022)",
+    "nato_resolution_desc": "Recognises Russia as a state sponsor of terrorism",
+    "sejm_resolution_title": "Polish Sejm Resolution",
+    "sejm_resolution_desc": "The Sejm of the Republic of Poland recognises Russia as a state sponsor of terrorism"
   },
   "scan": {
     "scan_screen": "Scan screen",

@@ -51,12 +51,12 @@ void main() {
       const String scanPath = route.kScanPath;
       const String settingsPath = route.kSettingsPath;
 
-// Act
+      // Act
       final bool isHomePathValid = path.fromUri(homePath) != '';
       final bool isScanPathValid = path.fromUri(scanPath) != '';
       final bool isSettingsPathValid = path.fromUri(settingsPath) != '';
 
-// Assert
+      // Assert
       expect(isHomePathValid, isTrue);
       expect(isScanPathValid, isTrue);
       expect(isSettingsPathValid, isTrue);

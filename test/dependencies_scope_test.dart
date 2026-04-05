@@ -1,8 +1,8 @@
 import 'package:ethical_scanner/di/dependencies.dart';
-import 'package:ethical_scanner/di/dependencies_scope.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:interface_adapters/interface_adapters.dart';
 
 import 'mock_dependencies.dart';
 
@@ -20,14 +20,16 @@ void main() {
       );
     });
 
-    testWidgets('of method should retrieve dependencies',
-        (WidgetTester tester) async {
+    testWidgets('of method should retrieve dependencies', (
+      WidgetTester tester,
+    ) async {
       // Act
       await tester.pumpWidget(dependenciesScope);
 
       // Assert
-      final Dependencies retrievedDependencies =
-          DependenciesScope.of(tester.element(find.byType(SizedBox)));
+      final AppDependencies retrievedDependencies = DependenciesScope.of(
+        tester.element(find.byType(SizedBox)),
+      );
 
       expect(retrievedDependencies, equals(dependencies));
     });
@@ -38,8 +40,9 @@ void main() {
 
       dependenciesScope.debugFillProperties(properties);
 
-      final DiagnosticsNode property = properties.properties
-          .firstWhere((DiagnosticsNode p) => p.name == 'dependencies');
+      final DiagnosticsNode property = properties.properties.firstWhere(
+        (DiagnosticsNode p) => p.name == 'dependencies',
+      );
       expect(property.value, equals(dependencies));
     });
     test('updateShouldNotify returns false', () {

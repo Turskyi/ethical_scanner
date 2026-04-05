@@ -1,18 +1,13 @@
-import 'dart:io';
-
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/di/dependencies.dart';
-import 'package:ethical_scanner/di/dependencies_scope.dart';
 import 'package:ethical_scanner/di/injector.dart';
-import 'package:ethical_scanner/localization_delelegate_getter.dart';
-import 'package:ethical_scanner/res/layout/feedback_form.dart';
-import 'package:ethical_scanner/router/app_router.dart';
-import 'package:feedback/feedback.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:interface_adapters/interface_adapters.dart' as route;
 import 'package:interface_adapters/interface_adapters.dart';
-import 'package:window_size/window_size.dart';
+import 'package:intl/intl.dart';
+import 'package:use_cases/use_cases.dart';
 
 /// The [main] is the ultimate detail — the lowest-level policy.
 /// It is the initial entry point of the system.
@@ -27,56 +22,92 @@ import 'package:window_size/window_size.dart';
 /// components in the system. They don’t know about [main], and they don’t care
 /// when it changes.
 void main() async {
-  //TODO: move `await getLocalizationDelegate()` inside
-  // `await injectAndGetDependencies()` and
-  // `LocalizationDelegate localizationDelegate` inside `Dependencies`.
-  final LocalizationDelegate localizationDelegate =
-      await getLocalizationDelegate();
+  // Ensures that Flutter's internal bindings are initialized before executing
+  // any asynchronous platform-specific logic. This is required for services
+  // like PackageInfo and camera access to function correctly during startup
+  // and avoids potential UI freezes or blank screens.
+  WidgetsFlutterBinding.ensureInitialized();
 
   final Dependencies dependencies = await injectAndGetDependencies();
 
-  if (!kIsWeb && Platform.isMacOS) {
-    setWindowMinSize(const Size(800, 600));
-    setWindowMaxSize(Size.infinite);
+  Language initialLanguage = dependencies.getLanguageUseCase();
+
+  if (kIsWeb) {
+    // Retrieves the host name (e.g., "localhost" or "uk.ethical-scanner.com").
+    initialLanguage = await _resolveInitialLanguageFromUrl(
+      initialLanguage: initialLanguage,
+      saveLanguageUseCase: dependencies.saveLanguageUseCase,
+    );
   }
 
-  final Language savedLanguage = dependencies.getLanguageUseCase();
+  final LocalizationDelegate localizationDelegate =
+      dependencies.localizationDelegate;
+
   final Language currentLanguage = Language.fromIsoLanguageCode(
     localizationDelegate.currentLocale.languageCode,
   );
 
-  if (savedLanguage != currentLanguage) {
-    final Locale savedLocale = localeFromString(savedLanguage.isoLanguageCode);
-
-    localizationDelegate.changeLocale(savedLocale);
-
-    // Notify listeners that the savedLocale has changed so they can update.
-    localizationDelegate.onLocaleChanged?.call(savedLocale);
+  if (initialLanguage != currentLanguage) {
+    _applyInitialLocale(
+      initialLanguage: initialLanguage,
+      localizationDelegate: localizationDelegate,
+    );
   }
 
   // Create an instance of the router.
-  final AppRouter appRouter = AppRouter(savedLanguage: savedLanguage);
+  final AppRouter appRouter = AppRouter(savedLanguage: initialLanguage);
 
   runApp(
-    BetterFeedback(
-      feedbackBuilder: (
-        BuildContext _,
-        OnSubmit onSubmit,
-        ScrollController? scrollController,
-      ) {
-        return FeedbackForm(
-          onSubmit: onSubmit,
-          scrollController: scrollController,
-        );
-      },
-      theme: FeedbackThemeData(feedbackSheetColor: Colors.grey.shade50),
-      child: LocalizedApp(
-        localizationDelegate,
-        DependenciesScope(
-          dependencies: dependencies,
-          child: App.factory(appRouter.generateRoute),
-        ),
-      ),
+    App.factory(
+      dependencies: dependencies,
+      localizationDelegate: localizationDelegate,
+      onGenerateRoute: appRouter.generateRoute,
     ),
   );
+}
+
+Future<Language> _resolveInitialLanguageFromUrl({
+  required Language initialLanguage,
+  required UseCase<Future<bool>, String> saveLanguageUseCase,
+}) async {
+  // Retrieves the host name (e.g., "localhost" or "uk.ethical-scanner.com").
+  final String host = Uri.base.host;
+
+  // Retrieves the fragment (e.g., "/en" or "/uk").
+  final String fragment = Uri.base.fragment;
+
+  for (final Language language in Language.values) {
+    final String currentLanguageCode = language.isoLanguageCode;
+    if (host.startsWith('$currentLanguageCode.') ||
+        fragment.contains('${route.kHomePath}$currentLanguageCode')) {
+      try {
+        Intl.defaultLocale = currentLanguageCode;
+      } catch (e, stackTrace) {
+        debugPrint(
+          'Failed to set Intl.defaultLocale to "$currentLanguageCode".\n'
+          'Error: $e\n'
+          'StackTrace: $stackTrace\n'
+          'Proceeding with previously set default locale or system default.',
+        );
+      }
+      initialLanguage = language;
+      // We save it so the rest of the app (like recommendations) uses this
+      // language.
+      await saveLanguageUseCase.call(currentLanguageCode);
+      break;
+    }
+  }
+  return initialLanguage;
+}
+
+void _applyInitialLocale({
+  required Language initialLanguage,
+  required LocalizationDelegate localizationDelegate,
+}) {
+  final Locale locale = localeFromString(initialLanguage.isoLanguageCode);
+
+  localizationDelegate.changeLocale(locale);
+
+  // Notify listeners that the locale has changed so they can update.
+  localizationDelegate.onLocaleChanged?.call(locale);
 }

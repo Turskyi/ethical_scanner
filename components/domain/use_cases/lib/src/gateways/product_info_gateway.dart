@@ -5,6 +5,8 @@ abstract interface class ProductInfoGateway {
 
   Future<ProductInfo> getProductInfoAsFuture(LocalizedCode barcode);
 
+  Future<List<TerrorismSponsor>> getTerrorismSponsors();
+
   Future<void> addProduct(ProductInfo productInfo);
 
   Future<void> addIngredients(ProductPhoto productPhoto);
