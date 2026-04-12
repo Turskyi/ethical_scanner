@@ -18,7 +18,7 @@ void main() {
         '0001234567890': 'United States and Canada',
         '0571234567890': 'United States',
         '0611234567890': 'United States',
-        '0641234567890': 'Bhutan',
+        '0641234567890': 'United States',
         '0861234567890': 'United States',
         '1251234567890': 'United States',
       };
