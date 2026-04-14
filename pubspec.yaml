@@ -95,7 +95,7 @@ dependencies:
 
 dev_dependencies:
   # A build system for Dart code generation and modular compilation.
-  bloc_lint: ^0.4.0
+  bloc_lint: ^0.4.1
   build_runner: ^2.13.1
 
   # Generator for the Envied package. See https://pub.dev/packages/envied.

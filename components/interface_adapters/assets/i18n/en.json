@@ -75,9 +75,17 @@
     "no_camera_found": "No camera found or failed to open camera!",
     "could_not_launch": "Could not launch"
   },
+  "feedback": {
+    "kind_of_feedback": "What kind of feedback do you want to give?",
+    "what_is_feedback": "What is your feedback?",
+    "how_feel": "How does this make you feel?",
+    "submit": "Submit",
+    "feedback_sent": "Your feedback has been sent successfully!"
+  },
   "photo": {
     "capture_ingredients": "Make a photo of the ingredients.",
-    "image_upload_successful": "Image upload successful!"
+    "image_upload_successful": "Image upload successful!",
+    "camera_not_supported": "Camera access is not supported on this device.\n\nThis feature is available on Web, Android, and iOS platforms.\n\nPlease try scanning the product using another device,\nor visit:\n"
   },
   "privacy_policy": {
     "main_title": "Privacy Policy for \"Ethical Scanner\" App",

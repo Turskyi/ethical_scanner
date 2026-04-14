@@ -12,6 +12,8 @@ import 'package:interface_adapters/src/ui/modules/photo/photo_event.dart';
 import 'package:interface_adapters/src/ui/modules/photo/photo_presenter.dart';
 import 'package:interface_adapters/src/ui/res/color/gradients.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
+import 'package:interface_adapters/src/ui/res/values/constants.dart'
+    as constants;
 import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
 import 'package:interface_adapters/src/ui/widgets/language_selector.dart';
@@ -110,14 +112,10 @@ class _PhotoViewState extends State<PhotoView> {
             ),
             actions: <Widget>[
               BlocBuilder<PhotoPresenter, PhotoViewModel>(
-                builder: (BuildContext context, PhotoViewModel viewModel) {
+                builder: (BuildContext _, PhotoViewModel viewModel) {
                   return LanguageSelector(
                     currentLanguage: viewModel.language,
-                    onLanguageSelected: (Language newLanguage) {
-                      context.read<PhotoPresenter>().add(
-                        ChangeLanguageEvent(newLanguage),
-                      );
-                    },
+                    onLanguageSelected: _onLanguageChanged,
                   );
                 },
               ),
@@ -135,26 +133,15 @@ class _PhotoViewState extends State<PhotoView> {
                     color: Colors.white,
                   ),
                   children: <TextSpan>[
-                    const TextSpan(
-                      text:
-                          'Camera access is not supported on this device.\n\n'
-                          'This feature is available on Web, Android, and iOS '
-                          'platforms.\n\nPlease try scanning the product using '
-                          'another device,\nor visit:\n',
-                    ),
+                    TextSpan(text: translate('photo.camera_not_supported')),
                     TextSpan(
-                      text: kDomain,
+                      text: constants.kDomain,
                       style: const TextStyle(
                         color: Colors.lightBlueAccent,
                         decoration: TextDecoration.underline,
                       ),
                       recognizer: TapGestureRecognizer()
-                        ..onTap = () async {
-                          final Uri url = Uri.parse(kWebsite);
-                          if (await canLaunchUrl(url)) {
-                            await launchUrl(url);
-                          }
-                        },
+                        ..onTap = _launchWebsite,
                     ),
                   ],
                 ),
@@ -163,305 +150,234 @@ class _PhotoViewState extends State<PhotoView> {
           ),
         ),
       );
-    }
-
-    return DecoratedBox(
-      decoration: BoxDecoration(gradient: gradients.violetTwilightGradient),
-      child: Scaffold(
-        // We need to set transparent background explicitly, because
-        // Scaffold does not support gradient backgrounds, so we program it
-        // to remove any default background, so that the custom background
-        // above will be visible.
-        backgroundColor: Colors.transparent,
-        // `extendBodyBehindAppBar: true` and
-        // `appBar` `backgroundColor: Colors.transparent` makes appbar with
-        // background color.
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          centerTitle: true,
+    } else {
+      return DecoratedBox(
+        decoration: BoxDecoration(gradient: gradients.violetTwilightGradient),
+        child: Scaffold(
+          // We need to set transparent background explicitly, because
+          // Scaffold does not support gradient backgrounds, so we program it
+          // to remove any default background, so that the custom background
+          // above will be visible.
           backgroundColor: Colors.transparent,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () {
-              context.read<PhotoPresenter>().add(const PhotoViewBackEvent());
-            },
-          ),
-          title: Text(
-            translate('photo.capture_ingredients'),
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: titleLarge?.fontSize,
-              fontWeight: FontWeight.bold,
-              shadows: <Shadow>[
-                Shadow(
-                  blurRadius: dimens.bodyBlurRadius,
-                  color: Colors.white30,
-                  offset: Offset(
-                    dimens.bodyTitleOffset,
-                    dimens.bodyTitleOffset,
-                  ),
-                ),
-              ],
-            ),
-            textScaler: const TextScaler.linear(1.2),
-          ),
-          actions: <Widget>[
-            BlocBuilder<PhotoPresenter, PhotoViewModel>(
-              builder: (BuildContext context, PhotoViewModel viewModel) {
-                return LanguageSelector(
-                  currentLanguage: viewModel.language,
-                  onLanguageSelected: (Language newLanguage) {
-                    // Dispatch event to the presenter to handle language
-                    // change logic and update its state (which might also
-                    // update this screen's language).
-                    context.read<PhotoPresenter>().add(
-                      ChangeLanguageEvent(newLanguage),
-                    );
-                    // Force a rebuild of the current screen's state
-                    // (`_PhotoViewState`).
-                    // This is necessary because the `AppBar`'s title `Text`
-                    // widget, which uses
-                    // `translate('photo.capture_ingredients')`, needs to be
-                    // reconstructed with the new locale provided by the
-                    // `flutter_translate` package after `changeLocale`
-                    // (implicitly called) has taken effect.
-                    // While the `PhotoPresenter`'s state will update, that
-                    // not directly trigger a rebuild of the `AppBar` title
-                    // without this explicit `setState`.
-                    // This ensures the title immediately reflects the newly
-                    // selected language.
-                    setState(() {});
-                  },
-                );
+          // `extendBodyBehindAppBar: true` and
+          // `appBar` `backgroundColor: Colors.transparent` makes appbar with
+          // background color.
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+              onPressed: () {
+                context.read<PhotoPresenter>().add(const PhotoViewBackEvent());
               },
             ),
-          ],
-        ),
-        body: BlocBuilder<PhotoPresenter, PhotoViewModel>(
-          builder: (BuildContext context, PhotoViewModel viewModel) {
-            final CameraValue? camera = _controller?.value;
-            if (camera == null) {
-              return const Center(child: SizedBox.shrink());
-            }
-            // Fetch screen size.
-            final Size size = MediaQuery.sizeOf(context);
-
-            // Calculate scale depending on screen and camera ratios
-            // this is actually size.aspectRatio / (1 / camera.aspectRatio)
-            // because camera preview size is received as landscape
-            // but we're calculating for portrait orientation.
-            double scale =
-                size.aspectRatio *
-                (camera.isInitialized ? camera.aspectRatio : 1.0);
-
-            // to prevent scaling down, invert the value
-            if (scale < 1) scale = 1 / scale;
-            final double? bodyLargeFontSize = textTheme.bodyLarge?.fontSize;
-            final Stack cameraStack = Stack(
-              alignment: Alignment.topCenter,
-              children: <Widget>[
-                GestureDetector(
-                  onScaleUpdate: (ScaleUpdateDetails details) {
-                    double newZoomLevel = _currentZoomLevel * details.scale;
-                    newZoomLevel = newZoomLevel.clamp(1.0, _maxZoomLevel);
-                    if (!kIsWeb) {
-                      _controller?.setZoomLevel(newZoomLevel);
-                    }
-                    setState(() {
-                      _currentZoomLevel = newZoomLevel;
-                    });
-                  },
-                  child: _controller != null
-                      ? CameraPreview(_controller!)
-                      : const SizedBox(),
-                ),
-                Positioned(
-                  bottom: 16.0,
-                  left: 16.0,
-                  child: AnimatedOpacity(
-                    opacity: viewModel is TakenPhotoState ? 1.0 : 0.0,
-                    duration: const Duration(milliseconds: 500),
-                    // Display captured photo preview
-                    child: viewModel is TakenPhotoState
-                        ? GestureDetector(
-                            onTap: () {
-                              // Remove the preview and reset the captured
-                              // image path.
-                              context.read<PhotoPresenter>().add(
-                                const RemovePhotoEvent(),
-                              );
-                            },
-                            child: Container(
-                              width: 200.0, // Increased width
-                              height: 350, // Increased height
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 2.0,
-                                ),
-                              ),
-                              child: Stack(
-                                children: <Widget>[
-                                  if (kIsWeb)
-                                    Image.network(
-                                      viewModel.photoPath,
-                                      fit: BoxFit.cover,
-                                    )
-                                  else
-                                    Image.file(
-                                      File(viewModel.photoPath),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  Positioned(
-                                    top: 0,
-                                    right: 0,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(4.0),
-                                      color: Colors.black.withValues(
-                                        alpha: 0.5,
-                                      ),
-                                      child: const Icon(
-                                        Icons.close,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        : const SizedBox(),
-                  ),
-                ),
-                if (viewModel is LoadingState)
-                  const CircularProgressIndicator(color: Colors.white),
-                if (viewModel is AddIngredientsErrorState)
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    color: Colors.black.withValues(alpha: 0.7),
-                    alignment: Alignment.center,
-                    child: GestureDetector(
-                      onLongPress: () {
-                        Clipboard.setData(
-                          ClipboardData(text: viewModel.errorMessage),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              translate('copied_to_clipboard'),
-                              textAlign: TextAlign.right,
-                            ),
-                          ),
-                        );
-                      },
-                      child: SelectableText.rich(
-                        _getTextSpan(viewModel.errorMessage, bodyLargeFontSize),
-                        textAlign: TextAlign.center,
-                        strutStyle: StrutStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: bodyLargeFontSize,
-                        ),
-                      ),
+            title: Text(
+              translate('photo.capture_ingredients'),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: titleLarge?.fontSize,
+                fontWeight: FontWeight.bold,
+                shadows: <Shadow>[
+                  Shadow(
+                    blurRadius: dimens.bodyBlurRadius,
+                    color: Colors.white30,
+                    offset: Offset(
+                      dimens.bodyTitleOffset,
+                      dimens.bodyTitleOffset,
                     ),
                   ),
-              ],
-            );
+                ],
+              ),
+              textScaler: const TextScaler.linear(1.2),
+            ),
+            actions: <Widget>[
+              BlocBuilder<PhotoPresenter, PhotoViewModel>(
+                builder: (BuildContext _, PhotoViewModel viewModel) {
+                  return LanguageSelector(
+                    currentLanguage: viewModel.language,
+                    onLanguageSelected: _onLanguageChanged,
+                  );
+                },
+              ),
+            ],
+          ),
+          body: BlocBuilder<PhotoPresenter, PhotoViewModel>(
+            builder: (BuildContext context, PhotoViewModel viewModel) {
+              final CameraValue? camera = _controller?.value;
+              if (camera == null) {
+                return const Center(child: SizedBox.shrink());
+              } else {
+                // Fetch screen size.
+                final Size size = MediaQuery.sizeOf(context);
 
-            return Column(
-              children: <Widget>[
-                if (kIsWeb)
-                  Container(
-                    alignment: Alignment.center,
-                    height: size.height * 0.8,
-                    child: cameraStack,
-                  )
-                else
-                  Expanded(child: cameraStack),
-                if (!kIsWeb)
-                  // Buttons for manual zoom control.
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        ElevatedButton(
-                          // Decrease zoom
-                          onPressed: () => _adjustZoomLevel(-_zoomStep),
-                          child: const Icon(Icons.remove),
-                        ),
-                        ElevatedButton(
-                          // Increase zoom
-                          onPressed: () => _adjustZoomLevel(_zoomStep),
-                          child: const Icon(Icons.add),
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
-            );
-          },
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: BlocBuilder<PhotoPresenter, PhotoViewModel>(
-          builder: (BuildContext context, PhotoViewModel viewModel) {
-            return viewModel is AddIngredientsErrorState
-                ? const SizedBox()
-                : Padding(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    child: FloatingActionButton(
-                      onPressed: viewModel is LoadingState
-                          ? null
-                          : viewModel is TakenPhotoState
-                          ? () {
-                              context.read<PhotoPresenter>().add(
-                                AddIngredientsPhotoEvent(
-                                  ProductPhoto(
-                                    path: viewModel.photoPath,
-                                    info: widget.productInfo,
-                                  ),
-                                ),
-                              );
-                            }
-                          : () async {
-                              context.read<PhotoPresenter>().add(
-                                const TakePhotoEvent(),
-                              );
-                              try {
-                                await _initializeControllerFuture;
+                // Calculate scale depending on screen and camera ratios
+                // this is actually size.aspectRatio / (1 / camera.aspectRatio)
+                // because camera preview size is received as landscape
+                // but we're calculating for portrait orientation.
+                double scale =
+                    size.aspectRatio *
+                    (camera.isInitialized ? camera.aspectRatio : 1.0);
 
-                                // Take a picture and get the file path.
-                                final XFile? picture = await _controller
-                                    ?.takePicture();
-
-                                if (context.mounted && picture != null) {
-                                  context.read<PhotoPresenter>().add(
-                                    TakenPhotoEvent(picture.path),
-                                  );
-                                } else if (context.mounted) {
-                                  debugPrint(
-                                    'Failed to take picture: picture is null',
-                                  );
-                                }
-                              } catch (e) {
-                                debugPrint('Error taking picture: $e');
-                              }
-                            },
-                      child: viewModel is TakenPhotoState
-                          ? const Icon(Icons.send)
-                          : viewModel is PhotoMakerReadyState ||
-                                viewModel is AddIngredientsErrorState
-                          ? const Icon(Icons.camera)
-                          : viewModel is LoadingState
-                          ? const Icon(Icons.stop)
+                // to prevent scaling down, invert the value
+                if (scale < 1) {
+                  scale = 1 / scale;
+                }
+                final double? bodyLargeFontSize = textTheme.bodyLarge?.fontSize;
+                final Stack cameraStack = Stack(
+                  alignment: Alignment.topCenter,
+                  children: <Widget>[
+                    GestureDetector(
+                      onScaleUpdate: _onScaleUpdate,
+                      child: _controller != null
+                          ? CameraPreview(_controller!)
                           : const SizedBox(),
                     ),
-                  );
-          },
+                    Positioned(
+                      bottom: 16.0,
+                      left: 16.0,
+                      child: AnimatedOpacity(
+                        opacity: viewModel is TakenPhotoState ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 500),
+                        // Display captured photo preview
+                        child: viewModel is TakenPhotoState
+                            ? GestureDetector(
+                                onTap: _onRemovePhoto,
+                                child: Container(
+                                  width: 200.0,
+                                  height: 350,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                  child: Stack(
+                                    children: <Widget>[
+                                      if (kIsWeb)
+                                        Image.network(
+                                          viewModel.photoPath,
+                                          fit: BoxFit.cover,
+                                        )
+                                      else
+                                        Image.file(
+                                          File(viewModel.photoPath),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      Positioned(
+                                        top: 0,
+                                        right: 0,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(4.0),
+                                          color: Colors.black.withValues(
+                                            alpha: 0.5,
+                                          ),
+                                          child: const Icon(
+                                            Icons.close,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : const SizedBox(),
+                      ),
+                    ),
+                    if (viewModel is LoadingState)
+                      const CircularProgressIndicator(color: Colors.white),
+                    if (viewModel is AddIngredientsErrorState)
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        color: Colors.black.withValues(alpha: 0.7),
+                        alignment: Alignment.center,
+                        child: GestureDetector(
+                          onLongPress: () {
+                            _copyToClipboard(viewModel.errorMessage);
+                          },
+                          child: SelectableText.rich(
+                            _getTextSpan(
+                              viewModel.errorMessage,
+                              bodyLargeFontSize,
+                            ),
+                            textAlign: TextAlign.center,
+                            strutStyle: StrutStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: bodyLargeFontSize,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+
+                return Column(
+                  children: <Widget>[
+                    if (kIsWeb)
+                      Container(
+                        alignment: Alignment.center,
+                        height: size.height * 0.8,
+                        child: cameraStack,
+                      )
+                    else
+                      Expanded(child: cameraStack),
+                    if (!kIsWeb)
+                      // Buttons for manual zoom control.
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            ElevatedButton(
+                              // Decrease zoom
+                              onPressed: () => _adjustZoomLevel(-_zoomStep),
+                              child: const Icon(Icons.remove),
+                            ),
+                            ElevatedButton(
+                              // Increase zoom
+                              onPressed: () => _adjustZoomLevel(_zoomStep),
+                              child: const Icon(Icons.add),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                );
+              }
+            },
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: BlocBuilder<PhotoPresenter, PhotoViewModel>(
+            builder: (BuildContext context, PhotoViewModel viewModel) {
+              return viewModel is AddIngredientsErrorState
+                  ? const SizedBox()
+                  : Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      child: FloatingActionButton(
+                        onPressed: viewModel is LoadingState
+                            ? null
+                            : viewModel is TakenPhotoState
+                            ? () => _submitIngredientsPhoto(viewModel.photoPath)
+                            : _takePhoto,
+                        child: viewModel is TakenPhotoState
+                            ? const Icon(Icons.send)
+                            : viewModel is PhotoMakerReadyState ||
+                                  viewModel is AddIngredientsErrorState
+                            ? const Icon(Icons.camera)
+                            : viewModel is LoadingState
+                            ? const Icon(Icons.stop)
+                            : const SizedBox(),
+                      ),
+                    );
+            },
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   @override
@@ -478,16 +394,16 @@ class _PhotoViewState extends State<PhotoView> {
 
     _initializeControllerFuture = _controller
         ?.initialize()
-        .then((_) {
+        .then((void _) {
           // The returned value in `then` is always `null`
-          if (!mounted) {
-            return;
+          if (mounted) {
+            _configureCamera();
+            setState(() {});
           }
-          _configureCamera();
-          setState(() {});
         })
         .catchError((Object e) {
           if (e is CameraException) {
+            debugPrint('Error: ${e.code}\nError message: ${e.description}');
             switch (e.code) {
               case 'CameraAccessDenied':
                 break;
@@ -592,23 +508,7 @@ class _PhotoViewState extends State<PhotoView> {
               decoration: TextDecoration.underline,
             ),
             recognizer: TapGestureRecognizer()
-              ..onTap = () async {
-                final Uri emailLaunchUri = Uri(
-                  scheme: kMailToScheme,
-                  path: matchedText,
-                );
-                if (await canLaunchUrl(emailLaunchUri)) {
-                  await launchUrl(emailLaunchUri);
-                } else {
-                  debugPrint('Could not launch $emailLaunchUri');
-                  // Consider showing a Snack-bar to the user
-                  throw PlatformException(
-                    // Keep throwing for internal handling if needed.
-                    code: 'UNABLE_TO_LAUNCH_URL',
-                    message: 'Could not launch $emailLaunchUri',
-                  );
-                }
-              },
+              ..onTap = () async => await _launchEmail(matchedText),
           ),
         );
       } else {
@@ -625,19 +525,7 @@ class _PhotoViewState extends State<PhotoView> {
             ),
             recognizer: TapGestureRecognizer()
               ..onTap = () async {
-                String urlToLaunch = matchedText;
-                if (!urlToLaunch.startsWith('http://') &&
-                    !urlToLaunch.startsWith('https://')) {
-                  // Default to https.
-                  urlToLaunch = 'https://$urlToLaunch';
-                }
-                final Uri urlLaunchUri = Uri.parse(urlToLaunch);
-                if (await canLaunchUrl(urlLaunchUri)) {
-                  await launchUrl(urlLaunchUri);
-                } else {
-                  debugPrint('Could not launch $urlLaunchUri');
-                  _showUnableToLaunchUrlSnackbar(urlLaunchUri.toString());
-                }
+                await _launchUrl(matchedText);
               },
           ),
         );
@@ -662,6 +550,37 @@ class _PhotoViewState extends State<PhotoView> {
     return TextSpan(children: spans);
   }
 
+  Future<void> _launchEmail(String matchedText) async {
+    final Uri emailLaunchUri = Uri(scheme: kMailToScheme, path: matchedText);
+    if (await canLaunchUrl(emailLaunchUri)) {
+      await launchUrl(emailLaunchUri);
+    } else {
+      debugPrint('Could not launch $emailLaunchUri');
+      // Consider showing a Snack-bar to the user
+      throw PlatformException(
+        // Keep throwing for internal handling if needed.
+        code: 'UNABLE_TO_LAUNCH_URL',
+        message: 'Could not launch $emailLaunchUri',
+      );
+    }
+  }
+
+  Future<void> _launchUrl(String matchedText) async {
+    String urlToLaunch = matchedText;
+    if (!urlToLaunch.startsWith(kHttpProtocol) &&
+        !urlToLaunch.startsWith(kHttpsProtocol)) {
+      // Default to https.
+      urlToLaunch = '$kHttpsProtocol$urlToLaunch';
+    }
+    final Uri urlLaunchUri = Uri.parse(urlToLaunch);
+    if (await canLaunchUrl(urlLaunchUri)) {
+      await launchUrl(urlLaunchUri);
+    } else {
+      debugPrint('Could not launch $urlLaunchUri');
+      _showUnableToLaunchUrlSnackbar(urlLaunchUri.toString());
+    }
+  }
+
   Future<void> _configureCamera() async {
     final CameraValue? camera = _controller?.value;
     if (!kIsWeb && camera?.isInitialized == true) {
@@ -679,10 +598,101 @@ class _PhotoViewState extends State<PhotoView> {
   }
 
   /// Helper function to show [SnackBar].
-  void _showUnableToLaunchUrlSnackbar(String url) {
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason>
+  _showUnableToLaunchUrlSnackbar(String url) {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
+    return ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('${translate('could_not_launch')} $url')),
     );
+  }
+
+  /// Dispatch event to the presenter to handle language
+  /// change logic and update its state (which might also
+  /// update this screen's language).
+  void _onLanguageChanged(Language newLanguage) {
+    // Dispatch event to the presenter to handle language
+    // change logic and update its state (which might also
+    // update this screen's language).
+    context.read<PhotoPresenter>().add(ChangeLanguageEvent(newLanguage));
+    // Force a rebuild of the current screen's state
+    // (`_PhotoViewState`).
+    // This is necessary because the `AppBar`'s title `Text`
+    // widget, which uses
+    // `translate('photo.capture_ingredients')`, needs to be
+    // reconstructed with the new locale provided by the
+    // `flutter_translate` package after `changeLocale`
+    // (implicitly called) has taken effect.
+    // While the `PhotoPresenter`'s state will update, that
+    // not directly trigger a rebuild of the `AppBar` title
+    // without this explicit `setState`.
+    // This ensures the title immediately reflects the newly
+    // selected language.
+    setState(() {});
+  }
+
+  void _onScaleUpdate(ScaleUpdateDetails details) {
+    double newZoomLevel = _currentZoomLevel * details.scale;
+    newZoomLevel = newZoomLevel.clamp(1.0, _maxZoomLevel);
+    if (!kIsWeb) {
+      _controller?.setZoomLevel(newZoomLevel);
+    }
+    setState(() {
+      _currentZoomLevel = newZoomLevel;
+    });
+  }
+
+  /// Remove the preview and reset the captured
+  /// image path.
+  void _onRemovePhoto() {
+    // Remove the preview and reset the captured
+    // image path.
+    context.read<PhotoPresenter>().add(const RemovePhotoEvent());
+  }
+
+  Future<void> _launchWebsite() async {
+    final Uri url = Uri.parse(kWebsite);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    }
+  }
+
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _copyToClipboard(
+    String errorMessage,
+  ) {
+    Clipboard.setData(ClipboardData(text: errorMessage));
+    return ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          translate('copied_to_clipboard'),
+          textAlign: TextAlign.right,
+        ),
+      ),
+    );
+  }
+
+  void _submitIngredientsPhoto(String photoPath) {
+    return context.read<PhotoPresenter>().add(
+      AddIngredientsPhotoEvent(
+        ProductPhoto(path: photoPath, info: widget.productInfo),
+      ),
+    );
+  }
+
+  Future<void> _takePhoto() async {
+    context.read<PhotoPresenter>().add(const TakePhotoEvent());
+    try {
+      await _initializeControllerFuture;
+
+      // Take a picture and get the file path.
+      final XFile? picture = await _controller?.takePicture();
+
+      if (mounted && picture != null) {
+        context.read<PhotoPresenter>().add(TakenPhotoEvent(picture.path));
+      } else {
+        debugPrint('Failed to take picture: picture is null');
+      }
+    } catch (e) {
+      debugPrint('Error taking picture: $e');
+    }
   }
 }
