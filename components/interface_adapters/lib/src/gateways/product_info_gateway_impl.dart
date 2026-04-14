@@ -119,6 +119,24 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
     return _remoteDataSource.addIngredients(productPhoto);
   }
 
+  @override
+  Future<String> extractIngredients(ProductPhoto productPhoto) {
+    return _remoteDataSource.extractIngredients(productPhoto);
+  }
+
+  @override
+  Future<void> saveIngredients({
+    required String barcode,
+    required String ingredientsText,
+    required Language language,
+  }) {
+    return _remoteDataSource.saveIngredients(
+      barcode: barcode,
+      ingredientsText: ingredientsText,
+      language: language,
+    );
+  }
+
   bool _isWebsite(String input) {
     final RegExp regex = RegExp(
       r'^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]'

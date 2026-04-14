@@ -98,6 +98,8 @@ class AppRouter {
                     return PhotoPresenter(
                       dependencies.addIngredientsUseCase,
                       dependencies.saveLanguageUseCase,
+                      dependencies.extractIngredientsUseCase,
+                      dependencies.saveIngredientsUseCase,
                       initialLanguage,
                     );
                   },

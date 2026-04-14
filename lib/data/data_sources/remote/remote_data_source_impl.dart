@@ -256,6 +256,76 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     );
   }
 
+  @override
+  Future<String> extractIngredients(ProductPhoto productPhoto) async {
+    final User user =
+        OpenFoodAPIConfiguration.globalUser ??
+        const User(
+          userId: Env.openFoodUserId,
+          password: Env.openFoodPassword,
+          comment: constants.openFoodUserComment,
+        );
+
+    final OpenFoodFactsLanguage language = productPhoto.info.language.isEnglish
+        ? OpenFoodFactsLanguage.ENGLISH
+        : OpenFoodFactsLanguage.UKRAINIAN;
+
+    // Ensure the image is available on the server before attempting OCR.
+    // If a new photo was taken locally, it must be uploaded first.
+    if (productPhoto.path.isNotEmpty) {
+      await addIngredients(productPhoto);
+    }
+
+    final OcrIngredientsResult ocrResponse =
+        await OpenFoodAPIClient.extractIngredients(
+          user,
+          productPhoto.info.barcode,
+          language,
+        );
+
+    if (ocrResponse.status != 0) {
+      throw Exception("Text can't be extracted.");
+    }
+
+    return ocrResponse.ingredientsTextFromImage ?? '';
+  }
+
+  @override
+  Future<void> saveIngredients({
+    required String barcode,
+    required String ingredientsText,
+    required Language language,
+  }) async {
+    final User user =
+        OpenFoodAPIConfiguration.globalUser ??
+        const User(
+          userId: Env.openFoodUserId,
+          password: Env.openFoodPassword,
+          comment: constants.openFoodUserComment,
+        );
+
+    final OpenFoodFactsLanguage offLanguage = language.isEnglish
+        ? OpenFoodFactsLanguage.ENGLISH
+        : OpenFoodFactsLanguage.UKRAINIAN;
+
+    final Product editedProduct = Product(
+      barcode: barcode,
+      ingredientsText: ingredientsText,
+      ingredientsTextInLanguages: <OpenFoodFactsLanguage, String>{
+        offLanguage: ingredientsText,
+      },
+    );
+
+    final Status result = await OpenFoodAPIClient.saveProduct(
+      user,
+      editedProduct,
+    );
+
+    if (result.status != 1) {
+      throw Exception('Could not save ingredients: ${result.error}');
+    }
+  }
+
   Future<void> _uploadProductImageToOpenFoodFacts({
     required SendImage image,
     required User openFoodUser,

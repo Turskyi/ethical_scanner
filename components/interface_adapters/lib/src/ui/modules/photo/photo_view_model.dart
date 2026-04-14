@@ -32,6 +32,17 @@ class IngredientsAddedSuccessState extends PhotoViewModel {
   const IngredientsAddedSuccessState({required super.language});
 }
 
+class OcrExtractedState extends PhotoViewModel {
+  const OcrExtractedState({
+    required super.language,
+    required this.photoPath,
+    required this.ingredientsText,
+  });
+
+  final String photoPath;
+  final String ingredientsText;
+}
+
 class CanceledPhotoState extends PhotoViewModel {
   const CanceledPhotoState({required super.language});
 }

@@ -10,4 +10,12 @@ abstract interface class ProductInfoGateway {
   Future<void> addProduct(ProductInfo productInfo);
 
   Future<void> addIngredients(ProductPhoto productPhoto);
+
+  Future<String> extractIngredients(ProductPhoto productPhoto);
+
+  Future<void> saveIngredients({
+    required String barcode,
+    required String ingredientsText,
+    required Language language,
+  });
 }
