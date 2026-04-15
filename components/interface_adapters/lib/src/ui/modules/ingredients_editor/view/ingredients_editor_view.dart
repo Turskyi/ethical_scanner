@@ -37,25 +37,19 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         context.read<IngredientsEditorPresenter>().add(
-              ExtractIngredientsEvent(
-                ProductPhoto(path: widget.imagePath, info: widget.productInfo),
-              ),
-            );
+          ExtractIngredientsEvent(
+            ProductPhoto(path: widget.imagePath, info: widget.productInfo),
+          ),
+        );
       }
     });
   }
 
   @override
-  void dispose() {
-    _ingredientsController.dispose();
-    _ingredientsFocusNode.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final IngredientsEditorViewModel viewModel =
-        context.watch<IngredientsEditorPresenter>().state;
+    final IngredientsEditorViewModel viewModel = context
+        .watch<IngredientsEditorPresenter>()
+        .state;
     final Resources resources = Resources.of(context);
     final Gradients gradients = resources.gradients;
 
@@ -83,14 +77,14 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
               currentLanguage: viewModel.language,
               onLanguageSelected: (Language newLanguage) {
                 context.read<IngredientsEditorPresenter>().add(
-                      ChangeIngredientsLanguageEvent(newLanguage),
-                    );
+                  ChangeIngredientsLanguageEvent(newLanguage),
+                );
               },
             ),
           ],
         ),
-        body: BlocConsumer<IngredientsEditorPresenter,
-            IngredientsEditorViewModel>(
+        // ignore: lines_longer_than_80_chars
+        body: BlocConsumer<IngredientsEditorPresenter, IngredientsEditorViewModel>(
           listener: (BuildContext context, IngredientsEditorViewModel state) {
             if (state is IngredientsEditorExtractedState) {
               if (_ingredientsController.text != state.ingredientsText) {
@@ -101,9 +95,9 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
                 );
               }
             } else if (state is IngredientsEditorSuccessState) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(translate('save'))),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(translate('save'))));
               Navigator.of(context).pop();
             }
           },
@@ -136,17 +130,15 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
                       ElevatedButton(
                         onPressed: () {
                           context.read<IngredientsEditorPresenter>().add(
-                                ExtractIngredientsEvent(
-                                  ProductPhoto(
-                                    path: widget.imagePath,
-                                    info: widget.productInfo,
-                                  ),
-                                ),
-                              );
+                            ExtractIngredientsEvent(
+                              ProductPhoto(
+                                path: widget.imagePath,
+                                info: widget.productInfo,
+                              ),
+                            ),
+                          );
                         },
-                        child: Text(
-                          translate('photo.extract_ingredients'),
-                        ),
+                        child: Text(translate('photo.extract_ingredients')),
                       ),
                     ],
                   ),
@@ -178,7 +170,8 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
                       maxLines: 12,
                       style: const TextStyle(color: Colors.white),
                       onTap: () {
-                        // Explicitly request focus on tap to improve responsiveness on iPad.
+                        // Explicitly request focus on tap to improve
+                        // responsiveness on iPad.
                         _ingredientsFocusNode.requestFocus();
                       },
                       decoration: InputDecoration(
@@ -203,11 +196,11 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
                       ),
                       onPressed: () {
                         context.read<IngredientsEditorPresenter>().add(
-                              SaveIngredientsEvent(
-                                barcode: widget.productInfo.barcode,
-                                ingredientsText: _ingredientsController.text,
-                              ),
-                            );
+                          SaveIngredientsEvent(
+                            barcode: widget.productInfo.barcode,
+                            ingredientsText: _ingredientsController.text,
+                          ),
+                        );
                       },
                       icon: const Icon(Icons.save),
                       label: Text(
@@ -225,6 +218,13 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _ingredientsController.dispose();
+    _ingredientsFocusNode.dispose();
+    super.dispose();
   }
 
   Widget _buildImagePreview(IngredientsEditorExtractedState state) {
