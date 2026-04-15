@@ -216,10 +216,12 @@ class _DocumentCardState extends State<_DocumentCard> {
       final Rect sharePositionOrigin = box != null
           ? box.localToGlobal(Offset.zero) & box.size
           : Rect.zero;
-      await Share.shareXFiles(
-        <XFile>[XFile(file.path, mimeType: 'application/pdf')],
-        subject: translate(widget.document.titleKey),
-        sharePositionOrigin: sharePositionOrigin,
+      await SharePlus.instance.share(
+        ShareParams(
+          files: <XFile>[XFile(file.path, mimeType: 'application/pdf')],
+          subject: translate(widget.document.titleKey),
+          sharePositionOrigin: sharePositionOrigin,
+        ),
       );
     } finally {
       if (mounted) {

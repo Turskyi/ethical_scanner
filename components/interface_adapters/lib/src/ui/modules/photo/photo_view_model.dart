@@ -29,7 +29,14 @@ class TakenPhotoState extends PhotoViewModel {
 }
 
 class IngredientsAddedSuccessState extends PhotoViewModel {
-  const IngredientsAddedSuccessState({required super.language});
+  const IngredientsAddedSuccessState({
+    required super.language,
+    required this.productInfo,
+    this.imagePath = '',
+  });
+
+  final ProductInfo productInfo;
+  final String imagePath;
 }
 
 class CanceledPhotoState extends PhotoViewModel {

@@ -1,6 +1,7 @@
 import 'package:entities/entities.dart';
 import 'package:feedback/feedback.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 
 /// A form that prompts the user for the type of feedback they want to give,
 /// free form text feedback, and a sentiment rating.
@@ -43,7 +44,7 @@ class _CustomFeedbackFormState extends State<FeedbackForm> {
                   0,
                 ),
                 children: <Widget>[
-                  const Text('What kind of feedback do you want to give?'),
+                  Text(translate('feedback.kind_of_feedback')),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -70,13 +71,13 @@ class _CustomFeedbackFormState extends State<FeedbackForm> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  const Text('What is your feedback?'),
+                  Text(translate('feedback.what_is_feedback')),
                   TextField(
                     onChanged: (String newFeedback) => _customFeedback =
                         _customFeedback.copyWith(feedbackText: newFeedback),
                   ),
                   const SizedBox(height: 16),
-                  const Text('How does this make you feel?'),
+                  Text(translate('feedback.how_feel')),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: FeedbackRating.values.map(_ratingToIcon).toList(),
@@ -94,7 +95,7 @@ class _CustomFeedbackFormState extends State<FeedbackForm> {
                   extras: _customFeedback.toMap(),
                 )
               : null,
-          child: const Text('submit'),
+          child: Text(translate('feedback.submit')),
         ),
         const SizedBox(height: 8),
       ],

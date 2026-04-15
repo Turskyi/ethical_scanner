@@ -11,6 +11,8 @@ abstract interface class AppDependencies {
   UseCase<Future<bool>, String> get saveLanguageUseCase;
   UseCase<Future<ProductInfo>, LocalizedCode> get productInfoUseCase;
   UseCase<Future<void>, ProductPhoto> get addIngredientsUseCase;
+  UseCase<Future<String>, ProductPhoto> get extractIngredientsUseCase;
+  UseCase<Future<void>, SaveIngredientsParams> get saveIngredientsUseCase;
   GetSoundPreferenceUseCase get getSoundPreferenceUseCase;
   SaveSoundPreferenceUseCase get saveSoundPreferenceUseCase;
 }

@@ -5,6 +5,7 @@
   "could_not_launch": "Could not launch",
   "yes": "Yes",
   "no": "No",
+  "save": "Save",
   "probably_yes": "Probably yes.",
   "feedback_type": "Feedback Type",
   "rating": "Rating",
@@ -26,7 +27,7 @@
   "product_info": {
     "click_to_know": " (Click to know more)",
     "ingredients_missing": "Vegan/Vegetarian Information Unavailable: Ingredients Missing",
-    "ingredients_image_added": "Vegan/Vegetarian Information Unavailable: Sorry, we are working on it",
+    "ingredients_image_added": "Ingredients image exists. Tap the icon to extract text.",
     "code_colon": "Code: ",
     "product_name_colon": "Product name: ",
     "origin_country_colon": "Country of origin: ",
@@ -39,6 +40,7 @@
     "is_vegan": "Is vegan? ",
     "is_vegetarian": "Is vegetarian? ",
     "packaging_colon": "Packaging: ",
+    "ingredients": "Ingredients",
     "ingredients_colon": "Ingredients: ",
     "website_colon": "Website: ",
     "country_ai_colon": "AI-Generated Information: ",
@@ -75,9 +77,19 @@
     "no_camera_found": "No camera found or failed to open camera!",
     "could_not_launch": "Could not launch"
   },
+  "feedback": {
+    "kind_of_feedback": "What kind of feedback do you want to give?",
+    "what_is_feedback": "What is your feedback?",
+    "how_feel": "How does this make you feel?",
+    "submit": "Submit",
+    "feedback_sent": "Your feedback has been sent successfully!"
+  },
   "photo": {
     "capture_ingredients": "Make a photo of the ingredients.",
-    "image_upload_successful": "Image upload successful!"
+    "extract_ingredients": "Extract ingredients text",
+    "image_upload_successful": "Image upload successful!",
+    "ingredients_saved": "Ingredients saved successfully!",
+    "camera_not_supported": "Camera access is not supported on this device.\n\nThis feature is available on Web, Android, and iOS platforms.\n\nPlease try scanning the product using another device,\nor visit:\n"
   },
   "privacy_policy": {
     "main_title": "Privacy Policy for \"Ethical Scanner\" App",

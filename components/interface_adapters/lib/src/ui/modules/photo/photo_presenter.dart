@@ -13,8 +13,8 @@ class PhotoPresenter extends Bloc<PhotoEvent, PhotoViewModel> {
   PhotoPresenter(
     this._addIngredientsUseCase,
     this._saveLanguageUseCase,
-    Language initialLanguage,
-  ) : super(PhotoMakerReadyState(language: initialLanguage)) {
+    UseCase<Language, Object?> _getLanguageUseCase,
+  ) : super(PhotoMakerReadyState(language: _getLanguageUseCase.call())) {
     on<PhotoViewBackEvent>(_onPhotoViewBack);
 
     on<TakePhotoEvent>(_onTakePhoto);
@@ -64,7 +64,13 @@ class PhotoPresenter extends Bloc<PhotoEvent, PhotoViewModel> {
       emit(AddingIngredientsState(language: state.language));
 
       await _addIngredientsUseCase(event.productPhoto);
-      emit(IngredientsAddedSuccessState(language: state.language));
+      emit(
+        IngredientsAddedSuccessState(
+          language: state.language,
+          productInfo: event.productPhoto.info,
+          imagePath: event.productPhoto.path,
+        ),
+      );
     } on BackupUserForbiddenException catch (error, stacktrace) {
       emit(
         AddIngredientsErrorState(

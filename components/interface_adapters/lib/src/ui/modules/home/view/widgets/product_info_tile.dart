@@ -89,6 +89,10 @@ class ProductInfoTile extends StatelessWidget {
             ? () => context.read<HomePresenter>().add(
                 const SnapIngredientsEvent(),
               )
+            : isIngredientsImageAdded
+            ? () => context.read<HomePresenter>().add(
+                const EditIngredientsEvent(),
+              )
             : isRedFlag
             ? () => _onStateSponsorsTerrorismTap(context, resources)
             : null,
@@ -119,10 +123,7 @@ class ProductInfoTile extends StatelessWidget {
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        final Uri link = Uri.parse(
-                          resources.strings.russiaSponsorsSource1,
-                        );
-                        launchUrl(link);
+                        _onWarSponsorsPrimarySourceTap(resources);
                       },
                   ),
                   TextSpan(
@@ -142,10 +143,7 @@ class ProductInfoTile extends StatelessWidget {
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        final Uri link = Uri.parse(
-                          resources.strings.russiaSponsorsSource2,
-                        );
-                        launchUrl(link);
+                        _onWarSponsorsSecondarySourceTap(resources);
                       },
                   ),
                   TextSpan(
@@ -202,8 +200,24 @@ class ProductInfoTile extends StatelessWidget {
     );
   }
 
+  /// Launches the primary source URL for war sponsors.
+  ///
+  /// Returns `true` if the URL was successfully launched, `false` otherwise.
+  Future<bool> _onWarSponsorsPrimarySourceTap(Resources resources) {
+    final Uri link = Uri.parse(resources.strings.russiaSponsorsSource1);
+    return launchUrl(link);
+  }
+
+  /// Launches the secondary source URL for war sponsors.
+  ///
+  /// Returns `true` if the URL was successfully launched, `false` otherwise.
+  Future<bool> _onWarSponsorsSecondarySourceTap(Resources resources) {
+    final Uri link = Uri.parse(resources.strings.russiaSponsorsSource2);
+    return launchUrl(link);
+  }
+
   void _onStateSponsorsTerrorismTap(BuildContext context, Resources resources) {
-    context.read<HomePresenter>().add(
+    return context.read<HomePresenter>().add(
       LaunchUrlEvent(
         uri: resources.strings.stateSponsorsTerrorismSource,
         language: Language.fromIsoLanguageCode(
@@ -224,7 +238,7 @@ class ProductInfoTile extends StatelessWidget {
   }
 
   void _onLinkTap(BuildContext context, Resources resources) {
-    context.read<HomePresenter>().add(
+    return context.read<HomePresenter>().add(
       LaunchUrlEvent(
         uri: type.isTerrorismSponsor
             ? resources.strings.russiaTerrorismSponsorSource
@@ -260,7 +274,7 @@ class ProductInfoTile extends StatelessWidget {
       } else if (canSnapIngredients) {
         return Icons.camera_alt_outlined;
       } else if (isIngredientsImageAdded) {
-        return Icons.construction;
+        return Icons.psychology;
       } else {
         return Icons.star;
       }

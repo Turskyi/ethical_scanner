@@ -39,6 +39,8 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
     on<SnapIngredientsEvent>(_startPhotoMaker);
 
+    on<EditIngredientsEvent>(_startIngredientsEditor);
+
     on<ChangeLanguageEvent>(_changeLanguage);
 
     on<BugReportPressedEvent>(_onFeedbackRequested);
@@ -91,6 +93,22 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
       final ProductInfoState productInfoState = state as ProductInfoState;
       emit(
         PhotoMakerState(
+          productInfo: productInfoState.productInfo,
+          language: state.language,
+          isSeasonalEffectEnabled: state.isSeasonalEffectEnabled,
+        ),
+      );
+    }
+  }
+
+  FutureOr<void> _startIngredientsEditor(
+    EditIngredientsEvent _,
+    Emitter<HomeViewModel> emit,
+  ) {
+    if (state is ProductInfoState) {
+      final ProductInfoState productInfoState = state as ProductInfoState;
+      emit(
+        IngredientsEditorState(
           productInfo: productInfoState.productInfo,
           language: state.language,
           isSeasonalEffectEnabled: state.isSeasonalEffectEnabled,

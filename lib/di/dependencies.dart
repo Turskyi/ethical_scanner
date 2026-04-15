@@ -55,6 +55,16 @@ class Dependencies implements AppDependencies {
   }
 
   @override
+  UseCase<Future<String>, ProductPhoto> get extractIngredientsUseCase {
+    return ExtractIngredientsUseCase(_productInfoGateway);
+  }
+
+  @override
+  UseCase<Future<void>, SaveIngredientsParams> get saveIngredientsUseCase {
+    return SaveIngredientsUseCase(_productInfoGateway);
+  }
+
+  @override
   GetSoundPreferenceUseCase get getSoundPreferenceUseCase {
     return GetSoundPreferenceUseCase(_settingsGateway);
   }

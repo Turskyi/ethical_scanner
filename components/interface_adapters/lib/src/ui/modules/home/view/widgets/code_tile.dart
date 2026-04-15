@@ -133,9 +133,9 @@ class _CodeTileState extends State<CodeTile> {
     BetterFeedback.of(context).hide();
     // Let user know that his feedback is sent.
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Your feedback has been sent successfully!'),
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Text(translate('feedback.feedback_sent')),
+        duration: const Duration(seconds: 2),
       ),
     );
   }

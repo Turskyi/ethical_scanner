@@ -256,6 +256,119 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     );
   }
 
+  @override
+  Future<String> extractIngredients(ProductPhoto productPhoto) async {
+    final User user =
+        OpenFoodAPIConfiguration.globalUser ??
+        const User(
+          userId: Env.openFoodUserId,
+          password: Env.openFoodPassword,
+          comment: constants.openFoodUserComment,
+        );
+
+    final OpenFoodFactsLanguage language =
+        productPhoto.info.language.isUkrainian
+        ? OpenFoodFactsLanguage.UKRAINIAN
+        : OpenFoodFactsLanguage.ENGLISH;
+
+    // Ensure the image is available on the server before attempting OCR.
+    // If a new photo was taken locally, it must be uploaded first.
+    if (productPhoto.path.isNotEmpty) {
+      debugPrint('Uploading new image before OCR: ${productPhoto.path}');
+      await addIngredients(productPhoto);
+      // Give the server a moment to process the image.
+      await Future<void>.delayed(const Duration(seconds: 2));
+    } else if (productPhoto.info.imageIngredientsUrl.isEmpty) {
+      throw Exception(
+        'No ingredients image available to extract text from. '
+        'Please take a photo first.',
+      );
+    }
+
+    debugPrint(
+      'OCR Request: Barcode=${productPhoto.info.barcode}, Language=$language',
+    );
+    OcrIngredientsResult ocrResponse =
+        await OpenFoodAPIClient.extractIngredients(
+          user,
+          productPhoto.info.barcode,
+          language,
+        );
+
+    debugPrint('OCR Response: Status=${ocrResponse.status}');
+
+    // Status 1 often means the image for the requested language was not found.
+    // This happens when the product has an ingredients image in a different
+    // language than the one requested (e.g., product is Ukrainian but the
+    // app is in English).
+    if (ocrResponse.status == 1) {
+      final OpenFoodFactsLanguage fallbackLanguage =
+          language == OpenFoodFactsLanguage.UKRAINIAN
+          ? OpenFoodFactsLanguage.ENGLISH
+          : OpenFoodFactsLanguage.UKRAINIAN;
+
+      debugPrint(
+        'OCR failed with status 1 for $language. '
+        'Trying fallback language: $fallbackLanguage',
+      );
+
+      ocrResponse = await OpenFoodAPIClient.extractIngredients(
+        user,
+        productPhoto.info.barcode,
+        fallbackLanguage,
+      );
+      debugPrint('Fallback OCR Response: Status=${ocrResponse.status}');
+    }
+
+    debugPrint('OCR Response Text: ${ocrResponse.ingredientsTextFromImage}');
+
+    if (ocrResponse.status != 0 && ocrResponse.status != 200) {
+      debugPrint(
+        'OCR extraction failed (status: ${ocrResponse.status}). '
+        'Proceeding to editor with empty text to allow manual entry.',
+      );
+      return '';
+    }
+
+    return ocrResponse.ingredientsTextFromImage ?? '';
+  }
+
+  @override
+  Future<void> saveIngredients({
+    required String barcode,
+    required String ingredientsText,
+    required Language language,
+  }) async {
+    final User user =
+        OpenFoodAPIConfiguration.globalUser ??
+        const User(
+          userId: Env.openFoodUserId,
+          password: Env.openFoodPassword,
+          comment: constants.openFoodUserComment,
+        );
+
+    final OpenFoodFactsLanguage offLanguage = language.isUkrainian
+        ? OpenFoodFactsLanguage.UKRAINIAN
+        : OpenFoodFactsLanguage.ENGLISH;
+
+    final Product editedProduct = Product(
+      barcode: barcode,
+      ingredientsText: ingredientsText,
+      ingredientsTextInLanguages: <OpenFoodFactsLanguage, String>{
+        offLanguage: ingredientsText,
+      },
+    );
+
+    final Status result = await OpenFoodAPIClient.saveProduct(
+      user,
+      editedProduct,
+    );
+
+    if (result.status != 1) {
+      throw Exception('Could not save ingredients: ${result.error}');
+    }
+  }
+
   Future<void> _uploadProductImageToOpenFoodFacts({
     required SendImage image,
     required User openFoodUser,
@@ -319,12 +432,20 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           attemptedUserId: openFoodUser.userId,
         );
       } else if (status.status != 'status ok') {
+        // If the image was already sent, we can consider it a success for our
+        // purposes (OCR can still be attempted).
+        if (status.error?.toLowerCase().contains('already been sent') == true) {
+          debugPrint(
+            'Image already exists on server (status: ${status.status}, '
+            'error: ${status.error}). Proceeding to OCR...',
+          );
+          return;
+        }
+
         // This is a catch-all for unexpected non-OK statuses.
         final String errorMessage =
-            'Image upload failed with an unexpected status: ${status.status}\n.'
-            'Error: ${status.error ?? 'No specific error message from API.'} '
-            '${status.imageId != null ? 'Image ID (if available): '
-                      '${status.imageId}' : ''}';
+            'Image upload failed: ${status.error ?? 'Unknown error'}. '
+            'Please try again.';
 
         final String debugMessage =
             """
@@ -530,9 +651,11 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           password: Env.openFoodPassword,
           comment: constants.openFoodUserComment,
         );
-    final OpenFoodFactsLanguage language = photo.info.language.isEnglish
-        ? OpenFoodFactsLanguage.ENGLISH
-        : OpenFoodFactsLanguage.UKRAINIAN;
+
+    final OpenFoodFactsLanguage language = photo.info.language.isUkrainian
+        ? OpenFoodFactsLanguage.UKRAINIAN
+        : OpenFoodFactsLanguage.ENGLISH;
+
     final SendImage image = SendImage(
       barcode: photo.info.barcode,
       imageUri: Uri.parse(photo.path),

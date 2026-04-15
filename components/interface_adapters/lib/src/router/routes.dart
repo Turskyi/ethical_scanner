@@ -5,3 +5,4 @@ const String kSettingsPath = '${kHomePath}settings';
 const String kPrivacyPath = '${kHomePath}privacy';
 const String kSupportPath = '${kHomePath}support';
 const String kPdfViewerPath = '${kHomePath}pdf';
+const String kIngredientsEditorPath = '${kHomePath}ingredients_editor';

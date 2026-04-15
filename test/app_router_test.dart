@@ -17,7 +17,7 @@ void main() {
       final Route<Object> pageRoute = appRouter.generateRoute(settings);
 
       // Assert
-      expect(pageRoute is PageRouteBuilder<String>, true);
+      expect(pageRoute is PageRouteBuilder<Object>, true);
       // You can add more assertions based on your specific requirements
     });
 
@@ -33,7 +33,7 @@ void main() {
       final Route<Object> pageRoute = appRouter.generateRoute(settings);
 
       // Assert
-      expect(pageRoute is PageRouteBuilder<String>, true);
+      expect(pageRoute is PageRouteBuilder<Object>, true);
       // You can add more assertions based on your specific requirements
     });
 

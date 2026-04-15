@@ -23,7 +23,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions, while build-number is used as the build
 # suffix.
-version: 0.2.5+25
+version: 0.2.6+26
 
 environment:
   sdk: '>=3.9.2 <4.0.0'
@@ -65,7 +65,7 @@ dependencies:
 
   # Built to be used with the `bloc` state management package.
   flutter_bloc: ^9.1.1
-  flutter_pdfview: ^1.3.2
+  flutter_pdfview: ^1.4.4
 
   # Localization / internationalization (i18n) library.
   flutter_translate:
@@ -82,12 +82,12 @@ dependencies:
 
   openfoodfacts: ^3.30.2
 
-  package_info_plus: ^9.0.1
+  package_info_plus: ^10.0.0
   path: ^1.9.1
   path_provider: ^2.1.5
   retrofit: ^4.9.2
-  retrofit_generator: ^10.2.3
-  share_plus: ^10.1.4
+  retrofit_generator: ^10.2.5
+  share_plus: ^13.0.0
   shared_preferences: ^2.5.5
   use_cases:
     path: ./components/domain/use_cases
@@ -95,7 +95,7 @@ dependencies:
 
 dev_dependencies:
   # A build system for Dart code generation and modular compilation.
-  bloc_lint: ^0.4.0
+  bloc_lint: ^0.4.1
   build_runner: ^2.13.1
 
   # Generator for the Envied package. See https://pub.dev/packages/envied.
