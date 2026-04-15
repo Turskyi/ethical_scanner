@@ -88,6 +88,7 @@
     "capture_ingredients": "Make a photo of the ingredients.",
     "extract_ingredients": "Extract ingredients text",
     "image_upload_successful": "Image upload successful!",
+    "ingredients_saved": "Ingredients saved successfully!",
     "camera_not_supported": "Camera access is not supported on this device.\n\nThis feature is available on Web, Android, and iOS platforms.\n\nPlease try scanning the product using another device,\nor visit:\n"
   },
   "privacy_policy": {

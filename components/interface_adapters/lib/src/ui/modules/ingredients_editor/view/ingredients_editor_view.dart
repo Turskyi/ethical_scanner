@@ -34,7 +34,7 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
   void initState() {
     super.initState();
     // Trigger OCR automatically.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((Duration _) {
       if (mounted) {
         context.read<IngredientsEditorPresenter>().add(
           ExtractIngredientsEvent(
@@ -87,17 +87,19 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
         body: BlocConsumer<IngredientsEditorPresenter, IngredientsEditorViewModel>(
           listener: (BuildContext context, IngredientsEditorViewModel state) {
             if (state is IngredientsEditorExtractedState) {
-              if (_ingredientsController.text != state.ingredientsText) {
-                _ingredientsController.text = state.ingredientsText;
+              final IngredientsEditorExtractedState extractedState = state;
+              if (_ingredientsController.text !=
+                  extractedState.ingredientsText) {
+                _ingredientsController.text = extractedState.ingredientsText;
                 // Move cursor to the end when text is updated from the state.
                 _ingredientsController.selection = TextSelection.fromPosition(
                   TextPosition(offset: _ingredientsController.text.length),
                 );
               }
             } else if (state is IngredientsEditorSuccessState) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(translate('save'))));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(translate('photo.ingredients_saved'))),
+              );
               Navigator.of(context).pop();
             }
           },
@@ -109,24 +111,25 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
             }
 
             if (state is IngredientsEditorErrorState) {
+              final IngredientsEditorErrorState errorState = state;
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 16,
                     children: <Widget>[
                       const Icon(
                         Icons.error_outline,
                         color: Colors.red,
                         size: 60,
                       ),
-                      const SizedBox(height: 16),
                       Text(
-                        state.errorMessage,
+                        errorState.errorMessage,
                         textAlign: TextAlign.center,
                         style: const TextStyle(color: Colors.white),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 8),
                       ElevatedButton(
                         onPressed: () {
                           context.read<IngredientsEditorPresenter>().add(
@@ -147,10 +150,12 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
             }
 
             if (state is IngredientsEditorExtractedState) {
+              final IngredientsEditorExtractedState extractedState = state;
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
+                  spacing: 24,
                   children: <Widget>[
                     // Image Preview
                     Container(
@@ -160,9 +165,8 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
                         border: Border.all(color: Colors.white24),
                       ),
                       clipBehavior: Clip.antiAlias,
-                      child: _buildImagePreview(state),
+                      child: _IngredientsImagePreview(state: extractedState),
                     ),
-                    const SizedBox(height: 24),
                     // Text Editor
                     TextField(
                       controller: _ingredientsController,
@@ -187,7 +191,6 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
                         fillColor: Colors.black.withValues(alpha: 0.3),
                       ),
                     ),
-                    const SizedBox(height: 24),
                     ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -226,8 +229,15 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
     _ingredientsFocusNode.dispose();
     super.dispose();
   }
+}
 
-  Widget _buildImagePreview(IngredientsEditorExtractedState state) {
+class _IngredientsImagePreview extends StatelessWidget {
+  const _IngredientsImagePreview({required this.state});
+
+  final IngredientsEditorExtractedState state;
+
+  @override
+  Widget build(BuildContext context) {
     final Widget image;
     if (state.imagePath.isNotEmpty) {
       if (kIsWeb) {
