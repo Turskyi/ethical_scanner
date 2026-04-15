@@ -53,8 +53,6 @@ class _PhotoViewState extends State<PhotoView> {
   CameraController? _controller;
   Future<void>? _initializeControllerFuture;
 
-  final TextEditingController _ingredientsController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -289,39 +287,6 @@ class _PhotoViewState extends State<PhotoView> {
                             : const SizedBox(),
                       ),
                     ),
-                    if (viewModel is OcrExtractedState)
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        color: Colors.black.withValues(alpha: 0.8),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            TextField(
-                              controller: _ingredientsController
-                                ..text = viewModel.ingredientsText,
-                              maxLines: 10,
-                              style: const TextStyle(color: Colors.white),
-                              decoration: InputDecoration(
-                                labelText: translate(
-                                  'product_info.ingredients',
-                                ),
-                                labelStyle: const TextStyle(
-                                  color: Colors.white,
-                                ),
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            ElevatedButton.icon(
-                              onPressed: _saveIngredients,
-                              icon: const Icon(Icons.save),
-                              label: Text(translate('save')),
-                            ),
-                          ],
-                        ),
-                      ),
                     if (viewModel is LoadingState)
                       const CircularProgressIndicator(color: Colors.white),
                     if (viewModel is AddIngredientsErrorState)
@@ -388,47 +353,24 @@ class _PhotoViewState extends State<PhotoView> {
               FloatingActionButtonLocation.centerFloat,
           floatingActionButton: BlocBuilder<PhotoPresenter, PhotoViewModel>(
             builder: (BuildContext _, PhotoViewModel viewModel) {
-              final bool canExtract =
-                  viewModel is TakenPhotoState ||
-                  (viewModel is PhotoMakerReadyState &&
-                      widget.productInfo.imageIngredientsUrl.isNotEmpty);
-
               return viewModel is AddIngredientsErrorState
                   ? const SizedBox()
                   : Padding(
                       padding: const EdgeInsets.only(bottom: 20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          if (canExtract)
-                            Padding(
-                              padding: const EdgeInsets.only(right: 10.0),
-                              child: FloatingActionButton(
-                                heroTag: 'extract',
-                                onPressed: () {
-                                  _extractTextFromPhoto(viewModel);
-                                },
-                                child: const Icon(Icons.psychology),
-                              ),
-                            ),
-                          FloatingActionButton(
-                            onPressed: viewModel is LoadingState
-                                ? null
-                                : viewModel is TakenPhotoState
-                                ? () => _submitIngredientsPhoto(
-                                    viewModel.photoPath,
-                                  )
-                                : _takePhoto,
-                            child: viewModel is TakenPhotoState
-                                ? const Icon(Icons.send)
-                                : viewModel is PhotoMakerReadyState ||
-                                      viewModel is AddIngredientsErrorState
-                                ? const Icon(Icons.camera)
-                                : viewModel is LoadingState
-                                ? const Icon(Icons.stop)
-                                : const SizedBox(),
-                          ),
-                        ],
+                      child: FloatingActionButton(
+                        onPressed: viewModel is LoadingState
+                            ? null
+                            : viewModel is TakenPhotoState
+                            ? () => _submitIngredientsPhoto(viewModel.photoPath)
+                            : _takePhoto,
+                        child: viewModel is TakenPhotoState
+                            ? const Icon(Icons.send)
+                            : viewModel is PhotoMakerReadyState ||
+                                  viewModel is AddIngredientsErrorState
+                            ? const Icon(Icons.camera)
+                            : viewModel is LoadingState
+                            ? const Icon(Icons.stop)
+                            : const SizedBox(),
                       ),
                     );
             },
@@ -441,7 +383,6 @@ class _PhotoViewState extends State<PhotoView> {
   @override
   void dispose() {
     _controller?.dispose();
-    _ingredientsController.dispose();
     super.dispose();
   }
 
@@ -753,23 +694,5 @@ class _PhotoViewState extends State<PhotoView> {
     } catch (e) {
       debugPrint('Error taking picture: $e');
     }
-  }
-
-  void _saveIngredients() {
-    return context.read<PhotoPresenter>().add(
-      SaveIngredientsEvent(
-        barcode: widget.productInfo.barcode,
-        ingredientsText: _ingredientsController.text,
-      ),
-    );
-  }
-
-  void _extractTextFromPhoto(PhotoViewModel viewModel) {
-    final String path = viewModel is TakenPhotoState ? viewModel.photoPath : '';
-    return context.read<PhotoPresenter>().add(
-      ExtractIngredientsEvent(
-        ProductPhoto(path: path, info: widget.productInfo),
-      ),
-    );
   }
 }

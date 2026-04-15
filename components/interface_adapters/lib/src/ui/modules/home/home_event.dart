@@ -39,6 +39,10 @@ class SnapIngredientsEvent extends HomeEvent {
   const SnapIngredientsEvent();
 }
 
+class EditIngredientsEvent extends HomeEvent {
+  const EditIngredientsEvent();
+}
+
 class ChangeLanguageEvent extends HomeEvent {
   const ChangeLanguageEvent(this.language);
   final Language language;

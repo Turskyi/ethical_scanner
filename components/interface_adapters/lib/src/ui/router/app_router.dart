@@ -88,19 +88,11 @@ class AppRouter {
                   context,
                 );
                 return BlocProvider<PhotoPresenter>(
-                  create: (BuildContext context) {
-                    final Language initialLanguage =
-                        Language.fromIsoLanguageCode(
-                          LocalizedApp.of(
-                            context,
-                          ).delegate.currentLocale.languageCode,
-                        );
+                  create: (BuildContext _) {
                     return PhotoPresenter(
                       dependencies.addIngredientsUseCase,
                       dependencies.saveLanguageUseCase,
-                      dependencies.extractIngredientsUseCase,
-                      dependencies.saveIngredientsUseCase,
-                      initialLanguage,
+                      dependencies.getLanguageUseCase,
                     );
                   },
                   child: BlocListener<PhotoPresenter, PhotoViewModel>(
@@ -134,6 +126,55 @@ class AppRouter {
                     child: HomeView(),
                   ),
                 );
+              }
+            },
+        transitionsBuilder:
+            (
+              _,
+              Animation<double> animation,
+              Animation<double> _,
+              Widget child,
+            ) {
+              return FadeTransition(
+                opacity: CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeInOut,
+                ),
+                child: child,
+              );
+            },
+      ),
+      kIngredientsEditorPath => PageRouteBuilder<Object>(
+        settings: settings,
+        pageBuilder:
+            (
+              BuildContext context,
+              Animation<double> animation,
+              Animation<double> _,
+            ) {
+              final Object? args = settings.arguments;
+              if (args is ProductPhoto) {
+                final AppDependencies dependencies = DependenciesScope.of(
+                  context,
+                );
+                return BlocProvider<IngredientsEditorPresenter>(
+                  create: (BuildContext _) {
+                    return IngredientsEditorPresenter(
+                      dependencies.saveLanguageUseCase,
+                      dependencies.extractIngredientsUseCase,
+                      dependencies.saveIngredientsUseCase,
+                      dependencies.getLanguageUseCase,
+                    );
+                  },
+                  child: IngredientsEditorView(
+                    productInfo: args.info,
+                    imagePath: args.path,
+                  ),
+                );
+              } else {
+                return _getHomePageRouteBuilder(
+                  settings,
+                ).buildPage(context, animation, animation);
               }
             },
         transitionsBuilder:
@@ -250,7 +291,13 @@ void _photoViewModelListener(BuildContext context, PhotoViewModel viewModel) {
         duration: Duration(seconds: DurationSeconds.long.time),
       ),
     );
-    Navigator.of(context).pop(viewModel.language);
+    Navigator.of(context).pushReplacementNamed(
+      kIngredientsEditorPath,
+      arguments: ProductPhoto(
+        path: viewModel.imagePath,
+        info: viewModel.productInfo,
+      ),
+    );
   } else if (viewModel is CanceledPhotoState) {
     Navigator.of(context).pop(viewModel.language);
   }
@@ -368,6 +415,15 @@ void _homeViewModelListener(BuildContext context, HomeViewModel viewModel) {
         }
       });
     }
+  } else if (viewModel is IngredientsEditorState) {
+    Navigator.pushNamed(
+      context,
+      kIngredientsEditorPath,
+      arguments: ProductPhoto(
+        path: viewModel.imagePath,
+        info: viewModel.productInfo,
+      ),
+    );
   }
 }
 

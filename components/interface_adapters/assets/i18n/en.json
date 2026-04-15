@@ -27,7 +27,7 @@
   "product_info": {
     "click_to_know": " (Click to know more)",
     "ingredients_missing": "Vegan/Vegetarian Information Unavailable: Ingredients Missing",
-    "ingredients_image_added": "Vegan/Vegetarian Information Unavailable: Sorry, we are working on it",
+    "ingredients_image_added": "Ingredients image exists. Tap the icon to extract text.",
     "code_colon": "Code: ",
     "product_name_colon": "Product name: ",
     "origin_country_colon": "Country of origin: ",
@@ -86,6 +86,7 @@
   },
   "photo": {
     "capture_ingredients": "Make a photo of the ingredients.",
+    "extract_ingredients": "Extract ingredients text",
     "image_upload_successful": "Image upload successful!",
     "camera_not_supported": "Camera access is not supported on this device.\n\nThis feature is available on Web, Android, and iOS platforms.\n\nPlease try scanning the product using another device,\nor visit:\n"
   },

@@ -13,10 +13,8 @@ class PhotoPresenter extends Bloc<PhotoEvent, PhotoViewModel> {
   PhotoPresenter(
     this._addIngredientsUseCase,
     this._saveLanguageUseCase,
-    this._extractIngredientsUseCase,
-    this._saveIngredientsUseCase,
-    Language initialLanguage,
-  ) : super(PhotoMakerReadyState(language: initialLanguage)) {
+    UseCase<Language, Object?> _getLanguageUseCase,
+  ) : super(PhotoMakerReadyState(language: _getLanguageUseCase.call())) {
     on<PhotoViewBackEvent>(_onPhotoViewBack);
 
     on<TakePhotoEvent>(_onTakePhoto);
@@ -27,17 +25,11 @@ class PhotoPresenter extends Bloc<PhotoEvent, PhotoViewModel> {
 
     on<AddIngredientsPhotoEvent>(_onAddIngredientsPhoto);
 
-    on<ExtractIngredientsEvent>(_onExtractIngredients);
-
-    on<SaveIngredientsEvent>(_onSaveIngredients);
-
     on<ChangeLanguageEvent>(_changeLanguage);
   }
 
   final UseCase<Future<void>, ProductPhoto> _addIngredientsUseCase;
   final UseCase<Future<bool>, String> _saveLanguageUseCase;
-  final UseCase<Future<String>, ProductPhoto> _extractIngredientsUseCase;
-  final UseCase<Future<void>, SaveIngredientsParams> _saveIngredientsUseCase;
 
   FutureOr<void> _onPhotoViewBack(
     PhotoViewBackEvent _,
@@ -72,7 +64,13 @@ class PhotoPresenter extends Bloc<PhotoEvent, PhotoViewModel> {
       emit(AddingIngredientsState(language: state.language));
 
       await _addIngredientsUseCase(event.productPhoto);
-      emit(IngredientsAddedSuccessState(language: state.language));
+      emit(
+        IngredientsAddedSuccessState(
+          language: state.language,
+          productInfo: event.productPhoto.info,
+          imagePath: event.productPhoto.path,
+        ),
+      );
     } on BackupUserForbiddenException catch (error, stacktrace) {
       emit(
         AddIngredientsErrorState(
@@ -130,64 +128,6 @@ class PhotoPresenter extends Bloc<PhotoEvent, PhotoViewModel> {
         'Error: $error\n'
         'Stacktrace:\n$stacktrace',
       );
-    }
-  }
-
-  FutureOr<void> _onExtractIngredients(
-    ExtractIngredientsEvent event,
-    Emitter<PhotoViewModel> emit,
-  ) async {
-    try {
-      emit(AddingIngredientsState(language: state.language));
-
-      final String ingredientsText = await _extractIngredientsUseCase(
-        event.productPhoto,
-      );
-
-      emit(
-        OcrExtractedState(
-          language: state.language,
-          photoPath: event.productPhoto.path,
-          ingredientsText: ingredientsText,
-        ),
-      );
-    } catch (error, stacktrace) {
-      emit(
-        AddIngredientsErrorState(
-          language: state.language,
-          barcode: event.productPhoto.info.barcode,
-          errorMessage: error.toString(),
-        ),
-      );
-      debugPrint('Error in _onExtractIngredients: $error\n$stacktrace');
-    }
-  }
-
-  FutureOr<void> _onSaveIngredients(
-    SaveIngredientsEvent event,
-    Emitter<PhotoViewModel> emit,
-  ) async {
-    try {
-      emit(AddingIngredientsState(language: state.language));
-
-      await _saveIngredientsUseCase(
-        SaveIngredientsParams(
-          barcode: event.barcode,
-          ingredientsText: event.ingredientsText,
-          language: state.language,
-        ),
-      );
-
-      emit(IngredientsAddedSuccessState(language: state.language));
-    } catch (error, stacktrace) {
-      emit(
-        AddIngredientsErrorState(
-          language: state.language,
-          barcode: event.barcode,
-          errorMessage: error.toString(),
-        ),
-      );
-      debugPrint('Error in _onSaveIngredients: $error\n$stacktrace');
     }
   }
 

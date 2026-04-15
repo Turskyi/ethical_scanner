@@ -167,6 +167,27 @@ class PhotoMakerState extends ProductInfoState {
   }
 }
 
+class IngredientsEditorState extends ProductInfoState {
+  const IngredientsEditorState({
+    required super.productInfo,
+    required super.language,
+    super.isSeasonalEffectEnabled,
+    this.imagePath = '',
+  });
+
+  final String imagePath;
+
+  @override
+  String toString() {
+    return 'IngredientsEditorState('
+        'productInfo: $productInfo, '
+        'language: $language, '
+        'isSeasonalEffectEnabled: $isSeasonalEffectEnabled,'
+        'imagePath: $imagePath,'
+        ')';
+  }
+}
+
 final class FeedbackState extends LoadedProductInfoState {
   const FeedbackState({
     required super.language,

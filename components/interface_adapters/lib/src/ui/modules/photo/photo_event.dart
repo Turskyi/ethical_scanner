@@ -10,22 +10,6 @@ class AddIngredientsPhotoEvent extends PhotoEvent {
   final ProductPhoto productPhoto;
 }
 
-class ExtractIngredientsEvent extends PhotoEvent {
-  const ExtractIngredientsEvent(this.productPhoto);
-
-  final ProductPhoto productPhoto;
-}
-
-class SaveIngredientsEvent extends PhotoEvent {
-  const SaveIngredientsEvent({
-    required this.barcode,
-    required this.ingredientsText,
-  });
-
-  final String barcode;
-  final String ingredientsText;
-}
-
 class PhotoViewBackEvent extends PhotoEvent {
   const PhotoViewBackEvent();
 }

@@ -85,9 +85,13 @@ class ProductInfoTile extends StatelessWidget {
               ? Colors.green
               : null,
         ),
-        onPressed: canSnapIngredients || isIngredientsImageAdded
+        onPressed: canSnapIngredients
             ? () => context.read<HomePresenter>().add(
                 const SnapIngredientsEvent(),
+              )
+            : isIngredientsImageAdded
+            ? () => context.read<HomePresenter>().add(
+                const EditIngredientsEvent(),
               )
             : isRedFlag
             ? () => _onStateSponsorsTerrorismTap(context, resources)
@@ -270,7 +274,7 @@ class ProductInfoTile extends StatelessWidget {
       } else if (canSnapIngredients) {
         return Icons.camera_alt_outlined;
       } else if (isIngredientsImageAdded) {
-        return Icons.construction;
+        return Icons.psychology;
       } else {
         return Icons.star;
       }

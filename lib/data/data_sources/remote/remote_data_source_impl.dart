@@ -274,18 +274,56 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     // Ensure the image is available on the server before attempting OCR.
     // If a new photo was taken locally, it must be uploaded first.
     if (productPhoto.path.isNotEmpty) {
+      debugPrint('Uploading new image before OCR: ${productPhoto.path}');
       await addIngredients(productPhoto);
+      // Give the server a moment to process the image.
+      await Future<void>.delayed(const Duration(seconds: 2));
+    } else if (productPhoto.info.imageIngredientsUrl.isEmpty) {
+      throw Exception(
+        'No ingredients image available to extract text from. '
+        'Please take a photo first.',
+      );
     }
 
-    final OcrIngredientsResult ocrResponse =
+    debugPrint(
+      'OCR Request: Barcode=${productPhoto.info.barcode}, Language=$language',
+    );
+    OcrIngredientsResult ocrResponse =
         await OpenFoodAPIClient.extractIngredients(
           user,
           productPhoto.info.barcode,
           language,
         );
 
-    if (ocrResponse.status != 0) {
-      throw Exception("Text can't be extracted.");
+    debugPrint('OCR Response: Status=${ocrResponse.status}');
+
+    // Status 1 often means the image for the requested language was not found.
+    // This happens when the product has an ingredients image in a different
+    // language than the one requested (e.g., product is Ukrainian but the
+    // app is in English).
+    if (ocrResponse.status == 1) {
+      final OpenFoodFactsLanguage fallbackLanguage =
+          language == OpenFoodFactsLanguage.UKRAINIAN
+          ? OpenFoodFactsLanguage.ENGLISH
+          : OpenFoodFactsLanguage.UKRAINIAN;
+
+      debugPrint(
+        'OCR failed with status 1 for $language. '
+        'Trying fallback language: $fallbackLanguage',
+      );
+
+      ocrResponse = await OpenFoodAPIClient.extractIngredients(
+        user,
+        productPhoto.info.barcode,
+        fallbackLanguage,
+      );
+      debugPrint('Fallback OCR Response: Status=${ocrResponse.status}');
+    }
+
+    debugPrint('OCR Response Text: ${ocrResponse.ingredientsTextFromImage}');
+
+    if (ocrResponse.status != 0 && ocrResponse.status != 200) {
+      throw Exception("Text can't be extracted. Status: ${ocrResponse.status}");
     }
 
     return ocrResponse.ingredientsTextFromImage ?? '';
