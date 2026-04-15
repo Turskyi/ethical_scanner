@@ -323,7 +323,11 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     debugPrint('OCR Response Text: ${ocrResponse.ingredientsTextFromImage}');
 
     if (ocrResponse.status != 0 && ocrResponse.status != 200) {
-      throw Exception("Text can't be extracted. Status: ${ocrResponse.status}");
+      debugPrint(
+        'OCR extraction failed (status: ${ocrResponse.status}). '
+        'Proceeding to editor with empty text to allow manual entry.',
+      );
+      return '';
     }
 
     return ocrResponse.ingredientsTextFromImage ?? '';
@@ -428,12 +432,20 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           attemptedUserId: openFoodUser.userId,
         );
       } else if (status.status != 'status ok') {
+        // If the image was already sent, we can consider it a success for our
+        // purposes (OCR can still be attempted).
+        if (status.error?.toLowerCase().contains('already been sent') == true) {
+          debugPrint(
+            'Image already exists on server (status: ${status.status}, '
+            'error: ${status.error}). Proceeding to OCR...',
+          );
+          return;
+        }
+
         // This is a catch-all for unexpected non-OK statuses.
         final String errorMessage =
-            'Image upload failed with an unexpected status: ${status.status}\n.'
-            'Error: ${status.error ?? 'No specific error message from API.'} '
-            '${status.imageId != null ? 'Image ID (if available): '
-                      '${status.imageId}' : ''}';
+            'Image upload failed: ${status.error ?? 'Unknown error'}. '
+            'Please try again.';
 
         final String debugMessage =
             """
