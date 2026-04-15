@@ -266,9 +266,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           comment: constants.openFoodUserComment,
         );
 
-    final OpenFoodFactsLanguage language = productPhoto.info.language.isEnglish
-        ? OpenFoodFactsLanguage.ENGLISH
-        : OpenFoodFactsLanguage.UKRAINIAN;
+    final OpenFoodFactsLanguage language =
+        productPhoto.info.language.isUkrainian
+        ? OpenFoodFactsLanguage.UKRAINIAN
+        : OpenFoodFactsLanguage.ENGLISH;
 
     // Ensure the image is available on the server before attempting OCR.
     // If a new photo was taken locally, it must be uploaded first.
@@ -304,9 +305,9 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           comment: constants.openFoodUserComment,
         );
 
-    final OpenFoodFactsLanguage offLanguage = language.isEnglish
-        ? OpenFoodFactsLanguage.ENGLISH
-        : OpenFoodFactsLanguage.UKRAINIAN;
+    final OpenFoodFactsLanguage offLanguage = language.isUkrainian
+        ? OpenFoodFactsLanguage.UKRAINIAN
+        : OpenFoodFactsLanguage.ENGLISH;
 
     final Product editedProduct = Product(
       barcode: barcode,
@@ -600,9 +601,11 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           password: Env.openFoodPassword,
           comment: constants.openFoodUserComment,
         );
-    final OpenFoodFactsLanguage language = photo.info.language.isEnglish
-        ? OpenFoodFactsLanguage.ENGLISH
-        : OpenFoodFactsLanguage.UKRAINIAN;
+
+    final OpenFoodFactsLanguage language = photo.info.language.isUkrainian
+        ? OpenFoodFactsLanguage.UKRAINIAN
+        : OpenFoodFactsLanguage.ENGLISH;
+
     final SendImage image = SendImage(
       barcode: photo.info.barcode,
       imageUri: Uri.parse(photo.path),
