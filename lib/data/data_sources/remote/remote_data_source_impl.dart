@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
-import 'package:dart_openai/dart_openai.dart';
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/data/data_mappers/language_data_mapper.dart';
 import 'package:ethical_scanner/data/data_mappers/product_data_mapper.dart';
@@ -76,49 +75,15 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<String> getInfoFromAiAsFuture(String barcode) {
-    return OpenAI.instance.chat
-        .create(
-          model: 'gpt-3.5-turbo',
-          seed: 6,
-          temperature: 0.2,
-          maxTokens: 500,
-          stop: <String>['\n'],
-          messages: <OpenAIChatCompletionChoiceMessageModel>[
-            OpenAIChatCompletionChoiceMessageModel(
-              content: <OpenAIChatCompletionChoiceMessageContentItemModel>[
-                OpenAIChatCompletionChoiceMessageContentItemModel.text(
-                  'Please provide any information that can be inferred from '
-                  'the barcode "$barcode". '
-                  'This could include the GS1 country prefix or known usage '
-                  'patterns. '
-                  'If nothing is definitive, mention possible origins or usage '
-                  'notes. ',
-                ),
-              ],
-              role: OpenAIChatMessageRole.user,
-            ),
-          ],
-        )
-        .then((OpenAIChatCompletionModel completion) {
-          final String? info = completion
-              .choices
-              .firstOrNull
-              ?.message
-              .content
-              ?.firstOrNull
-              ?.text
-              ?.trim();
-          return info ?? '';
-        })
-        .onError((Object? error, StackTrace stackTrace) {
-          debugPrint(
-            'Error fetching info from AI for barcode: $barcode. '
-            'Error: $error'
-            'StackTrace: $stackTrace',
-          );
-          return '';
-        });
+  Future<AiBarcodeInfoResponse> getInfoFromAiAsFuture(String barcode) async {
+    final AiBarcodeInfoResponse response = await _restClient.getAiBarcodeInfo(
+      <String, String>{'barcode': barcode},
+    );
+    if (response.info.trim().isNotEmpty) {
+      return response;
+    } else {
+      throw FormatException('AI service returned no information for barcode.');
+    }
   }
 
   @override

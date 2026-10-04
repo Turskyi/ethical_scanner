@@ -98,7 +98,12 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
             } else {
               return _remoteDataSource
                   .getInfoFromAiAsFuture(inputCode)
-                  .then((String country) => info.copyWith(infoAi: country));
+                  .then(
+                    (AiBarcodeInfoResponse response) => info.copyWith(
+                      infoAi: response.info,
+                      infoAiModel: response.model,
+                    ),
+                  );
             }
           }
         });

@@ -28,5 +28,6 @@ export 'src/localized_code/localized_code.dart';
 export 'src/logging_interceptor/logging_interceptor.dart';
 export 'src/product/product_info.dart';
 export 'src/product/product_photo.dart';
+export 'src/rest_client/ai_barcode_info_response.dart';
 export 'src/rest_client/rest_client.dart';
 export 'src/terrorism_sponsor/terrorism_sponsor.dart';

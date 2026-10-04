@@ -49,9 +49,6 @@ dependencies:
   bloc: ^9.2.1
   camera: ^0.12.1
   collection: ^1.19.1
-  # Dart SDK for openAI Apis (GPT-3 & DALL-E), easily integrate the power of
-  # OpenAI's state-of-the-art AI models into their Dart applications.
-  dart_openai: ^8.0.0
   dio: ^5.11.1
   entities:
     path: ./components/domain/entities

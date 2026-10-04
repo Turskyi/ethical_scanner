@@ -44,6 +44,7 @@
     "ingredients_colon": "Ingredients: ",
     "website_colon": "Website: ",
     "country_ai_colon": "AI-Generated Information: ",
+    "ai_model": "AI model: {model}",
     "error_colon": "Error: ",
     "click": "Click ",
     "here": "here",

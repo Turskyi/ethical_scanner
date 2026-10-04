@@ -44,6 +44,7 @@
     "ingredients_colon": "Інгредієнти: ",
     "website_colon": "Веб-сайт: ",
     "country_ai_colon": "Інформація, згенерована ШІ: ",
+    "ai_model": "Модель ШІ: {model}",
     "error_colon": "Помилка: ",
     "click": "Натисніть ",
     "here": "тут",

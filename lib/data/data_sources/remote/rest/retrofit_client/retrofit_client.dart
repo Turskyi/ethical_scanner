@@ -13,4 +13,10 @@ abstract class RetrofitClient implements RestClient {
   @override
   @GET('russia-sponsors')
   Future<List<RussiaSponsorResponse>> getTerrorismSponsors();
+
+  @override
+  @POST('ai/barcode-info')
+  Future<AiBarcodeInfoResponse> getAiBarcodeInfo(
+    @Body() Map<String, String> request,
+  );
 }

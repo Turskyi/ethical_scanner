@@ -12,6 +12,7 @@ class ProductInfo {
     this.countryTags = const <String>[],
     this.countrySold = '',
     this.infoAi = '',
+    this.infoAiModel = '',
     this.name = '',
     this.brand = '',
     this.isCompanyTerrorismSponsor = false,
@@ -59,6 +60,7 @@ class ProductInfo {
   /// sorting the products.
   final String countrySold;
   final String infoAi;
+  final String infoAiModel;
   final String name;
   final String brand;
   final bool isCompanyTerrorismSponsor;
@@ -111,6 +113,7 @@ class ProductInfo {
     List<String>? countryTags,
     String? countrySold,
     String? infoAi,
+    String? infoAiModel,
     String? name,
     String? brand,
     bool? isCompanyTerrorismSponsor,
@@ -133,6 +136,7 @@ class ProductInfo {
       countryTags: countryTags ?? this.countryTags,
       countrySold: countrySold ?? this.countrySold,
       infoAi: infoAi ?? this.infoAi,
+      infoAiModel: infoAiModel ?? this.infoAiModel,
       name: name ?? this.name,
       brand: brand ?? this.brand,
       isCompanyTerrorismSponsor:
@@ -175,6 +179,7 @@ class ProductInfo {
         'countryTags: $countryTags, '
         'country: $countrySold, '
         'countryAi: $infoAi, '
+        'infoAiModel: $infoAiModel, '
         'name: $name, '
         'brand: $brand, '
         'isTerrorismSponsor: '
