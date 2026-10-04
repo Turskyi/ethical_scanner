@@ -23,7 +23,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions, while build-number is used as the build
 # suffix.
-version: 0.2.6+26
+version: 0.2.7+27
 
 environment:
   sdk: '>=3.9.2 <4.0.0'
@@ -46,26 +46,26 @@ dependencies:
   # presentation layer. You can think of the bloc package as the engine, and
   # the `flutter_bloc` package as the car body. You need both to make a
   # functional car 🚗.
-  bloc: ^9.2.0
-  camera: ^0.12.0+1
+  bloc: ^9.2.1
+  camera: ^0.12.1
   collection: ^1.19.1
   # Dart SDK for openAI Apis (GPT-3 & DALL-E), easily integrate the power of
   # OpenAI's state-of-the-art AI models into their Dart applications.
-  dart_openai: ^6.1.1
-  dio: ^5.9.2
+  dart_openai: ^8.0.0
+  dio: ^5.11.1
   entities:
     path: ./components/domain/entities
 
   # Explicitly reads environment variables into a Dart file from a `.env` file
   # for more security and faster start-up times.
-  envied: ^1.3.4
+  envied: ^1.3.10
   feedback: ^3.2.0
   flutter:
     sdk: flutter
 
   # Built to be used with the `bloc` state management package.
   flutter_bloc: ^9.1.1
-  flutter_pdfview: ^1.4.4
+  flutter_pdfview: ^1.4.5
 
   # Localization / internationalization (i18n) library.
   flutter_translate:
@@ -77,29 +77,29 @@ dependencies:
   interface_adapters:
     path: ./components/interface_adapters
 
-  intl: ^0.20.2
-  json_annotation: ^4.11.0
+  intl: ^0.20.3
+  json_annotation: ^4.12.0
 
   openfoodfacts: ^3.30.2
 
-  package_info_plus: ^10.0.0
+  package_info_plus: ^10.2.2
   path: ^1.9.1
-  path_provider: ^2.1.5
-  retrofit: ^4.9.2
-  retrofit_generator: ^10.2.5
-  share_plus: ^13.0.0
+  path_provider: ^2.1.6
+  retrofit: ^4.10.0
+  retrofit_generator: ^10.2.11
+  share_plus: ^13.3.1
   shared_preferences: ^2.5.5
   use_cases:
     path: ./components/domain/use_cases
-  window_size: ^0.1.0
+  window_size: ^0.2.0
 
 dev_dependencies:
   # A build system for Dart code generation and modular compilation.
-  bloc_lint: ^0.4.1
-  build_runner: ^2.13.1
+  bloc_lint: ^0.4.3
+  build_runner: ^2.16.1
 
   # Generator for the Envied package. See https://pub.dev/packages/envied.
-  envied_generator: ^1.3.4
+  envied_generator: ^1.3.10
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -110,9 +110,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  json_serializable: ^6.13.1
+  json_serializable: ^6.14.1
 
-  mockito: ^5.6.4
+  mockito: ^5.8.1
   test: any
 
 # For information on the generic Dart part of this file, see the
