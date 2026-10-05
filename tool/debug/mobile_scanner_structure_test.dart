@@ -1,8 +1,17 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:ethical_scanner/data/data_sources/local/local_data_source_impl.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+/// Debug tool to inspect actual property values and payload structures
+/// returned by the `mobile_scanner` library.
+///
+/// Run this test tool using:
+/// ```sh
+/// flutter test tool/debug/mobile_scanner_structure_test.dart
+/// ```
 void main() {
   if (kDebugMode) {
     test(

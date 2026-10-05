@@ -2,6 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 
+/// Debug tool to fetch and inspect the full product data structure returned
+/// from the OpenFoodFacts API for a given barcode.
+///
+/// Run this test tool using:
+/// ```sh
+/// flutter test tool/debug/open_food_facts_structure_test.dart
+/// ```
 void main() {
   if (kDebugMode) {
     test('fetches and inspects full OpenFoodFacts data structure for barcode '
