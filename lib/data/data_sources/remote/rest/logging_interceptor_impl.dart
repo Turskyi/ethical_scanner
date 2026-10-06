@@ -8,7 +8,7 @@ class LoggingInterceptorImpl extends Interceptor implements LoggingInterceptor {
 
   @override
   void onResponse(
-    Response<dynamic> response,
+    Response<Object?> response,
     ResponseInterceptorHandler handler,
   ) {
     log('onResponse -------------------');
