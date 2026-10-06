@@ -10,6 +10,10 @@
 - **Null Safety & Safe Accessors**: Prefer safe accessors (such as
   `.firstOrNull` instead of `.first` or direct indexing) to avoid runtime
   exceptions on empty collections.
+- **Type Safety & Avoiding `dynamic`**: Prefer strong typing (such as `Object?`)
+  over `dynamic` to maintain compile-time type checks.
+- **Avoiding `as` Type Casts**: Prefer `is` / `is!` type checks with Dart type
+  promotion over explicit `as` casts to prevent runtime type errors.
 - **Method Parameters**: Prefer named parameters (using `{required ...}`) when a
   function or method takes more than one parameter.
 

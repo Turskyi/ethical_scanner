@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:entities/entities.dart';
+import 'package:ethical_scanner/data/data_sources/remote/models/russia_sponsors_response/russia_sponsor_response.dart';
 import 'package:ethical_scanner/res/enums/settings.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -895,5 +899,37 @@ class LocalDataSourceImpl implements LocalDataSource {
       '$_leaveRussiaCachePrefix$barcode',
       jsonString,
     );
+  }
+
+  List<TerrorismSponsor>? _cachedTerrorismSponsors;
+
+  @override
+  Future<List<TerrorismSponsor>> getTerrorismSponsors() async {
+    if (_cachedTerrorismSponsors != null) {
+      return _cachedTerrorismSponsors!;
+    } else {
+      try {
+        final String jsonString = await rootBundle.loadString(
+          'assets/data/russia_sponsors.json',
+        );
+        final Object? decodedJson = jsonDecode(jsonString);
+        if (decodedJson is List<Object?>) {
+          final List<RussiaSponsorResponse> sponsors =
+              <RussiaSponsorResponse>[];
+          for (final Object? item in decodedJson) {
+            if (item is Map<String, Object?>) {
+              sponsors.add(RussiaSponsorResponse.fromJson(item));
+            }
+          }
+          _cachedTerrorismSponsors = sponsors;
+          return sponsors;
+        } else {
+          return const <TerrorismSponsor>[];
+        }
+      } catch (e, stack) {
+        debugPrint('Error loading local terrorism sponsors asset: $e\n$stack');
+        return const <TerrorismSponsor>[];
+      }
+    }
   }
 }

@@ -1,7 +1,11 @@
+import 'package:entities/entities.dart';
+
 abstract interface class LocalDataSource {
   const LocalDataSource();
 
   Future<void> init();
+
+  Future<List<TerrorismSponsor>> getTerrorismSponsors();
 
   String getGs1CountryFromBarcode(String barcode);
 

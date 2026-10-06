@@ -1,3 +1,4 @@
+import 'package:entities/entities.dart';
 import 'package:ethical_scanner/data/data_sources/local/local_data_source_impl.dart';
 import 'package:ethical_scanner/res/enums/settings.dart';
 import 'package:mockito/mockito.dart';
@@ -811,4 +812,9 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
   @override
   Future<bool> saveLanguageIsoCode(String languageIsoCode) =>
       _sharedPrefs.setString(Settings.languageIsoCode.key, languageIsoCode);
+
+  @override
+  Future<List<TerrorismSponsor>> getTerrorismSponsors() async {
+    return const <TerrorismSponsor>[];
+  }
 }

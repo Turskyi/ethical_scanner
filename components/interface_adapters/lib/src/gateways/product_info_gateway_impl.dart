@@ -112,7 +112,7 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
 
   @override
   Future<List<TerrorismSponsor>> getTerrorismSponsors() {
-    return _remoteDataSource.getTerrorismSponsors();
+    return _localDataSource.getTerrorismSponsors();
   }
 
   @override
