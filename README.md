@@ -193,6 +193,18 @@ layer communicates directly with the platform in other words `android` and
 `ios`. `Frameworks and drivers` is responsible for Native functionality.
 `Frameworks and drivers` calls all Native APIs.
 
+> **Note on Barcode Extraction & Clean Architecture:** According to Clean
+> Architecture principles, barcode extraction and camera hardware integration
+> belong conceptually in the **Frameworks and Drivers** layer (the outermost
+> circle interfacing with the operating system and device sensors). However,
+> because the third-party `mobile_scanner` library packages both the native
+> scanning engine and a Flutter UI widget (`MobileScanner`), it is consumed
+> as a UI component in the **Interface Adapters** layer. The underlying
+> implementation (native camera capture and barcode decoding) resides in
+> the **Frameworks and Drivers** layer—hosted externally within the mobile OS
+> and the plugin's native code rather than directly inside our application
+> codebase.
+
 </details>
 
 <details style="border: 1px solid #aaa; border-radius: 4px; padding: 0.5em 0.5em 0;">
