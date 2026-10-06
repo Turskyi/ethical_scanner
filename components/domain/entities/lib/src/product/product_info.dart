@@ -26,6 +26,7 @@ class ProductInfo {
     this.quantity = '',
     this.imageIngredientsUrl = '',
     this.responseType = ProductResponseType.openFoodFacts,
+    this.leaveRussiaUrl = '',
   });
 
   final String barcode;
@@ -80,6 +81,20 @@ class ProductInfo {
   final String imageIngredientsUrl;
   final ProductResponseType responseType;
 
+  /// The company-specific Leave Russia / KSE Institute profile page URL
+  /// (e.g., `https://leave-russia.org/ferrero` or
+  /// `https://leave-russia.org/uk/ferrero`).
+  ///
+  /// When a barcode lookup successfully identifies a company on Leave Russia,
+  /// this URL is populated with the company's dedicated page. When tapped in
+  /// the UI, it opens this company page instead of the generic site-wide source
+  /// link.
+  final String leaveRussiaUrl;
+
+  /// EAN barcode prefix for Russia (barcodes starting with '46').
+  static const String russianBarcodePrefix = '46';
+  static const String russianEanPrefix = '460';
+
   bool get isVegan => vegan == Vegan.positive;
 
   bool get isVegetarian => vegetarian == Vegetarian.positive;
@@ -91,7 +106,7 @@ class ProductInfo {
       origin.toLowerCase() == 'ru' ||
       countrySold.toLowerCase() == 'россия' ||
       origin.toLowerCase() == 'россия' ||
-      barcode.startsWith('460');
+      barcode.startsWith(russianEanPrefix);
 
   /// US State Department designated state sponsors of terrorism.
   /// Source: https://www.state.gov/state-sponsors-of-terrorism/
@@ -127,6 +142,7 @@ class ProductInfo {
     String? quantity,
     String? imageIngredientsUrl,
     ProductResponseType? responseType,
+    String? leaveRussiaUrl,
   }) {
     return ProductInfo(
       barcode: barcode ?? this.barcode,
@@ -151,6 +167,7 @@ class ProductInfo {
       quantity: quantity ?? this.quantity,
       imageIngredientsUrl: imageIngredientsUrl ?? this.imageIngredientsUrl,
       responseType: responseType ?? this.responseType,
+      leaveRussiaUrl: leaveRussiaUrl ?? this.leaveRussiaUrl,
     );
   }
 
@@ -193,7 +210,8 @@ class ProductInfo {
         'language: ${language.name}, '
         'quantity: $quantity,'
         'imageIngredientsUrl: $imageIngredientsUrl,'
-        'responseType: $responseType'
+        'responseType: $responseType,'
+        'leaveRussiaUrl: $leaveRussiaUrl'
         '}';
   }
 }

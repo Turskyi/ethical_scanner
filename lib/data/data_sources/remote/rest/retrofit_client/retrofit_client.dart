@@ -19,4 +19,10 @@ abstract class RetrofitClient implements RestClient {
   Future<AiBarcodeInfoResponse> getAiBarcodeInfo(
     @Body() Map<String, String> request,
   );
+
+  @override
+  @GET('${constants.leaveRussiaBaseUrl}ean13_search')
+  Future<LeaveRussiaResponse?> getLeaveRussiaInfo({
+    @Query('ean13') required String barcode,
+  });
 }

@@ -75,6 +75,21 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
+  Future<LeaveRussiaResponse?> getLeaveRussiaInfo({
+    required String barcode,
+  }) async {
+    try {
+      final LeaveRussiaResponse? response = await _restClient
+          .getLeaveRussiaInfo(barcode: barcode)
+          .timeout(const Duration(seconds: 4));
+      return response;
+    } catch (e) {
+      debugPrint('Leave Russia lookup failed or timed out for $barcode: $e');
+      return null;
+    }
+  }
+
+  @override
   Future<AiBarcodeInfoResponse> getInfoFromAiAsFuture(String barcode) async {
     final AiBarcodeInfoResponse response = await _restClient.getAiBarcodeInfo(
       <String, String>{'barcode': barcode},

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:entities/entities.dart';
@@ -112,6 +113,50 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
   @override
   Future<List<TerrorismSponsor>> getTerrorismSponsors() {
     return _remoteDataSource.getTerrorismSponsors();
+  }
+
+  @override
+  Future<LeaveRussiaResponse?> getLeaveRussiaInfo({
+    required String barcode,
+    required Language language,
+  }) async {
+    final String? cached = _localDataSource.getLeaveRussiaCache(barcode);
+    if (cached != null) {
+      if (cached == LeaveRussiaResponse.cacheMissSentinel) {
+        return const LeaveRussiaResponse(data: <LeaveRussiaItem>[]);
+      } else {
+        try {
+          final Object? decoded = jsonDecode(cached);
+          if (decoded is Map<String, Object?>) {
+            return LeaveRussiaResponse.fromJson(decoded);
+          }
+        } catch (e) {
+          debugPrint(
+            'Failed to decode cached Leave Russia info for $barcode: $e',
+          );
+        }
+      }
+    }
+
+    final LeaveRussiaResponse? response = await _remoteDataSource
+        .getLeaveRussiaInfo(barcode: barcode);
+
+    if (response != null) {
+      if (response.data.isNotEmpty) {
+        await _localDataSource.saveLeaveRussiaCache(
+          barcode: barcode,
+          jsonString: jsonEncode(response.toJson()),
+        );
+      } else {
+        await _localDataSource.saveLeaveRussiaCache(
+          barcode: barcode,
+          jsonString: LeaveRussiaResponse.cacheMissSentinel,
+        );
+      }
+      return response;
+    }
+
+    return null;
   }
 
   @override

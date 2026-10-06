@@ -240,7 +240,10 @@ class ProductInfoTile extends StatelessWidget {
   ///
   /// Returns `true` if the URL was successfully launched, `false` otherwise.
   Future<bool> _onWarSponsorsSecondarySourceTap(Resources resources) {
-    final Uri link = Uri.parse(resources.strings.russiaSponsorsSource2);
+    final String url = info.leaveRussiaUrl.isNotEmpty
+        ? info.leaveRussiaUrl
+        : resources.strings.russiaSponsorsSource2;
+    final Uri link = Uri.parse(url);
     return launchUrl(link);
   }
 

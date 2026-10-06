@@ -868,4 +868,32 @@ class LocalDataSourceImpl implements LocalDataSource {
       safeLanguageCode,
     );
   }
+
+  static const String _leaveRussiaCachePrefix = 'leave_russia_cache_';
+
+  @override
+  String? getLeaveRussiaCache(String barcode) {
+    return _preferences.getString('$_leaveRussiaCachePrefix$barcode');
+  }
+
+  @override
+  /// Caches the Leave Russia lookup result for the specified [barcode].
+  ///
+  /// - [jsonString]: The JSON string to store. This is typically obtained by
+  ///   calling `jsonEncode(response.toJson())` on a successful
+  ///   [LeaveRussiaResponse] from the Leave Russia API, or the sentinel string
+  ///   `'NOT_FOUND'` to record a confirmed cache miss (no company found).
+  /// - How to use: Call this method with the barcode and the serialized JSON
+  ///   string (or `'NOT_FOUND'`) after querying the Leave Russia API to persist
+  ///   the result locally in SharedPreferences and avoid redundant network
+  ///   requests.
+  Future<bool> saveLeaveRussiaCache({
+    required String barcode,
+    required String jsonString,
+  }) {
+    return _preferences.setString(
+      '$_leaveRussiaCachePrefix$barcode',
+      jsonString,
+    );
+  }
 }
