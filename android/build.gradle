@@ -1,11 +1,20 @@
-//noinspection GrUnresolvedAccess
-//file:noinspection GrDeprecatedAPIUsage
-buildscript {
-    // Redirect jcenter() calls from older plugins to mavenCentral()
+// Redirect jcenter() calls from older plugins to mavenCentral()
+try {
+    org.gradle.api.artifacts.dsl.RepositoryHandler.metaClass.jcenter = { ->
+        delegate.mavenCentral()
+    }
+} catch (ignored) {
+}
+try {
     org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler.metaClass.jcenter = { ->
         delegate.mavenCentral()
     }
+} catch (ignored) {
+}
 
+//noinspection GrUnresolvedAccess
+//file:noinspection GrDeprecatedAPIUsage
+buildscript {
     ext {
         kotlin_version = '2.2.21'
         application_id = 'com.turskyi.ethical_scanner'

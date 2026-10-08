@@ -1,5 +1,15 @@
 //noinspection GrUnresolvedAccess
 pluginManagement {
+    try {
+        org.gradle.api.artifacts.dsl.RepositoryHandler.metaClass.jcenter = { ->
+            delegate.mavenCentral()
+        }
+        org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler.metaClass.jcenter = { ->
+            delegate.mavenCentral()
+        }
+    } catch (ignored) {
+    }
+
     //noinspection GroovyAssignabilityCheck
     def flutterSdkPath = {
         def properties = new Properties()
