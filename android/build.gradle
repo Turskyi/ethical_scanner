@@ -2,7 +2,7 @@
 //file:noinspection GrDeprecatedAPIUsage
 buildscript {
     ext {
-        kotlin_version = '2.2.21'
+        kotlin_version = '2.4.20'
         application_id = 'com.turskyi.ethical_scanner'
     }
     repositories {
@@ -12,9 +12,9 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.android.tools.build:gradle:8.13.1'
-        classpath 'com.google.gms:google-services:4.4.2'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.2'
+        classpath 'com.android.tools.build:gradle:9.4.1'
+        classpath 'com.google.gms:google-services:4.5.0'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.8'
     }
 }
 
@@ -33,19 +33,21 @@ allprojects {
             }
 
             // Compile SDK version logic
-            def targetCompileSdk = 34 // As required by the dependencies
+            def targetCompileSdk = 37 // As required by the dependencies
             def currentCompileSdkValue = project.android.getProperties().get('compileSdkVersion')
 
             if (currentCompileSdkValue != null) {
                 def currentCompileSdkInt = -1
                 if (currentCompileSdkValue instanceof String && currentCompileSdkValue.startsWith("android-")) {
-                    currentCompileSdkInt = currentCompileSdkValue.substring("android-".length()).toInteger()
+                    try {
+                        currentCompileSdkInt = currentCompileSdkValue.substring("android-".length()).toBigDecimal().toInteger()
+                    } catch (Exception ignored) {}
                 } else if (currentCompileSdkValue instanceof Number) {
-                    currentCompileSdkInt = currentCompileSdkValue.toInteger()
+                    currentCompileSdkInt = currentCompileSdkValue.intValue()
                 } else if (currentCompileSdkValue instanceof String) {
                     try {
-                        currentCompileSdkInt = currentCompileSdkValue.toInteger()
-                    } catch (NumberFormatException ignored) {
+                        currentCompileSdkInt = currentCompileSdkValue.toBigDecimal().toInteger()
+                    } catch (Exception ignored) {
                         project.logger.warn("Project ${project.name}: Could not parse compileSdkVersion '''${currentCompileSdkValue}'''. Skipping override for this project.")
                         // Potentially return from closure or handle error appropriately
                     }
