@@ -1,6 +1,11 @@
 //noinspection GrUnresolvedAccess
 //file:noinspection GrDeprecatedAPIUsage
 buildscript {
+    // Redirect jcenter() calls from older plugins to mavenCentral()
+    org.gradle.api.artifacts.dsl.RepositoryHandler.metaClass.jcenter = { ->
+        delegate.mavenCentral()
+    }
+
     ext {
         kotlin_version = '2.2.21'
         application_id = 'com.turskyi.ethical_scanner'
@@ -16,11 +21,6 @@ buildscript {
         classpath 'com.google.gms:google-services:4.5.0'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.8'
     }
-}
-
-// Redirect jcenter() calls from older plugins to mavenCentral()
-org.gradle.api.artifacts.dsl.RepositoryHandler.metaClass.jcenter = { ->
-    delegate.mavenCentral()
 }
 
 allprojects {
