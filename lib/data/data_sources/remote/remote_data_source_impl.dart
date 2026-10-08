@@ -30,7 +30,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         code,
         language: openFoodFactsLanguage,
         fields: <ProductField>[ProductField.ALL],
-        version: ProductQueryVersion.v3,
+        version: ProductQueryVersion.latestVersion,
       ),
     ).then((ProductResultV3 result) {
       final Product? resultProduct = result.product;
@@ -719,7 +719,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       photo.info.barcode,
       language: language,
       fields: <ProductField>[ProductField.INGREDIENTS_TEXT],
-      version: ProductQueryVersion.v3,
+      version: ProductQueryVersion.latestVersion,
     );
     final ProductResultV3 productResult = await OpenFoodAPIClient.getProductV3(
       configurations,

@@ -27,7 +27,7 @@ void main() {
         targetBarcode,
         language: OpenFoodFactsLanguage.ENGLISH,
         fields: <ProductField>[ProductField.ALL],
-        version: ProductQueryVersion.v3,
+        version: ProductQueryVersion.latestVersion,
       );
 
       final ProductResultV3 result = await OpenFoodAPIClient.getProductV3(
@@ -47,9 +47,9 @@ void main() {
         debugPrint('Categories: ${product.categoriesTags}');
 
         debugPrint('\n--- ETHICAL & ENVIRONMENTAL DATA ---');
-        debugPrint('Eco-Score Grade: ${product.ecoscoreGrade}');
-        debugPrint('Eco-Score Score: ${product.ecoscoreScore}');
-        debugPrint('Eco-Score Data: ${product.ecoscoreData}');
+        debugPrint('Eco-Score Grade: ${product.environmentalScoreGrade}');
+        debugPrint('Eco-Score Score: ${product.environmentalScoreScore}');
+        debugPrint('Eco-Score Data: ${product.environmentalScoreData}');
 
         debugPrint('\n--- INGREDIENTS & ETHICAL ANALYSIS ---');
         debugPrint('Ingredients Text: ${product.ingredientsText}');
@@ -72,7 +72,7 @@ void main() {
 
         debugPrint('\n--- NUTRITION & HEALTH ---');
         debugPrint('Nutriscore Grade: ${product.nutriscore}');
-        debugPrint('Nutriments: ${product.nutriments}');
+        debugPrint('Nutrition: ${product.nutrition}');
       } else {
         debugPrint(
           'No product details found for barcode $targetBarcode in '
