@@ -385,18 +385,18 @@ packages:
     dependency: transitive
     description:
       name: flutter_email_sender_platform_interface
-      sha256: "576fb2b08790040693bd02b1911ad51bf52ccabba87dc2964d6805552f27c39a"
+      sha256: d6825b9e91b2243619a0d22e41f5ff483b0760521302c18eadb4c150ffdee278
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.0"
   flutter_email_sender_web:
     dependency: transitive
     description:
       name: flutter_email_sender_web
-      sha256: cf47a07211d2e802f4638a8e17bfc87de0ee5c93f91d16051c0ed5ad01781c65
+      sha256: "628f38bb73ad5c40fcb68fb1feedb0da3a21850ea21d5005e08548997a6f6106"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -680,10 +680,10 @@ packages:
     dependency: "direct main"
     description:
       name: openfoodfacts
-      sha256: "51bb760342865523a207d1df72e0a022d131a10a9ea0b5b663ed7be93837c561"
+      sha256: "6bf8c51e786b6fcab2c5857a511fd11d3ab03c602c6667bb2a089d93a8631646"
       url: "https://pub.dev"
     source: hosted
-    version: "3.30.2"
+    version: "3.31.0"
   package_config:
     dependency: transitive
     description:
