@@ -107,34 +107,15 @@ class ProductInfoTile extends StatelessWidget {
       subtitle: type.isCompanyWarSponsor
           ? RichText(
               text: TextSpan(
-                text: '$value ${translate('product_info.click')}',
+                text: value,
                 style: TextStyle(
                   fontStyle: FontStyle.italic,
                   fontSize: textTheme.bodyLarge?.fontSize,
                 ),
                 children: <TextSpan>[
+                  const TextSpan(text: '\n'),
                   TextSpan(
-                    text: translate('product_info.here'),
-                    style: TextStyle(
-                      color: Colors.lightBlueAccent,
-                      decoration: TextDecoration.underline,
-                      fontStyle: FontStyle.italic,
-                      fontSize: textTheme.bodyLarge?.fontSize,
-                    ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        _onWarSponsorsPrimarySourceTap(resources);
-                      },
-                  ),
-                  TextSpan(
-                    text: translate('product_info.or'),
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      fontSize: textTheme.bodyLarge?.fontSize,
-                    ),
-                  ),
-                  TextSpan(
-                    text: translate('product_info.here'),
+                    text: translate('product_info.leave_russia'),
                     style: TextStyle(
                       color: Colors.lightBlueAccent,
                       decoration: TextDecoration.underline,
@@ -147,11 +128,24 @@ class ProductInfoTile extends StatelessWidget {
                       },
                   ),
                   TextSpan(
-                    text: translate('product_info.to_know_more'),
+                    text: ' · ',
                     style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontSize: textTheme.bodyLarge?.fontSize,
                     ),
+                  ),
+                  TextSpan(
+                    text: translate('product_info.yale_list'),
+                    style: TextStyle(
+                      color: Colors.lightBlueAccent,
+                      decoration: TextDecoration.underline,
+                      fontStyle: FontStyle.italic,
+                      fontSize: textTheme.bodyLarge?.fontSize,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        _onWarSponsorsPrimarySourceTap(resources);
+                      },
                   ),
                 ],
               ),

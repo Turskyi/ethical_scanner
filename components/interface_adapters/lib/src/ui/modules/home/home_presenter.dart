@@ -293,10 +293,14 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
         }
 
         if (productInfo.isCompanyTerrorismSponsor) {
+          final String brand = productInfo.brand.trim();
           modifiableProductInfo[ProductInfoType.companyTerrorismSponsor] =
-              productInfo.isCompanyTerrorismSponsor
-              ? translate('probably_yes')
-              : translate('no');
+              brand.isEmpty
+              ? translate('product_info.still_operating_unnamed')
+              : translate(
+                  'product_info.still_operating',
+                  args: <String, Object?>{kBrandParameter: brand},
+                );
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
