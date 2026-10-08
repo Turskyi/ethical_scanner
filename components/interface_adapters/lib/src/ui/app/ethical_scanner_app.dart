@@ -11,14 +11,14 @@ class EthicalScannerApp extends StatelessWidget implements App {
     required this.dependencies,
     required this.localizationDelegate,
     required this.onGenerateRoute,
-    this.navigatorKey,
+    required this.navigatorKey,
     super.key,
   });
 
   final AppDependencies dependencies;
   final LocalizationDelegate localizationDelegate;
   final RouteFactory onGenerateRoute;
-  final GlobalKey<NavigatorState>? navigatorKey;
+  final GlobalKey<NavigatorState> navigatorKey;
 
   @override
   Widget build(BuildContext _) {
