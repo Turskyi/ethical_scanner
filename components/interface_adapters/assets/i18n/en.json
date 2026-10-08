@@ -87,6 +87,8 @@
   },
   "photo": {
     "capture_ingredients": "Make a photo of the ingredients.",
+    "choose_from_gallery": "Choose from gallery",
+    "failed_to_load_image": "Failed to load image.",
     "extract_ingredients": "Extract ingredients text",
     "image_upload_successful": "Image upload successful!",
     "ingredients_saved": "Ingredients saved successfully!",

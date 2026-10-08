@@ -26,6 +26,8 @@ class PhotoPresenter extends Bloc<PhotoEvent, PhotoViewModel> {
     on<AddIngredientsPhotoEvent>(_onAddIngredientsPhoto);
 
     on<ChangeLanguageEvent>(_changeLanguage);
+
+    on<PhotoErrorEvent>(_onPhotoError);
   }
 
   final UseCase<Future<void>, ProductPhoto> _addIngredientsUseCase;
@@ -146,5 +148,18 @@ class PhotoPresenter extends Bloc<PhotoEvent, PhotoViewModel> {
         emit(PhotoMakerReadyState(language: state.language));
       }
     }
+  }
+
+  FutureOr<void> _onPhotoError(
+    PhotoErrorEvent event,
+    Emitter<PhotoViewModel> emit,
+  ) {
+    emit(
+      AddIngredientsErrorState(
+        barcode: event.barcode,
+        errorMessage: event.errorMessage,
+        language: state.language,
+      ),
+    );
   }
 }

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:interface_adapters/src/ui/modules/photo/photo_event.dart';
 import 'package:interface_adapters/src/ui/modules/photo/photo_presenter.dart';
 import 'package:interface_adapters/src/ui/res/color/gradients.dart';
@@ -34,6 +35,7 @@ class PhotoView extends StatefulWidget {
 }
 
 class _PhotoViewState extends State<PhotoView> {
+  final ImagePicker _imagePicker = ImagePicker();
   final double _zoomStep = 0.4;
   final RegExp _emailExp = RegExp(r'\b[\w.-]+@[\w.-]+\.\w{2,}\b');
 
@@ -44,6 +46,9 @@ class _PhotoViewState extends State<PhotoView> {
 
   // Initial zoom level.
   double _currentZoomLevel = 1.0;
+
+  /// Initial min zoom level.
+  double _minZoomLevel = 1.0;
 
   /// Initial max zoom level.
   double _maxZoomLevel = 5.0;
@@ -246,25 +251,28 @@ class _PhotoViewState extends State<PhotoView> {
                             ? GestureDetector(
                                 onTap: _onRemovePhoto,
                                 child: Container(
-                                  width: 200.0,
-                                  height: 350,
+                                  margin: const EdgeInsets.only(bottom: 12.0),
+                                  width: 150.0,
+                                  height: 250.0,
                                   decoration: BoxDecoration(
+                                    color: Colors.black,
                                     border: Border.all(
                                       color: Colors.white,
                                       width: 2.0,
                                     ),
                                   ),
                                   child: Stack(
+                                    alignment: Alignment.center,
                                     children: <Widget>[
                                       if (kIsWeb)
                                         Image.network(
                                           viewModel.photoPath,
-                                          fit: BoxFit.cover,
+                                          fit: BoxFit.contain,
                                         )
                                       else
                                         Image.file(
                                           File(viewModel.photoPath),
-                                          fit: BoxFit.cover,
+                                          fit: BoxFit.contain,
                                         ),
                                       Positioned(
                                         top: 0,
@@ -295,6 +303,7 @@ class _PhotoViewState extends State<PhotoView> {
                         color: Colors.black.withValues(alpha: 0.7),
                         alignment: Alignment.center,
                         child: GestureDetector(
+                          onTap: _onRemovePhoto,
                           onLongPress: () {
                             _copyToClipboard(viewModel.errorMessage);
                           },
@@ -324,26 +333,6 @@ class _PhotoViewState extends State<PhotoView> {
                       )
                     else
                       Expanded(child: cameraStack),
-                    if (!kIsWeb)
-                      // Buttons for manual zoom control.
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            ElevatedButton(
-                              // Decrease zoom
-                              onPressed: () => _adjustZoomLevel(-_zoomStep),
-                              child: const Icon(Icons.remove),
-                            ),
-                            ElevatedButton(
-                              // Increase zoom
-                              onPressed: () => _adjustZoomLevel(_zoomStep),
-                              child: const Icon(Icons.add),
-                            ),
-                          ],
-                        ),
-                      ),
                   ],
                 );
               }
@@ -353,11 +342,39 @@ class _PhotoViewState extends State<PhotoView> {
               FloatingActionButtonLocation.centerFloat,
           floatingActionButton: BlocBuilder<PhotoPresenter, PhotoViewModel>(
             builder: (BuildContext _, PhotoViewModel viewModel) {
-              return viewModel is AddIngredientsErrorState
-                  ? const SizedBox()
-                  : Padding(
-                      padding: const EdgeInsets.only(bottom: 20.0),
-                      child: FloatingActionButton(
+              if (viewModel is AddIngredientsErrorState) {
+                return const SizedBox();
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      if (!kIsWeb)
+                        ElevatedButton(
+                          onPressed: _currentZoomLevel > _minZoomLevel + 0.001
+                              ? () => _adjustZoomLevel(-_zoomStep)
+                              : null,
+                          child: const Icon(Icons.remove),
+                        ),
+                      Visibility(
+                        visible: viewModel is PhotoMakerReadyState,
+                        maintainSize: true,
+                        maintainAnimation: true,
+                        maintainState: true,
+                        child: Semantics(
+                          label: translate('photo.choose_from_gallery'),
+                          button: true,
+                          child: FloatingActionButton(
+                            heroTag: 'gallery_button',
+                            tooltip: translate('photo.choose_from_gallery'),
+                            onPressed: _pickImageFromGallery,
+                            child: const Icon(Icons.photo_library),
+                          ),
+                        ),
+                      ),
+                      FloatingActionButton(
+                        heroTag: 'capture_button',
                         onPressed: viewModel is LoadingState
                             ? null
                             : viewModel is TakenPhotoState
@@ -372,7 +389,17 @@ class _PhotoViewState extends State<PhotoView> {
                             ? const Icon(Icons.stop)
                             : const SizedBox(),
                       ),
-                    );
+                      if (!kIsWeb)
+                        ElevatedButton(
+                          onPressed: _currentZoomLevel < _maxZoomLevel - 0.001
+                              ? () => _adjustZoomLevel(_zoomStep)
+                              : null,
+                          child: const Icon(Icons.add),
+                        ),
+                    ],
+                  ),
+                );
+              }
             },
           ),
         ),
@@ -416,7 +443,7 @@ class _PhotoViewState extends State<PhotoView> {
 
   void _adjustZoomLevel(double delta) {
     final double newZoomLevel = (_currentZoomLevel + delta).clamp(
-      1.0,
+      _minZoomLevel,
       _maxZoomLevel,
     );
     if (!kIsWeb) {
@@ -591,7 +618,18 @@ class _PhotoViewState extends State<PhotoView> {
         // anyway.
       }
       _controller?.getMaxZoomLevel().then((double max) {
-        _maxZoomLevel = max;
+        setState(() {
+          _maxZoomLevel = max;
+        });
+      });
+      _controller?.getMinZoomLevel().then((double min) {
+        setState(() {
+          _minZoomLevel = min;
+          _currentZoomLevel = _currentZoomLevel.clamp(
+            _minZoomLevel,
+            _maxZoomLevel,
+          );
+        });
       });
       _controller?.setFocusMode(FocusMode.auto);
     }
@@ -632,7 +670,7 @@ class _PhotoViewState extends State<PhotoView> {
 
   void _onScaleUpdate(ScaleUpdateDetails details) {
     double newZoomLevel = _currentZoomLevel * details.scale;
-    newZoomLevel = newZoomLevel.clamp(1.0, _maxZoomLevel);
+    newZoomLevel = newZoomLevel.clamp(_minZoomLevel, _maxZoomLevel);
     if (!kIsWeb) {
       _controller?.setZoomLevel(newZoomLevel);
     }
@@ -693,6 +731,43 @@ class _PhotoViewState extends State<PhotoView> {
       }
     } catch (e) {
       debugPrint('Error taking picture: $e');
+    }
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    try {
+      final XFile? image = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+      );
+      if (image != null) {
+        final String path = image.path;
+        if (path.isNotEmpty && (kIsWeb || File(path).existsSync())) {
+          if (mounted) {
+            context.read<PhotoPresenter>().add(TakenPhotoEvent(path));
+          }
+        } else {
+          if (mounted) {
+            context.read<PhotoPresenter>().add(
+              PhotoErrorEvent(
+                errorMessage: translate('photo.failed_to_load_image'),
+                barcode: widget.productInfo.barcode,
+              ),
+            );
+          }
+        }
+      } else {
+        // User cancelled photo picker. Camera remains live and unchanged.
+      }
+    } catch (e) {
+      debugPrint('Error picking image from gallery: $e');
+      if (mounted) {
+        context.read<PhotoPresenter>().add(
+          PhotoErrorEvent(
+            errorMessage: e.toString(),
+            barcode: widget.productInfo.barcode,
+          ),
+        );
+      }
     }
   }
 }

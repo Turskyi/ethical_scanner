@@ -44,6 +44,7 @@ dependencies:
   html: ^0.15.7
 
   http: ^1.6.0
+  image_picker: ^1.2.4
   # Because every version of flutter_test from sdk depends on meta 1.16.0 and
   # every version of interface_adapters from path depends on meta ^1.17.0.
   meta: ^1.19.0

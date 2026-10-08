@@ -87,6 +87,8 @@
   },
   "photo": {
     "capture_ingredients": "Сфотографуйте\nінгредієнти.",
+    "choose_from_gallery": "Обрати з галереї",
+    "failed_to_load_image": "Не вдалося завантажити зображення.",
     "extract_ingredients": "Вилучити текст інгредієнтів",
     "image_upload_successful": "Завантаження зображення успішне!",
     "ingredients_saved": "Інгредієнти успішно збережено!",
