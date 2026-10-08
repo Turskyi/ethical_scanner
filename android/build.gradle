@@ -18,18 +18,38 @@ buildscript {
     }
 }
 
+// Redirect jcenter() calls from older plugins to mavenCentral()
+org.gradle.api.artifacts.dsl.RepositoryHandler.metaClass.jcenter = { ->
+    delegate.mavenCentral()
+}
+
 allprojects {
     repositories {
         google()
         mavenCentral()
     }
+}
+
+subprojects {
+    beforeEvaluate { project ->
+        // Ensure android library plugin is applied if kotlin-android plugin is used without an android plugin
+        project.pluginManager.withPlugin('kotlin-android') {
+            if (!project.pluginManager.hasPlugin('com.android.library') && !project.pluginManager.hasPlugin('com.android.application')) {
+                project.apply plugin: 'com.android.library'
+            }
+        }
+    }
+
     afterEvaluate { project ->
         if (project.hasProperty('android') && project.android != null) {
             // Namespace logic: Set namespace if it's not already defined
-            // (Uses 'group' property as a fallback, ensure your modules have a 'group' defined or namespace is set in their own build.gradle)
-            if ((!project.android.hasProperty('namespace') || project.android.namespace == null) && project.hasProperty('group') && project.group != null) {
-                project.android.namespace = project.group.toString()
-                project.logger.info("Project ${project.name}: Set namespace to '''${project.group.toString()}'''")
+            if (!project.android.hasProperty('namespace') || project.android.namespace == null) {
+                if (project.hasProperty('group') && project.group != null) {
+                    project.android.namespace = project.group.toString()
+                } else {
+                    project.android.namespace = "dev.flutter.plugins.${project.name.replaceAll('-', '_')}"
+                }
+                project.logger.info("Project ${project.name}: Set namespace to '${project.android.namespace}'")
             }
 
             // Compile SDK version logic
