@@ -42,8 +42,9 @@ internal fun updateAppWidget(
     views.setTextViewText(R.id.text_seasonal_top, seasonalSymbol)
     views.setTextViewText(R.id.text_seasonal_bottom, seasonalSymbol)
 
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("ethicalscanner://scan")).apply {
-        setPackage(context.packageName)
+    val intent = Intent(context, MainActivity::class.java).apply {
+        action = "es.antonborri.home_widget.action.LAUNCH"
+        data = Uri.parse("ethicalscanner://scan")
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
     }
 

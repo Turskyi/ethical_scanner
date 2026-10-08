@@ -26,7 +26,9 @@ class HomeWidgetNavigationService {
 
     if (isMobilePlatform) {
       try {
-        _widgetClickSubscription = HomeWidget.widgetClicked.listen((Uri? uri) {
+        _widgetClickSubscription = HomeWidget.widgetClicked.listen((
+          Uri? uri,
+        ) {
           if (uri != null) {
             _handleWidgetUri(uri);
           }
@@ -60,7 +62,8 @@ class HomeWidgetNavigationService {
     final bool isScanUri =
         uri.scheme == _expectedScheme ||
         uri.host == _expectedHost ||
-        uri.path == kScanPath;
+        uri.path == kScanPath ||
+        uri.queryParameters.containsKey('homeWidget');
 
     if (isScanUri) {
       _navigateToScanScreen();
@@ -68,20 +71,30 @@ class HomeWidgetNavigationService {
   }
 
   void _navigateToScanScreen() {
-    final NavigatorState? navigator = navigatorKey.currentState;
-    if (navigator != null) {
-      bool isScanOnTop = false;
+    void performNavigation() {
+      final NavigatorState? navigator = navigatorKey.currentState;
+      if (navigator != null) {
+        bool isScanOnTop = false;
 
-      navigator.popUntil((Route<dynamic> route) {
-        if (route.settings.name == kScanPath) {
-          isScanOnTop = true;
+        navigator.popUntil((Route<dynamic> route) {
+          if (route.settings.name == kScanPath) {
+            isScanOnTop = true;
+          }
+          return true;
+        });
+
+        if (!isScanOnTop) {
+          navigator.pushNamed(kScanPath);
         }
-        return true;
-      });
-
-      if (!isScanOnTop) {
-        navigator.pushNamed(kScanPath);
       }
+    }
+
+    if (navigatorKey.currentState != null) {
+      performNavigation();
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        performNavigation();
+      });
     }
   }
 }

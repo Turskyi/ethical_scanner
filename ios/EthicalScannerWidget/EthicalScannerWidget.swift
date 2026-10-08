@@ -110,18 +110,34 @@ struct EthicalScannerWidgetEntryView : View {
             let w = geo.size.width
             let h = geo.size.height
 
-            Group {
-                Text(entry.season.emoji)
-                    .font(.system(size: w * 0.18))
-                    .opacity(0.8)
-                    .position(x: w * 0.82, y: h * 0.2)
-                    .rotationEffect(.degrees(12))
+            if family == .systemMedium {
+                Group {
+                    Text(entry.season.emoji)
+                        .font(.system(size: h * 0.28))
+                        .opacity(0.85)
+                        .position(x: w * 0.91, y: h * 0.16)
+                        .rotationEffect(.degrees(16))
 
-                Text(entry.season.emoji)
-                    .font(.system(size: w * 0.14))
-                    .opacity(0.6)
-                    .position(x: w * 0.18, y: h * 0.8)
-                    .rotationEffect(.degrees(-18))
+                    Text(entry.season.emoji)
+                        .font(.system(size: h * 0.32))
+                        .opacity(0.6)
+                        .position(x: w * 0.28, y: h * 0.90)
+                        .rotationEffect(.degrees(-18))
+                }
+            } else {
+                Group {
+                    Text(entry.season.emoji)
+                        .font(.system(size: w * 0.18))
+                        .opacity(0.8)
+                        .position(x: w * 0.82, y: h * 0.2)
+                        .rotationEffect(.degrees(12))
+
+                    Text(entry.season.emoji)
+                        .font(.system(size: w * 0.14))
+                        .opacity(0.6)
+                        .position(x: w * 0.18, y: h * 0.8)
+                        .rotationEffect(.degrees(-18))
+                }
             }
         }
     }
@@ -182,7 +198,7 @@ struct EthicalScannerWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             EthicalScannerWidgetEntryView(entry: entry)
-                .widgetURL(URL(string: "ethicalscanner://scan"))
+                .widgetURL(URL(string: "ethicalscanner://scan?homeWidget=true"))
         }
         .configurationDisplayName("Ethical Scanner")
         .description("Tap to scan a product.")

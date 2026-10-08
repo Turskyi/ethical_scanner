@@ -48,6 +48,10 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:host="scan" android:scheme="ethicalscanner" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="es.antonborri.home_widget.action.LAUNCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
         <receiver
