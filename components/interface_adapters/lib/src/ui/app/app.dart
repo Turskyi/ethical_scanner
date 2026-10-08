@@ -10,11 +10,13 @@ abstract interface class App extends StatelessWidget {
     required AppDependencies dependencies,
     required LocalizationDelegate localizationDelegate,
     required RouteFactory onGenerateRoute,
+    GlobalKey<NavigatorState>? navigatorKey,
   }) {
     return EthicalScannerApp(
       dependencies: dependencies,
       localizationDelegate: localizationDelegate,
       onGenerateRoute: onGenerateRoute,
+      navigatorKey: navigatorKey,
     );
   }
 }

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="ethical_scanner">Ethical Scanner</string>
+    <string name="scan">Сканувати</string>
+    <string name="scan_a_product">Сканувати продукт</string>
+    <string name="widget_description">Торкніться, щоб зісканувати штрихкод продукту.</string>
 </resources>

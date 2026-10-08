@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="ethical_scanner">Ethical Scanner</string>
+    <string name="scan">Scan</string>
+    <string name="scan_a_product">Scan a product</string>
+    <string name="widget_description">Tap to scan a product.</string>
 </resources>
