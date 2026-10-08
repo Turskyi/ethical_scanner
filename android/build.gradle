@@ -2,7 +2,7 @@
 //file:noinspection GrDeprecatedAPIUsage
 buildscript {
     // Redirect jcenter() calls from older plugins to mavenCentral()
-    org.gradle.api.artifacts.dsl.RepositoryHandler.metaClass.jcenter = { ->
+    org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler.metaClass.jcenter = { ->
         delegate.mavenCentral()
     }
 
