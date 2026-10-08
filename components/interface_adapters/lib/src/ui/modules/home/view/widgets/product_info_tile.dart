@@ -283,7 +283,7 @@ class ProductInfoTile extends StatelessWidget {
   }) {
     return () {
       if (type.isCompanyWarSponsor) {
-        return Icons.question_mark;
+        return Icons.priority_high;
       } else if (type == ProductInfoType.gs1Country &&
           info.isGs1CountryStateSponsorOfTerrorism &&
           !isRedBackground) {

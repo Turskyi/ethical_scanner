@@ -35,7 +35,7 @@
     "reported_origin_colon": "Часто виготовляється у: ",
     "country_where_sold_colon": "Країна, де продукт продається: ",
     "brand_colon": "Бренд: ",
-    "is_company_terrorism_sponsor": "Чи є компанія спонсором війни? ",
+    "is_company_terrorism_sponsor": "Статус спонсора війни",
     "is_country_terrorism_sponsor": "Чи є країна спонсором війни? ",
     "is_vegan": "Це веганський продукт? ",
     "is_vegetarian": "Це вегетаріанський продукт? ",
@@ -48,7 +48,7 @@
     "error_colon": "Помилка: ",
     "still_operating": "{brand} досі працює в Росії.",
     "still_operating_unnamed": "Ця компанія досі працює в Росії.",
-    "leave_russia": "Leave Russia",
+    "leave_russia": "Leave Russia (Kyiv School of Economics)",
     "yale_list": "Список Yale",
     "initial_book_code_description": "Початковий {eanPrefix} у цьому штрих-коді є книжковим EAN-префіксом, що вказує на те, що це книга. Префікс {eanPrefix} у цьому випадку призначено для англійської мови, але він не вказує на конкретну країну.",
     "russian": "російськe"

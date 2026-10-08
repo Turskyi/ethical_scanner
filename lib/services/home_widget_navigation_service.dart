@@ -26,9 +26,7 @@ class HomeWidgetNavigationService {
 
     if (isMobilePlatform) {
       try {
-        _widgetClickSubscription = HomeWidget.widgetClicked.listen((
-          Uri? uri,
-        ) {
+        _widgetClickSubscription = HomeWidget.widgetClicked.listen((Uri? uri) {
           if (uri != null) {
             _handleWidgetUri(uri);
           }

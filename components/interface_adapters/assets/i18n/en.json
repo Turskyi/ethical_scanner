@@ -35,7 +35,7 @@
     "reported_origin_colon": "Reportedly often from: ",
     "country_where_sold_colon": "Country where the product is sold: ",
     "brand_colon": "Brand: ",
-    "is_company_terrorism_sponsor": "Is company sponsor of war? ",
+    "is_company_terrorism_sponsor": "War Sponsor Status",
     "is_country_terrorism_sponsor": "Is country sponsor of terrorism? ",
     "is_vegan": "Is vegan? ",
     "is_vegetarian": "Is vegetarian? ",
@@ -48,7 +48,7 @@
     "error_colon": "Error: ",
     "still_operating": "{brand} is still operating in Russia.",
     "still_operating_unnamed": "This company is still operating in Russia.",
-    "leave_russia": "Leave Russia",
+    "leave_russia": "Leave Russia (Kyiv School of Economics)",
     "yale_list": "Yale list",
     "initial_book_code_description": "The initial {eanPrefix} in this barcode is the Book-land EAN prefix, indicating that it is a book. The {eanPrefix} prefix, in this case, is assigned to the English language, but it doesn't specify a particular country.",
     "russian": "russian"
