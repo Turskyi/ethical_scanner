@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:camera/camera.dart';
 import 'package:entities/entities.dart';
@@ -18,6 +20,7 @@ import 'package:interface_adapters/src/ui/res/values/constants.dart'
 import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
 import 'package:interface_adapters/src/ui/widgets/language_selector.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PhotoView extends StatefulWidget {
@@ -54,6 +57,9 @@ class _PhotoViewState extends State<PhotoView> {
   double _maxZoomLevel = 5.0;
 
   bool _noCameraAvailable = false;
+  bool _isPickingImage = false;
+  bool _isSubmitting = false;
+  int _rotationTurns = 0;
 
   CameraController? _controller;
   Future<void>? _initializeControllerFuture;
@@ -244,52 +250,136 @@ class _PhotoViewState extends State<PhotoView> {
                       bottom: 16.0,
                       left: 16.0,
                       child: AnimatedOpacity(
-                        opacity: viewModel is TakenPhotoState ? 1.0 : 0.0,
+                        opacity:
+                            (viewModel is TakenPhotoState || _isPickingImage)
+                            ? 1.0
+                            : 0.0,
                         duration: const Duration(milliseconds: 500),
                         // Display captured photo preview
-                        child: viewModel is TakenPhotoState
-                            ? GestureDetector(
-                                onTap: _onRemovePhoto,
-                                child: Container(
-                                  margin: const EdgeInsets.only(bottom: 12.0),
-                                  width: 150.0,
-                                  height: 250.0,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black,
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 2.0,
-                                    ),
+                        child: (viewModel is TakenPhotoState || _isPickingImage)
+                            ? Container(
+                                margin: const EdgeInsets.only(bottom: 12.0),
+                                width: 150.0,
+                                height: 250.0,
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 2.0,
                                   ),
-                                  child: Stack(
-                                    alignment: Alignment.center,
-                                    children: <Widget>[
-                                      if (kIsWeb)
-                                        Image.network(
-                                          viewModel.photoPath,
-                                          fit: BoxFit.contain,
-                                        )
-                                      else
-                                        Image.file(
-                                          File(viewModel.photoPath),
-                                          fit: BoxFit.contain,
+                                ),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: <Widget>[
+                                    if (_isPickingImage)
+                                      Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            const CircularProgressIndicator(
+                                              color: Colors.white,
+                                            ),
+                                            const SizedBox(height: 8.0),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 8.0,
+                                                  ),
+                                              child: Text(
+                                                translate(
+                                                  'photo.loading_image',
+                                                ),
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12.0,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
+                                      )
+                                    else if (viewModel
+                                        is TakenPhotoState) ...<Widget>[
+                                      RotatedBox(
+                                        quarterTurns: _rotationTurns,
+                                        child: kIsWeb
+                                            ? Image.network(
+                                                viewModel.photoPath,
+                                                fit: BoxFit.contain,
+                                                frameBuilder:
+                                                    _imageFrameBuilder,
+                                              )
+                                            : Image.file(
+                                                File(viewModel.photoPath),
+                                                fit: BoxFit.contain,
+                                                frameBuilder:
+                                                    _imageFrameBuilder,
+                                              ),
+                                      ),
+                                      Positioned(
+                                        top: 0,
+                                        left: 0,
+                                        child: Semantics(
+                                          label: translate(
+                                            'photo.rotate_photo',
+                                          ),
+                                          button: true,
+                                          child: Tooltip(
+                                            message: translate(
+                                              'photo.rotate_photo',
+                                            ),
+                                            child: GestureDetector(
+                                              onTap: _onRotatePhoto,
+                                              child: Container(
+                                                padding: const EdgeInsets.all(
+                                                  4.0,
+                                                ),
+                                                color: Colors.black.withValues(
+                                                  alpha: 0.5,
+                                                ),
+                                                child: const Icon(
+                                                  Icons.rotate_right,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                       Positioned(
                                         top: 0,
                                         right: 0,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(4.0),
-                                          color: Colors.black.withValues(
-                                            alpha: 0.5,
+                                        child: Semantics(
+                                          label: translate(
+                                            'photo.remove_photo',
                                           ),
-                                          child: const Icon(
-                                            Icons.close,
-                                            color: Colors.white,
+                                          button: true,
+                                          child: Tooltip(
+                                            message: translate(
+                                              'photo.remove_photo',
+                                            ),
+                                            child: GestureDetector(
+                                              onTap: _onRemovePhoto,
+                                              child: Container(
+                                                padding: const EdgeInsets.all(
+                                                  4.0,
+                                                ),
+                                                color: Colors.black.withValues(
+                                                  alpha: 0.5,
+                                                ),
+                                                child: const Icon(
+                                                  Icons.close,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ],
-                                  ),
+                                  ],
                                 ),
                               )
                             : const SizedBox(),
@@ -375,18 +465,25 @@ class _PhotoViewState extends State<PhotoView> {
                       ),
                       FloatingActionButton(
                         heroTag: 'capture_button',
-                        onPressed: viewModel is LoadingState
+                        onPressed: (viewModel is LoadingState || _isSubmitting)
                             ? null
                             : viewModel is TakenPhotoState
                             ? () => _submitIngredientsPhoto(viewModel.photoPath)
                             : _takePhoto,
-                        child: viewModel is TakenPhotoState
+                        child: (viewModel is LoadingState || _isSubmitting)
+                            ? const SizedBox(
+                                width: 24.0,
+                                height: 24.0,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2.5,
+                                ),
+                              )
+                            : viewModel is TakenPhotoState
                             ? const Icon(Icons.send)
                             : viewModel is PhotoMakerReadyState ||
                                   viewModel is AddIngredientsErrorState
                             ? const Icon(Icons.camera)
-                            : viewModel is LoadingState
-                            ? const Icon(Icons.stop)
                             : const SizedBox(),
                       ),
                       if (!kIsWeb)
@@ -679,12 +776,108 @@ class _PhotoViewState extends State<PhotoView> {
     });
   }
 
+  Widget _imageFrameBuilder(
+    BuildContext context,
+    Widget child,
+    int? frame,
+    bool wasSynchronouslyLoaded,
+  ) {
+    if (wasSynchronouslyLoaded || frame != null) {
+      return child;
+    } else {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const CircularProgressIndicator(color: Colors.white),
+            const SizedBox(height: 8.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                translate('photo.loading_image'),
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white, fontSize: 12.0),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  void _onRotatePhoto() {
+    setState(() {
+      _rotationTurns = (_rotationTurns + 1) % 4;
+    });
+  }
+
   /// Remove the preview and reset the captured
   /// image path.
   void _onRemovePhoto() {
+    setState(() {
+      _rotationTurns = 0;
+      _isPickingImage = false;
+    });
     // Remove the preview and reset the captured
     // image path.
     context.read<PhotoPresenter>().add(const RemovePhotoEvent());
+  }
+
+  Future<String> _getRotatedImagePath({
+    required String originalPath,
+    required int quarterTurns,
+  }) async {
+    final int turns = quarterTurns % 4;
+    if (turns == 0) {
+      return originalPath;
+    } else {
+      try {
+        final File file = File(originalPath);
+        final Uint8List bytes = await file.readAsBytes();
+        final ui.Codec codec = await ui.instantiateImageCodec(bytes);
+        final ui.FrameInfo frameInfo = await codec.getNextFrame();
+        final ui.Image image = frameInfo.image;
+
+        final int targetWidth = (turns % 2 == 1) ? image.height : image.width;
+        final int targetHeight = (turns % 2 == 1) ? image.width : image.height;
+
+        final ui.PictureRecorder recorder = ui.PictureRecorder();
+        final ui.Canvas canvas = ui.Canvas(recorder);
+
+        if (turns == 1) {
+          canvas.translate(targetWidth.toDouble(), 0);
+          canvas.rotate(math.pi / 2);
+        } else if (turns == 2) {
+          canvas.translate(targetWidth.toDouble(), targetHeight.toDouble());
+          canvas.rotate(math.pi);
+        } else if (turns == 3) {
+          canvas.translate(0, targetHeight.toDouble());
+          canvas.rotate(3 * math.pi / 2);
+        }
+
+        canvas.drawImage(image, Offset.zero, Paint());
+        final ui.Picture picture = recorder.endRecording();
+        final ui.Image rotatedImage = await picture.toImage(
+          targetWidth,
+          targetHeight,
+        );
+        final ByteData? byteData = await rotatedImage.toByteData(
+          format: ui.ImageByteFormat.png,
+        );
+
+        if (byteData != null) {
+          final Directory tempDir = await getTemporaryDirectory();
+          final String rotatedPath =
+              '${tempDir.path}/rotated_${DateTime.now().millisecondsSinceEpoch}.png';
+          final File rotatedFile = File(rotatedPath);
+          await rotatedFile.writeAsBytes(byteData.buffer.asUint8List());
+          return rotatedPath;
+        }
+      } catch (e) {
+        debugPrint('Error rotating image file: $e');
+      }
+      return originalPath;
+    }
   }
 
   Future<void> _launchWebsite() async {
@@ -708,15 +901,35 @@ class _PhotoViewState extends State<PhotoView> {
     );
   }
 
-  void _submitIngredientsPhoto(String photoPath) {
-    return context.read<PhotoPresenter>().add(
-      AddIngredientsPhotoEvent(
-        ProductPhoto(path: photoPath, info: widget.productInfo),
-      ),
-    );
+  Future<void> _submitIngredientsPhoto(String photoPath) async {
+    setState(() {
+      _isSubmitting = true;
+    });
+    final String pathToSend;
+    if (!kIsWeb && _rotationTurns % 4 != 0) {
+      pathToSend = await _getRotatedImagePath(
+        originalPath: photoPath,
+        quarterTurns: _rotationTurns,
+      );
+    } else {
+      pathToSend = photoPath;
+    }
+    if (mounted) {
+      setState(() {
+        _isSubmitting = false;
+      });
+      context.read<PhotoPresenter>().add(
+        AddIngredientsPhotoEvent(
+          ProductPhoto(path: pathToSend, info: widget.productInfo),
+        ),
+      );
+    }
   }
 
   Future<void> _takePhoto() async {
+    setState(() {
+      _rotationTurns = 0;
+    });
     context.read<PhotoPresenter>().add(const TakePhotoEvent());
     try {
       await _initializeControllerFuture;
@@ -735,6 +948,10 @@ class _PhotoViewState extends State<PhotoView> {
   }
 
   Future<void> _pickImageFromGallery() async {
+    setState(() {
+      _isPickingImage = true;
+      _rotationTurns = 0;
+    });
     try {
       final XFile? image = await _imagePicker.pickImage(
         source: ImageSource.gallery,
@@ -767,6 +984,12 @@ class _PhotoViewState extends State<PhotoView> {
             barcode: widget.productInfo.barcode,
           ),
         );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isPickingImage = false;
+        });
       }
     }
   }

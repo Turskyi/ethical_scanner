@@ -12,6 +12,7 @@ class LoggingInterceptorImpl extends Interceptor implements LoggingInterceptor {
     ResponseInterceptorHandler handler,
   ) {
     log('onResponse -------------------');
+    log('-$response----------');
     log('-----------------------------');
     super.onResponse(response, handler);
   }

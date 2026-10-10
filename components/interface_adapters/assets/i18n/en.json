@@ -92,7 +92,10 @@
     "extract_ingredients": "Extract ingredients text",
     "image_upload_successful": "Image upload successful!",
     "ingredients_saved": "Ingredients saved successfully!",
-    "camera_not_supported": "Camera access is not supported on this device.\n\nThis feature is available on Web, Android, and iOS platforms.\n\nPlease try scanning the product using another device,\nor visit:\n"
+    "camera_not_supported": "Camera access is not supported on this device.\n\nThis feature is available on Web, Android, and iOS platforms.\n\nPlease try scanning the product using another device,\nor visit:\n",
+    "loading_image": "Loading image...",
+    "rotate_photo": "Rotate photo",
+    "remove_photo": "Remove photo"
   },
   "privacy_policy": {
     "main_title": "Privacy Policy for \"Ethical Scanner\" App",

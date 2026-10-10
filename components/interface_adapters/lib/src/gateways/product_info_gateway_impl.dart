@@ -17,11 +17,25 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
   final RemoteDataSource _remoteDataSource;
   final LocalDataSource _localDataSource;
 
+  String _normalizeBarcode(String barcode) {
+    final String normalized;
+    if (barcode.length == 13 && barcode.startsWith('0')) {
+      normalized = barcode.substring(1);
+    } else {
+      normalized = barcode;
+    }
+    return normalized;
+  }
+
   @override
   Future<ProductInfo> getProductInfoAsFuture(LocalizedCode input) {
-    final String inputCode = input.code;
+    final String normalizedCode = _normalizeBarcode(input.code);
+    final LocalizedCode normalizedInput = normalizedCode != input.code
+        ? LocalizedCode(code: normalizedCode, language: input.language)
+        : input;
+    final String inputCode = normalizedInput.code;
     return _remoteDataSource
-        .getProductInfoAsFuture(input)
+        .getProductInfoAsFuture(normalizedInput)
         .onError((Object? error, StackTrace stackTrace) {
           if (error is FormatException) {
             final Object? source = error.source;
