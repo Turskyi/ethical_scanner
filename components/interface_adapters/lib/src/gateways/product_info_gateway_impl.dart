@@ -49,6 +49,13 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
               '\n  URI: ${error.uri}'
               '\n  Stacktrace: $stackTrace',
             );
+          } else if (error is NotFoundException) {
+            debugPrint(
+              'NotFoundException in $runtimeType during '
+              '"getProductInfoAsFuture":'
+              '\n  Message: ${error.message}'
+              '\n  Product information not found for code "$inputCode".',
+            );
           } else {
             debugPrint(
               'Unhandled error of type "${error.runtimeType}" in $runtimeType '
