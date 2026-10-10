@@ -760,6 +760,7 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
       '655': 'China',
       '665': 'China',
       '667': 'Vietnam',
+      '762': 'Canada',
       '773': 'China',
       '837': 'China',
       '850': 'United States',

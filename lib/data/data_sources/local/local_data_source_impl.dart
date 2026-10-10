@@ -576,9 +576,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       '76': 'United States',
       '760': 'Switzerland and Liechtenstein',
       '761': 'Switzerland and Liechtenstein',
-      '762':
-          'Switzerland and Liechtenstein (GS1).\n'
-          'Reportedly used on some produce grown in Canada.',
+      '762': 'Switzerland and Liechtenstein (GS1)',
       '763': 'Switzerland and Liechtenstein',
       '764': 'Switzerland and Liechtenstein',
       '765': 'Switzerland and Liechtenstein',
@@ -769,6 +767,7 @@ class LocalDataSourceImpl implements LocalDataSource {
     '655': 'China',
     '665': 'China',
     '667': 'Vietnam',
+    '762': 'Canada',
     '773': 'China',
     '837': 'China, Canada',
     '850': 'United States',

@@ -21,6 +21,7 @@ void main() {
         '0641234567890': 'United States',
         '0861234567890': 'United States',
         '1251234567890': 'United States',
+        '7621234567890': 'Switzerland and Liechtenstein',
       };
 
       testCases.forEach((String barcode, String expectedCountry) {
@@ -35,6 +36,7 @@ void main() {
         '0611234567890': 'Greece',
         '6321234567890': 'China',
         '6671234567890': 'Vietnam',
+        '7621234567890': 'Canada',
         '8741234567890': 'Canada',
       };
 
