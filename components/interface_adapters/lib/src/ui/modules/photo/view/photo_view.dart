@@ -823,61 +823,93 @@ class _PhotoViewState extends State<PhotoView> {
     context.read<PhotoPresenter>().add(const RemovePhotoEvent());
   }
 
-  Future<String> _getRotatedImagePath({
+  Future<String> _getOptimizedImagePath({
     required String originalPath,
     required int quarterTurns,
   }) async {
-    final int turns = quarterTurns % 4;
-    if (turns == 0) {
-      return originalPath;
-    } else {
-      try {
-        final File file = File(originalPath);
-        final Uint8List bytes = await file.readAsBytes();
-        final ui.Codec codec = await ui.instantiateImageCodec(bytes);
-        final ui.FrameInfo frameInfo = await codec.getNextFrame();
-        final ui.Image image = frameInfo.image;
+    try {
+      final File file = File(originalPath);
+      final Uint8List bytes = await file.readAsBytes();
+      final ui.Codec initialCodec = await ui.instantiateImageCodec(bytes);
+      final ui.FrameInfo initialFrameInfo = await initialCodec.getNextFrame();
+      final ui.Image image = initialFrameInfo.image;
 
-        final int targetWidth = (turns % 2 == 1) ? image.height : image.width;
-        final int targetHeight = (turns % 2 == 1) ? image.width : image.height;
+      final int originalWidth = image.width;
+      final int originalHeight = image.height;
 
-        final ui.PictureRecorder recorder = ui.PictureRecorder();
-        final ui.Canvas canvas = ui.Canvas(recorder);
+      const int maxDimension = 1500;
+      int scaledWidth = originalWidth;
+      int scaledHeight = originalHeight;
 
-        if (turns == 1) {
-          canvas.translate(targetWidth.toDouble(), 0);
-          canvas.rotate(math.pi / 2);
-        } else if (turns == 2) {
-          canvas.translate(targetWidth.toDouble(), targetHeight.toDouble());
-          canvas.rotate(math.pi);
-        } else if (turns == 3) {
-          canvas.translate(0, targetHeight.toDouble());
-          canvas.rotate(3 * math.pi / 2);
+      if (scaledWidth > maxDimension || scaledHeight > maxDimension) {
+        if (scaledWidth > scaledHeight) {
+          scaledHeight = (scaledHeight * maxDimension ~/ scaledWidth);
+          scaledWidth = maxDimension;
+        } else {
+          scaledWidth = (scaledWidth * maxDimension ~/ scaledHeight);
+          scaledHeight = maxDimension;
         }
-
-        canvas.drawImage(image, Offset.zero, Paint());
-        final ui.Picture picture = recorder.endRecording();
-        final ui.Image rotatedImage = await picture.toImage(
-          targetWidth,
-          targetHeight,
-        );
-        final ByteData? byteData = await rotatedImage.toByteData(
-          format: ui.ImageByteFormat.png,
-        );
-
-        if (byteData != null) {
-          final Directory tempDir = await getTemporaryDirectory();
-          final String rotatedPath =
-              '${tempDir.path}/rotated_${DateTime.now().millisecondsSinceEpoch}.png';
-          final File rotatedFile = File(rotatedPath);
-          await rotatedFile.writeAsBytes(byteData.buffer.asUint8List());
-          return rotatedPath;
-        }
-      } catch (e) {
-        debugPrint('Error rotating image file: $e');
       }
-      return originalPath;
+
+      final int turns = quarterTurns % 4;
+
+      if (turns == 0 &&
+          originalWidth <= maxDimension &&
+          originalHeight <= maxDimension) {
+        return originalPath;
+      }
+
+      final ui.Codec codec = await ui.instantiateImageCodec(
+        bytes,
+        targetWidth: scaledWidth,
+        targetHeight: scaledHeight,
+      );
+      final ui.FrameInfo frameInfo = await codec.getNextFrame();
+      final ui.Image scaledImage = frameInfo.image;
+
+      final int finalWidth = (turns % 2 == 1)
+          ? scaledImage.height
+          : scaledImage.width;
+      final int finalHeight = (turns % 2 == 1)
+          ? scaledImage.width
+          : scaledImage.height;
+
+      final ui.PictureRecorder recorder = ui.PictureRecorder();
+      final ui.Canvas canvas = ui.Canvas(recorder);
+
+      if (turns == 1) {
+        canvas.translate(finalWidth.toDouble(), 0);
+        canvas.rotate(math.pi / 2);
+      } else if (turns == 2) {
+        canvas.translate(finalWidth.toDouble(), finalHeight.toDouble());
+        canvas.rotate(math.pi);
+      } else if (turns == 3) {
+        canvas.translate(0, finalHeight.toDouble());
+        canvas.rotate(3 * math.pi / 2);
+      }
+
+      canvas.drawImage(scaledImage, Offset.zero, Paint());
+      final ui.Picture picture = recorder.endRecording();
+      final ui.Image rotatedImage = await picture.toImage(
+        finalWidth,
+        finalHeight,
+      );
+      final ByteData? byteData = await rotatedImage.toByteData(
+        format: ui.ImageByteFormat.png,
+      );
+
+      if (byteData != null) {
+        final Directory tempDir = await getTemporaryDirectory();
+        final String optimizedPath =
+            '${tempDir.path}/optimized_${DateTime.now().millisecondsSinceEpoch}.png';
+        final File optimizedFile = File(optimizedPath);
+        await optimizedFile.writeAsBytes(byteData.buffer.asUint8List());
+        return optimizedPath;
+      }
+    } catch (e) {
+      debugPrint('Error optimizing image file: $e');
     }
+    return originalPath;
   }
 
   Future<void> _launchWebsite() async {
@@ -906,8 +938,8 @@ class _PhotoViewState extends State<PhotoView> {
       _isSubmitting = true;
     });
     final String pathToSend;
-    if (!kIsWeb && _rotationTurns % 4 != 0) {
-      pathToSend = await _getRotatedImagePath(
+    if (!kIsWeb) {
+      pathToSend = await _getOptimizedImagePath(
         originalPath: photoPath,
         quarterTurns: _rotationTurns,
       );
