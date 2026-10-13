@@ -38,6 +38,7 @@ void main() {
         '6671234567890': 'Vietnam',
         '7621234567890': 'Canada',
         '8741234567890': 'Canada',
+        '8791234567890': 'Cambodia',
       };
 
       testCases.forEach((String barcode, String expectedOrigin) {

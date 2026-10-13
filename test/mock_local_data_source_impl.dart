@@ -766,6 +766,7 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
       '850': 'United States',
       '856': 'Colombia',
       '874': 'Canada',
+      '879': 'Cambodia',
     };
     if (barcode.length < 3) {
       return '';
@@ -780,6 +781,7 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
         <String, List<String>>{
           '641': <String>['assets/images/evidence/641_england.jpg'],
           '195': <String>['assets/images/evidence/195_china.jpg'],
+          '879': <String>['assets/images/evidence/879_cambodia.jpg'],
         };
     if (barcode.length < 3) {
       return const <String>[];
