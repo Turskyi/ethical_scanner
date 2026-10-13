@@ -9,9 +9,11 @@ class ProductInfo {
     this.origin = '',
     this.gs1Country = '',
     this.reportedOrigin = '',
+    this.reportedOriginPhotos = const <String>[],
     this.countryTags = const <String>[],
     this.countrySold = '',
     this.infoAi = '',
+    this.infoAiModel = '',
     this.name = '',
     this.brand = '',
     this.isCompanyTerrorismSponsor = false,
@@ -25,6 +27,7 @@ class ProductInfo {
     this.quantity = '',
     this.imageIngredientsUrl = '',
     this.responseType = ProductResponseType.openFoodFacts,
+    this.leaveRussiaUrl = '',
   });
 
   final String barcode;
@@ -43,6 +46,7 @@ class ProductInfo {
   /// country of origin derived from physical product observations tied to
   /// specific barcode prefixes.
   final String reportedOrigin;
+  final List<String> reportedOriginPhotos;
 
   /// The [countryTags] parameter is a list of strings that indicates the
   /// countries where the product is sold. For example, [countryTags]=France,
@@ -59,6 +63,7 @@ class ProductInfo {
   /// sorting the products.
   final String countrySold;
   final String infoAi;
+  final String infoAiModel;
   final String name;
   final String brand;
   final bool isCompanyTerrorismSponsor;
@@ -78,6 +83,20 @@ class ProductInfo {
   final String imageIngredientsUrl;
   final ProductResponseType responseType;
 
+  /// The company-specific Leave Russia / KSE Institute profile page URL
+  /// (e.g., `https://leave-russia.org/ferrero` or
+  /// `https://leave-russia.org/uk/ferrero`).
+  ///
+  /// When a barcode lookup successfully identifies a company on Leave Russia,
+  /// this URL is populated with the company's dedicated page. When tapped in
+  /// the UI, it opens this company page instead of the generic site-wide source
+  /// link.
+  final String leaveRussiaUrl;
+
+  /// EAN barcode prefix for Russia (barcodes starting with '46').
+  static const String russianBarcodePrefix = '46';
+  static const String russianEanPrefix = '460';
+
   bool get isVegan => vegan == Vegan.positive;
 
   bool get isVegetarian => vegetarian == Vegetarian.positive;
@@ -89,7 +108,7 @@ class ProductInfo {
       origin.toLowerCase() == 'ru' ||
       countrySold.toLowerCase() == 'россия' ||
       origin.toLowerCase() == 'россия' ||
-      barcode.startsWith('460');
+      barcode.startsWith(russianEanPrefix);
 
   /// US State Department designated state sponsors of terrorism.
   /// Source: https://www.state.gov/state-sponsors-of-terrorism/
@@ -108,9 +127,11 @@ class ProductInfo {
     String? origin,
     String? gs1Country,
     String? reportedOrigin,
+    List<String>? reportedOriginPhotos,
     List<String>? countryTags,
     String? countrySold,
     String? infoAi,
+    String? infoAiModel,
     String? name,
     String? brand,
     bool? isCompanyTerrorismSponsor,
@@ -124,15 +145,18 @@ class ProductInfo {
     String? quantity,
     String? imageIngredientsUrl,
     ProductResponseType? responseType,
+    String? leaveRussiaUrl,
   }) {
     return ProductInfo(
       barcode: barcode ?? this.barcode,
       origin: origin ?? this.origin,
       gs1Country: gs1Country ?? this.gs1Country,
       reportedOrigin: reportedOrigin ?? this.reportedOrigin,
+      reportedOriginPhotos: reportedOriginPhotos ?? this.reportedOriginPhotos,
       countryTags: countryTags ?? this.countryTags,
       countrySold: countrySold ?? this.countrySold,
       infoAi: infoAi ?? this.infoAi,
+      infoAiModel: infoAiModel ?? this.infoAiModel,
       name: name ?? this.name,
       brand: brand ?? this.brand,
       isCompanyTerrorismSponsor:
@@ -147,6 +171,7 @@ class ProductInfo {
       quantity: quantity ?? this.quantity,
       imageIngredientsUrl: imageIngredientsUrl ?? this.imageIngredientsUrl,
       responseType: responseType ?? this.responseType,
+      leaveRussiaUrl: leaveRussiaUrl ?? this.leaveRussiaUrl,
     );
   }
 
@@ -175,6 +200,7 @@ class ProductInfo {
         'countryTags: $countryTags, '
         'country: $countrySold, '
         'countryAi: $infoAi, '
+        'infoAiModel: $infoAiModel, '
         'name: $name, '
         'brand: $brand, '
         'isTerrorismSponsor: '
@@ -188,7 +214,8 @@ class ProductInfo {
         'language: ${language.name}, '
         'quantity: $quantity,'
         'imageIngredientsUrl: $imageIngredientsUrl,'
-        'responseType: $responseType'
+        'responseType: $responseType,'
+        'leaveRussiaUrl: $leaveRussiaUrl'
         '}';
   }
 }

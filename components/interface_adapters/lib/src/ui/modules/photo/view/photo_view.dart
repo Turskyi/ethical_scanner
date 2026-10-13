@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:camera/camera.dart';
 import 'package:entities/entities.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:interface_adapters/src/ui/modules/photo/photo_event.dart';
 import 'package:interface_adapters/src/ui/modules/photo/photo_presenter.dart';
 import 'package:interface_adapters/src/ui/res/color/gradients.dart';
@@ -17,6 +20,7 @@ import 'package:interface_adapters/src/ui/res/values/constants.dart'
 import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
 import 'package:interface_adapters/src/ui/widgets/language_selector.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PhotoView extends StatefulWidget {
@@ -34,6 +38,7 @@ class PhotoView extends StatefulWidget {
 }
 
 class _PhotoViewState extends State<PhotoView> {
+  final ImagePicker _imagePicker = ImagePicker();
   final double _zoomStep = 0.4;
   final RegExp _emailExp = RegExp(r'\b[\w.-]+@[\w.-]+\.\w{2,}\b');
 
@@ -45,10 +50,16 @@ class _PhotoViewState extends State<PhotoView> {
   // Initial zoom level.
   double _currentZoomLevel = 1.0;
 
+  /// Initial min zoom level.
+  double _minZoomLevel = 1.0;
+
   /// Initial max zoom level.
   double _maxZoomLevel = 5.0;
 
   bool _noCameraAvailable = false;
+  bool _isPickingImage = false;
+  bool _isSubmitting = false;
+  int _rotationTurns = 0;
 
   CameraController? _controller;
   Future<void>? _initializeControllerFuture;
@@ -70,6 +81,7 @@ class _PhotoViewState extends State<PhotoView> {
     final Dimens dimens = resources.dimens;
     final TextTheme textTheme = Theme.of(context).textTheme;
     final TextStyle? titleLarge = textTheme.titleLarge;
+    final TextStyle? titleMedium = textTheme.titleMedium;
     if (_noCameraAvailable) {
       return DecoratedBox(
         decoration: BoxDecoration(
@@ -178,7 +190,7 @@ class _PhotoViewState extends State<PhotoView> {
               maxLines: 2,
               style: TextStyle(
                 color: Colors.white,
-                fontSize: titleLarge?.fontSize,
+                fontSize: titleMedium?.fontSize,
                 fontWeight: FontWeight.bold,
                 shadows: <Shadow>[
                   Shadow(
@@ -239,49 +251,136 @@ class _PhotoViewState extends State<PhotoView> {
                       bottom: 16.0,
                       left: 16.0,
                       child: AnimatedOpacity(
-                        opacity: viewModel is TakenPhotoState ? 1.0 : 0.0,
+                        opacity:
+                            (viewModel is TakenPhotoState || _isPickingImage)
+                            ? 1.0
+                            : 0.0,
                         duration: const Duration(milliseconds: 500),
                         // Display captured photo preview
-                        child: viewModel is TakenPhotoState
-                            ? GestureDetector(
-                                onTap: _onRemovePhoto,
-                                child: Container(
-                                  width: 200.0,
-                                  height: 350,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 2.0,
-                                    ),
+                        child: (viewModel is TakenPhotoState || _isPickingImage)
+                            ? Container(
+                                margin: const EdgeInsets.only(bottom: 12.0),
+                                width: 150.0,
+                                height: 250.0,
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 2.0,
                                   ),
-                                  child: Stack(
-                                    children: <Widget>[
-                                      if (kIsWeb)
-                                        Image.network(
-                                          viewModel.photoPath,
-                                          fit: BoxFit.cover,
-                                        )
-                                      else
-                                        Image.file(
-                                          File(viewModel.photoPath),
-                                          fit: BoxFit.cover,
+                                ),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: <Widget>[
+                                    if (_isPickingImage)
+                                      Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            const CircularProgressIndicator(
+                                              color: Colors.white,
+                                            ),
+                                            const SizedBox(height: 8.0),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 8.0,
+                                                  ),
+                                              child: Text(
+                                                translate(
+                                                  'photo.loading_image',
+                                                ),
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12.0,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
+                                      )
+                                    else if (viewModel
+                                        is TakenPhotoState) ...<Widget>[
+                                      RotatedBox(
+                                        quarterTurns: _rotationTurns,
+                                        child: kIsWeb
+                                            ? Image.network(
+                                                viewModel.photoPath,
+                                                fit: BoxFit.contain,
+                                                frameBuilder:
+                                                    _imageFrameBuilder,
+                                              )
+                                            : Image.file(
+                                                File(viewModel.photoPath),
+                                                fit: BoxFit.contain,
+                                                frameBuilder:
+                                                    _imageFrameBuilder,
+                                              ),
+                                      ),
+                                      Positioned(
+                                        top: 0,
+                                        left: 0,
+                                        child: Semantics(
+                                          label: translate(
+                                            'photo.rotate_photo',
+                                          ),
+                                          button: true,
+                                          child: Tooltip(
+                                            message: translate(
+                                              'photo.rotate_photo',
+                                            ),
+                                            child: GestureDetector(
+                                              onTap: _onRotatePhoto,
+                                              child: Container(
+                                                padding: const EdgeInsets.all(
+                                                  4.0,
+                                                ),
+                                                color: Colors.black.withValues(
+                                                  alpha: 0.5,
+                                                ),
+                                                child: const Icon(
+                                                  Icons.rotate_right,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                       Positioned(
                                         top: 0,
                                         right: 0,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(4.0),
-                                          color: Colors.black.withValues(
-                                            alpha: 0.5,
+                                        child: Semantics(
+                                          label: translate(
+                                            'photo.remove_photo',
                                           ),
-                                          child: const Icon(
-                                            Icons.close,
-                                            color: Colors.white,
+                                          button: true,
+                                          child: Tooltip(
+                                            message: translate(
+                                              'photo.remove_photo',
+                                            ),
+                                            child: GestureDetector(
+                                              onTap: _onRemovePhoto,
+                                              child: Container(
+                                                padding: const EdgeInsets.all(
+                                                  4.0,
+                                                ),
+                                                color: Colors.black.withValues(
+                                                  alpha: 0.5,
+                                                ),
+                                                child: const Icon(
+                                                  Icons.close,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ],
-                                  ),
+                                  ],
                                 ),
                               )
                             : const SizedBox(),
@@ -295,6 +394,7 @@ class _PhotoViewState extends State<PhotoView> {
                         color: Colors.black.withValues(alpha: 0.7),
                         alignment: Alignment.center,
                         child: GestureDetector(
+                          onTap: _onRemovePhoto,
                           onLongPress: () {
                             _copyToClipboard(viewModel.errorMessage);
                           },
@@ -324,26 +424,6 @@ class _PhotoViewState extends State<PhotoView> {
                       )
                     else
                       Expanded(child: cameraStack),
-                    if (!kIsWeb)
-                      // Buttons for manual zoom control.
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            ElevatedButton(
-                              // Decrease zoom
-                              onPressed: () => _adjustZoomLevel(-_zoomStep),
-                              child: const Icon(Icons.remove),
-                            ),
-                            ElevatedButton(
-                              // Increase zoom
-                              onPressed: () => _adjustZoomLevel(_zoomStep),
-                              child: const Icon(Icons.add),
-                            ),
-                          ],
-                        ),
-                      ),
                   ],
                 );
               }
@@ -353,26 +433,71 @@ class _PhotoViewState extends State<PhotoView> {
               FloatingActionButtonLocation.centerFloat,
           floatingActionButton: BlocBuilder<PhotoPresenter, PhotoViewModel>(
             builder: (BuildContext _, PhotoViewModel viewModel) {
-              return viewModel is AddIngredientsErrorState
-                  ? const SizedBox()
-                  : Padding(
-                      padding: const EdgeInsets.only(bottom: 20.0),
-                      child: FloatingActionButton(
-                        onPressed: viewModel is LoadingState
+              if (viewModel is AddIngredientsErrorState) {
+                return const SizedBox();
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      if (!kIsWeb)
+                        ElevatedButton(
+                          onPressed: _currentZoomLevel > _minZoomLevel + 0.001
+                              ? () => _adjustZoomLevel(-_zoomStep)
+                              : null,
+                          child: const Icon(Icons.remove),
+                        ),
+                      Visibility(
+                        visible: viewModel is PhotoMakerReadyState,
+                        maintainSize: true,
+                        maintainAnimation: true,
+                        maintainState: true,
+                        child: Semantics(
+                          label: translate('photo.choose_from_gallery'),
+                          button: true,
+                          child: FloatingActionButton(
+                            heroTag: 'gallery_button',
+                            tooltip: translate('photo.choose_from_gallery'),
+                            onPressed: _pickImageFromGallery,
+                            child: const Icon(Icons.photo_library),
+                          ),
+                        ),
+                      ),
+                      FloatingActionButton(
+                        heroTag: 'capture_button',
+                        onPressed: (viewModel is LoadingState || _isSubmitting)
                             ? null
                             : viewModel is TakenPhotoState
                             ? () => _submitIngredientsPhoto(viewModel.photoPath)
                             : _takePhoto,
-                        child: viewModel is TakenPhotoState
+                        child: (viewModel is LoadingState || _isSubmitting)
+                            ? const SizedBox(
+                                width: 24.0,
+                                height: 24.0,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2.5,
+                                ),
+                              )
+                            : viewModel is TakenPhotoState
                             ? const Icon(Icons.send)
                             : viewModel is PhotoMakerReadyState ||
                                   viewModel is AddIngredientsErrorState
                             ? const Icon(Icons.camera)
-                            : viewModel is LoadingState
-                            ? const Icon(Icons.stop)
                             : const SizedBox(),
                       ),
-                    );
+                      if (!kIsWeb)
+                        ElevatedButton(
+                          onPressed: _currentZoomLevel < _maxZoomLevel - 0.001
+                              ? () => _adjustZoomLevel(_zoomStep)
+                              : null,
+                          child: const Icon(Icons.add),
+                        ),
+                    ],
+                  ),
+                );
+              }
             },
           ),
         ),
@@ -416,7 +541,7 @@ class _PhotoViewState extends State<PhotoView> {
 
   void _adjustZoomLevel(double delta) {
     final double newZoomLevel = (_currentZoomLevel + delta).clamp(
-      1.0,
+      _minZoomLevel,
       _maxZoomLevel,
     );
     if (!kIsWeb) {
@@ -591,7 +716,18 @@ class _PhotoViewState extends State<PhotoView> {
         // anyway.
       }
       _controller?.getMaxZoomLevel().then((double max) {
-        _maxZoomLevel = max;
+        setState(() {
+          _maxZoomLevel = max;
+        });
+      });
+      _controller?.getMinZoomLevel().then((double min) {
+        setState(() {
+          _minZoomLevel = min;
+          _currentZoomLevel = _currentZoomLevel.clamp(
+            _minZoomLevel,
+            _maxZoomLevel,
+          );
+        });
       });
       _controller?.setFocusMode(FocusMode.auto);
     }
@@ -632,7 +768,7 @@ class _PhotoViewState extends State<PhotoView> {
 
   void _onScaleUpdate(ScaleUpdateDetails details) {
     double newZoomLevel = _currentZoomLevel * details.scale;
-    newZoomLevel = newZoomLevel.clamp(1.0, _maxZoomLevel);
+    newZoomLevel = newZoomLevel.clamp(_minZoomLevel, _maxZoomLevel);
     if (!kIsWeb) {
       _controller?.setZoomLevel(newZoomLevel);
     }
@@ -641,12 +777,140 @@ class _PhotoViewState extends State<PhotoView> {
     });
   }
 
+  Widget _imageFrameBuilder(
+    BuildContext context,
+    Widget child,
+    int? frame,
+    bool wasSynchronouslyLoaded,
+  ) {
+    if (wasSynchronouslyLoaded || frame != null) {
+      return child;
+    } else {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const CircularProgressIndicator(color: Colors.white),
+            const SizedBox(height: 8.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                translate('photo.loading_image'),
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white, fontSize: 12.0),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  void _onRotatePhoto() {
+    setState(() {
+      _rotationTurns = (_rotationTurns + 1) % 4;
+    });
+  }
+
   /// Remove the preview and reset the captured
   /// image path.
   void _onRemovePhoto() {
+    setState(() {
+      _rotationTurns = 0;
+      _isPickingImage = false;
+    });
     // Remove the preview and reset the captured
     // image path.
     context.read<PhotoPresenter>().add(const RemovePhotoEvent());
+  }
+
+  Future<String> _getOptimizedImagePath({
+    required String originalPath,
+    required int quarterTurns,
+  }) async {
+    try {
+      final File file = File(originalPath);
+      final Uint8List bytes = await file.readAsBytes();
+      final ui.Codec initialCodec = await ui.instantiateImageCodec(bytes);
+      final ui.FrameInfo initialFrameInfo = await initialCodec.getNextFrame();
+      final ui.Image image = initialFrameInfo.image;
+
+      final int originalWidth = image.width;
+      final int originalHeight = image.height;
+
+      const int maxDimension = 1500;
+      int scaledWidth = originalWidth;
+      int scaledHeight = originalHeight;
+
+      if (scaledWidth > maxDimension || scaledHeight > maxDimension) {
+        if (scaledWidth > scaledHeight) {
+          scaledHeight = (scaledHeight * maxDimension ~/ scaledWidth);
+          scaledWidth = maxDimension;
+        } else {
+          scaledWidth = (scaledWidth * maxDimension ~/ scaledHeight);
+          scaledHeight = maxDimension;
+        }
+      }
+
+      final int turns = quarterTurns % 4;
+
+      if (turns == 0 &&
+          originalWidth <= maxDimension &&
+          originalHeight <= maxDimension) {
+        return originalPath;
+      }
+
+      final ui.Codec codec = await ui.instantiateImageCodec(
+        bytes,
+        targetWidth: scaledWidth,
+        targetHeight: scaledHeight,
+      );
+      final ui.FrameInfo frameInfo = await codec.getNextFrame();
+      final ui.Image scaledImage = frameInfo.image;
+
+      final int finalWidth = (turns % 2 == 1)
+          ? scaledImage.height
+          : scaledImage.width;
+      final int finalHeight = (turns % 2 == 1)
+          ? scaledImage.width
+          : scaledImage.height;
+
+      final ui.PictureRecorder recorder = ui.PictureRecorder();
+      final ui.Canvas canvas = ui.Canvas(recorder);
+
+      if (turns == 1) {
+        canvas.translate(finalWidth.toDouble(), 0);
+        canvas.rotate(math.pi / 2);
+      } else if (turns == 2) {
+        canvas.translate(finalWidth.toDouble(), finalHeight.toDouble());
+        canvas.rotate(math.pi);
+      } else if (turns == 3) {
+        canvas.translate(0, finalHeight.toDouble());
+        canvas.rotate(3 * math.pi / 2);
+      }
+
+      canvas.drawImage(scaledImage, Offset.zero, Paint());
+      final ui.Picture picture = recorder.endRecording();
+      final ui.Image rotatedImage = await picture.toImage(
+        finalWidth,
+        finalHeight,
+      );
+      final ByteData? byteData = await rotatedImage.toByteData(
+        format: ui.ImageByteFormat.png,
+      );
+
+      if (byteData != null) {
+        final Directory tempDir = await getTemporaryDirectory();
+        final String optimizedPath =
+            '${tempDir.path}/optimized_${DateTime.now().millisecondsSinceEpoch}.png';
+        final File optimizedFile = File(optimizedPath);
+        await optimizedFile.writeAsBytes(byteData.buffer.asUint8List());
+        return optimizedPath;
+      }
+    } catch (e) {
+      debugPrint('Error optimizing image file: $e');
+    }
+    return originalPath;
   }
 
   Future<void> _launchWebsite() async {
@@ -670,15 +934,35 @@ class _PhotoViewState extends State<PhotoView> {
     );
   }
 
-  void _submitIngredientsPhoto(String photoPath) {
-    return context.read<PhotoPresenter>().add(
-      AddIngredientsPhotoEvent(
-        ProductPhoto(path: photoPath, info: widget.productInfo),
-      ),
-    );
+  Future<void> _submitIngredientsPhoto(String photoPath) async {
+    setState(() {
+      _isSubmitting = true;
+    });
+    final String pathToSend;
+    if (!kIsWeb) {
+      pathToSend = await _getOptimizedImagePath(
+        originalPath: photoPath,
+        quarterTurns: _rotationTurns,
+      );
+    } else {
+      pathToSend = photoPath;
+    }
+    if (mounted) {
+      setState(() {
+        _isSubmitting = false;
+      });
+      context.read<PhotoPresenter>().add(
+        AddIngredientsPhotoEvent(
+          ProductPhoto(path: pathToSend, info: widget.productInfo),
+        ),
+      );
+    }
   }
 
   Future<void> _takePhoto() async {
+    setState(() {
+      _rotationTurns = 0;
+    });
     context.read<PhotoPresenter>().add(const TakePhotoEvent());
     try {
       await _initializeControllerFuture;
@@ -693,6 +977,53 @@ class _PhotoViewState extends State<PhotoView> {
       }
     } catch (e) {
       debugPrint('Error taking picture: $e');
+    }
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    setState(() {
+      _isPickingImage = true;
+      _rotationTurns = 0;
+    });
+    try {
+      final XFile? image = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+      );
+      if (image != null) {
+        final String path = image.path;
+        if (path.isNotEmpty && (kIsWeb || File(path).existsSync())) {
+          if (mounted) {
+            context.read<PhotoPresenter>().add(TakenPhotoEvent(path));
+          }
+        } else {
+          if (mounted) {
+            context.read<PhotoPresenter>().add(
+              PhotoErrorEvent(
+                errorMessage: translate('photo.failed_to_load_image'),
+                barcode: widget.productInfo.barcode,
+              ),
+            );
+          }
+        }
+      } else {
+        // User cancelled photo picker. Camera remains live and unchanged.
+      }
+    } catch (e) {
+      debugPrint('Error picking image from gallery: $e');
+      if (mounted) {
+        context.read<PhotoPresenter>().add(
+          PhotoErrorEvent(
+            errorMessage: e.toString(),
+            barcode: widget.productInfo.barcode,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isPickingImage = false;
+        });
+      }
     }
   }
 }

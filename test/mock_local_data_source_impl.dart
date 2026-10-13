@@ -1,3 +1,4 @@
+import 'package:entities/entities.dart';
 import 'package:ethical_scanner/data/data_sources/local/local_data_source_impl.dart';
 import 'package:ethical_scanner/res/enums/settings.dart';
 import 'package:mockito/mockito.dart';
@@ -35,16 +36,15 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
       '002': 'United States',
       '003': 'United States',
       // ISO 3166-1 numeric for Afghanistan and GS1 USA country code
-      '004': 'USA(GS1)/Afghanistan(ISO 3166-1)',
+      '004': 'USA(GS1)',
       '005': 'United States',
       '006': 'United States',
       '007': 'United States',
-      // ISO 3166-1 numeric for Albania and GS1 USA country code
-      '008': 'USA(GS1)/Albania(ISO 3166-1)',
+      '008': 'USA(GS1)',
       '009': 'United States',
       '010': 'United States',
       '011': 'United States',
-      '012': 'USA(GS1)/Algeria(ISO 3166-1)',
+      '012': 'USA(GS1)',
       '013': 'United States',
       '014': 'United States',
       '015': 'United States',
@@ -52,26 +52,26 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
       '017': 'United States',
       '018': 'United States',
       '019': 'United States and Canada',
-      '020': 'Andorra(ISO 3166-1)',
-      '024': 'Angola(ISO 3166-1)',
-      '028': 'Antigua and Barbuda(ISO 3166-1)',
+      '020': 'United States',
+      '024': 'United States',
+      '028': 'United States',
       '030': 'United States',
       '031': 'United States',
-      '032': 'USA(GS1)/Argentina(ISO 3166-1)',
+      '032': 'USA(GS1)',
       '033': 'United States',
       '034': 'United States',
       '035': 'United States',
-      '036': 'USA(GS1)/Australia(ISO 3166-1)',
+      '036': 'USA(GS1)',
       '037': 'United States',
       '038': 'United States',
       '039': 'United States',
-      '040': 'Austria(ISO 3166-1)',
-      '044': 'Bahamas(ISO 3166-1)',
-      '048': 'Bahrain(ISO 3166-1)',
-      '050': 'US(GS1)/Bangladesh(ISO 3166-1)',
-      '051': 'US(GS1)/Armenia(ISO 3166-1)',
-      '052': 'US(GS1)/Barbados(ISO 3166-1)',
-      '056': 'US(GS1)/Belgium(ISO 3166-1)',
+      '040': 'United States',
+      '044': 'United States',
+      '048': 'United States',
+      '050': 'US(GS1)',
+      '051': 'US(GS1)',
+      '052': 'US(GS1)',
+      '056': 'US(GS1)',
       // 057 is EAN-13 barcode prefix for the United States
       '057': 'United States',
       '060': 'United States and Canada',
@@ -756,16 +756,39 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
       '626': 'Canada',
       '627': 'China',
       '632': 'China',
+      '641': 'United Kingdom (England)',
       '655': 'China',
       '665': 'China',
       '667': 'Vietnam',
+      '762': 'Canada',
       '773': 'China',
       '837': 'China',
       '850': 'United States',
       '856': 'Colombia',
       '874': 'Canada',
+      '879': 'Cambodia',
     };
-    return reportedOriginMap[barcode.substring(0, 3)] ?? '';
+    if (barcode.length < 3) {
+      return '';
+    } else {
+      return reportedOriginMap[barcode.substring(0, 3)] ?? '';
+    }
+  }
+
+  @override
+  List<String> getReportedOriginPhotosFromBarcode(String barcode) {
+    const Map<String, List<String>> reportedOriginPhotosMap =
+        <String, List<String>>{
+          '641': <String>['assets/images/evidence/641_england.jpg'],
+          '195': <String>['assets/images/evidence/195_china.jpg'],
+          '879': <String>['assets/images/evidence/879_cambodia.jpg'],
+        };
+    if (barcode.length < 3) {
+      return const <String>[];
+    } else {
+      return reportedOriginPhotosMap[barcode.substring(0, 3)] ??
+          const <String>[];
+    }
   }
 
   @override
@@ -811,4 +834,9 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
   @override
   Future<bool> saveLanguageIsoCode(String languageIsoCode) =>
       _sharedPrefs.setString(Settings.languageIsoCode.key, languageIsoCode);
+
+  @override
+  Future<List<TerrorismSponsor>> getTerrorismSponsors() async {
+    return const <TerrorismSponsor>[];
+  }
 }

@@ -1,11 +1,17 @@
+import 'package:entities/entities.dart';
+
 abstract interface class LocalDataSource {
   const LocalDataSource();
 
   Future<void> init();
 
+  Future<List<TerrorismSponsor>> getTerrorismSponsors();
+
   String getGs1CountryFromBarcode(String barcode);
 
   String getReportedOriginFromBarcode(String barcode);
+
+  List<String> getReportedOriginPhotosFromBarcode(String barcode);
 
   bool isEnglishBook(String barcode);
 
@@ -20,4 +26,21 @@ abstract interface class LocalDataSource {
   Future<bool> saveSoundPreference(bool isSoundOn);
 
   bool getSoundPreference();
+
+  String? getLeaveRussiaCache(String barcode);
+
+  /// Caches the Leave Russia lookup result for the specified [barcode].
+  ///
+  /// - [jsonString]: The JSON string to store. This is typically obtained by
+  ///   calling `jsonEncode(response.toJson())` on a successful
+  ///   [LeaveRussiaResponse] from the Leave Russia API, or the sentinel string
+  ///   `'NOT_FOUND'` to record a confirmed cache miss (no company found).
+  /// - How to use: Call this method with the barcode and the serialized JSON
+  ///   string (or `'NOT_FOUND'`) after querying the Leave Russia API to persist
+  ///   the result locally in SharedPreferences and avoid redundant network
+  ///   requests.
+  Future<bool> saveLeaveRussiaCache({
+    required String barcode,
+    required String jsonString,
+  });
 }

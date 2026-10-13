@@ -63,3 +63,29 @@ final class HomeErrorEvent extends HomeEvent {
 
   final String error;
 }
+
+final class CheckVegetarianWithAiEvent extends HomeEvent {
+  const CheckVegetarianWithAiEvent({
+    required this.ingredients,
+    required this.barcode,
+    required this.onResult,
+    required this.onError,
+  });
+
+  final String ingredients;
+  final String barcode;
+  final void Function(AiVegetarianCheckResponse response) onResult;
+  final void Function(Object error) onError;
+}
+
+final class ContributeVegetarianLabelEvent extends HomeEvent {
+  const ContributeVegetarianLabelEvent({
+    required this.barcode,
+    required this.onSuccess,
+    required this.onError,
+  });
+
+  final String barcode;
+  final void Function() onSuccess;
+  final void Function(Object error) onError;
+}

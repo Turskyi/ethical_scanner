@@ -68,3 +68,4 @@ coverage
 /ios/Podfile.lock
 .metadata
 android/.kotlin/sessions
+/components/interface_adapters/coverage/

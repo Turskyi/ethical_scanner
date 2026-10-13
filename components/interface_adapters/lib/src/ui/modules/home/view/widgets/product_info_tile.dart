@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/terrorism_documents_bottom_sheet.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/vegetarian_check_dialog.dart';
 import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/country_documents.dart';
@@ -33,6 +34,8 @@ class ProductInfoTile extends StatelessWidget {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final bool isIngredientsMissing =
         type.isIngredients && value.isEmpty && info.imageIngredientsUrl.isEmpty;
+    final bool isNotIngredients =
+        type.isIngredients && value.isNotEmpty && _isCustomerServiceText;
     final bool isIngredientsImageAdded =
         type.isIngredients &&
         value.isEmpty &&
@@ -45,13 +48,17 @@ class ProductInfoTile extends StatelessWidget {
     // do not support CORS.
     // See https://github.com/openfoodfacts/openfoodfacts-dart/issues/1089
     final bool canSnapIngredients =
-        isIngredientsMissing &&
+        (isIngredientsMissing || isNotIngredients) &&
         isCameraGenerallySupported &&
         !kIsWeb &&
         responseType.isSupportedByOpenFoodFacts;
 
     final bool isRedBackground =
         info.isCompanyTerrorismSponsor || info.isFromRussia;
+    final bool isRed =
+        info.isCompanyTerrorismSponsor ||
+        info.isFromRussia ||
+        info.isGs1CountryStateSponsorOfTerrorism;
     final bool isGreenBackground = info.isVegan || info.isVegetarian;
 
     final bool isRedFlag =
@@ -68,6 +75,9 @@ class ProductInfoTile extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final bool isIngredientsImageAddedOrNotIngredients =
+        isIngredientsImageAdded || isNotIngredients;
+
     return ListTile(
       textColor: color,
       iconColor: color,
@@ -75,7 +85,7 @@ class ProductInfoTile extends StatelessWidget {
         icon: Icon(
           _getIconData(
             canSnapIngredients: canSnapIngredients,
-            isIngredientsImageAdded: isIngredientsImageAdded,
+            isIngredientsImageAdded: isIngredientsImageAddedOrNotIngredients,
             isRedBackground: isRedBackground,
             isGreenBackground: isGreenBackground,
           ),
@@ -89,7 +99,7 @@ class ProductInfoTile extends StatelessWidget {
             ? () => context.read<HomePresenter>().add(
                 const SnapIngredientsEvent(),
               )
-            : isIngredientsImageAdded
+            : isIngredientsImageAddedOrNotIngredients
             ? () => context.read<HomePresenter>().add(
                 const EditIngredientsEvent(),
               )
@@ -107,34 +117,15 @@ class ProductInfoTile extends StatelessWidget {
       subtitle: type.isCompanyWarSponsor
           ? RichText(
               text: TextSpan(
-                text: '$value ${translate('product_info.click')}',
+                text: value,
                 style: TextStyle(
                   fontStyle: FontStyle.italic,
                   fontSize: textTheme.bodyLarge?.fontSize,
                 ),
                 children: <TextSpan>[
+                  const TextSpan(text: '\n'),
                   TextSpan(
-                    text: translate('product_info.here'),
-                    style: TextStyle(
-                      color: Colors.lightBlueAccent,
-                      decoration: TextDecoration.underline,
-                      fontStyle: FontStyle.italic,
-                      fontSize: textTheme.bodyLarge?.fontSize,
-                    ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        _onWarSponsorsPrimarySourceTap(resources);
-                      },
-                  ),
-                  TextSpan(
-                    text: translate('product_info.or'),
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      fontSize: textTheme.bodyLarge?.fontSize,
-                    ),
-                  ),
-                  TextSpan(
-                    text: translate('product_info.here'),
+                    text: translate('product_info.leave_russia'),
                     style: TextStyle(
                       color: Colors.lightBlueAccent,
                       decoration: TextDecoration.underline,
@@ -147,11 +138,24 @@ class ProductInfoTile extends StatelessWidget {
                       },
                   ),
                   TextSpan(
-                    text: translate('product_info.to_know_more'),
+                    text: ' · ',
                     style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontSize: textTheme.bodyLarge?.fontSize,
                     ),
+                  ),
+                  TextSpan(
+                    text: translate('product_info.yale_list'),
+                    style: TextStyle(
+                      color: Colors.lightBlueAccent,
+                      decoration: TextDecoration.underline,
+                      fontStyle: FontStyle.italic,
+                      fontSize: textTheme.bodyLarge?.fontSize,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        _onWarSponsorsPrimarySourceTap(resources);
+                      },
                   ),
                 ],
               ),
@@ -173,6 +177,110 @@ class ProductInfoTile extends StatelessWidget {
                 fontSize: textTheme.bodyLarge?.fontSize,
                 decoration: TextDecoration.underline,
               ),
+            )
+          : type.isReportedOrigin && info.reportedOriginPhotos.isNotEmpty
+          ? RichText(
+              text: TextSpan(
+                text: value,
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  fontSize: textTheme.bodyLarge?.fontSize,
+                  color: color,
+                ),
+                children: <TextSpan>[
+                  for (
+                    int i = 0;
+                    i < info.reportedOriginPhotos.length;
+                    i++
+                  ) ...<TextSpan>[
+                    const TextSpan(text: '\n'),
+                    TextSpan(
+                      text: info.reportedOriginPhotos.length == 1
+                          ? translate('product_info.view_evidence_photo')
+                          : '${translate('product_info.view_evidence_photo')} '
+                                '#${i + 1}',
+                      style: TextStyle(
+                        color: color,
+                        decoration: TextDecoration.underline,
+                        fontStyle: FontStyle.italic,
+                        fontSize: textTheme.bodyLarge?.fontSize,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          _onViewEvidencePhotoTap(
+                            context,
+                            info.reportedOriginPhotos[i],
+                          );
+                        },
+                    ),
+                  ],
+                ],
+              ),
+            )
+          : type == ProductInfoType.countryAi
+          ? SelectionArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    value,
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontSize: textTheme.bodyLarge?.fontSize,
+                    ),
+                  ),
+                  if (info.infoAiModel.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        translate(
+                          'product_info.ai_model',
+                          args: <String, Object?>{'model': info.infoAiModel},
+                        ),
+                        style: textTheme.bodySmall?.copyWith(
+                          color: color.withValues(alpha: 0.7),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            )
+          : type.isIngredients &&
+                value.isNotEmpty &&
+                !isRed &&
+                !_isCustomerServiceText &&
+                info.vegetarian == Vegetarian.unknown
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SelectionArea(
+                  child: Text(
+                    value,
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontSize: textTheme.bodyLarge?.fontSize,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
+                  onPressed: () => _onCheckVegetarianWithAi(context, value),
+                  icon: const Icon(Icons.auto_awesome, size: 18),
+                  label: Text(translate('product_info.check_vegetarian_ai')),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: color,
+                    side: BorderSide(color: color.withValues(alpha: 0.5)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ],
             )
           : SelectionArea(
               child: Text(
@@ -212,7 +320,10 @@ class ProductInfoTile extends StatelessWidget {
   ///
   /// Returns `true` if the URL was successfully launched, `false` otherwise.
   Future<bool> _onWarSponsorsSecondarySourceTap(Resources resources) {
-    final Uri link = Uri.parse(resources.strings.russiaSponsorsSource2);
+    final String url = info.leaveRussiaUrl.isNotEmpty
+        ? info.leaveRussiaUrl
+        : resources.strings.russiaSponsorsSource2;
+    final Uri link = Uri.parse(url);
     return launchUrl(link);
   }
 
@@ -250,6 +361,135 @@ class ProductInfoTile extends StatelessWidget {
     );
   }
 
+  void _onCheckVegetarianWithAi(BuildContext context, String ingredientsText) {
+    final HomePresenter homePresenter = context.read<HomePresenter>();
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return BlocProvider<HomePresenter>.value(
+          value: homePresenter,
+          child: Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const CircularProgressIndicator(),
+                  const SizedBox(width: 16),
+                  Flexible(
+                    child: Text(
+                      translate('product_info.analyzing_ingredients'),
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    homePresenter.add(
+      CheckVegetarianWithAiEvent(
+        ingredients: ingredientsText,
+        barcode: info.barcode,
+        onResult: (AiVegetarianCheckResponse response) {
+          Navigator.of(context, rootNavigator: true).pop();
+          VegetarianCheckDialog.show(
+            context: context,
+            response: response,
+            barcode: info.barcode,
+          );
+        },
+        onError: (Object error) {
+          Navigator.of(context, rootNavigator: true).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${translate('product_info.error_colon')} $error'),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _onViewEvidencePhotoTap(BuildContext context, String photoPath) {
+    final LinearGradient backgroundGradient = Resources.of(
+      context,
+    ).gradients.pinkSunriseGradientBackground;
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: backgroundGradient,
+              borderRadius: BorderRadius.circular(28),
+            ),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 600, maxHeight: 600),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: InteractiveViewer(
+                          child: Image.asset(
+                            photoPath,
+                            package: 'interface_adapters',
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextButton(
+                      onPressed: Navigator.of(context).pop,
+                      child: Text(translate('close')),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  bool get _isCustomerServiceText {
+    final String lowerValue = value.toLowerCase();
+    return lowerValue.contains('call') ||
+        lowerValue.contains('questions') ||
+        lowerValue.contains('comments') ||
+        lowerValue.contains('contact') ||
+        lowerValue.contains('consumer') ||
+        lowerValue.contains('service') ||
+        lowerValue.contains('1-800') ||
+        lowerValue.contains('1-888') ||
+        lowerValue.contains('1-877') ||
+        lowerValue.contains('1-866') ||
+        lowerValue.contains('1-855') ||
+        lowerValue.contains('1-844') ||
+        lowerValue.contains('1-833') ||
+        lowerValue.contains('http') ||
+        lowerValue.contains('www.');
+  }
+
   IconData _getIconData({
     required bool canSnapIngredients,
     required bool isIngredientsImageAdded,
@@ -258,7 +498,7 @@ class ProductInfoTile extends StatelessWidget {
   }) {
     return () {
       if (type.isCompanyWarSponsor) {
-        return Icons.question_mark;
+        return Icons.priority_high;
       } else if (type == ProductInfoType.gs1Country &&
           info.isGs1CountryStateSponsorOfTerrorism &&
           !isRedBackground) {
@@ -274,7 +514,7 @@ class ProductInfoTile extends StatelessWidget {
       } else if (canSnapIngredients) {
         return Icons.camera_alt_outlined;
       } else if (isIngredientsImageAdded) {
-        return Icons.psychology;
+        return Icons.edit_outlined;
       } else {
         return Icons.star;
       }

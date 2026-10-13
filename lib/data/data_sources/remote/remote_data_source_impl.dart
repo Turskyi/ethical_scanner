@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
-import 'package:dart_openai/dart_openai.dart';
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/data/data_mappers/language_data_mapper.dart';
 import 'package:ethical_scanner/data/data_mappers/product_data_mapper.dart';
@@ -31,7 +30,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         code,
         language: openFoodFactsLanguage,
         fields: <ProductField>[ProductField.ALL],
-        version: ProductQueryVersion.v3,
+        version: ProductQueryVersion.latestVersion,
       ),
     ).then((ProductResultV3 result) {
       final Product? resultProduct = result.product;
@@ -76,49 +75,129 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<String> getInfoFromAiAsFuture(String barcode) {
-    return OpenAI.instance.chat
-        .create(
-          model: 'gpt-3.5-turbo',
-          seed: 6,
-          temperature: 0.2,
-          maxTokens: 500,
-          stop: <String>['\n'],
-          messages: <OpenAIChatCompletionChoiceMessageModel>[
-            OpenAIChatCompletionChoiceMessageModel(
-              content: <OpenAIChatCompletionChoiceMessageContentItemModel>[
-                OpenAIChatCompletionChoiceMessageContentItemModel.text(
-                  'Please provide any information that can be inferred from '
-                  'the barcode "$barcode". '
-                  'This could include the GS1 country prefix or known usage '
-                  'patterns. '
-                  'If nothing is definitive, mention possible origins or usage '
-                  'notes. ',
-                ),
-              ],
-              role: OpenAIChatMessageRole.user,
-            ),
-          ],
-        )
-        .then((OpenAIChatCompletionModel completion) {
-          final String? info = completion
-              .choices
-              .firstOrNull
-              ?.message
-              .content
-              ?.firstOrNull
-              ?.text
-              ?.trim();
-          return info ?? '';
-        })
-        .onError((Object? error, StackTrace stackTrace) {
-          debugPrint(
-            'Error fetching info from AI for barcode: $barcode. '
-            'Error: $error'
-            'StackTrace: $stackTrace',
+  Future<LeaveRussiaResponse?> getLeaveRussiaInfo({
+    required String barcode,
+  }) async {
+    try {
+      final LeaveRussiaResponse? response = await _restClient
+          .getLeaveRussiaInfo(barcode: barcode)
+          .timeout(const Duration(seconds: 4));
+      return response;
+    } catch (e) {
+      debugPrint('Leave Russia lookup failed or timed out for $barcode: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<AiBarcodeInfoResponse> getInfoFromAiAsFuture(String barcode) async {
+    final AiBarcodeInfoResponse response = await _restClient.getAiBarcodeInfo(
+      <String, String>{'barcode': barcode},
+    );
+    if (response.info.trim().isNotEmpty) {
+      return response;
+    } else {
+      throw FormatException('AI service returned no information for barcode.');
+    }
+  }
+
+  @override
+  Future<AiVegetarianCheckResponse> checkVegetarianWithAi({
+    required String ingredients,
+    required String barcode,
+  }) async {
+    return _restClient.checkVegetarianWithAi(<String, String>{
+      constants.apiKeyIngredients: ingredients,
+      if (barcode.isNotEmpty) constants.apiKeyBarcode: barcode,
+    });
+  }
+
+  @override
+  Future<void> addVegetarianLabel({required String barcode}) async {
+    final User user =
+        OpenFoodAPIConfiguration.globalUser ??
+        const User(
+          userId: Env.openFoodUserId,
+          password: Env.openFoodPassword,
+          comment: constants.openFoodUserComment,
+        );
+
+    // 1. Fetch existing product to preserve its data and ingredients
+    Product? existingProduct;
+    try {
+      final ProductResultV3 result = await OpenFoodAPIClient.getProductV3(
+        ProductQueryConfiguration(
+          barcode,
+          language: OpenFoodFactsLanguage.ENGLISH,
+          fields: <ProductField>[ProductField.ALL],
+          version: ProductQueryVersion.latestVersion,
+        ),
+      );
+      if (result.hasSuccessfulStatus) {
+        existingProduct = result.product;
+      }
+    } catch (e) {
+      debugPrint('Failed to fetch product before adding vegetarian label: $e');
+    }
+
+    final List<String> updatedLabelsTags = <String>[
+      ...?existingProduct?.labelsTags,
+    ];
+    if (!updatedLabelsTags.contains('en:vegetarian')) {
+      updatedLabelsTags.add('en:vegetarian');
+    }
+
+    final List<Ingredient>? updatedIngredients = existingProduct?.ingredients
+        ?.map((Ingredient ing) {
+          return Ingredient(
+            rank: ing.rank,
+            id: ing.id,
+            text: ing.text,
+            isInTaxonomy: ing.isInTaxonomy,
+            percent: ing.percent,
+            percentEstimate: ing.percentEstimate,
+            vegan: ing.vegan,
+            vegetarian: IngredientSpecialPropertyStatus.POSITIVE,
+            fromPalmOil: ing.fromPalmOil,
+            ingredients: ing.ingredients,
+            bold: ing.bold,
           );
-          return '';
-        });
+        })
+        .toList();
+
+    final Product editedProduct = Product(
+      barcode: barcode,
+      productName: existingProduct?.productName,
+      brands: existingProduct?.brands,
+      brandsTags: existingProduct?.brandsTags,
+      ingredientsText: existingProduct?.ingredientsText,
+      ingredients: updatedIngredients,
+      labels: 'Vegetarian',
+      labelsTags: updatedLabelsTags,
+    );
+
+    Status result = await OpenFoodAPIClient.saveProduct(user, editedProduct);
+
+    if (result.status != 1) {
+      // Try backup user if primary user fails
+      final User backupUser = const User(
+        userId: Env.openFoodBackupUserId,
+        password: Env.openFoodPassword,
+        comment: constants.openFoodUserComment,
+      );
+      result = await OpenFoodAPIClient.saveProduct(backupUser, editedProduct);
+      debugPrint(
+        'OFF backup saveProduct response: status=${result.status}, '
+        'statusVerbose=${result.statusVerbose}, error=${result.error}, '
+        'body=${result.body}',
+      );
+      if (result.status != 1) {
+        throw Exception(
+          'Could not save vegetarian label: '
+          '${result.error ?? result.statusVerbose ?? 'Unknown error'}',
+        );
+      }
+    }
   }
 
   @override
@@ -739,7 +818,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       photo.info.barcode,
       language: language,
       fields: <ProductField>[ProductField.INGREDIENTS_TEXT],
-      version: ProductQueryVersion.v3,
+      version: ProductQueryVersion.latestVersion,
     );
     final ProductResultV3 productResult = await OpenFoodAPIClient.getProductV3(
       configurations,

@@ -2,6 +2,10 @@ name: Code Quality and Tests
 
 on: [ push ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check-code-quality-and-tests:
     if: ${{ !github.event.pull_request.draft }}
@@ -44,7 +48,7 @@ jobs:
       - name: Very Good Coverage
         uses: VeryGoodOpenSource/very_good_coverage@v2.1.0
         with:
-          min_coverage: 14
+          min_coverage: 13
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.1.0

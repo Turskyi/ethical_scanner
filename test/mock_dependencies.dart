@@ -39,6 +39,14 @@ class MockDependencies extends Mock implements Dependencies {
   UseCase<Future<ProductInfo>, LocalizedCode> get productInfoUseCase =>
       GetProductInfoUseCase(_productInfoGateway);
 
+  @override
+  UseCase<Future<AiVegetarianCheckResponse>, CheckVegetarianParams>
+  get checkVegetarianUseCase => CheckVegetarianUseCase(_productInfoGateway);
+
+  @override
+  UseCase<Future<void>, String> get addVegetarianLabelUseCase =>
+      AddVegetarianLabelUseCase(_productInfoGateway);
+
   RestClient get _restClient {
     final Dio dio = Dio();
     const LoggingInterceptor loggingInterceptor = LoggingInterceptorImpl();

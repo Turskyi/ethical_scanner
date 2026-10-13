@@ -1,8 +1,22 @@
+// Redirect jcenter() calls from older plugins to mavenCentral()
+try {
+    org.gradle.api.artifacts.dsl.RepositoryHandler.metaClass.jcenter = { ->
+        delegate.mavenCentral()
+    }
+} catch (ignored) {
+}
+try {
+    org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler.metaClass.jcenter = { ->
+        delegate.mavenCentral()
+    }
+} catch (ignored) {
+}
+
 //noinspection GrUnresolvedAccess
 //file:noinspection GrDeprecatedAPIUsage
 buildscript {
     ext {
-        kotlin_version = '2.2.0'
+        kotlin_version = '2.2.21'
         application_id = 'com.turskyi.ethical_scanner'
     }
     repositories {
@@ -12,9 +26,9 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.android.tools.build:gradle:8.13.1'
-        classpath 'com.google.gms:google-services:4.4.4'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.6'
+        classpath 'com.android.tools.build:gradle:9.4.1'
+        classpath 'com.google.gms:google-services:4.5.0'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.8'
     }
 }
 
@@ -23,29 +37,46 @@ allprojects {
         google()
         mavenCentral()
     }
+}
+
+subprojects {
+    beforeEvaluate { project ->
+        // Ensure android library plugin is applied if kotlin-android plugin is used without an android plugin
+        project.pluginManager.withPlugin('kotlin-android') {
+            if (!project.pluginManager.hasPlugin('com.android.library') && !project.pluginManager.hasPlugin('com.android.application')) {
+                project.apply plugin: 'com.android.library'
+            }
+        }
+    }
+
     afterEvaluate { project ->
         if (project.hasProperty('android') && project.android != null) {
             // Namespace logic: Set namespace if it's not already defined
-            // (Uses 'group' property as a fallback, ensure your modules have a 'group' defined or namespace is set in their own build.gradle)
-            if ((!project.android.hasProperty('namespace') || project.android.namespace == null) && project.hasProperty('group') && project.group != null) {
-                project.android.namespace = project.group.toString()
-                project.logger.info("Project ${project.name}: Set namespace to '''${project.group.toString()}'''")
+            if (!project.android.hasProperty('namespace') || project.android.namespace == null) {
+                if (project.hasProperty('group') && project.group != null) {
+                    project.android.namespace = project.group.toString()
+                } else {
+                    project.android.namespace = "dev.flutter.plugins.${project.name.replaceAll('-', '_')}"
+                }
+                project.logger.info("Project ${project.name}: Set namespace to '${project.android.namespace}'")
             }
 
             // Compile SDK version logic
-            def targetCompileSdk = 34 // As required by the dependencies
+            def targetCompileSdk = 37 // As required by the dependencies
             def currentCompileSdkValue = project.android.getProperties().get('compileSdkVersion')
 
             if (currentCompileSdkValue != null) {
                 def currentCompileSdkInt = -1
                 if (currentCompileSdkValue instanceof String && currentCompileSdkValue.startsWith("android-")) {
-                    currentCompileSdkInt = currentCompileSdkValue.substring("android-".length()).toInteger()
+                    try {
+                        currentCompileSdkInt = currentCompileSdkValue.substring("android-".length()).toBigDecimal().toInteger()
+                    } catch (Exception ignored) {}
                 } else if (currentCompileSdkValue instanceof Number) {
-                    currentCompileSdkInt = currentCompileSdkValue.toInteger()
+                    currentCompileSdkInt = currentCompileSdkValue.intValue()
                 } else if (currentCompileSdkValue instanceof String) {
                     try {
-                        currentCompileSdkInt = currentCompileSdkValue.toInteger()
-                    } catch (NumberFormatException ignored) {
+                        currentCompileSdkInt = currentCompileSdkValue.toBigDecimal().toInteger()
+                    } catch (Exception ignored) {
                         project.logger.warn("Project ${project.name}: Could not parse compileSdkVersion '''${currentCompileSdkValue}'''. Skipping override for this project.")
                         // Potentially return from closure or handle error appropriately
                     }

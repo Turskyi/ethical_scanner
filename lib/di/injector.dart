@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:dart_openai/dart_openai.dart';
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/di/dependencies.dart';
 import 'package:ethical_scanner/localization_delelegate_getter.dart';
@@ -14,8 +13,6 @@ import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 Future<Dependencies> injectAndGetDependencies() async {
-  OpenAI.apiKey = Env.openAiApiKey;
-
   OpenFoodAPIConfiguration.globalUser = const User(
     userId: Env.openFoodUserId,
     password: Env.openFoodPassword,

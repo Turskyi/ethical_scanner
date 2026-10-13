@@ -33,3 +33,10 @@ class ChangeLanguageEvent extends PhotoEvent {
 
   final Language language;
 }
+
+class PhotoErrorEvent extends PhotoEvent {
+  const PhotoErrorEvent({required this.errorMessage, required this.barcode});
+
+  final String errorMessage;
+  final String barcode;
+}

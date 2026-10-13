@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:entities/entities.dart';
+import 'package:ethical_scanner/data/data_sources/remote/models/russia_sponsors_response/russia_sponsor_response.dart';
 import 'package:ethical_scanner/res/enums/settings.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,9 +57,9 @@ class LocalDataSourceImpl implements LocalDataSource {
       '017': 'United States',
       '018': 'United States',
       '019': 'United States or Canada',
-      '020': 'Andorra(ISO 3166-1)',
-      '024': 'Angola(ISO 3166-1)',
-      '028': 'Antigua and Barbuda(ISO 3166-1)',
+      '020': 'United States',
+      '024': 'United States',
+      '028': 'United States',
       '030': 'United States',
       '031': 'United States',
       '032': 'USA(GS1)',
@@ -66,9 +70,9 @@ class LocalDataSourceImpl implements LocalDataSource {
       '037': 'United States',
       '038': 'United States',
       '039': 'United States',
-      '040': 'Austria(ISO 3166-1)',
-      '044': 'Bahamas(ISO 3166-1)',
-      '048': 'Bahrain(ISO 3166-1)',
+      '040': 'United States',
+      '044': 'United States',
+      '048': 'United States',
       '050': 'US(GS1)',
       '051': 'US(GS1)',
       '052': 'US(GS1)',
@@ -572,9 +576,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       '76': 'United States',
       '760': 'Switzerland and Liechtenstein',
       '761': 'Switzerland and Liechtenstein',
-      '762':
-          'Switzerland and Liechtenstein (GS1).\n'
-          'Reportedly used on some produce grown in Canada.',
+      '762': 'Switzerland and Liechtenstein (GS1)',
       '763': 'Switzerland and Liechtenstein',
       '764': 'Switzerland and Liechtenstein',
       '765': 'Switzerland and Liechtenstein',
@@ -762,19 +764,43 @@ class LocalDataSourceImpl implements LocalDataSource {
     '626': 'Canada',
     '627': 'China',
     '632': 'China',
+    '641': 'United Kingdom (England)',
     '655': 'China',
     '665': 'China',
     '667': 'Vietnam',
+    '762': 'Canada',
     '773': 'China',
     '837': 'China, Canada',
     '850': 'United States',
     '856': 'Colombia',
     '874': 'Canada',
+    '879': 'Cambodia',
   };
+
+  static const Map<String, List<String>> _reportedOriginPhotosMap =
+      <String, List<String>>{
+        '641': <String>['assets/images/evidence/641_england.jpg'],
+        '195': <String>['assets/images/evidence/195_china.jpg'],
+        '879': <String>['assets/images/evidence/879_cambodia.jpg'],
+      };
 
   @override
   String getReportedOriginFromBarcode(String barcode) {
-    return _reportedOriginMap[barcode.substring(0, 3)] ?? '';
+    if (barcode.length < 3) {
+      return '';
+    } else {
+      return _reportedOriginMap[barcode.substring(0, 3)] ?? '';
+    }
+  }
+
+  @override
+  List<String> getReportedOriginPhotosFromBarcode(String barcode) {
+    if (barcode.length < 3) {
+      return const <String>[];
+    } else {
+      return _reportedOriginPhotosMap[barcode.substring(0, 3)] ??
+          const <String>[];
+    }
   }
 
   @override
@@ -794,8 +820,9 @@ class LocalDataSourceImpl implements LocalDataSource {
     // Check if it starts with "978" (common Book-land prefix).
     if (digits.sublist(0, 3).join() != '978') {
       return false;
+    } else {
+      return true;
     }
-    return true;
   }
 
   @override
@@ -867,5 +894,65 @@ class LocalDataSourceImpl implements LocalDataSource {
       Settings.languageIsoCode.key,
       safeLanguageCode,
     );
+  }
+
+  static const String _leaveRussiaCachePrefix = 'leave_russia_cache_';
+
+  @override
+  String? getLeaveRussiaCache(String barcode) {
+    return _preferences.getString('$_leaveRussiaCachePrefix$barcode');
+  }
+
+  @override
+  /// Caches the Leave Russia lookup result for the specified [barcode].
+  ///
+  /// - [jsonString]: The JSON string to store. This is typically obtained by
+  ///   calling `jsonEncode(response.toJson())` on a successful
+  ///   [LeaveRussiaResponse] from the Leave Russia API, or the sentinel string
+  ///   `'NOT_FOUND'` to record a confirmed cache miss (no company found).
+  /// - How to use: Call this method with the barcode and the serialized JSON
+  ///   string (or `'NOT_FOUND'`) after querying the Leave Russia API to persist
+  ///   the result locally in SharedPreferences and avoid redundant network
+  ///   requests.
+  Future<bool> saveLeaveRussiaCache({
+    required String barcode,
+    required String jsonString,
+  }) {
+    return _preferences.setString(
+      '$_leaveRussiaCachePrefix$barcode',
+      jsonString,
+    );
+  }
+
+  List<TerrorismSponsor>? _cachedTerrorismSponsors;
+
+  @override
+  Future<List<TerrorismSponsor>> getTerrorismSponsors() async {
+    if (_cachedTerrorismSponsors != null) {
+      return _cachedTerrorismSponsors!;
+    } else {
+      try {
+        final String jsonString = await rootBundle.loadString(
+          'assets/data/russia_sponsors.json',
+        );
+        final Object? decodedJson = jsonDecode(jsonString);
+        if (decodedJson is List<Object?>) {
+          final List<RussiaSponsorResponse> sponsors =
+              <RussiaSponsorResponse>[];
+          for (final Object? item in decodedJson) {
+            if (item is Map<String, Object?>) {
+              sponsors.add(RussiaSponsorResponse.fromJson(item));
+            }
+          }
+          _cachedTerrorismSponsors = sponsors;
+          return sponsors;
+        } else {
+          return const <TerrorismSponsor>[];
+        }
+      } catch (e, stack) {
+        debugPrint('Error loading local terrorism sponsors asset: $e\n$stack');
+        return const <TerrorismSponsor>[];
+      }
+    }
   }
 }

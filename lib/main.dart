@@ -1,6 +1,7 @@
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/di/dependencies.dart';
 import 'package:ethical_scanner/di/injector.dart';
+import 'package:ethical_scanner/services/home_widget_navigation_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
@@ -57,11 +58,17 @@ void main() async {
   // Create an instance of the router.
   final AppRouter appRouter = AppRouter(savedLanguage: initialLanguage);
 
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  final HomeWidgetNavigationService homeWidgetService =
+      HomeWidgetNavigationService(navigatorKey: navigatorKey);
+  homeWidgetService.initialize();
+
   runApp(
     App.factory(
       dependencies: dependencies,
       localizationDelegate: localizationDelegate,
       onGenerateRoute: appRouter.generateRoute,
+      navigatorKey: navigatorKey,
     ),
   );
 }

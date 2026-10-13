@@ -287,10 +287,21 @@ class _HomeViewState extends State<ScanView> {
     }
   }
 
+  String _normalizeBarcode(String barcode) {
+    final String normalized;
+    if (barcode.length == 13 && barcode.startsWith('0')) {
+      normalized = barcode.substring(1);
+    } else {
+      normalized = barcode;
+    }
+    return normalized;
+  }
+
   void _onBarcodeDetect(BarcodeCapture barcodeCapture) {
     final Barcode? barcode = barcodeCapture.barcodes.lastOrNull;
-    final String barcodeValue =
-        barcode?.displayValue ?? barcode?.rawValue ?? '';
+    final String barcodeValue = _normalizeBarcode(
+      barcode?.displayValue ?? barcode?.rawValue ?? '',
+    );
 
     if (barcodeValue.isEmpty) {
       if (kIsWeb) {

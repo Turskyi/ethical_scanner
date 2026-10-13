@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:entities/entities.dart';
@@ -16,11 +17,25 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
   final RemoteDataSource _remoteDataSource;
   final LocalDataSource _localDataSource;
 
+  String _normalizeBarcode(String barcode) {
+    final String normalized;
+    if (barcode.length == 13 && barcode.startsWith('0')) {
+      normalized = barcode.substring(1);
+    } else {
+      normalized = barcode;
+    }
+    return normalized;
+  }
+
   @override
   Future<ProductInfo> getProductInfoAsFuture(LocalizedCode input) {
-    final String inputCode = input.code;
+    final String normalizedCode = _normalizeBarcode(input.code);
+    final LocalizedCode normalizedInput = normalizedCode != input.code
+        ? LocalizedCode(code: normalizedCode, language: input.language)
+        : input;
+    final String inputCode = normalizedInput.code;
     return _remoteDataSource
-        .getProductInfoAsFuture(input)
+        .getProductInfoAsFuture(normalizedInput)
         .onError((Object? error, StackTrace stackTrace) {
           if (error is FormatException) {
             final Object? source = error.source;
@@ -47,6 +62,13 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
               '\n  Message: ${error.message}'
               '\n  URI: ${error.uri}'
               '\n  Stacktrace: $stackTrace',
+            );
+          } else if (error is NotFoundException) {
+            debugPrint(
+              'NotFoundException in $runtimeType during '
+              '"getProductInfoAsFuture":'
+              '\n  Message: ${error.message}'
+              '\n  Product information not found for code "$inputCode".',
             );
           } else {
             debugPrint(
@@ -90,15 +112,23 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
             );
             final String reportedOrigin = _localDataSource
                 .getReportedOriginFromBarcode(inputCode);
+            final List<String> reportedOriginPhotos = _localDataSource
+                .getReportedOriginPhotosFromBarcode(inputCode);
             if (gs1Country.isNotEmpty || reportedOrigin.isNotEmpty) {
               return info.copyWith(
                 gs1Country: gs1Country,
                 reportedOrigin: reportedOrigin,
+                reportedOriginPhotos: reportedOriginPhotos,
               );
             } else {
               return _remoteDataSource
                   .getInfoFromAiAsFuture(inputCode)
-                  .then((String country) => info.copyWith(infoAi: country));
+                  .then(
+                    (AiBarcodeInfoResponse response) => info.copyWith(
+                      infoAi: response.info,
+                      infoAiModel: response.model,
+                    ),
+                  );
             }
           }
         });
@@ -106,7 +136,51 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
 
   @override
   Future<List<TerrorismSponsor>> getTerrorismSponsors() {
-    return _remoteDataSource.getTerrorismSponsors();
+    return _localDataSource.getTerrorismSponsors();
+  }
+
+  @override
+  Future<LeaveRussiaResponse?> getLeaveRussiaInfo({
+    required String barcode,
+    required Language language,
+  }) async {
+    final String? cached = _localDataSource.getLeaveRussiaCache(barcode);
+    if (cached != null) {
+      if (cached == LeaveRussiaResponse.cacheMissSentinel) {
+        return const LeaveRussiaResponse(data: <LeaveRussiaItem>[]);
+      } else {
+        try {
+          final Object? decoded = jsonDecode(cached);
+          if (decoded is Map<String, Object?>) {
+            return LeaveRussiaResponse.fromJson(decoded);
+          }
+        } catch (e) {
+          debugPrint(
+            'Failed to decode cached Leave Russia info for $barcode: $e',
+          );
+        }
+      }
+    }
+
+    final LeaveRussiaResponse? response = await _remoteDataSource
+        .getLeaveRussiaInfo(barcode: barcode);
+
+    if (response != null) {
+      if (response.data.isNotEmpty) {
+        await _localDataSource.saveLeaveRussiaCache(
+          barcode: barcode,
+          jsonString: jsonEncode(response.toJson()),
+        );
+      } else {
+        await _localDataSource.saveLeaveRussiaCache(
+          barcode: barcode,
+          jsonString: LeaveRussiaResponse.cacheMissSentinel,
+        );
+      }
+      return response;
+    }
+
+    return null;
   }
 
   @override
@@ -135,6 +209,22 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
       ingredientsText: ingredientsText,
       language: language,
     );
+  }
+
+  @override
+  Future<AiVegetarianCheckResponse> checkVegetarianWithAi({
+    required String ingredients,
+    required String barcode,
+  }) {
+    return _remoteDataSource.checkVegetarianWithAi(
+      ingredients: ingredients,
+      barcode: barcode,
+    );
+  }
+
+  @override
+  Future<void> addVegetarianLabel({required String barcode}) {
+    return _remoteDataSource.addVegetarianLabel(barcode: barcode);
   }
 
   bool _isWebsite(String input) {

@@ -28,25 +28,22 @@ void main() {
       remoteDataSource = RemoteDataSourceImpl(RetrofitClient(dio));
     });
 
-    test(
-      'getProductInfoAsFuture returns ProductInfo on success',
-      () async {
-        // Arrange
-        const String input = '0055577105436';
-        const ProductInfo expectedResult = ProductInfo(
-          barcode: input,
-          countrySold: 'Canada',
-        );
+    test('getProductInfoAsFuture returns ProductInfo on success', () async {
+      // Arrange
+      const String input = '0055577105436';
+      const ProductInfo expectedResult = ProductInfo(
+        barcode: input,
+        countrySold: 'Canada',
+      );
 
-        // Act
-        final ProductInfo result = await remoteDataSource
-            .getProductInfoAsFuture(const LocalizedCode(code: input));
+      // Act
+      final ProductInfo result = await remoteDataSource.getProductInfoAsFuture(
+        const LocalizedCode(code: input),
+      );
 
-        // Assert
-        expect(result.countrySold, equals(expectedResult.countrySold));
-        expect(result.barcode, equals(expectedResult.barcode));
-      },
-      timeout: const Timeout(Duration(seconds: 40)),
-    );
+      // Assert
+      expect(result.countrySold, equals(expectedResult.countrySold));
+      expect(result.barcode, equals(expectedResult.barcode));
+    }, timeout: const Timeout(Duration(seconds: 40)));
   });
 }
