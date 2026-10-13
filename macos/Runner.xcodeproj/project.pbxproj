@@ -31,6 +31,8 @@
 		E4CCD2F7F690ABACACDB0E5E /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADF3C26BFA879DB6C28AE2DE /* Pods_Runner.framework */; };
 		EAB5EBC253CCD94C7CC25DE4 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24D79069516AF44F6C2C7DFD /* Pods_RunnerTests.framework */; };
 		66EC90052B93A1A0005B25C9 /* EthicalScannerWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 66EC90082B93A1A0005B25C9 /* EthicalScannerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		66EC90182B93A1A0005B25C9 /* EthicalScannerWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66EC900B2B93A1A0005B25C9 /* EthicalScannerWidgetBundle.swift */; };
+		66EC90192B93A1A0005B25C9 /* EthicalScannerWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66EC900C2B93A1A0005B25C9 /* EthicalScannerWidget.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -110,6 +112,9 @@
 		E820898951DDCDAF8FD98FE6 /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		FB46289A7F573DFFFF753FA5 /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		66EC90082B93A1A0005B25C9 /* EthicalScannerWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = EthicalScannerWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		66EC900B2B93A1A0005B25C9 /* EthicalScannerWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EthicalScannerWidgetBundle.swift; sourceTree = "<group>"; };
+		66EC900C2B93A1A0005B25C9 /* EthicalScannerWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EthicalScannerWidget.swift; sourceTree = "<group>"; };
+		66EC900D2B93A1A0005B25C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -508,6 +513,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66EC90182B93A1A0005B25C9 /* EthicalScannerWidgetBundle.swift in Sources */,
+				66EC90192B93A1A0005B25C9 /* EthicalScannerWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
