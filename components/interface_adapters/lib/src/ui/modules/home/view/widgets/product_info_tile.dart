@@ -34,6 +34,8 @@ class ProductInfoTile extends StatelessWidget {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final bool isIngredientsMissing =
         type.isIngredients && value.isEmpty && info.imageIngredientsUrl.isEmpty;
+    final bool isNotIngredients =
+        type.isIngredients && value.isNotEmpty && _isCustomerServiceText;
     final bool isIngredientsImageAdded =
         type.isIngredients &&
         value.isEmpty &&
@@ -46,13 +48,17 @@ class ProductInfoTile extends StatelessWidget {
     // do not support CORS.
     // See https://github.com/openfoodfacts/openfoodfacts-dart/issues/1089
     final bool canSnapIngredients =
-        isIngredientsMissing &&
+        (isIngredientsMissing || isNotIngredients) &&
         isCameraGenerallySupported &&
         !kIsWeb &&
         responseType.isSupportedByOpenFoodFacts;
 
     final bool isRedBackground =
         info.isCompanyTerrorismSponsor || info.isFromRussia;
+    final bool isRed =
+        info.isCompanyTerrorismSponsor ||
+        info.isFromRussia ||
+        info.isGs1CountryStateSponsorOfTerrorism;
     final bool isGreenBackground = info.isVegan || info.isVegetarian;
 
     final bool isRedFlag =
@@ -69,6 +75,9 @@ class ProductInfoTile extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final bool isIngredientsImageAddedOrNotIngredients =
+        isIngredientsImageAdded || isNotIngredients;
+
     return ListTile(
       textColor: color,
       iconColor: color,
@@ -76,7 +85,7 @@ class ProductInfoTile extends StatelessWidget {
         icon: Icon(
           _getIconData(
             canSnapIngredients: canSnapIngredients,
-            isIngredientsImageAdded: isIngredientsImageAdded,
+            isIngredientsImageAdded: isIngredientsImageAddedOrNotIngredients,
             isRedBackground: isRedBackground,
             isGreenBackground: isGreenBackground,
           ),
@@ -90,7 +99,7 @@ class ProductInfoTile extends StatelessWidget {
             ? () => context.read<HomePresenter>().add(
                 const SnapIngredientsEvent(),
               )
-            : isIngredientsImageAdded
+            : isIngredientsImageAddedOrNotIngredients
             ? () => context.read<HomePresenter>().add(
                 const EditIngredientsEvent(),
               )
@@ -239,6 +248,8 @@ class ProductInfoTile extends StatelessWidget {
             )
           : type.isIngredients &&
                 value.isNotEmpty &&
+                !isRed &&
+                !_isCustomerServiceText &&
                 info.vegetarian == Vegetarian.unknown
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -460,6 +471,25 @@ class ProductInfoTile extends StatelessWidget {
     );
   }
 
+  bool get _isCustomerServiceText {
+    final String lowerValue = value.toLowerCase();
+    return lowerValue.contains('call') ||
+        lowerValue.contains('questions') ||
+        lowerValue.contains('comments') ||
+        lowerValue.contains('contact') ||
+        lowerValue.contains('consumer') ||
+        lowerValue.contains('service') ||
+        lowerValue.contains('1-800') ||
+        lowerValue.contains('1-888') ||
+        lowerValue.contains('1-877') ||
+        lowerValue.contains('1-866') ||
+        lowerValue.contains('1-855') ||
+        lowerValue.contains('1-844') ||
+        lowerValue.contains('1-833') ||
+        lowerValue.contains('http') ||
+        lowerValue.contains('www.');
+  }
+
   IconData _getIconData({
     required bool canSnapIngredients,
     required bool isIngredientsImageAdded,
@@ -484,7 +514,7 @@ class ProductInfoTile extends StatelessWidget {
       } else if (canSnapIngredients) {
         return Icons.camera_alt_outlined;
       } else if (isIngredientsImageAdded) {
-        return Icons.psychology;
+        return Icons.edit_outlined;
       } else {
         return Icons.star;
       }
