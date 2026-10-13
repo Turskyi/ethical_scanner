@@ -779,6 +779,7 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
     const Map<String, List<String>> reportedOriginPhotosMap =
         <String, List<String>>{
           '641': <String>['assets/images/evidence/641_england.jpg'],
+          '195': <String>['assets/images/evidence/195_china.jpg'],
         };
     if (barcode.length < 3) {
       return const <String>[];

@@ -779,6 +779,7 @@ class LocalDataSourceImpl implements LocalDataSource {
   static const Map<String, List<String>> _reportedOriginPhotosMap =
       <String, List<String>>{
         '641': <String>['assets/images/evidence/641_england.jpg'],
+        '195': <String>['assets/images/evidence/195_china.jpg'],
       };
 
   @override
