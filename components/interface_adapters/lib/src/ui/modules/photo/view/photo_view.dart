@@ -81,6 +81,7 @@ class _PhotoViewState extends State<PhotoView> {
     final Dimens dimens = resources.dimens;
     final TextTheme textTheme = Theme.of(context).textTheme;
     final TextStyle? titleLarge = textTheme.titleLarge;
+    final TextStyle? titleMedium = textTheme.titleMedium;
     if (_noCameraAvailable) {
       return DecoratedBox(
         decoration: BoxDecoration(
@@ -189,7 +190,7 @@ class _PhotoViewState extends State<PhotoView> {
               maxLines: 2,
               style: TextStyle(
                 color: Colors.white,
-                fontSize: titleLarge?.fontSize,
+                fontSize: titleMedium?.fontSize,
                 fontWeight: FontWeight.bold,
                 shadows: <Shadow>[
                   Shadow(
