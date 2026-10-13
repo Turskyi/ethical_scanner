@@ -115,6 +115,7 @@
 		66EC900B2B93A1A0005B25C9 /* EthicalScannerWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EthicalScannerWidgetBundle.swift; sourceTree = "<group>"; };
 		66EC900C2B93A1A0005B25C9 /* EthicalScannerWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EthicalScannerWidget.swift; sourceTree = "<group>"; };
 		66EC900D2B93A1A0005B25C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		66EC90202B93A1A0005B25C9 /* EthicalScannerWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EthicalScannerWidget.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,6 +194,7 @@
 				66EC900B2B93A1A0005B25C9 /* EthicalScannerWidgetBundle.swift */,
 				66EC900C2B93A1A0005B25C9 /* EthicalScannerWidget.swift */,
 				66EC900D2B93A1A0005B25C9 /* Info.plist */,
+				66EC90202B93A1A0005B25C9 /* EthicalScannerWidget.entitlements */,
 			);
 			path = EthicalScannerWidget;
 			sourceTree = "<group>";
@@ -901,6 +903,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_ENTITLEMENTS = EthicalScannerWidget/EthicalScannerWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 27;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -941,6 +944,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_ENTITLEMENTS = EthicalScannerWidget/EthicalScannerWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 27;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -978,6 +982,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_ENTITLEMENTS = EthicalScannerWidget/EthicalScannerWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 27;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
