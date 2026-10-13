@@ -31,4 +31,6 @@ enum ProductInfoType {
   bool get isCode => this == ProductInfoType.code;
 
   bool get isIngredients => this == ProductInfoType.ingredients;
+
+  bool get isReportedOrigin => this == ProductInfoType.reportedOrigin;
 }

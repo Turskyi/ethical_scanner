@@ -112,10 +112,13 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
             );
             final String reportedOrigin = _localDataSource
                 .getReportedOriginFromBarcode(inputCode);
+            final List<String> reportedOriginPhotos = _localDataSource
+                .getReportedOriginPhotosFromBarcode(inputCode);
             if (gs1Country.isNotEmpty || reportedOrigin.isNotEmpty) {
               return info.copyWith(
                 gs1Country: gs1Country,
                 reportedOrigin: reportedOrigin,
+                reportedOriginPhotos: reportedOriginPhotos,
               );
             } else {
               return _remoteDataSource
@@ -206,6 +209,22 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
       ingredientsText: ingredientsText,
       language: language,
     );
+  }
+
+  @override
+  Future<AiVegetarianCheckResponse> checkVegetarianWithAi({
+    required String ingredients,
+    required String barcode,
+  }) {
+    return _remoteDataSource.checkVegetarianWithAi(
+      ingredients: ingredients,
+      barcode: barcode,
+    );
+  }
+
+  @override
+  Future<void> addVegetarianLabel({required String barcode}) {
+    return _remoteDataSource.addVegetarianLabel(barcode: barcode);
   }
 
   bool _isWebsite(String input) {

@@ -9,6 +9,7 @@ class ProductInfo {
     this.origin = '',
     this.gs1Country = '',
     this.reportedOrigin = '',
+    this.reportedOriginPhotos = const <String>[],
     this.countryTags = const <String>[],
     this.countrySold = '',
     this.infoAi = '',
@@ -45,6 +46,7 @@ class ProductInfo {
   /// country of origin derived from physical product observations tied to
   /// specific barcode prefixes.
   final String reportedOrigin;
+  final List<String> reportedOriginPhotos;
 
   /// The [countryTags] parameter is a list of strings that indicates the
   /// countries where the product is sold. For example, [countryTags]=France,
@@ -125,6 +127,7 @@ class ProductInfo {
     String? origin,
     String? gs1Country,
     String? reportedOrigin,
+    List<String>? reportedOriginPhotos,
     List<String>? countryTags,
     String? countrySold,
     String? infoAi,
@@ -149,6 +152,7 @@ class ProductInfo {
       origin: origin ?? this.origin,
       gs1Country: gs1Country ?? this.gs1Country,
       reportedOrigin: reportedOrigin ?? this.reportedOrigin,
+      reportedOriginPhotos: reportedOriginPhotos ?? this.reportedOriginPhotos,
       countryTags: countryTags ?? this.countryTags,
       countrySold: countrySold ?? this.countrySold,
       infoAi: infoAi ?? this.infoAi,

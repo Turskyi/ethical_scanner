@@ -757,6 +757,7 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
       '626': 'Canada',
       '627': 'China',
       '632': 'China',
+      '641': 'United Kingdom (England)',
       '655': 'China',
       '665': 'China',
       '667': 'Vietnam',
@@ -767,7 +768,25 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
       '856': 'Colombia',
       '874': 'Canada',
     };
-    return reportedOriginMap[barcode.substring(0, 3)] ?? '';
+    if (barcode.length < 3) {
+      return '';
+    } else {
+      return reportedOriginMap[barcode.substring(0, 3)] ?? '';
+    }
+  }
+
+  @override
+  List<String> getReportedOriginPhotosFromBarcode(String barcode) {
+    const Map<String, List<String>> reportedOriginPhotosMap =
+        <String, List<String>>{
+          '641': <String>['assets/images/evidence/641_england.jpg'],
+        };
+    if (barcode.length < 3) {
+      return const <String>[];
+    } else {
+      return reportedOriginPhotosMap[barcode.substring(0, 3)] ??
+          const <String>[];
+    }
   }
 
   @override

@@ -88,6 +88,7 @@ flutter:
     - assets/i18n/
     - assets/audio/
     - assets/images/
+    - assets/images/evidence/
   #
   # For details regarding assets in packages, see
   # https://flutter.dev/assets-and-images/#from-packages

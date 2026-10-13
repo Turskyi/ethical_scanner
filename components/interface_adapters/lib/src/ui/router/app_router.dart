@@ -119,6 +119,10 @@ class AppRouter {
                       dependencies.getPrecipitationStateUseCase,
                       dependencies.saveLanguageUseCase,
                       dependencies.getLanguageUseCase,
+                      checkVegetarianUseCase:
+                          dependencies.checkVegetarianUseCase,
+                      addVegetarianLabelUseCase:
+                          dependencies.addVegetarianLabelUseCase,
                     )..add(const LoadHomeEvent());
                   },
                   child: const BlocListener<HomePresenter, HomeViewModel>(
@@ -337,6 +341,9 @@ PageRouteBuilder<String> _getHomePageRouteBuilder(RouteSettings settings) {
                 dependencies.getPrecipitationStateUseCase,
                 dependencies.saveLanguageUseCase,
                 dependencies.getLanguageUseCase,
+                checkVegetarianUseCase: dependencies.checkVegetarianUseCase,
+                addVegetarianLabelUseCase:
+                    dependencies.addVegetarianLabelUseCase,
               );
               final Object? arguments = settings.arguments;
 

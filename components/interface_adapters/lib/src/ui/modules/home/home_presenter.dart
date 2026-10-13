@@ -23,8 +23,13 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     this._savePrecipitationStateUseCase,
     this._getPrecipitationStateUseCase,
     this._saveLanguageUseCase,
-    this._getLanguageUseCase,
-  ) : super(LoadingHomeState(language: _getLanguageUseCase.call())) {
+    this._getLanguageUseCase, {
+    required UseCase<Future<AiVegetarianCheckResponse>, CheckVegetarianParams>
+    checkVegetarianUseCase,
+    required UseCase<Future<void>, String> addVegetarianLabelUseCase,
+  }) : _checkVegetarianUseCase = checkVegetarianUseCase,
+       _addVegetarianLabelUseCase = addVegetarianLabelUseCase,
+       super(LoadingHomeState(language: _getLanguageUseCase.call())) {
     on<LoadHomeEvent>(_onLoadHomeEvent);
 
     on<ClearProductInfoEvent>(_onClearProductInfoEvent);
@@ -48,6 +53,10 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     on<SubmitFeedbackEvent>(_sendUserFeedback);
 
     on<HomeErrorEvent>(_handleError);
+
+    on<CheckVegetarianWithAiEvent>(_onCheckVegetarianWithAi);
+
+    on<ContributeVegetarianLabelEvent>(_onContributeVegetarianLabel);
   }
 
   final UseCase<Future<ProductInfo>, LocalizedCode> _getProductInfoUseCase;
@@ -55,6 +64,9 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
   final UseCase<bool, Null> _getPrecipitationStateUseCase;
   final UseCase<Future<bool>, String> _saveLanguageUseCase;
   final UseCase<Language, Object?> _getLanguageUseCase;
+  final UseCase<Future<AiVegetarianCheckResponse>, CheckVegetarianParams>?
+  _checkVegetarianUseCase;
+  final UseCase<Future<void>, String>? _addVegetarianLabelUseCase;
 
   FutureOr<void> _handleError(
     HomeErrorEvent event,
@@ -563,5 +575,63 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     final File screenshotFile = File(screenshotFilePath);
     await screenshotFile.writeAsBytes(feedbackScreenshot);
     return screenshotFilePath;
+  }
+
+  FutureOr<void> _onCheckVegetarianWithAi(
+    CheckVegetarianWithAiEvent event,
+    Emitter<HomeViewModel> emit,
+  ) async {
+    final UseCase<Future<AiVegetarianCheckResponse>, CheckVegetarianParams>?
+    useCase = _checkVegetarianUseCase;
+    if (useCase == null) {
+      event.onError('${translate('error_colon')} Service unavailable');
+    } else {
+      try {
+        final AiVegetarianCheckResponse response = await useCase.call(
+          CheckVegetarianParams(
+            ingredients: event.ingredients,
+            barcode: event.barcode,
+          ),
+        );
+        event.onResult(response);
+      } catch (error) {
+        event.onError(error);
+      }
+    }
+  }
+
+  FutureOr<void> _onContributeVegetarianLabel(
+    ContributeVegetarianLabelEvent event,
+    Emitter<HomeViewModel> emit,
+  ) async {
+    final UseCase<Future<void>, String>? useCase = _addVegetarianLabelUseCase;
+    if (useCase == null) {
+      event.onError('${translate('error_colon')} Service unavailable');
+    } else {
+      try {
+        await useCase.call(event.barcode);
+        if (state is ProductInfoState) {
+          final ProductInfoState currentState = state as ProductInfoState;
+          final ProductInfo updatedInfo = currentState.productInfo.copyWith(
+            vegetarian: Vegetarian.positive,
+          );
+          final Map<ProductInfoType, String> updatedMap =
+              Map<ProductInfoType, String>.from(currentState.productInfoMap);
+          updatedMap[ProductInfoType.isVegetarian] = translate('yes');
+
+          emit(
+            LoadedProductInfoState(
+              productInfo: updatedInfo,
+              productInfoMap: updatedMap,
+              language: state.language,
+              isSeasonalEffectEnabled: state.isSeasonalEffectEnabled,
+            ),
+          );
+        }
+        event.onSuccess();
+      } catch (error) {
+        event.onError(error);
+      }
+    }
   }
 }

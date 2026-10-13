@@ -764,6 +764,7 @@ class LocalDataSourceImpl implements LocalDataSource {
     '626': 'Canada',
     '627': 'China',
     '632': 'China',
+    '641': 'United Kingdom (England)',
     '655': 'China',
     '665': 'China',
     '667': 'Vietnam',
@@ -775,9 +776,28 @@ class LocalDataSourceImpl implements LocalDataSource {
     '874': 'Canada',
   };
 
+  static const Map<String, List<String>> _reportedOriginPhotosMap =
+      <String, List<String>>{
+        '641': <String>['assets/images/evidence/641_england.jpg'],
+      };
+
   @override
   String getReportedOriginFromBarcode(String barcode) {
-    return _reportedOriginMap[barcode.substring(0, 3)] ?? '';
+    if (barcode.length < 3) {
+      return '';
+    } else {
+      return _reportedOriginMap[barcode.substring(0, 3)] ?? '';
+    }
+  }
+
+  @override
+  List<String> getReportedOriginPhotosFromBarcode(String barcode) {
+    if (barcode.length < 3) {
+      return const <String>[];
+    } else {
+      return _reportedOriginPhotosMap[barcode.substring(0, 3)] ??
+          const <String>[];
+    }
   }
 
   @override
@@ -797,8 +817,9 @@ class LocalDataSourceImpl implements LocalDataSource {
     // Check if it starts with "978" (common Book-land prefix).
     if (digits.sublist(0, 3).join() != '978') {
       return false;
+    } else {
+      return true;
     }
-    return true;
   }
 
   @override

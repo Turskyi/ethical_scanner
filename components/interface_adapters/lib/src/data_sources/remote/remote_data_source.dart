@@ -55,4 +55,18 @@ abstract interface class RemoteDataSource {
     required String ingredientsText,
     required Language language,
   });
+
+  /// Checks whether a product with the given [ingredients] and [barcode]
+  /// can be confidently identified as 100% vegetarian using backend AI analysis.
+  ///
+  /// - [ingredients]: The text string of product ingredients.
+  /// - [barcode]: The product barcode.
+  ///
+  /// Returns an [AiVegetarianCheckResponse].
+  Future<AiVegetarianCheckResponse> checkVegetarianWithAi({
+    required String ingredients,
+    required String barcode,
+  });
+
+  Future<void> addVegetarianLabel({required String barcode});
 }

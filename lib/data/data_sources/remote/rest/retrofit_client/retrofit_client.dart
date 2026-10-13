@@ -21,6 +21,12 @@ abstract class RetrofitClient implements RestClient {
   );
 
   @override
+  @POST('ai/vegetarian-check')
+  Future<AiVegetarianCheckResponse> checkVegetarianWithAi(
+    @Body() Map<String, String> request,
+  );
+
+  @override
   @GET('${constants.leaveRussiaBaseUrl}ean13_search')
   Future<LeaveRussiaResponse?> getLeaveRussiaInfo({
     @Query('ean13') required String barcode,

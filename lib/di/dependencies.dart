@@ -65,6 +65,17 @@ class Dependencies implements AppDependencies {
   }
 
   @override
+  UseCase<Future<AiVegetarianCheckResponse>, CheckVegetarianParams>
+  get checkVegetarianUseCase {
+    return CheckVegetarianUseCase(_productInfoGateway);
+  }
+
+  @override
+  UseCase<Future<void>, String> get addVegetarianLabelUseCase {
+    return AddVegetarianLabelUseCase(_productInfoGateway);
+  }
+
+  @override
   GetSoundPreferenceUseCase get getSoundPreferenceUseCase {
     return GetSoundPreferenceUseCase(_settingsGateway);
   }

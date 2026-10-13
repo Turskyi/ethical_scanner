@@ -23,3 +23,6 @@ const String openFoodUserComment =
     'This is a global user for the $_appName Flutter application '
     'that scans the barcode of a product and tells you if the product meets '
     'your ethical standards.';
+
+const String apiKeyIngredients = 'ingredients';
+const String apiKeyBarcode = 'barcode';

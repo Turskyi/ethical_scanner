@@ -29,6 +29,7 @@ export 'src/logging_interceptor/logging_interceptor.dart';
 export 'src/product/product_info.dart';
 export 'src/product/product_photo.dart';
 export 'src/rest_client/ai_barcode_info_response.dart';
+export 'src/rest_client/ai_vegetarian_check_response.dart';
 export 'src/rest_client/leave_russia_company_page.dart';
 export 'src/rest_client/leave_russia_item.dart';
 export 'src/rest_client/leave_russia_response.dart';
