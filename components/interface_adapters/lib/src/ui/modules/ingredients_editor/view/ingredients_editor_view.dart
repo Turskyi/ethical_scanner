@@ -1,13 +1,11 @@
-import 'dart:io';
-
 import 'package:entities/entities.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/ingredients_editor/ingredients_editor_event.dart';
 import 'package:interface_adapters/src/ui/modules/ingredients_editor/ingredients_editor_presenter.dart';
 import 'package:interface_adapters/src/ui/modules/ingredients_editor/ingredients_editor_view_model.dart';
+import 'package:interface_adapters/src/ui/modules/ingredients_editor/view/widgets/ingredients_image_preview.dart';
 import 'package:interface_adapters/src/ui/res/color/gradients.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/widgets/language_selector.dart';
@@ -29,6 +27,7 @@ class IngredientsEditorView extends StatefulWidget {
 class _IngredientsEditorViewState extends State<IngredientsEditorView> {
   final TextEditingController _ingredientsController = TextEditingController();
   final FocusNode _ingredientsFocusNode = FocusNode();
+  bool _isTextInitialized = false;
 
   @override
   void initState() {
@@ -86,15 +85,17 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
         // ignore: lines_longer_than_80_chars
         body: BlocConsumer<IngredientsEditorPresenter, IngredientsEditorViewModel>(
           listener: (BuildContext context, IngredientsEditorViewModel state) {
-            if (state is IngredientsEditorExtractedState) {
+            if (state is IngredientsEditorLoadingState) {
+              _isTextInitialized = false;
+            } else if (state is IngredientsEditorExtractedState) {
               final IngredientsEditorExtractedState extractedState = state;
-              if (_ingredientsController.text !=
-                  extractedState.ingredientsText) {
+              if (!_isTextInitialized) {
                 _ingredientsController.text = extractedState.ingredientsText;
                 // Move cursor to the end when text is updated from the state.
                 _ingredientsController.selection = TextSelection.fromPosition(
                   TextPosition(offset: _ingredientsController.text.length),
                 );
+                _isTextInitialized = true;
               }
             } else if (state is IngredientsEditorSuccessState) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -108,9 +109,7 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
               return const Center(
                 child: CircularProgressIndicator(color: Colors.white),
               );
-            }
-
-            if (state is IngredientsEditorErrorState) {
+            } else if (state is IngredientsEditorErrorState) {
               final IngredientsEditorErrorState errorState = state;
               return Center(
                 child: Padding(
@@ -147,9 +146,7 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
                   ),
                 ),
               );
-            }
-
-            if (state is IngredientsEditorExtractedState) {
+            } else if (state is IngredientsEditorExtractedState) {
               final IngredientsEditorExtractedState extractedState = state;
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
@@ -165,7 +162,7 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
                         border: Border.all(color: Colors.white24),
                       ),
                       clipBehavior: Clip.antiAlias,
-                      child: _IngredientsImagePreview(state: extractedState),
+                      child: IngredientsImagePreview(state: extractedState),
                     ),
                     // Text Editor
                     TextField(
@@ -214,9 +211,9 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
                   ],
                 ),
               );
+            } else {
+              return const SizedBox.shrink();
             }
-
-            return const SizedBox.shrink();
           },
         ),
       ),
@@ -228,36 +225,5 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
     _ingredientsController.dispose();
     _ingredientsFocusNode.dispose();
     super.dispose();
-  }
-}
-
-class _IngredientsImagePreview extends StatelessWidget {
-  const _IngredientsImagePreview({required this.state});
-
-  final IngredientsEditorExtractedState state;
-
-  @override
-  Widget build(BuildContext context) {
-    final Widget image;
-    if (state.imagePath.isNotEmpty) {
-      if (kIsWeb) {
-        image = Image.network(state.imagePath);
-      } else {
-        image = Image.file(File(state.imagePath));
-      }
-    } else if (state.imageUrl.isNotEmpty) {
-      image = Image.network(state.imageUrl);
-    } else {
-      return const Center(
-        child: Icon(Icons.image_not_supported, color: Colors.white24, size: 48),
-      );
-    }
-
-    return InteractiveViewer(
-      clipBehavior: Clip.none,
-      minScale: 1.0,
-      maxScale: 4.0,
-      child: Center(child: image),
-    );
   }
 }
