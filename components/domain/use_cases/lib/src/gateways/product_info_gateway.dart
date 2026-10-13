@@ -56,12 +56,14 @@ abstract interface class ProductInfoGateway {
   });
 
   /// Checks whether a product with the given [ingredients] and [barcode]
-  /// can be confidently identified as 100% vegetarian using backend AI analysis.
+  /// can be confidently identified as 100% vegetarian using backend AI
+  /// analysis.
   ///
   /// - [ingredients]: The list or text string of product ingredients.
   /// - [barcode]: The product barcode (used for context or logging).
   ///
-  /// Returns an [AiVegetarianCheckResponse] with the verification result and reasoning.
+  /// Returns an [AiVegetarianCheckResponse] with the verification result and
+  /// reasoning.
   Future<AiVegetarianCheckResponse> checkVegetarianWithAi({
     required String ingredients,
     required String barcode,

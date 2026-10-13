@@ -57,7 +57,8 @@ abstract interface class RemoteDataSource {
   });
 
   /// Checks whether a product with the given [ingredients] and [barcode]
-  /// can be confidently identified as 100% vegetarian using backend AI analysis.
+  /// can be confidently identified as 100% vegetarian using backend AI
+  /// analysis.
   ///
   /// - [ingredients]: The text string of product ingredients.
   /// - [barcode]: The product barcode.
