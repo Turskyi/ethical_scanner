@@ -201,6 +201,46 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
+  Future<void> saveNonFoodProduct({required String barcode}) async {
+    final Product nonFoodProduct = Product(
+      barcode: barcode,
+      categories: 'Non-food',
+      categoriesTags: <String>[constants.nonFoodCategoryTag],
+      labels: 'Non-food',
+      labelsTags: <String>[constants.nonFoodCategoryTag],
+    );
+
+    final User openFoodUser =
+        OpenFoodAPIConfiguration.globalUser ??
+        const User(
+          userId: Env.openFoodUserId,
+          password: Env.openFoodPassword,
+          comment: constants.openFoodUserComment,
+        );
+
+    final User backupUser = const User(
+      userId: Env.openFoodBackupUserId,
+      password: Env.openFoodPassword,
+      comment: constants.openFoodUserComment,
+    );
+
+    Status result = await OpenFoodAPIClient.saveProduct(
+      openFoodUser,
+      nonFoodProduct,
+    );
+
+    if (result.status != 1) {
+      result = await OpenFoodAPIClient.saveProduct(backupUser, nonFoodProduct);
+      if (result.status != 1) {
+        throw Exception(
+          'Could not save non-food product status: '
+          '${result.error ?? result.statusVerbose ?? 'Unknown error'}',
+        );
+      }
+    }
+  }
+
+  @override
   Future<void> addProduct(ProductInfo product) async {
     final String ingredientsText = product.ingredientList.join(',');
     final Product newProduct = Product(

@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/terrorism_documents_bottom_sheet.dart';
-import 'package:interface_adapters/src/ui/modules/home/view/widgets/vegetarian_check_dialog.dart';
 import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/country_documents.dart';
@@ -282,6 +281,38 @@ class ProductInfoTile extends StatelessWidget {
                 ),
               ],
             )
+          : isIngredientsMissing && canSnapIngredients
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SelectionArea(
+                  child: Text(
+                    translate('product_info.ingredients_missing'),
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontSize: textTheme.bodyLarge?.fontSize,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
+                  onPressed: () => _onMarkAsNonFood(context),
+                  icon: const Icon(Icons.devices_other, size: 18),
+                  label: Text(translate('product_info.mark_as_non_food')),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: color,
+                    side: BorderSide(color: color.withValues(alpha: 0.5)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ],
+            )
           : SelectionArea(
               child: Text(
                 value +
@@ -362,59 +393,17 @@ class ProductInfoTile extends StatelessWidget {
   }
 
   void _onCheckVegetarianWithAi(BuildContext context, String ingredientsText) {
-    final HomePresenter homePresenter = context.read<HomePresenter>();
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext dialogContext) {
-        return BlocProvider<HomePresenter>.value(
-          value: homePresenter,
-          child: Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const CircularProgressIndicator(),
-                  const SizedBox(width: 16),
-                  Flexible(
-                    child: Text(
-                      translate('product_info.analyzing_ingredients'),
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-
-    homePresenter.add(
+    return context.read<HomePresenter>().add(
       CheckVegetarianWithAiEvent(
         ingredients: ingredientsText,
         barcode: info.barcode,
-        onResult: (AiVegetarianCheckResponse response) {
-          Navigator.of(context, rootNavigator: true).pop();
-          VegetarianCheckDialog.show(
-            context: context,
-            response: response,
-            barcode: info.barcode,
-          );
-        },
-        onError: (Object error) {
-          Navigator.of(context, rootNavigator: true).pop();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('${translate('product_info.error_colon')} $error'),
-            ),
-          );
-        },
       ),
+    );
+  }
+
+  void _onMarkAsNonFood(BuildContext context) {
+    return context.read<HomePresenter>().add(
+      MarkAsNonFoodProductEvent(barcode: info.barcode),
     );
   }
 

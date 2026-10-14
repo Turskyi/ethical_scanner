@@ -123,6 +123,8 @@ class AppRouter {
                           dependencies.checkVegetarianUseCase,
                       addVegetarianLabelUseCase:
                           dependencies.addVegetarianLabelUseCase,
+                      saveNonFoodProductUseCase:
+                          dependencies.saveNonFoodProductUseCase,
                     )..add(const LoadHomeEvent());
                   },
                   child: const BlocListener<HomePresenter, HomeViewModel>(
@@ -344,6 +346,8 @@ PageRouteBuilder<String> _getHomePageRouteBuilder(RouteSettings settings) {
                 checkVegetarianUseCase: dependencies.checkVegetarianUseCase,
                 addVegetarianLabelUseCase:
                     dependencies.addVegetarianLabelUseCase,
+                saveNonFoodProductUseCase:
+                    dependencies.saveNonFoodProductUseCase,
               );
               final Object? arguments = settings.arguments;
 
@@ -429,6 +433,74 @@ void _homeViewModelListener(BuildContext context, HomeViewModel viewModel) {
       arguments: ProductPhoto(
         path: viewModel.imagePath,
         info: viewModel.productInfo,
+      ),
+    );
+  } else if (viewModel is AnalyzingIngredientsState ||
+      viewModel is SavingLabelState ||
+      viewModel is MarkingNonFoodState) {
+    final String message = viewModel is SavingLabelState
+        ? translate('product_info.contributing_to_off')
+        : viewModel is MarkingNonFoodState
+        ? translate('product_info.marking_as_non_food')
+        : translate('product_info.analyzing_ingredients');
+
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const CircularProgressIndicator(),
+                const SizedBox(width: 16),
+                Flexible(
+                  child: Text(
+                    message,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  } else if (viewModel is VegetarianCheckSuccessState) {
+    Navigator.of(context, rootNavigator: true).pop();
+    VegetarianCheckDialog.show(
+      context: context,
+      response: viewModel.response,
+      barcode: viewModel.productInfo.barcode,
+    );
+  } else if (viewModel is VegetarianLabelContributedState) {
+    Navigator.of(context, rootNavigator: true).pop();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(translate('product_info.contributed_to_off_success')),
+        backgroundColor: Colors.green.shade800,
+      ),
+    );
+  } else if (viewModel is NonFoodProductMarkedState) {
+    Navigator.of(context, rootNavigator: true).pop();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(translate('product_info.marked_as_non_food_success')),
+      ),
+    );
+  } else if (viewModel is ActionErrorState) {
+    Navigator.of(context, rootNavigator: true).pop();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '${translate('product_info.error_colon')} ${viewModel.errorMessage}',
+        ),
+        backgroundColor: Colors.red.shade800,
       ),
     );
   }

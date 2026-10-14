@@ -19,6 +19,7 @@
 
 ### File Organization & Architecture
 
+- **Clean Architecture:** This project strictly follows Clean Architecture principles as defined in [Clean Architecture by Robert C. Martin](https://a.co/d/06KjhpG8) (Entities, Use Cases, Interface Adapters, Frameworks & Drivers).
 - **One Class Per File:** Maintain one class per file, except for obvious
   exceptions such as state classes for stateful widgets, or enum-like classes
   such as events and states for BLoC/Cubit.
@@ -29,4 +30,3 @@
   placed at the very end of the file (and must not be placed below line 200). If
   a new rule needs to be added, concise existing content or remove less critical
   rules to remain strictly under the 200 line limit.
-

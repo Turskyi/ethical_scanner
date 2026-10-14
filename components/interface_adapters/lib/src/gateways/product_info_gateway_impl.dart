@@ -227,6 +227,11 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
     return _remoteDataSource.addVegetarianLabel(barcode: barcode);
   }
 
+  @override
+  Future<void> saveNonFoodProduct({required String barcode}) {
+    return _remoteDataSource.saveNonFoodProduct(barcode: barcode);
+  }
+
   bool _isWebsite(String input) {
     final RegExp regex = RegExp(
       r'^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]'

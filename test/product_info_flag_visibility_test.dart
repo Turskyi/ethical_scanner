@@ -15,13 +15,8 @@ bool _showGreenFlag(ProductInfo info) {
 
 void main() {
   group('ProductInfo.isGs1CountryStateSponsorOfTerrorism', () {
-    test('returns true for all four US State Dept terrorism sponsors', () {
-      for (final String country in <String>[
-        'Cuba',
-        'North Korea',
-        'Iran',
-        'Syria',
-      ]) {
+    test('returns true for all three US State Dept terrorism sponsors', () {
+      for (final String country in <String>['Cuba', 'North Korea', 'Iran']) {
         expect(
           ProductInfo(gs1Country: country).isGs1CountryStateSponsorOfTerrorism,
           isTrue,

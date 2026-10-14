@@ -18,6 +18,7 @@ export 'src/use_cases/get_product_info_use_case.dart';
 export 'src/use_cases/get_sound_preference_use_case.dart';
 export 'src/use_cases/save_ingredients_use_case.dart';
 export 'src/use_cases/save_language_use_case.dart';
+export 'src/use_cases/save_non_food_product_use_case.dart';
 export 'src/use_cases/save_precipitation_state_use_case.dart';
 export 'src/use_cases/save_sound_preference_use_case.dart';
 export 'src/use_cases/use_case.dart';

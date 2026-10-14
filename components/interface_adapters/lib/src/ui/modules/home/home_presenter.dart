@@ -27,8 +27,10 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     required UseCase<Future<AiVegetarianCheckResponse>, CheckVegetarianParams>
     checkVegetarianUseCase,
     required UseCase<Future<void>, String> addVegetarianLabelUseCase,
+    required UseCase<Future<void>, String> saveNonFoodProductUseCase,
   }) : _checkVegetarianUseCase = checkVegetarianUseCase,
        _addVegetarianLabelUseCase = addVegetarianLabelUseCase,
+       _saveNonFoodProductUseCase = saveNonFoodProductUseCase,
        super(LoadingHomeState(language: _getLanguageUseCase.call())) {
     on<LoadHomeEvent>(_onLoadHomeEvent);
 
@@ -57,6 +59,8 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     on<CheckVegetarianWithAiEvent>(_onCheckVegetarianWithAi);
 
     on<ContributeVegetarianLabelEvent>(_onContributeVegetarianLabel);
+
+    on<MarkAsNonFoodProductEvent>(_onMarkAsNonFoodProduct);
   }
 
   final UseCase<Future<ProductInfo>, LocalizedCode> _getProductInfoUseCase;
@@ -64,9 +68,10 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
   final UseCase<bool, Null> _getPrecipitationStateUseCase;
   final UseCase<Future<bool>, String> _saveLanguageUseCase;
   final UseCase<Language, Object?> _getLanguageUseCase;
-  final UseCase<Future<AiVegetarianCheckResponse>, CheckVegetarianParams>?
+  final UseCase<Future<AiVegetarianCheckResponse>, CheckVegetarianParams>
   _checkVegetarianUseCase;
-  final UseCase<Future<void>, String>? _addVegetarianLabelUseCase;
+  final UseCase<Future<void>, String> _addVegetarianLabelUseCase;
+  final UseCase<Future<void>, String> _saveNonFoodProductUseCase;
 
   FutureOr<void> _handleError(
     HomeErrorEvent event,
@@ -372,7 +377,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           }
         }
 
-        if (!productInfo.isEnglishBook) {
+        if (productInfo.hasIngredients) {
           final String ingredientsText = stringBuffer.toString();
 
           modifiableProductInfo[ProductInfoType.ingredients] = ingredientsText;
@@ -581,21 +586,43 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     CheckVegetarianWithAiEvent event,
     Emitter<HomeViewModel> emit,
   ) async {
-    final UseCase<Future<AiVegetarianCheckResponse>, CheckVegetarianParams>?
-    useCase = _checkVegetarianUseCase;
-    if (useCase == null) {
-      event.onError('${translate('error_colon')} Service unavailable');
-    } else {
+    if (state is LoadedProductInfoState) {
+      final LoadedProductInfoState current = state as LoadedProductInfoState;
+      emit(
+        AnalyzingIngredientsState(
+          language: current.language,
+          productInfoMap: current.productInfoMap,
+          productInfo: current.productInfo,
+          isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+        ),
+      );
       try {
-        final AiVegetarianCheckResponse response = await useCase.call(
-          CheckVegetarianParams(
-            ingredients: event.ingredients,
-            barcode: event.barcode,
+        final AiVegetarianCheckResponse response = await _checkVegetarianUseCase
+            .call(
+              CheckVegetarianParams(
+                ingredients: event.ingredients,
+                barcode: event.barcode,
+              ),
+            );
+        emit(
+          VegetarianCheckSuccessState(
+            response: response,
+            language: current.language,
+            productInfoMap: current.productInfoMap,
+            productInfo: current.productInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
           ),
         );
-        event.onResult(response);
       } catch (error) {
-        event.onError(error);
+        emit(
+          ActionErrorState(
+            errorMessage: '$error',
+            language: current.language,
+            productInfoMap: current.productInfoMap,
+            productInfo: current.productInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
       }
     }
   }
@@ -604,33 +631,89 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     ContributeVegetarianLabelEvent event,
     Emitter<HomeViewModel> emit,
   ) async {
-    final UseCase<Future<void>, String>? useCase = _addVegetarianLabelUseCase;
-    if (useCase == null) {
-      event.onError('${translate('error_colon')} Service unavailable');
-    } else {
+    if (state is LoadedProductInfoState) {
+      final LoadedProductInfoState current = state as LoadedProductInfoState;
+      emit(
+        SavingLabelState(
+          language: current.language,
+          productInfoMap: current.productInfoMap,
+          productInfo: current.productInfo,
+          isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+        ),
+      );
       try {
-        await useCase.call(event.barcode);
-        if (state is ProductInfoState) {
-          final ProductInfoState currentState = state as ProductInfoState;
-          final ProductInfo updatedInfo = currentState.productInfo.copyWith(
-            vegetarian: Vegetarian.positive,
-          );
-          final Map<ProductInfoType, String> updatedMap =
-              Map<ProductInfoType, String>.from(currentState.productInfoMap);
-          updatedMap[ProductInfoType.isVegetarian] = translate('yes');
+        await _addVegetarianLabelUseCase.call(event.barcode);
+        final ProductInfo updatedInfo = current.productInfo.copyWith(
+          vegetarian: Vegetarian.positive,
+        );
+        final Map<ProductInfoType, String> updatedMap =
+            Map<ProductInfoType, String>.from(current.productInfoMap);
+        updatedMap[ProductInfoType.isVegetarian] = translate('yes');
 
-          emit(
-            LoadedProductInfoState(
-              productInfo: updatedInfo,
-              productInfoMap: updatedMap,
-              language: state.language,
-              isSeasonalEffectEnabled: state.isSeasonalEffectEnabled,
-            ),
-          );
-        }
-        event.onSuccess();
+        emit(
+          VegetarianLabelContributedState(
+            language: current.language,
+            productInfoMap: updatedMap,
+            productInfo: updatedInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
       } catch (error) {
-        event.onError(error);
+        emit(
+          ActionErrorState(
+            errorMessage: '$error',
+            language: current.language,
+            productInfoMap: current.productInfoMap,
+            productInfo: current.productInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
+      }
+    }
+  }
+
+  FutureOr<void> _onMarkAsNonFoodProduct(
+    MarkAsNonFoodProductEvent event,
+    Emitter<HomeViewModel> emit,
+  ) async {
+    if (state is LoadedProductInfoState) {
+      final LoadedProductInfoState current = state as LoadedProductInfoState;
+      emit(
+        MarkingNonFoodState(
+          language: current.language,
+          productInfoMap: current.productInfoMap,
+          productInfo: current.productInfo,
+          isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+        ),
+      );
+      try {
+        await _saveNonFoodProductUseCase.call(event.barcode);
+        final ProductInfo updatedInfo = current.productInfo.copyWith(
+          categoryTags: <String>['en:non-food'],
+          responseType: ProductResponseType.nonFoodProduct,
+        );
+        final Map<ProductInfoType, String> updatedMap =
+            Map<ProductInfoType, String>.from(current.productInfoMap);
+        updatedMap.remove(ProductInfoType.ingredients);
+
+        emit(
+          NonFoodProductMarkedState(
+            language: current.language,
+            productInfoMap: updatedMap,
+            productInfo: updatedInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
+      } catch (error) {
+        emit(
+          ActionErrorState(
+            errorMessage: '$error',
+            language: current.language,
+            productInfoMap: current.productInfoMap,
+            productInfo: current.productInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
       }
     }
   }

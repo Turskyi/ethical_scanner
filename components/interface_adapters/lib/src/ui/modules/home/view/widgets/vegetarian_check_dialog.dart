@@ -171,38 +171,7 @@ class _VegetarianCheckDialogState extends State<VegetarianCheckDialog> {
     });
 
     context.read<HomePresenter>().add(
-      ContributeVegetarianLabelEvent(
-        barcode: widget.barcode,
-        onSuccess: () {
-          if (mounted) {
-            Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  translate('product_info.contributed_to_off_success'),
-                ),
-                backgroundColor: Colors.green.shade800,
-              ),
-            );
-          }
-        },
-        onError: (Object error) {
-          if (mounted) {
-            setState(() {
-              _isSubmitting = false;
-            });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  '${translate('product_info.contributed_to_off_error')}: '
-                  '$error',
-                ),
-                backgroundColor: Colors.red.shade800,
-              ),
-            );
-          }
-        },
-      ),
+      ContributeVegetarianLabelEvent(barcode: widget.barcode),
     );
   }
 }

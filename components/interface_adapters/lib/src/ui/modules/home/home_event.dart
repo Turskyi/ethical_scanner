@@ -68,24 +68,20 @@ final class CheckVegetarianWithAiEvent extends HomeEvent {
   const CheckVegetarianWithAiEvent({
     required this.ingredients,
     required this.barcode,
-    required this.onResult,
-    required this.onError,
   });
 
   final String ingredients;
   final String barcode;
-  final void Function(AiVegetarianCheckResponse response) onResult;
-  final void Function(Object error) onError;
 }
 
 final class ContributeVegetarianLabelEvent extends HomeEvent {
-  const ContributeVegetarianLabelEvent({
-    required this.barcode,
-    required this.onSuccess,
-    required this.onError,
-  });
+  const ContributeVegetarianLabelEvent({required this.barcode});
 
   final String barcode;
-  final void Function() onSuccess;
-  final void Function(Object error) onError;
+}
+
+final class MarkAsNonFoodProductEvent extends HomeEvent {
+  const MarkAsNonFoodProductEvent({required this.barcode});
+
+  final String barcode;
 }
