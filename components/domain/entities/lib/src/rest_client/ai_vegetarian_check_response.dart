@@ -8,11 +8,11 @@ class AiVegetarianCheckResponse {
   });
 
   factory AiVegetarianCheckResponse.fromJson(Map<String, Object?> json) {
-    final Object? isVegetarian = json['isVegetarian'];
-    final Object? confidence = json['confidence'];
-    final Object? reason = json['reason'];
-    final Object? provider = json['provider'];
-    final Object? model = json['model'];
+    final Object? isVegetarian = json[_isVegetarianJsonKey];
+    final Object? confidence = json[_confidenceJsonKey];
+    final Object? reason = json[_reasonJsonKey];
+    final Object? provider = json[_providerJsonKey];
+    final Object? model = json[_modelJsonKey];
 
     if (isVegetarian is bool &&
         reason is String &&
@@ -21,7 +21,7 @@ class AiVegetarianCheckResponse {
         (model == null || model is String)) {
       return AiVegetarianCheckResponse(
         isVegetarian: isVegetarian,
-        confidence: confidence is String ? confidence : 'medium',
+        confidence: confidence is String ? confidence : _defaultConfidence,
         reason: reason,
         provider: provider is String ? provider : '',
         model: model is String ? model : '',
@@ -30,6 +30,13 @@ class AiVegetarianCheckResponse {
       throw const FormatException('Invalid AI vegetarian check response.');
     }
   }
+
+  static const String _isVegetarianJsonKey = 'isVegetarian';
+  static const String _confidenceJsonKey = 'confidence';
+  static const String _reasonJsonKey = 'reason';
+  static const String _providerJsonKey = 'provider';
+  static const String _modelJsonKey = 'model';
+  static const String _defaultConfidence = 'medium';
 
   final bool isVegetarian;
   final String confidence;

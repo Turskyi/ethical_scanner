@@ -5,7 +5,7 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 
-class VegetarianCheckDialog extends StatefulWidget {
+class VegetarianCheckDialog extends StatelessWidget {
   const VegetarianCheckDialog({
     required this.response,
     required this.barcode,
@@ -14,6 +14,9 @@ class VegetarianCheckDialog extends StatefulWidget {
 
   final AiVegetarianCheckResponse response;
   final String barcode;
+
+  static const String _reasonArgKey = 'reason';
+  static const String _modelArgKey = 'model';
 
   static Future<void> show({
     required BuildContext context,
@@ -33,20 +36,13 @@ class VegetarianCheckDialog extends StatefulWidget {
   }
 
   @override
-  State<VegetarianCheckDialog> createState() => _VegetarianCheckDialogState();
-}
-
-class _VegetarianCheckDialogState extends State<VegetarianCheckDialog> {
-  bool _isSubmitting = false;
-
-  @override
   Widget build(BuildContext context) {
     final Resources resources = Resources.of(context);
     final LinearGradient backgroundGradient =
         resources.gradients.pinkSunriseGradientBackground;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
-    final bool isVegetarian = widget.response.isVegetarian;
+    final bool isVegetarian = response.isVegetarian;
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -101,19 +97,19 @@ class _VegetarianCheckDialogState extends State<VegetarianCheckDialog> {
                 Text(
                   translate(
                     'product_info.ai_vegetarian_reason',
-                    args: <String, Object?>{'reason': widget.response.reason},
+                    args: <String, Object?>{_reasonArgKey: response.reason},
                   ),
                   style: textTheme.bodyMedium?.copyWith(
                     fontStyle: FontStyle.italic,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                if (widget.response.model.isNotEmpty) ...<Widget>[
+                if (response.model.isNotEmpty) ...<Widget>[
                   const SizedBox(height: 8),
                   Text(
                     translate(
                       'product_info.ai_model',
-                      args: <String, Object?>{'model': widget.response.model},
+                      args: <String, Object?>{_modelArgKey: response.model},
                     ),
                     style: textTheme.bodySmall?.copyWith(color: Colors.black54),
                   ),
@@ -123,21 +119,9 @@ class _VegetarianCheckDialogState extends State<VegetarianCheckDialog> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
-                      onPressed: _isSubmitting
-                          ? null
-                          : () => _onContributePressed(context),
-                      icon: _isSubmitting
-                          ? const SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Icon(Icons.cloud_upload_outlined),
-                      label: Text(
-                        _isSubmitting
-                            ? translate('product_info.contributing_to_off')
-                            : translate('product_info.contribute_to_off'),
-                      ),
+                      onPressed: () => _onContributePressed(context),
+                      icon: const Icon(Icons.cloud_upload_outlined),
+                      label: Text(translate('product_info.contribute_to_off')),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green.shade700,
                         foregroundColor: Colors.white,
@@ -154,7 +138,7 @@ class _VegetarianCheckDialogState extends State<VegetarianCheckDialog> {
                   const SizedBox(height: 8),
                 ],
                 TextButton(
-                  onPressed: _isSubmitting ? null : Navigator.of(context).pop,
+                  onPressed: Navigator.of(context).pop,
                   child: Text(translate('close')),
                 ),
               ],
@@ -166,12 +150,8 @@ class _VegetarianCheckDialogState extends State<VegetarianCheckDialog> {
   }
 
   void _onContributePressed(BuildContext context) {
-    setState(() {
-      _isSubmitting = true;
-    });
-
-    context.read<HomePresenter>().add(
-      ContributeVegetarianLabelEvent(barcode: widget.barcode),
-    );
+    final HomePresenter homePresenter = context.read<HomePresenter>();
+    Navigator.of(context).pop();
+    homePresenter.add(ContributeVegetarianLabelEvent(barcode: barcode));
   }
 }
