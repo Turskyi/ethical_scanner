@@ -210,8 +210,8 @@ class ProductInfoTile extends StatelessWidget {
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             _onViewEvidencePhotoTap(
-                              context,
-                              info.reportedOriginPhotos[i],
+                              context: context,
+                              photoPath: info.reportedOriginPhotos[i],
                             );
                           },
                       ),
@@ -411,7 +411,10 @@ class ProductInfoTile extends StatelessWidget {
     );
   }
 
-  Future<void> _onViewEvidencePhotoTap(BuildContext context, String photoPath) {
+  Future<void> _onViewEvidencePhotoTap({
+    required BuildContext context,
+    required String photoPath,
+  }) {
     final LinearGradient backgroundGradient = Resources.of(
       context,
     ).gradients.pinkSunriseGradientBackground;
