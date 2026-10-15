@@ -764,6 +764,7 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
       '773': 'China',
       '837': 'China',
       '850': 'United States',
+      '852': 'Poland',
       '856': 'Colombia',
       '874': 'Canada',
       '879': 'Cambodia',
@@ -779,8 +780,9 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
   List<String> getReportedOriginPhotosFromBarcode(String barcode) {
     const Map<String, List<String>> reportedOriginPhotosMap =
         <String, List<String>>{
-          '641': <String>['assets/images/evidence/641_england.jpg'],
           '195': <String>['assets/images/evidence/195_china.jpg'],
+          '641': <String>['assets/images/evidence/641_england.jpg'],
+          '852': <String>['assets/images/evidence/852_poland.jpg'],
           '879': <String>['assets/images/evidence/879_cambodia.jpg'],
         };
     if (barcode.length < 3) {

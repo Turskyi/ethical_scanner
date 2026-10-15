@@ -772,6 +772,7 @@ class LocalDataSourceImpl implements LocalDataSource {
     '773': 'China',
     '837': 'China, Canada',
     '850': 'United States',
+    '852': 'Poland',
     '856': 'Colombia',
     '874': 'Canada',
     '879': 'Cambodia',
@@ -779,8 +780,9 @@ class LocalDataSourceImpl implements LocalDataSource {
 
   static const Map<String, List<String>> _reportedOriginPhotosMap =
       <String, List<String>>{
-        '641': <String>['assets/images/evidence/641_england.jpg'],
         '195': <String>['assets/images/evidence/195_china.jpg'],
+        '641': <String>['assets/images/evidence/641_england.jpg'],
+        '852': <String>['assets/images/evidence/852_poland.jpg'],
         '879': <String>['assets/images/evidence/879_cambodia.jpg'],
       };
 

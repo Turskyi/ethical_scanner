@@ -12,7 +12,13 @@ class LoggingInterceptorImpl extends Interceptor implements LoggingInterceptor {
     ResponseInterceptorHandler handler,
   ) {
     log('onResponse ------------------');
-    log('-----------------------------');
+    final String responseString = response.toString();
+    const int maxResponseLength = 2000;
+    final String responseLog = responseString.length > maxResponseLength
+        ? '${responseString.substring(0, maxResponseLength ~/ 2)}...'
+              '${responseString.substring(responseString.length - maxResponseLength ~/ 2)}'
+        : responseString;
+    log('-$responseLog----------------------------');
     super.onResponse(response, handler);
   }
 
