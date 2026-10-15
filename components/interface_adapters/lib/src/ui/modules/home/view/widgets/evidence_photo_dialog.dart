@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
+import 'package:interface_adapters/src/ui/res/values/constants.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EvidencePhotoDialog extends StatelessWidget {
   const EvidencePhotoDialog({required this.photoUrl, super.key});
@@ -13,6 +15,8 @@ class EvidencePhotoDialog extends StatelessWidget {
   static const double _imageBorderRadius = 16.0;
   static const double _dialogPadding = 16.0;
   static const double _spacingHeight = 12.0;
+  static const double _errorIconSize = 48.0;
+  static const double _reportIconSize = 18.0;
 
   static Future<void> show({
     required BuildContext context,
@@ -84,7 +88,48 @@ class EvidencePhotoDialog extends StatelessWidget {
                             },
                         errorBuilder:
                             (BuildContext _, Object _, StackTrace? _) {
-                              return const SizedBox.shrink();
+                              return Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(_dialogPadding),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      const Icon(
+                                        Icons.broken_image_outlined,
+                                        size: _errorIconSize,
+                                        color: Colors.white70,
+                                      ),
+                                      const SizedBox(height: _spacingHeight),
+                                      Text(
+                                        translate('photo.failed_to_load_image'),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      const SizedBox(height: _spacingHeight),
+                                      OutlinedButton.icon(
+                                        style: OutlinedButton.styleFrom(
+                                          foregroundColor: Colors.white,
+                                          side: const BorderSide(
+                                            color: Colors.white70,
+                                          ),
+                                        ),
+                                        icon: const Icon(
+                                          Icons.bug_report_outlined,
+                                          size: _reportIconSize,
+                                        ),
+                                        label: Text(
+                                          translate('photo.report_problem'),
+                                        ),
+                                        onPressed: _onReportProblemTap,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
                             },
                       ),
                     ),
@@ -101,5 +146,18 @@ class EvidencePhotoDialog extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<bool> _onReportProblemTap() {
+    final String subject = Uri.encodeComponent('Failed to load evidence photo');
+    final String body = Uri.encodeComponent(
+      'The evidence photo failed to load in Ethical Scanner.\n\n'
+      'Image URL: $photoUrl',
+    );
+    final Uri mailUri = Uri.parse(
+      '$kMailToScheme:$kSupportEmail?$kSubjectParameter=$subject&'
+      '$kBodyParameter=$body',
+    );
+    return launchUrl(mailUri, mode: LaunchMode.externalApplication);
   }
 }

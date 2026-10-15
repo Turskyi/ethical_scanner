@@ -16,6 +16,9 @@
   promotion over explicit `as` casts to prevent runtime type errors.
 - **Method Parameters**: Prefer named parameters (using `{required ...}`) when a
   function or method takes more than one parameter.
+- **Class Member Ordering (Stepdown Rule)**: Sort class members logically so
+  a class reads like a book from top to bottom—callers should be placed above
+  callees.
 
 ### File Organization & Architecture
 
