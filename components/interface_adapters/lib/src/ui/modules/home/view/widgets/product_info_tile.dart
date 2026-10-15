@@ -52,6 +52,9 @@ class ProductInfoTile extends StatelessWidget {
         !kIsWeb &&
         responseType.isSupportedByOpenFoodFacts;
 
+    final bool canShowMarkAsNonFood =
+        isIngredientsMissing && responseType.isBarcodeOnly;
+
     final bool isRedBackground =
         info.isCompanyTerrorismSponsor || info.isFromRussia;
     final bool isRed =
@@ -72,271 +75,272 @@ class ProductInfoTile extends StatelessWidget {
 
     if (isIngredientsMissing && !canSnapIngredients) {
       return const SizedBox.shrink();
-    }
+    } else {
+      final bool isIngredientsImageAddedOrNotIngredients =
+          isIngredientsImageAdded || isNotIngredients;
 
-    final bool isIngredientsImageAddedOrNotIngredients =
-        isIngredientsImageAdded || isNotIngredients;
-
-    return ListTile(
-      textColor: color,
-      iconColor: color,
-      leading: IconButton(
-        icon: Icon(
-          _getIconData(
-            canSnapIngredients: canSnapIngredients,
-            isIngredientsImageAdded: isIngredientsImageAddedOrNotIngredients,
-            isRedBackground: isRedBackground,
-            isGreenBackground: isGreenBackground,
+      return ListTile(
+        textColor: color,
+        iconColor: color,
+        leading: IconButton(
+          icon: Icon(
+            _getIconData(
+              canSnapIngredients: canSnapIngredients,
+              isIngredientsImageAdded: isIngredientsImageAddedOrNotIngredients,
+              isRedBackground: isRedBackground,
+              isGreenBackground: isGreenBackground,
+            ),
+            color: isRedFlag
+                ? Colors.red
+                : isGreenFlag
+                ? Colors.green
+                : null,
           ),
-          color: isRedFlag
-              ? Colors.red
-              : isGreenFlag
-              ? Colors.green
+          onPressed: canSnapIngredients
+              ? () => context.read<HomePresenter>().add(
+                  const SnapIngredientsEvent(),
+                )
+              : isIngredientsImageAddedOrNotIngredients
+              ? () => context.read<HomePresenter>().add(
+                  const EditIngredientsEvent(),
+                )
+              : isRedFlag
+              ? () => _onStateSponsorsTerrorismTap(context, resources)
               : null,
         ),
-        onPressed: canSnapIngredients
-            ? () => context.read<HomePresenter>().add(
-                const SnapIngredientsEvent(),
-              )
-            : isIngredientsImageAddedOrNotIngredients
-            ? () => context.read<HomePresenter>().add(
-                const EditIngredientsEvent(),
-              )
-            : isRedFlag
-            ? () => _onStateSponsorsTerrorismTap(context, resources)
-            : null,
-      ),
-      title: SelectableText(
-        translate(type.key),
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: textTheme.titleLarge?.fontSize,
+        title: SelectableText(
+          translate(type.key),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: textTheme.titleLarge?.fontSize,
+          ),
         ),
-      ),
-      subtitle: type.isCompanyWarSponsor
-          ? RichText(
-              text: TextSpan(
-                text: value,
-                style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                  fontSize: textTheme.bodyLarge?.fontSize,
-                ),
-                children: <TextSpan>[
-                  const TextSpan(text: '\n'),
-                  TextSpan(
-                    text: translate('product_info.leave_russia'),
-                    style: TextStyle(
-                      color: Colors.lightBlueAccent,
-                      decoration: TextDecoration.underline,
-                      fontStyle: FontStyle.italic,
-                      fontSize: textTheme.bodyLarge?.fontSize,
-                    ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        _onWarSponsorsSecondarySourceTap(resources);
-                      },
+        subtitle: type.isCompanyWarSponsor
+            ? RichText(
+                text: TextSpan(
+                  text: value,
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontSize: textTheme.bodyLarge?.fontSize,
                   ),
-                  TextSpan(
-                    text: ' · ',
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      fontSize: textTheme.bodyLarge?.fontSize,
-                    ),
-                  ),
-                  TextSpan(
-                    text: translate('product_info.yale_list'),
-                    style: TextStyle(
-                      color: Colors.lightBlueAccent,
-                      decoration: TextDecoration.underline,
-                      fontStyle: FontStyle.italic,
-                      fontSize: textTheme.bodyLarge?.fontSize,
-                    ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        _onWarSponsorsPrimarySourceTap(resources);
-                      },
-                  ),
-                ],
-              ),
-            )
-          : type.isWebsite
-          ? Text(
-              '$value ${translate('product_info.click_to_know')}',
-              style: TextStyle(
-                fontStyle: FontStyle.italic,
-                fontSize: textTheme.bodyLarge?.fontSize,
-                decoration: TextDecoration.underline,
-              ),
-            )
-          : type.isTerrorismSponsor
-          ? Text(
-              '$value ${translate('terrorism_sponsor.tap_for_documents')}',
-              style: TextStyle(
-                fontStyle: FontStyle.italic,
-                fontSize: textTheme.bodyLarge?.fontSize,
-                decoration: TextDecoration.underline,
-              ),
-            )
-          : type.isReportedOrigin && info.reportedOriginPhotos.isNotEmpty
-          ? RichText(
-              text: TextSpan(
-                text: value,
-                style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                  fontSize: textTheme.bodyLarge?.fontSize,
-                  color: color,
-                ),
-                children: <TextSpan>[
-                  for (
-                    int i = 0;
-                    i < info.reportedOriginPhotos.length;
-                    i++
-                  ) ...<TextSpan>[
+                  children: <TextSpan>[
                     const TextSpan(text: '\n'),
                     TextSpan(
-                      text: info.reportedOriginPhotos.length == 1
-                          ? translate('product_info.view_evidence_photo')
-                          : '${translate('product_info.view_evidence_photo')} '
-                                '#${i + 1}',
+                      text: translate('product_info.leave_russia'),
                       style: TextStyle(
-                        color: color,
+                        color: Colors.lightBlueAccent,
                         decoration: TextDecoration.underline,
                         fontStyle: FontStyle.italic,
                         fontSize: textTheme.bodyLarge?.fontSize,
-                        fontWeight: FontWeight.w600,
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          _onViewEvidencePhotoTap(
-                            context,
-                            info.reportedOriginPhotos[i],
-                          );
+                          _onWarSponsorsSecondarySourceTap(resources);
+                        },
+                    ),
+                    TextSpan(
+                      text: ' · ',
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontSize: textTheme.bodyLarge?.fontSize,
+                      ),
+                    ),
+                    TextSpan(
+                      text: translate('product_info.yale_list'),
+                      style: TextStyle(
+                        color: Colors.lightBlueAccent,
+                        decoration: TextDecoration.underline,
+                        fontStyle: FontStyle.italic,
+                        fontSize: textTheme.bodyLarge?.fontSize,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          _onWarSponsorsPrimarySourceTap(resources);
                         },
                     ),
                   ],
-                ],
-              ),
-            )
-          : type == ProductInfoType.countryAi
-          ? SelectionArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    value,
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      fontSize: textTheme.bodyLarge?.fontSize,
-                    ),
-                  ),
-                  if (info.infoAiModel.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Text(
-                        translate(
-                          'product_info.ai_model',
-                          args: <String, Object?>{'model': info.infoAiModel},
-                        ),
-                        style: textTheme.bodySmall?.copyWith(
-                          color: color.withValues(alpha: 0.7),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            )
-          : type.isIngredients &&
-                value.isNotEmpty &&
-                !isRed &&
-                !_isCustomerServiceText &&
-                info.vegetarian == Vegetarian.unknown
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SelectionArea(
-                  child: Text(
-                    value,
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      fontSize: textTheme.bodyLarge?.fontSize,
-                    ),
-                  ),
                 ),
-                const SizedBox(height: 8),
-                OutlinedButton.icon(
-                  onPressed: () => _onCheckVegetarianWithAi(context, value),
-                  icon: const Icon(Icons.auto_awesome, size: 18),
-                  label: Text(translate('product_info.check_vegetarian_ai')),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: color,
-                    side: BorderSide(color: color.withValues(alpha: 0.5)),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ],
-            )
-          : isIngredientsMissing && canSnapIngredients
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SelectionArea(
-                  child: Text(
-                    translate('product_info.ingredients_missing'),
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      fontSize: textTheme.bodyLarge?.fontSize,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                OutlinedButton.icon(
-                  onPressed: () => _onMarkAsNonFood(context),
-                  icon: const Icon(Icons.devices_other, size: 18),
-                  label: Text(translate('product_info.mark_as_non_food')),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: color,
-                    side: BorderSide(color: color.withValues(alpha: 0.5)),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ],
-            )
-          : SelectionArea(
-              child: Text(
-                value +
-                    (isIngredientsMissing
-                        ? translate('product_info.ingredients_missing')
-                        : isIngredientsImageAdded
-                        ? translate('product_info.ingredients_image_added')
-                        : ''),
+              )
+            : type.isWebsite
+            ? Text(
+                '$value ${translate('product_info.click_to_know')}',
                 style: TextStyle(
                   fontStyle: FontStyle.italic,
                   fontSize: textTheme.bodyLarge?.fontSize,
+                  decoration: TextDecoration.underline,
+                ),
+              )
+            : type.isTerrorismSponsor
+            ? Text(
+                '$value ${translate('terrorism_sponsor.tap_for_documents')}',
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  fontSize: textTheme.bodyLarge?.fontSize,
+                  decoration: TextDecoration.underline,
+                ),
+              )
+            : type.isReportedOrigin && info.reportedOriginPhotos.isNotEmpty
+            ? RichText(
+                text: TextSpan(
+                  text: value,
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontSize: textTheme.bodyLarge?.fontSize,
+                    color: color,
+                  ),
+                  children: <TextSpan>[
+                    for (
+                      int i = 0;
+                      i < info.reportedOriginPhotos.length;
+                      i++
+                    ) ...<TextSpan>[
+                      const TextSpan(text: '\n'),
+                      TextSpan(
+                        text: info.reportedOriginPhotos.length == 1
+                            ? translate('product_info.view_evidence_photo')
+                            : '${translate('product_info.'
+                              'view_evidence_photo')} #${i + 1}',
+                        style: TextStyle(
+                          color: color,
+                          decoration: TextDecoration.underline,
+                          fontStyle: FontStyle.italic,
+                          fontSize: textTheme.bodyLarge?.fontSize,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            _onViewEvidencePhotoTap(
+                              context,
+                              info.reportedOriginPhotos[i],
+                            );
+                          },
+                      ),
+                    ],
+                  ],
+                ),
+              )
+            : type == ProductInfoType.countryAi
+            ? SelectionArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      value,
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontSize: textTheme.bodyLarge?.fontSize,
+                      ),
+                    ),
+                    if (info.infoAiModel.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          translate(
+                            'product_info.ai_model',
+                            args: <String, Object?>{'model': info.infoAiModel},
+                          ),
+                          style: textTheme.bodySmall?.copyWith(
+                            color: color.withValues(alpha: 0.7),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              )
+            : type.isIngredients &&
+                  value.isNotEmpty &&
+                  !isRed &&
+                  !_isCustomerServiceText &&
+                  info.vegetarian == Vegetarian.unknown
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SelectionArea(
+                    child: Text(
+                      value,
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontSize: textTheme.bodyLarge?.fontSize,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  OutlinedButton.icon(
+                    onPressed: () => _onCheckVegetarianWithAi(context, value),
+                    icon: const Icon(Icons.auto_awesome, size: 18),
+                    label: Text(translate('product_info.check_vegetarian_ai')),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: color,
+                      side: BorderSide(color: color.withValues(alpha: 0.5)),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : isIngredientsMissing && canShowMarkAsNonFood
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SelectionArea(
+                    child: Text(
+                      translate('product_info.ingredients_missing'),
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontSize: textTheme.bodyLarge?.fontSize,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  OutlinedButton.icon(
+                    onPressed: () => _onMarkAsNonFood(context),
+                    icon: const Icon(Icons.devices_other, size: 18),
+                    label: Text(translate('product_info.mark_as_non_food')),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: color,
+                      side: BorderSide(color: color.withValues(alpha: 0.5)),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : SelectionArea(
+                child: Text(
+                  value +
+                      (isIngredientsMissing
+                          ? translate('product_info.ingredients_missing')
+                          : isIngredientsImageAdded
+                          ? translate('product_info.ingredients_image_added')
+                          : ''),
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontSize: textTheme.bodyLarge?.fontSize,
+                  ),
                 ),
               ),
-            ),
-      onTap: type.isWebsite || type.isTerrorismSponsor
-          ? () {
-              if (type.isTerrorismSponsor) {
-                _onTerrorismSponsorTap(context);
-              } else {
-                _onLinkTap(context, resources);
+        onTap: type.isWebsite || type.isTerrorismSponsor
+            ? () {
+                if (type.isTerrorismSponsor) {
+                  _onTerrorismSponsorTap(context);
+                } else {
+                  _onLinkTap(context, resources);
+                }
               }
-            }
-          : null,
-    );
+            : null,
+      );
+    }
   }
 
   /// Launches the primary source URL for war sponsors.
