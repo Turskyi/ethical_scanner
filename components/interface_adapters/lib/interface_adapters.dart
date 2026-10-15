@@ -35,5 +35,6 @@ export 'src/ui/res/camera_descriptions.dart';
 export 'src/ui/res/enums/animation_constants.dart';
 export 'src/ui/res/enums/duration_seconds.dart';
 export 'src/ui/res/layout/feedback_form.dart';
+export 'src/ui/res/values/constants.dart';
 export 'src/ui/res/values/sponsor_document.dart';
 export 'src/ui/router/app_router.dart';

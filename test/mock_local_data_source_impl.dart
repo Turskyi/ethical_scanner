@@ -777,18 +777,18 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
   }
 
   @override
-  List<String> getReportedOriginPhotosFromBarcode(String barcode) {
-    const Map<String, List<String>> reportedOriginPhotosMap =
+  List<String> getReportedOriginPhotoFileNamesFromBarcode(String barcode) {
+    const Map<String, List<String>> reportedOriginPhotoFileNamesMap =
         <String, List<String>>{
-          '195': <String>['assets/images/evidence/195_china.jpg'],
-          '641': <String>['assets/images/evidence/641_england.jpg'],
-          '852': <String>['assets/images/evidence/852_poland.jpg'],
-          '879': <String>['assets/images/evidence/879_cambodia.jpg'],
+          '195': <String>['195_china.jpg'],
+          '641': <String>['641_england.jpg'],
+          '852': <String>['852_poland.jpg'],
+          '879': <String>['879_cambodia.jpg'],
         };
     if (barcode.length < 3) {
       return const <String>[];
     } else {
-      return reportedOriginPhotosMap[barcode.substring(0, 3)] ??
+      return reportedOriginPhotoFileNamesMap[barcode.substring(0, 3)] ??
           const <String>[];
     }
   }

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/evidence_photo_dialog.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/terrorism_documents_bottom_sheet.dart';
 import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
@@ -415,56 +416,7 @@ class ProductInfoTile extends StatelessWidget {
     required BuildContext context,
     required String photoPath,
   }) {
-    final LinearGradient backgroundGradient = Resources.of(
-      context,
-    ).gradients.pinkSunriseGradientBackground;
-
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          surfaceTintColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: backgroundGradient,
-              borderRadius: BorderRadius.circular(28),
-            ),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 600, maxHeight: 600),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: InteractiveViewer(
-                          child: Image.asset(
-                            photoPath,
-                            package: 'interface_adapters',
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    TextButton(
-                      onPressed: Navigator.of(context).pop,
-                      child: Text(translate('close')),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
+    return EvidencePhotoDialog.show(context: context, photoUrl: photoPath);
   }
 
   bool get _isCustomerServiceText {

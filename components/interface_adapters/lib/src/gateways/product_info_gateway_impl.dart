@@ -9,6 +9,7 @@ import 'package:http/http.dart';
 import 'package:interface_adapters/src/data_sources/local/local_data_source.dart';
 import 'package:interface_adapters/src/data_sources/remote/remote_data_source.dart';
 import 'package:interface_adapters/src/error_message_extractor.dart';
+import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:use_cases/use_cases.dart';
 
 class ProductInfoGatewayImpl implements ProductInfoGateway {
@@ -112,8 +113,11 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
             );
             final String reportedOrigin = _localDataSource
                 .getReportedOriginFromBarcode(inputCode);
-            final List<String> reportedOriginPhotos = _localDataSource
-                .getReportedOriginPhotosFromBarcode(inputCode);
+            final List<String> photoFileNames = _localDataSource
+                .getReportedOriginPhotoFileNamesFromBarcode(inputCode);
+            final List<String> reportedOriginPhotos = photoFileNames
+                .map((String fileName) => '$kEvidenceBaseUrl$fileName')
+                .toList();
             if (gs1Country.isNotEmpty || reportedOrigin.isNotEmpty) {
               return info.copyWith(
                 gs1Country: gs1Country,

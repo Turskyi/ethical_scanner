@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
-import 'package:interface_adapters/src/ui/res/values/constants.dart';
 
 class Fab extends StatefulWidget {
   const Fab({

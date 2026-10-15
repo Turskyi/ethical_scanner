@@ -778,12 +778,12 @@ class LocalDataSourceImpl implements LocalDataSource {
     '879': 'Cambodia',
   };
 
-  static const Map<String, List<String>> _reportedOriginPhotosMap =
+  static const Map<String, List<String>> _reportedOriginPhotoFileNamesMap =
       <String, List<String>>{
-        '195': <String>['assets/images/evidence/195_china.jpg'],
-        '641': <String>['assets/images/evidence/641_england.jpg'],
-        '852': <String>['assets/images/evidence/852_poland.jpg'],
-        '879': <String>['assets/images/evidence/879_cambodia.jpg'],
+        '195': <String>['195_china.jpg'],
+        '641': <String>['641_england.jpg'],
+        '852': <String>['852_poland.jpg'],
+        '879': <String>['879_cambodia.jpg'],
       };
 
   @override
@@ -796,11 +796,11 @@ class LocalDataSourceImpl implements LocalDataSource {
   }
 
   @override
-  List<String> getReportedOriginPhotosFromBarcode(String barcode) {
+  List<String> getReportedOriginPhotoFileNamesFromBarcode(String barcode) {
     if (barcode.length < 3) {
       return const <String>[];
     } else {
-      return _reportedOriginPhotosMap[barcode.substring(0, 3)] ??
+      return _reportedOriginPhotoFileNamesMap[barcode.substring(0, 3)] ??
           const <String>[];
     }
   }
