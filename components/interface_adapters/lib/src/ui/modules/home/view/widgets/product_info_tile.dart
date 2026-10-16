@@ -84,34 +84,50 @@ class ProductInfoTile extends StatelessWidget {
       return ListTile(
         textColor: color,
         iconColor: color,
-        leading: IconButton(
-          icon: Icon(
-            _getIconData(
-              canSnapIngredients: canSnapIngredients,
-              isIngredientsImageAdded: isIngredientsImageAddedOrNotIngredients,
-              isRedBackground: isRedBackground,
-              isGreenBackground: isGreenBackground,
-            ),
-            color: isRedFlag
-                ? Theme.of(context).colorScheme.error
-                : isGreenFlag
-                ? Colors.green
-                : type.isProductName && value.isNotEmpty
-                ? Theme.of(context).colorScheme.primary
-                : null,
-          ),
-          onPressed: canSnapIngredients
-              ? () => context.read<HomePresenter>().add(
-                  const SnapIngredientsEvent(),
-                )
-              : isIngredientsImageAddedOrNotIngredients
-              ? () => context.read<HomePresenter>().add(
-                  const EditIngredientsEvent(),
-                )
-              : isRedFlag
-              ? () => _onStateSponsorsTerrorismTap(context, resources)
-              : null,
-        ),
+        leading: type.isProductName && value.isNotEmpty
+            ? Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  splashColor: Colors.white.withValues(alpha: 0.3),
+                  highlightColor: Colors.white.withValues(alpha: 0.1),
+                  customBorder: const CircleBorder(),
+                  onTap: () => _onLongPressProductName(context),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Icon(
+                      Icons.star,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ),
+              )
+            : IconButton(
+                icon: Icon(
+                  _getIconData(
+                    canSnapIngredients: canSnapIngredients,
+                    isIngredientsImageAdded:
+                        isIngredientsImageAddedOrNotIngredients,
+                    isRedBackground: isRedBackground,
+                    isGreenBackground: isGreenBackground,
+                  ),
+                  color: isRedFlag
+                      ? Theme.of(context).colorScheme.error
+                      : isGreenFlag
+                      ? Colors.green
+                      : null,
+                ),
+                onPressed: canSnapIngredients
+                    ? () => context.read<HomePresenter>().add(
+                        const SnapIngredientsEvent(),
+                      )
+                    : isIngredientsImageAddedOrNotIngredients
+                    ? () => context.read<HomePresenter>().add(
+                        const EditIngredientsEvent(),
+                      )
+                    : isRedFlag
+                    ? () => _onStateSponsorsTerrorismTap(context, resources)
+                    : null,
+              ),
         title: SelectableText(
           translate(type.key),
           style: TextStyle(
