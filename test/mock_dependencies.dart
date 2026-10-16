@@ -53,6 +53,11 @@ class MockDependencies extends Mock implements Dependencies {
     return SaveNonFoodProductUseCase(_productInfoGateway);
   }
 
+  @override
+  UseCase<Future<void>, String> get clearProductNameUseCase {
+    return ClearProductNameUseCase(_productInfoGateway);
+  }
+
   RestClient get _restClient {
     final Dio dio = Dio();
     const LoggingInterceptor loggingInterceptor = LoggingInterceptorImpl();

@@ -54,7 +54,8 @@ class ProductInfoTile extends StatelessWidget {
         responseType.isSupportedByOpenFoodFacts;
 
     final bool canShowMarkAsNonFood =
-        isIngredientsMissing && responseType.isBarcodeOnly;
+        isIngredientsMissing &&
+        (responseType.isBarcodeOnly || info.name.isEmpty);
 
     final bool isRedBackground =
         info.isCompanyTerrorismSponsor || info.isFromRussia;
@@ -92,9 +93,11 @@ class ProductInfoTile extends StatelessWidget {
               isGreenBackground: isGreenBackground,
             ),
             color: isRedFlag
-                ? Colors.red
+                ? Theme.of(context).colorScheme.error
                 : isGreenFlag
                 ? Colors.green
+                : type.isProductName && value.isNotEmpty
+                ? Theme.of(context).colorScheme.primary
                 : null,
           ),
           onPressed: canSnapIngredients
@@ -340,8 +343,85 @@ class ProductInfoTile extends StatelessWidget {
                 }
               }
             : null,
+        onLongPress: type.isProductName && value.isNotEmpty
+            ? () => _onLongPressProductName(context)
+            : null,
       );
     }
+  }
+
+  Future<void> _onLongPressProductName(BuildContext context) {
+    final LinearGradient backgroundGradient = Resources.of(
+      context,
+    ).gradients.pinkSunriseGradientBackground;
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: backgroundGradient,
+              borderRadius: BorderRadius.circular(28),
+            ),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 400),
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      translate('product_info.wrong_product_name_title'),
+                      style: Theme.of(dialogContext).textTheme.titleLarge
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      translate('product_info.wrong_product_name_content'),
+                      style: Theme.of(dialogContext).textTheme.bodyLarge,
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        TextButton(
+                          onPressed: Navigator.of(dialogContext).pop,
+                          child: Text(translate('close')),
+                        ),
+                        const SizedBox(width: 8),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(dialogContext).pop();
+                            context.read<HomePresenter>().add(
+                              ClearProductNameEvent(barcode: info.barcode),
+                            );
+                          },
+                          child: Text(
+                            translate('product_info.remove'),
+                            style: TextStyle(
+                              color: Theme.of(dialogContext).colorScheme.error,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   /// Launches the primary source URL for war sponsors.

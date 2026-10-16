@@ -85,3 +85,9 @@ final class MarkAsNonFoodProductEvent extends HomeEvent {
 
   final String barcode;
 }
+
+final class ClearProductNameEvent extends HomeEvent {
+  const ClearProductNameEvent({required this.barcode});
+
+  final String barcode;
+}

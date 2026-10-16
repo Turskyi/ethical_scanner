@@ -18,16 +18,6 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
   final RemoteDataSource _remoteDataSource;
   final LocalDataSource _localDataSource;
 
-  String _normalizeBarcode(String barcode) {
-    final String normalized;
-    if (barcode.length == 13 && barcode.startsWith('0')) {
-      normalized = barcode.substring(1);
-    } else {
-      normalized = barcode;
-    }
-    return normalized;
-  }
-
   @override
   Future<ProductInfo> getProductInfoAsFuture(LocalizedCode input) {
     final String normalizedCode = _normalizeBarcode(input.code);
@@ -236,6 +226,11 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
     return _remoteDataSource.saveNonFoodProduct(barcode: barcode);
   }
 
+  @override
+  Future<void> clearProductName({required String barcode}) {
+    return _remoteDataSource.clearProductName(barcode: barcode);
+  }
+
   bool _isWebsite(String input) {
     final RegExp regex = RegExp(
       r'^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]'
@@ -252,7 +247,7 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
   /// Returns `true` if [barcode] is a valid Amazon ASIN, and `false` otherwise.
   bool _isAmazonAsin(String barcode) {
     // ASIN pattern: A followed by 10 characters, typically alphanumeric
-    RegExp asinPattern = RegExp(r'^[A-Z0-9]{10}$');
+    final RegExp asinPattern = RegExp(r'^[A-Z0-9]{10}$');
     return asinPattern.hasMatch(barcode);
   }
 
@@ -260,14 +255,25 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
     // Typical barcodes are between 8 and 14 digits long
     if (input.length < 8 || input.length > 14) {
       return false;
-    }
-    // Check if the string contains only digits
-    for (int i = 0; i < input.length; i++) {
-      if (input.codeUnitAt(i) < '0'.codeUnitAt(0) ||
-          input.codeUnitAt(i) > '9'.codeUnitAt(0)) {
-        return false;
+    } else {
+      // Check if the string contains only digits
+      for (int i = 0; i < input.length; i++) {
+        if (input.codeUnitAt(i) < '0'.codeUnitAt(0) ||
+            input.codeUnitAt(i) > '9'.codeUnitAt(0)) {
+          return false;
+        }
       }
+      return true;
     }
-    return true;
+  }
+
+  String _normalizeBarcode(String barcode) {
+    final String normalized;
+    if (barcode.length == 13 && barcode.startsWith('0')) {
+      normalized = barcode.substring(1);
+    } else {
+      normalized = barcode;
+    }
+    return normalized;
   }
 }

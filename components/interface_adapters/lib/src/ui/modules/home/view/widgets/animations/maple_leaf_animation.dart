@@ -62,7 +62,7 @@ class _MapleLeafAnimationState extends State<MapleLeafAnimation>
 
     setState(() {
       _leaves = _leaves.map((MapleLeaf leaf) {
-        Offset newOffset = Offset(
+        final Offset newOffset = Offset(
           (leaf.offset.dx + sin(elapsed.inMilliseconds / 500) * 0.5) %
               size.width,
           (leaf.offset.dy + leaf.fallSpeed) % size.height,

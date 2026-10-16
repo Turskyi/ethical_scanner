@@ -72,4 +72,6 @@ abstract interface class RemoteDataSource {
   Future<void> addVegetarianLabel({required String barcode});
 
   Future<void> saveNonFoodProduct({required String barcode});
+
+  Future<void> clearProductName({required String barcode});
 }

@@ -266,6 +266,30 @@ class MarkingNonFoodState extends LoadedProductInfoState {
   String toString() => 'MarkingNonFoodState(${super.toString()})';
 }
 
+class ClearingProductNameState extends LoadedProductInfoState {
+  const ClearingProductNameState({
+    required super.language,
+    super.productInfoMap,
+    super.productInfo,
+    super.isSeasonalEffectEnabled,
+  });
+
+  @override
+  String toString() => 'ClearingProductNameState(${super.toString()})';
+}
+
+class ProductNameClearedState extends LoadedProductInfoState {
+  const ProductNameClearedState({
+    required super.language,
+    super.productInfoMap,
+    super.productInfo,
+    super.isSeasonalEffectEnabled,
+  });
+
+  @override
+  String toString() => 'ProductNameClearedState(${super.toString()})';
+}
+
 class VegetarianCheckSuccessState extends LoadedProductInfoState {
   const VegetarianCheckSuccessState({
     required this.response,

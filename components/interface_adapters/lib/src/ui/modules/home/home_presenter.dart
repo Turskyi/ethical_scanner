@@ -28,9 +28,11 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     checkVegetarianUseCase,
     required UseCase<Future<void>, String> addVegetarianLabelUseCase,
     required UseCase<Future<void>, String> saveNonFoodProductUseCase,
+    required UseCase<Future<void>, String> clearProductNameUseCase,
   }) : _checkVegetarianUseCase = checkVegetarianUseCase,
        _addVegetarianLabelUseCase = addVegetarianLabelUseCase,
        _saveNonFoodProductUseCase = saveNonFoodProductUseCase,
+       _clearProductNameUseCase = clearProductNameUseCase,
        super(LoadingHomeState(language: _getLanguageUseCase.call())) {
     on<LoadHomeEvent>(_onLoadHomeEvent);
 
@@ -61,6 +63,8 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     on<ContributeVegetarianLabelEvent>(_onContributeVegetarianLabel);
 
     on<MarkAsNonFoodProductEvent>(_onMarkAsNonFoodProduct);
+
+    on<ClearProductNameEvent>(_onClearProductName);
   }
 
   final UseCase<Future<ProductInfo>, LocalizedCode> _getProductInfoUseCase;
@@ -72,6 +76,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
   _checkVegetarianUseCase;
   final UseCase<Future<void>, String> _addVegetarianLabelUseCase;
   final UseCase<Future<void>, String> _saveNonFoodProductUseCase;
+  final UseCase<Future<void>, String> _clearProductNameUseCase;
 
   FutureOr<void> _handleError(
     HomeErrorEvent event,
@@ -238,7 +243,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
       } else {
         modifiableProductInfo[ProductInfoType.code] = productInfo.barcode;
         if (state is LoadingProductInfoState) {
-          LoadingProductInfoState loadingState =
+          final LoadingProductInfoState loadingState =
               state as LoadingProductInfoState;
           emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
         }
@@ -254,7 +259,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
         if (productInfo.name.isNotEmpty) {
           modifiableProductInfo[ProductInfoType.productName] = productInfo.name;
           if (state is LoadingProductInfoState) {
-            LoadingProductInfoState loadingState =
+            final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
             emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
@@ -264,7 +269,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           modifiableProductInfo[ProductInfoType.originCountry] =
               productInfo.origin;
           if (state is LoadingProductInfoState) {
-            LoadingProductInfoState loadingState =
+            final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
             emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
@@ -274,7 +279,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           modifiableProductInfo[ProductInfoType.gs1Country] =
               productInfo.gs1Country;
           if (state is LoadingProductInfoState) {
-            LoadingProductInfoState loadingState =
+            final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
             emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
@@ -284,7 +289,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           modifiableProductInfo[ProductInfoType.reportedOrigin] =
               productInfo.reportedOrigin;
           if (state is LoadingProductInfoState) {
-            LoadingProductInfoState loadingState =
+            final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
             emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
@@ -294,7 +299,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           modifiableProductInfo[ProductInfoType.countryWhereSold] =
               productInfo.countrySold;
           if (state is LoadingProductInfoState) {
-            LoadingProductInfoState loadingState =
+            final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
             emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
@@ -303,7 +308,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
         if (productInfo.brand.isNotEmpty) {
           modifiableProductInfo[ProductInfoType.brand] = productInfo.brand;
           if (state is LoadingProductInfoState) {
-            LoadingProductInfoState loadingState =
+            final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
             emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
@@ -698,6 +703,49 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
         emit(
           NonFoodProductMarkedState(
+            language: current.language,
+            productInfoMap: updatedMap,
+            productInfo: updatedInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
+      } catch (error) {
+        emit(
+          ActionErrorState(
+            errorMessage: '$error',
+            language: current.language,
+            productInfoMap: current.productInfoMap,
+            productInfo: current.productInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
+      }
+    }
+  }
+
+  FutureOr<void> _onClearProductName(
+    ClearProductNameEvent event,
+    Emitter<HomeViewModel> emit,
+  ) async {
+    if (state is LoadedProductInfoState) {
+      final LoadedProductInfoState current = state as LoadedProductInfoState;
+      emit(
+        ClearingProductNameState(
+          language: current.language,
+          productInfoMap: current.productInfoMap,
+          productInfo: current.productInfo,
+          isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+        ),
+      );
+      try {
+        await _clearProductNameUseCase.call(event.barcode);
+        final ProductInfo updatedInfo = current.productInfo.copyWith(name: '');
+        final Map<ProductInfoType, String> updatedMap =
+            Map<ProductInfoType, String>.from(current.productInfoMap);
+        updatedMap.remove(ProductInfoType.productName);
+
+        emit(
+          ProductNameClearedState(
             language: current.language,
             productInfoMap: updatedMap,
             productInfo: updatedInfo,

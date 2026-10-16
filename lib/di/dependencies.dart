@@ -81,6 +81,11 @@ class Dependencies implements AppDependencies {
   }
 
   @override
+  UseCase<Future<void>, String> get clearProductNameUseCase {
+    return ClearProductNameUseCase(_productInfoGateway);
+  }
+
+  @override
   GetSoundPreferenceUseCase get getSoundPreferenceUseCase {
     return GetSoundPreferenceUseCase(_settingsGateway);
   }

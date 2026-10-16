@@ -17,18 +17,18 @@ class ScanPainter extends CustomPainter {
     const double fullCircle = 2 * pi;
     const double half = 0.5;
 
-    Paint paint = Paint()
+    final Paint paint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidthOuterRect;
     canvas.drawRect(Offset.zero & size, paint);
     paint.color = Colors.green;
     paint.strokeWidth = strokeWidthInnerElements;
-    double angle = value * fullCircle;
-    double centerX = size.width * half;
-    double centerY = size.height * half;
-    double x = size.width * half + cos(angle) * size.width * half;
-    double y = size.height * half + sin(angle) * size.height * half;
+    final double angle = value * fullCircle;
+    final double centerX = size.width * half;
+    final double centerY = size.height * half;
+    final double x = size.width * half + cos(angle) * size.width * half;
+    final double y = size.height * half + sin(angle) * size.height * half;
     canvas.drawLine(Offset(centerX, centerY), Offset(x, y), paint);
     canvas.drawCircle(Offset(x, y), radiusCircle, paint);
     paint.color = Colors.white;
