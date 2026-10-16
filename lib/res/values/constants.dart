@@ -27,3 +27,5 @@ const String openFoodUserComment =
 const String apiKeyIngredients = 'ingredients';
 const String apiKeyBarcode = 'barcode';
 const String nonFoodCategoryTag = 'en:non-food';
+const String openFoodFactsDomain = 'openfoodfacts.org';
+const String openProductsFactsDomain = 'openproductsfacts.org';

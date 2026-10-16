@@ -20,3 +20,5 @@ const String kBodyParameter = 'body';
 const String kBrandParameter = 'brand';
 const String kTelegramChannel = '${kHttpsProtocol}t.me/+B5gN1BLsVPo3M2My';
 const String nonFoodCategoryTag = 'en:non-food';
+const String kOpenFoodFactsDomain = 'openfoodfacts.org';
+const String kOpenProductsFactsDomain = 'openproductsfacts.org';

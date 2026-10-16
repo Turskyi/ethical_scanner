@@ -55,12 +55,6 @@ class _EditProductDetailsDialogState extends State<EditProductDetailsDialog> {
   }
 
   @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
@@ -108,13 +102,7 @@ class _EditProductDetailsDialogState extends State<EditProductDetailsDialog> {
                 const SizedBox(height: 8),
                 RadioGroup<bool>(
                   groupValue: _canHaveIngredients,
-                  onChanged: (bool? value) {
-                    if (value != null) {
-                      setState(() {
-                        _canHaveIngredients = value;
-                      });
-                    }
-                  },
+                  onChanged: _setCanHaveIngredients,
                   child: Column(
                     children: <Widget>[
                       RadioListTile<bool>(
@@ -162,5 +150,19 @@ class _EditProductDetailsDialogState extends State<EditProductDetailsDialog> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  void _setCanHaveIngredients(bool? value) {
+    if (value != null) {
+      setState(() {
+        _canHaveIngredients = value;
+      });
+    }
   }
 }

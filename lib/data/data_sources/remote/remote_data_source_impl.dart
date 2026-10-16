@@ -26,47 +26,85 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         language.toOpenFoodFactsLanguage;
 
     return OpenFoodAPIClient.getProductV3(
-      ProductQueryConfiguration(
-        code,
-        language: openFoodFactsLanguage,
-        fields: <ProductField>[ProductField.ALL],
-        version: ProductQueryVersion.latestVersion,
-      ),
-    ).then((ProductResultV3 result) {
-      final Product? resultProduct = result.product;
-      if (resultProduct != null && result.hasSuccessfulStatus) {
-        final ProductInfo product = resultProduct.toProductInfo(language);
-        return product;
-      } else if (result.status == ProductResultV3.statusFailure) {
-        if (_isBarcode(code)) {
-          final bool cannotHaveIngredients =
+          ProductQueryConfiguration(
+            code,
+            language: openFoodFactsLanguage,
+            fields: <ProductField>[ProductField.ALL],
+            version: ProductQueryVersion.latestVersion,
+          ),
+        )
+        .then((ProductResultV3 result) async {
+          final Product? resultProduct = result.product;
+          final bool isDifferentProductType =
               result.result?.id ==
               'product_found_with_a_different_product_type';
-          return ProductInfo(
-            barcode: code,
-            responseType: cannotHaveIngredients
-                ? ProductResponseType.error
-                : ProductResponseType.barcodeOnly,
+
+          if (isDifferentProductType) {
+            try {
+              final ProductResultV3 opfResult =
+                  await OpenFoodAPIClient.getProductV3(
+                    ProductQueryConfiguration(
+                      code,
+                      language: openFoodFactsLanguage,
+                      fields: <ProductField>[ProductField.ALL],
+                      version: ProductQueryVersion.latestVersion,
+                    ),
+                    uriHelper: const UriProductHelper(
+                      domain: constants.openProductsFactsDomain,
+                    ),
+                  );
+
+              final Product? opfProduct = opfResult.product;
+              if (opfProduct != null && opfResult.hasSuccessfulStatus) {
+                final ProductInfo info = opfProduct.toProductInfo(language);
+                return info.copyWith(
+                  responseType: ProductResponseType.nonFoodProduct,
+                );
+              }
+            } catch (e) {
+              debugPrint('Failed to fetch from Open Products Facts: $e');
+            }
+            return ProductInfo(
+              barcode: code,
+              responseType: ProductResponseType.nonFoodProduct,
+            );
+          } else if (resultProduct != null && result.hasSuccessfulStatus) {
+            final ProductInfo product = resultProduct.toProductInfo(language);
+            return product;
+          } else if (result.status == ProductResultV3.statusFailure) {
+            if (_isBarcode(code)) {
+              return ProductInfo(
+                barcode: code,
+                responseType: ProductResponseType.barcodeOnly,
+              );
+            } else if (_isWebsite(code)) {
+              return ProductInfo(
+                website: code,
+                responseType: ProductResponseType.websiteOnly,
+              );
+            } else if (_isAmazonAsin(code)) {
+              return const ProductInfo(
+                brand: 'Amazon',
+                responseType: ProductResponseType.amazonAsinFallback,
+              );
+            }
+          }
+          throw NotFoundException(
+            translate(
+              'product_info_not_found_for_barcode',
+              args: <String, Object?>{'barcode': code},
+            ),
           );
-        } else if (_isWebsite(code)) {
-          return ProductInfo(
-            website: code,
-            responseType: ProductResponseType.websiteOnly,
+        })
+        .onError((Object? error, StackTrace stackTrace) {
+          debugPrint('Error occurred while fetching product info: $error');
+          throw NotFoundException(
+            translate(
+              'product_info_not_found_for_barcode',
+              args: <String, Object?>{'barcode': code},
+            ),
           );
-        } else if (_isAmazonAsin(code)) {
-          return const ProductInfo(
-            brand: 'Amazon',
-            responseType: ProductResponseType.amazonAsinFallback,
-          );
-        }
-      }
-      throw NotFoundException(
-        translate(
-          'product_info_not_found_for_barcode',
-          args: <String, Object?>{'barcode': code},
-        ),
-      );
-    });
+        });
   }
 
   @override
@@ -248,10 +286,17 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }) async {
     final Map<String, Object?> productParameters = <String, Object?>{
       'product_name': productName,
+      'product_name_en': productName,
+      'product_name_pl': productName,
+      'product_name_uk': productName,
       'product_type': canHaveIngredients ? 'food' : 'product',
       if (!canHaveIngredients)
         'categories_tags': <String>[constants.nonFoodCategoryTag],
     };
+
+    final UriProductHelper uriHelper = canHaveIngredients
+        ? const UriProductHelper(domain: constants.openFoodFactsDomain)
+        : const UriProductHelper(domain: constants.openProductsFactsDomain);
 
     final User openFoodUser =
         OpenFoodAPIConfiguration.globalUser ??
@@ -272,11 +317,9 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         barcode: barcode,
         productParameters: productParameters,
         user: openFoodUser,
+        uriHelper: uriHelper,
       );
-      debugPrint(
-        'OFF updateProductDetails primary response: status=${result.status}, '
-        'hasSuccessfulStatus=${result.hasSuccessfulStatus}',
-      );
+
       if (!result.hasSuccessfulStatus) {
         throw Exception(
           'Could not update product details: status=${result.status}',
@@ -290,11 +333,9 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         barcode: barcode,
         productParameters: productParameters,
         user: backupUser,
+        uriHelper: uriHelper,
       );
-      debugPrint(
-        'OFF updateProductDetails backup response: status=${result.status}, '
-        'hasSuccessfulStatus=${result.hasSuccessfulStatus}',
-      );
+
       if (!result.hasSuccessfulStatus) {
         throw Exception(
           'Could not update product details with backup user: $error',
