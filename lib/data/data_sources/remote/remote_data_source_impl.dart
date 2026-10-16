@@ -241,12 +241,17 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<void> clearProductName({required String barcode}) async {
-    final Product clearedProduct = Product(
-      barcode: barcode,
-      productName: '',
-      genericName: '',
-    );
+  Future<void> updateProductDetails({
+    required String barcode,
+    required String productName,
+    required bool canHaveIngredients,
+  }) async {
+    final Map<String, Object?> productParameters = <String, Object?>{
+      'product_name': productName,
+      'product_type': canHaveIngredients ? 'food' : 'product',
+      if (!canHaveIngredients)
+        'categories_tags': <String>[constants.nonFoodCategoryTag],
+    };
 
     final User openFoodUser =
         OpenFoodAPIConfiguration.globalUser ??
@@ -262,17 +267,37 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       comment: constants.openFoodUserComment,
     );
 
-    Status result = await OpenFoodAPIClient.saveProduct(
-      openFoodUser,
-      clearedProduct,
-    );
-
-    if (result.status != 1) {
-      result = await OpenFoodAPIClient.saveProduct(backupUser, clearedProduct);
-      if (result.status != 1) {
+    try {
+      final ProductResultV3 result = await OpenFoodAPIClient.patchProductV3(
+        barcode: barcode,
+        productParameters: productParameters,
+        user: openFoodUser,
+      );
+      debugPrint(
+        'OFF updateProductDetails primary response: status=${result.status}, '
+        'hasSuccessfulStatus=${result.hasSuccessfulStatus}',
+      );
+      if (!result.hasSuccessfulStatus) {
         throw Exception(
-          'Could not clear product name: '
-          '${result.error ?? result.statusVerbose ?? 'Unknown error'}',
+          'Could not update product details: status=${result.status}',
+        );
+      }
+    } catch (error) {
+      debugPrint(
+        'OFF updateProductDetails primary failed: $error, trying backup user',
+      );
+      final ProductResultV3 result = await OpenFoodAPIClient.patchProductV3(
+        barcode: barcode,
+        productParameters: productParameters,
+        user: backupUser,
+      );
+      debugPrint(
+        'OFF updateProductDetails backup response: status=${result.status}, '
+        'hasSuccessfulStatus=${result.hasSuccessfulStatus}',
+      );
+      if (!result.hasSuccessfulStatus) {
+        throw Exception(
+          'Could not update product details with backup user: $error',
         );
       }
     }

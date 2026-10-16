@@ -73,5 +73,9 @@ abstract interface class ProductInfoGateway {
 
   Future<void> saveNonFoodProduct({required String barcode});
 
-  Future<void> clearProductName({required String barcode});
+  Future<void> updateProductDetails({
+    required String barcode,
+    required String productName,
+    required bool canHaveIngredients,
+  });
 }

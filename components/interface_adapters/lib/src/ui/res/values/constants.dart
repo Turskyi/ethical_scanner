@@ -19,3 +19,4 @@ const String kSubjectParameter = 'subject';
 const String kBodyParameter = 'body';
 const String kBrandParameter = 'brand';
 const String kTelegramChannel = '${kHttpsProtocol}t.me/+B5gN1BLsVPo3M2My';
+const String nonFoodCategoryTag = 'en:non-food';

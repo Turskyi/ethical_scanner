@@ -125,8 +125,8 @@ class AppRouter {
                           dependencies.addVegetarianLabelUseCase,
                       saveNonFoodProductUseCase:
                           dependencies.saveNonFoodProductUseCase,
-                      clearProductNameUseCase:
-                          dependencies.clearProductNameUseCase,
+                      updateProductDetailsUseCase:
+                          dependencies.updateProductDetailsUseCase,
                     )..add(const LoadHomeEvent());
                   },
                   child: const BlocListener<HomePresenter, HomeViewModel>(
@@ -350,7 +350,8 @@ PageRouteBuilder<String> _getHomePageRouteBuilder(RouteSettings settings) {
                     dependencies.addVegetarianLabelUseCase,
                 saveNonFoodProductUseCase:
                     dependencies.saveNonFoodProductUseCase,
-                clearProductNameUseCase: dependencies.clearProductNameUseCase,
+                updateProductDetailsUseCase:
+                    dependencies.updateProductDetailsUseCase,
               );
               final Object? arguments = settings.arguments;
 
@@ -441,13 +442,13 @@ void _homeViewModelListener(BuildContext context, HomeViewModel viewModel) {
   } else if (viewModel is AnalyzingIngredientsState ||
       viewModel is SavingLabelState ||
       viewModel is MarkingNonFoodState ||
-      viewModel is ClearingProductNameState) {
+      viewModel is UpdatingProductDetailsState) {
     final String message = viewModel is SavingLabelState
         ? translate('product_info.contributing_to_off')
         : viewModel is MarkingNonFoodState
         ? translate('product_info.marking_as_non_food')
-        : viewModel is ClearingProductNameState
-        ? translate('product_info.clearing_product_name')
+        : viewModel is UpdatingProductDetailsState
+        ? translate('product_info.updating_product_details')
         : translate('product_info.analyzing_ingredients');
 
     showDialog<void>(
@@ -499,11 +500,13 @@ void _homeViewModelListener(BuildContext context, HomeViewModel viewModel) {
         content: Text(translate('product_info.marked_as_non_food_success')),
       ),
     );
-  } else if (viewModel is ProductNameClearedState) {
+  } else if (viewModel is ProductDetailsUpdatedState) {
     Navigator.of(context, rootNavigator: true).pop();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(translate('product_info.product_name_cleared_success')),
+        content: Text(
+          translate('product_info.product_details_updated_success'),
+        ),
       ),
     );
   } else if (viewModel is ActionErrorState) {

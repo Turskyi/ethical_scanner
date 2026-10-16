@@ -266,8 +266,8 @@ class MarkingNonFoodState extends LoadedProductInfoState {
   String toString() => 'MarkingNonFoodState(${super.toString()})';
 }
 
-class ClearingProductNameState extends LoadedProductInfoState {
-  const ClearingProductNameState({
+class UpdatingProductDetailsState extends LoadedProductInfoState {
+  const UpdatingProductDetailsState({
     required super.language,
     super.productInfoMap,
     super.productInfo,
@@ -275,11 +275,11 @@ class ClearingProductNameState extends LoadedProductInfoState {
   });
 
   @override
-  String toString() => 'ClearingProductNameState(${super.toString()})';
+  String toString() => 'UpdatingProductDetailsState(${super.toString()})';
 }
 
-class ProductNameClearedState extends LoadedProductInfoState {
-  const ProductNameClearedState({
+class ProductDetailsUpdatedState extends LoadedProductInfoState {
+  const ProductDetailsUpdatedState({
     required super.language,
     super.productInfoMap,
     super.productInfo,
@@ -287,7 +287,7 @@ class ProductNameClearedState extends LoadedProductInfoState {
   });
 
   @override
-  String toString() => 'ProductNameClearedState(${super.toString()})';
+  String toString() => 'ProductDetailsUpdatedState(${super.toString()})';
 }
 
 class VegetarianCheckSuccessState extends LoadedProductInfoState {

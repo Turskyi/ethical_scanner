@@ -227,8 +227,16 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
   }
 
   @override
-  Future<void> clearProductName({required String barcode}) {
-    return _remoteDataSource.clearProductName(barcode: barcode);
+  Future<void> updateProductDetails({
+    required String barcode,
+    required String productName,
+    required bool canHaveIngredients,
+  }) {
+    return _remoteDataSource.updateProductDetails(
+      barcode: barcode,
+      productName: productName,
+      canHaveIngredients: canHaveIngredients,
+    );
   }
 
   bool _isWebsite(String input) {

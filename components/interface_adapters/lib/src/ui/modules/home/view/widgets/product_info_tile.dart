@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/edit_product_details_dialog.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/evidence_photo_dialog.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/terrorism_documents_bottom_sheet.dart';
 import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
@@ -367,76 +368,11 @@ class ProductInfoTile extends StatelessWidget {
   }
 
   Future<void> _onLongPressProductName(BuildContext context) {
-    final LinearGradient backgroundGradient = Resources.of(
-      context,
-    ).gradients.pinkSunriseGradientBackground;
-
-    return showDialog<void>(
+    return EditProductDetailsDialog.show(
       context: context,
-      builder: (BuildContext dialogContext) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          surfaceTintColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: backgroundGradient,
-              borderRadius: BorderRadius.circular(28),
-            ),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 400),
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      translate('product_info.wrong_product_name_title'),
-                      style: Theme.of(dialogContext).textTheme.titleLarge
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      translate('product_info.wrong_product_name_content'),
-                      style: Theme.of(dialogContext).textTheme.bodyLarge,
-                    ),
-                    const SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        TextButton(
-                          onPressed: Navigator.of(dialogContext).pop,
-                          child: Text(translate('close')),
-                        ),
-                        const SizedBox(width: 8),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(dialogContext).pop();
-                            context.read<HomePresenter>().add(
-                              ClearProductNameEvent(barcode: info.barcode),
-                            );
-                          },
-                          child: Text(
-                            translate('product_info.remove'),
-                            style: TextStyle(
-                              color: Theme.of(dialogContext).colorScheme.error,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
+      barcode: info.barcode,
+      currentName: value,
+      canHaveIngredients: info.hasIngredients,
     );
   }
 

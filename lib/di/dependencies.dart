@@ -81,8 +81,9 @@ class Dependencies implements AppDependencies {
   }
 
   @override
-  UseCase<Future<void>, String> get clearProductNameUseCase {
-    return ClearProductNameUseCase(_productInfoGateway);
+  UseCase<Future<void>, UpdateProductDetailsParams>
+  get updateProductDetailsUseCase {
+    return UpdateProductDetailsUseCase(_productInfoGateway);
   }
 
   @override

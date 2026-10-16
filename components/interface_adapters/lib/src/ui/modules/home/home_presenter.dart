@@ -7,6 +7,7 @@ import 'package:feedback/feedback.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:interface_adapters/interface_adapters.dart' as constants;
 import 'package:interface_adapters/src/error_message_extractor.dart';
 import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -28,11 +29,12 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     checkVegetarianUseCase,
     required UseCase<Future<void>, String> addVegetarianLabelUseCase,
     required UseCase<Future<void>, String> saveNonFoodProductUseCase,
-    required UseCase<Future<void>, String> clearProductNameUseCase,
+    required UseCase<Future<void>, UpdateProductDetailsParams>
+    updateProductDetailsUseCase,
   }) : _checkVegetarianUseCase = checkVegetarianUseCase,
        _addVegetarianLabelUseCase = addVegetarianLabelUseCase,
        _saveNonFoodProductUseCase = saveNonFoodProductUseCase,
-       _clearProductNameUseCase = clearProductNameUseCase,
+       _updateProductDetailsUseCase = updateProductDetailsUseCase,
        super(LoadingHomeState(language: _getLanguageUseCase.call())) {
     on<LoadHomeEvent>(_onLoadHomeEvent);
 
@@ -64,7 +66,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
     on<MarkAsNonFoodProductEvent>(_onMarkAsNonFoodProduct);
 
-    on<ClearProductNameEvent>(_onClearProductName);
+    on<UpdateProductDetailsEvent>(_onUpdateProductDetails);
   }
 
   final UseCase<Future<ProductInfo>, LocalizedCode> _getProductInfoUseCase;
@@ -76,7 +78,8 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
   _checkVegetarianUseCase;
   final UseCase<Future<void>, String> _addVegetarianLabelUseCase;
   final UseCase<Future<void>, String> _saveNonFoodProductUseCase;
-  final UseCase<Future<void>, String> _clearProductNameUseCase;
+  final UseCase<Future<void>, UpdateProductDetailsParams>
+  _updateProductDetailsUseCase;
 
   FutureOr<void> _handleError(
     HomeErrorEvent event,
@@ -723,14 +726,14 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     }
   }
 
-  FutureOr<void> _onClearProductName(
-    ClearProductNameEvent event,
+  FutureOr<void> _onUpdateProductDetails(
+    UpdateProductDetailsEvent event,
     Emitter<HomeViewModel> emit,
   ) async {
     if (state is LoadedProductInfoState) {
       final LoadedProductInfoState current = state as LoadedProductInfoState;
       emit(
-        ClearingProductNameState(
+        UpdatingProductDetailsState(
           language: current.language,
           productInfoMap: current.productInfoMap,
           productInfo: current.productInfo,
@@ -738,14 +741,40 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
         ),
       );
       try {
-        await _clearProductNameUseCase.call(event.barcode);
-        final ProductInfo updatedInfo = current.productInfo.copyWith(name: '');
+        await _updateProductDetailsUseCase.call(
+          UpdateProductDetailsParams(
+            barcode: event.barcode,
+            productName: event.productName,
+            canHaveIngredients: event.canHaveIngredients,
+          ),
+        );
+        final ProductInfo updatedInfo = current.productInfo.copyWith(
+          name: event.productName,
+          categoryTags: event.canHaveIngredients
+              ? current.productInfo.categoryTags
+              : <String>[constants.nonFoodCategoryTag],
+          responseType: event.canHaveIngredients
+              ? ProductResponseType.openFoodFacts
+              : ProductResponseType.nonFoodProduct,
+        );
         final Map<ProductInfoType, String> updatedMap =
             Map<ProductInfoType, String>.from(current.productInfoMap);
-        updatedMap.remove(ProductInfoType.productName);
+        if (event.productName.isNotEmpty) {
+          updatedMap[ProductInfoType.productName] = event.productName;
+        } else {
+          updatedMap.remove(ProductInfoType.productName);
+        }
+        if (event.canHaveIngredients) {
+          if (updatedInfo.ingredientList.isNotEmpty) {
+            updatedMap[ProductInfoType.ingredients] = updatedInfo.ingredientList
+                .join(', ');
+          }
+        } else {
+          updatedMap.remove(ProductInfoType.ingredients);
+        }
 
         emit(
-          ProductNameClearedState(
+          ProductDetailsUpdatedState(
             language: current.language,
             productInfoMap: updatedMap,
             productInfo: updatedInfo,

@@ -18,6 +18,7 @@ export 'src/router/routes.dart';
 export 'src/ui/app/app.dart';
 export 'src/ui/modules/home/home_presenter.dart';
 export 'src/ui/modules/home/view/home_view.dart';
+export 'src/ui/modules/home/view/widgets/edit_product_details_dialog.dart';
 export 'src/ui/modules/home/view/widgets/vegetarian_check_dialog.dart';
 export 'src/ui/modules/ingredients_editor/ingredients_editor_event.dart';
 export 'src/ui/modules/ingredients_editor/ingredients_editor_presenter.dart';
