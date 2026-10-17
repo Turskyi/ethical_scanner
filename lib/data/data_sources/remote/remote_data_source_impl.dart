@@ -240,13 +240,15 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<void> saveNonFoodProduct({required String barcode}) async {
-    final Product nonFoodProduct = Product(
-      barcode: barcode,
-      categories: 'Non-food',
-      categoriesTags: <String>[constants.nonFoodCategoryTag],
-      labels: 'Non-food',
-      labelsTags: <String>[constants.nonFoodCategoryTag],
-    );
+    final Map<String, Object?> productParameters = <String, Object?>{
+      'product_type': 'product',
+      'ingredients_text': '',
+      for (final OpenFoodFactsLanguage offLang in OpenFoodFactsLanguage.values)
+        'ingredients_text_${offLang.code}': '',
+      'ingredients': <Object?>[],
+      'categories_tags': <String>[constants.nonFoodCategoryTag],
+      'labels_tags': <String>[constants.nonFoodCategoryTag],
+    };
 
     final User openFoodUser =
         OpenFoodAPIConfiguration.globalUser ??
@@ -262,17 +264,61 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       comment: constants.openFoodUserComment,
     );
 
-    Status result = await OpenFoodAPIClient.saveProduct(
-      openFoodUser,
-      nonFoodProduct,
-    );
+    try {
+      await OpenFoodAPIClient.patchProductV3(
+        barcode: barcode,
+        productParameters: productParameters,
+        user: openFoodUser,
+        uriHelper: const UriProductHelper(
+          domain: constants.openFoodFactsDomain,
+        ),
+      );
+    } catch (e) {
+      debugPrint('OFF patch on openfoodfacts.org skipped/failed: $e');
+    }
 
-    if (result.status != 1) {
-      result = await OpenFoodAPIClient.saveProduct(backupUser, nonFoodProduct);
-      if (result.status != 1) {
+    try {
+      debugPrint(
+        'OFF saveNonFoodProduct sending patch for barcode: $barcode...',
+      );
+      final ProductResultV3 result = await OpenFoodAPIClient.patchProductV3(
+        barcode: barcode,
+        productParameters: productParameters,
+        user: openFoodUser,
+        uriHelper: const UriProductHelper(
+          domain: constants.openProductsFactsDomain,
+        ),
+      );
+      debugPrint(
+        'OPF saveNonFoodProduct primary response: status=${result.status}, '
+        'hasSuccessfulStatus=${result.hasSuccessfulStatus}, '
+        'result=${result.result}',
+      );
+      if (!result.hasSuccessfulStatus) {
         throw Exception(
-          'Could not save non-food product status: '
-          '${result.error ?? result.statusVerbose ?? 'Unknown error'}',
+          'Could not save non-food status: status=${result.status}',
+        );
+      }
+    } catch (error) {
+      debugPrint(
+        'OPF saveNonFoodProduct primary failed: $error, trying backup user',
+      );
+      final ProductResultV3 result = await OpenFoodAPIClient.patchProductV3(
+        barcode: barcode,
+        productParameters: productParameters,
+        user: backupUser,
+        uriHelper: const UriProductHelper(
+          domain: constants.openProductsFactsDomain,
+        ),
+      );
+      debugPrint(
+        'OPF saveNonFoodProduct backup response: status=${result.status}, '
+        'hasSuccessfulStatus=${result.hasSuccessfulStatus}, '
+        'result=${result.result}',
+      );
+      if (!result.hasSuccessfulStatus) {
+        throw Exception(
+          'Could not save non-food status with backup user: $error',
         );
       }
     }
@@ -286,12 +332,17 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }) async {
     final Map<String, Object?> productParameters = <String, Object?>{
       'product_name': productName,
-      'product_name_en': productName,
-      'product_name_pl': productName,
-      'product_name_uk': productName,
+      for (final OpenFoodFactsLanguage offLang in OpenFoodFactsLanguage.values)
+        'product_name_${offLang.code}': productName,
       'product_type': canHaveIngredients ? 'food' : 'product',
-      if (!canHaveIngredients)
+      if (!canHaveIngredients) ...<String, Object?>{
+        'ingredients_text': '',
+        for (final OpenFoodFactsLanguage offLang
+            in OpenFoodFactsLanguage.values)
+          'ingredients_text_${offLang.code}': '',
+        'ingredients': <Object?>[],
         'categories_tags': <String>[constants.nonFoodCategoryTag],
+      },
     };
 
     final UriProductHelper uriHelper = canHaveIngredients
@@ -311,6 +362,21 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       password: Env.openFoodPassword,
       comment: constants.openFoodUserComment,
     );
+
+    if (!canHaveIngredients) {
+      try {
+        await OpenFoodAPIClient.patchProductV3(
+          barcode: barcode,
+          productParameters: productParameters,
+          user: openFoodUser,
+          uriHelper: const UriProductHelper(
+            domain: constants.openFoodFactsDomain,
+          ),
+        );
+      } catch (e) {
+        debugPrint('OFF patch on openfoodfacts.org skipped/failed: $e');
+      }
+    }
 
     try {
       final ProductResultV3 result = await OpenFoodAPIClient.patchProductV3(

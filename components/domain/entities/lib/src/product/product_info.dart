@@ -194,15 +194,16 @@ class ProductInfo {
   }
 
   bool get hasIngredients {
-    if (ingredientList.isNotEmpty) {
-      return true;
-    } else if (categoryTags.any((String tag) {
-      return tag.toLowerCase().contains('non-food') ||
-          tag.toLowerCase().contains('nonfood');
-    })) {
+    if (responseType.isNonFoodProduct ||
+        categoryTags.any((String tag) {
+          return tag.toLowerCase().contains('non-food') ||
+              tag.toLowerCase().contains('nonfood');
+        })) {
       return false;
     } else if (responseType.isNotSupportedByOpenFoodFacts) {
       return false;
+    } else if (ingredientList.isNotEmpty) {
+      return true;
     } else {
       return true;
     }

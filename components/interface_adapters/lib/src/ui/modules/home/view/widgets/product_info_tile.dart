@@ -9,6 +9,7 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/edit_product_details_dialog.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/evidence_photo_dialog.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/remove_ingredients_dialog.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/terrorism_documents_bottom_sheet.dart';
 import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
@@ -85,14 +86,16 @@ class ProductInfoTile extends StatelessWidget {
       return ListTile(
         textColor: color,
         iconColor: color,
-        leading: type.isProductName && value.isNotEmpty
+        leading: (type.isProductName || type.isIngredients) && value.isNotEmpty
             ? Material(
                 color: Colors.transparent,
                 child: InkWell(
                   splashColor: Colors.white.withValues(alpha: 0.3),
                   highlightColor: Colors.white.withValues(alpha: 0.1),
                   customBorder: const CircleBorder(),
-                  onTap: () => _onLongPressProductName(context),
+                  onTap: () => type.isProductName
+                      ? _onLongPressProductName(context)
+                      : _onLongPressIngredients(context),
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Icon(
@@ -360,8 +363,11 @@ class ProductInfoTile extends StatelessWidget {
                 }
               }
             : null,
-        onLongPress: type.isProductName && value.isNotEmpty
-            ? () => _onLongPressProductName(context)
+        onLongPress:
+            (type.isProductName || type.isIngredients) && value.isNotEmpty
+            ? () => type.isProductName
+                  ? _onLongPressProductName(context)
+                  : _onLongPressIngredients(context)
             : null,
       );
     }
@@ -373,6 +379,13 @@ class ProductInfoTile extends StatelessWidget {
       barcode: info.barcode,
       currentName: value,
       canHaveIngredients: info.hasIngredients,
+    );
+  }
+
+  Future<void> _onLongPressIngredients(BuildContext context) {
+    return RemoveIngredientsDialog.show(
+      context: context,
+      barcode: info.barcode,
     );
   }
 

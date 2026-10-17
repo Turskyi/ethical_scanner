@@ -13,4 +13,6 @@ enum ProductResponseType {
   bool get isNotSupportedByOpenFoodFacts => !isSupportedByOpenFoodFacts;
 
   bool get isBarcodeOnly => this == barcodeOnly;
+
+  bool get isNonFoodProduct => this == nonFoodProduct;
 }

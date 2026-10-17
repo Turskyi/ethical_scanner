@@ -289,248 +289,290 @@ class AppRouter {
       String? _ => _getHomePageRouteBuilder(settings),
     };
   }
-}
 
-void _photoViewModelListener(BuildContext context, PhotoViewModel viewModel) {
-  if (viewModel is IngredientsAddedSuccessState) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(translate('photo.image_upload_successful')),
-        duration: Duration(seconds: DurationSeconds.long.time),
-      ),
-    );
-    Navigator.of(context).pushReplacementNamed(
-      kIngredientsEditorPath,
-      arguments: ProductPhoto(
-        path: viewModel.imagePath,
-        info: viewModel.productInfo,
-      ),
-    );
-  } else if (viewModel is CanceledPhotoState) {
-    Navigator.of(context).pop(viewModel.language);
+  static void _photoViewModelListener(
+    BuildContext context,
+    PhotoViewModel viewModel,
+  ) {
+    if (viewModel is IngredientsAddedSuccessState) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(translate('photo.image_upload_successful')),
+          duration: Duration(seconds: DurationSeconds.long.time),
+        ),
+      );
+      Navigator.of(context).pushReplacementNamed(
+        kIngredientsEditorPath,
+        arguments: ProductPhoto(
+          path: viewModel.imagePath,
+          info: viewModel.productInfo,
+        ),
+      );
+    } else if (viewModel is CanceledPhotoState) {
+      Navigator.of(context).pop(viewModel.language);
+    }
   }
-}
 
-void _scanViewModelListener(BuildContext context, ScanViewModel viewModel) {
-  final String targetRouteName = kHomePath;
+  static void _scanViewModelListener(
+    BuildContext context,
+    ScanViewModel viewModel,
+  ) {
+    final String targetRouteName = kHomePath;
 
-  if (viewModel is ScanSuccessState) {
-    Navigator.of(context).pushNamedAndRemoveUntil(
-      targetRouteName,
-      (Route<Object?> _) => false,
-      arguments: viewModel.barcode,
-    );
-  } else if (viewModel is CanceledScanningState) {
-    Navigator.popUntil(context, ModalRoute.withName(targetRouteName));
+    if (viewModel is ScanSuccessState) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        targetRouteName,
+        (Route<Object?> _) => false,
+        arguments: viewModel.barcode,
+      );
+    } else if (viewModel is CanceledScanningState) {
+      Navigator.popUntil(context, ModalRoute.withName(targetRouteName));
+    }
   }
-}
 
-PageRouteBuilder<String> _getHomePageRouteBuilder(RouteSettings settings) {
-  return PageRouteBuilder<String>(
-    settings: settings,
-    pageBuilder:
-        (
-          BuildContext context,
-          Animation<double> _,
-          Animation<double> animation,
-        ) {
-          return BlocProvider<HomePresenter>(
-            create: (BuildContext context) {
-              final AppDependencies dependencies = DependenciesScope.of(
-                context,
-              );
-              final HomePresenter homePresenter = HomePresenter(
-                dependencies.productInfoUseCase,
-                dependencies.savePrecipitationStateUseCase,
-                dependencies.getPrecipitationStateUseCase,
-                dependencies.saveLanguageUseCase,
-                dependencies.getLanguageUseCase,
-                checkVegetarianUseCase: dependencies.checkVegetarianUseCase,
-                addVegetarianLabelUseCase:
-                    dependencies.addVegetarianLabelUseCase,
-                saveNonFoodProductUseCase:
-                    dependencies.saveNonFoodProductUseCase,
-                updateProductDetailsUseCase:
-                    dependencies.updateProductDetailsUseCase,
-              );
-              final Object? arguments = settings.arguments;
-
-              if (arguments is String) {
-                final Language language = Language.fromIsoLanguageCode(
-                  LocalizedApp.of(context).delegate.currentLocale.languageCode,
+  static PageRouteBuilder<String> _getHomePageRouteBuilder(
+    RouteSettings settings,
+  ) {
+    return PageRouteBuilder<String>(
+      settings: settings,
+      pageBuilder:
+          (
+            BuildContext context,
+            Animation<double> _,
+            Animation<double> animation,
+          ) {
+            return BlocProvider<HomePresenter>(
+              create: (BuildContext context) {
+                final AppDependencies dependencies = DependenciesScope.of(
+                  context,
                 );
-
-                final ProductInfo productInfo = ProductInfo(
-                  // Assume that the arguments is a barcode.
-                  barcode: arguments,
-                  language: language,
+                final HomePresenter homePresenter = HomePresenter(
+                  dependencies.productInfoUseCase,
+                  dependencies.savePrecipitationStateUseCase,
+                  dependencies.getPrecipitationStateUseCase,
+                  dependencies.saveLanguageUseCase,
+                  dependencies.getLanguageUseCase,
+                  checkVegetarianUseCase: dependencies.checkVegetarianUseCase,
+                  addVegetarianLabelUseCase:
+                      dependencies.addVegetarianLabelUseCase,
+                  saveNonFoodProductUseCase:
+                      dependencies.saveNonFoodProductUseCase,
+                  updateProductDetailsUseCase:
+                      dependencies.updateProductDetailsUseCase,
                 );
+                final Object? arguments = settings.arguments;
 
-                return homePresenter..add(ShowProductInfoEvent(productInfo));
-              } else {
-                return homePresenter..add(const LoadHomeEvent());
-              }
-            },
-            child: const BlocListener<HomePresenter, HomeViewModel>(
-              listener: _homeViewModelListener,
-              child: HomeView(),
+                if (arguments is String) {
+                  final Language language = Language.fromIsoLanguageCode(
+                    LocalizedApp.of(
+                      context,
+                    ).delegate.currentLocale.languageCode,
+                  );
+
+                  final ProductInfo productInfo = ProductInfo(
+                    // Assume that the arguments is a barcode.
+                    barcode: arguments,
+                    language: language,
+                  );
+
+                  return homePresenter..add(ShowProductInfoEvent(productInfo));
+                } else {
+                  return homePresenter..add(const LoadHomeEvent());
+                }
+              },
+              child: const BlocListener<HomePresenter, HomeViewModel>(
+                listener: _homeViewModelListener,
+                child: HomeView(),
+              ),
+            );
+          },
+      transitionsBuilder:
+          (
+            BuildContext _,
+            Animation<double> animation,
+            Animation<double> _,
+            Widget child,
+          ) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+    );
+  }
+
+  static void _homeViewModelListener(
+    BuildContext context,
+    HomeViewModel viewModel,
+  ) {
+    final Language language = Language.fromIsoLanguageCode(
+      viewModel.language.isoLanguageCode,
+    );
+
+    if (viewModel is ScanState) {
+      Navigator.pushNamed<String>(context, kScanPath).then((String? barcode) {
+        if (context.mounted) {
+          _displayProductInfoOrHome(
+            context: context,
+            productInfo: ProductInfo(
+              barcode: barcode ?? '',
+              language: language,
+            ),
+          );
+        }
+      });
+    } else if (viewModel is PhotoMakerState) {
+      Navigator.pushNamed<Language>(
+        context,
+        kPhotoPath,
+        arguments: viewModel.productInfo,
+      ).then((Language? language) {
+        if (context.mounted) {
+          context.read<HomePresenter>().add(
+            ClearProductInfoEvent(language ?? Language.en),
+          );
+        }
+      });
+    } else if (viewModel is ReadyToScanState) {
+      final Language currentLanguage = Language.fromIsoLanguageCode(
+        LocalizedApp.of(context).delegate.currentLocale.languageCode,
+      );
+      final Language savedLanguage = viewModel.language;
+
+      if (currentLanguage != savedLanguage) {
+        changeLocale(context, savedLanguage.isoLanguageCode)
+        // The returned value in `then` is always `null`.
+        .then((void _) {
+          if (context.mounted) {
+            context.read<HomePresenter>().add(
+              ChangeLanguageEvent(savedLanguage),
+            );
+          }
+        });
+      }
+    } else if (viewModel is IngredientsEditorState) {
+      Navigator.pushNamed(
+        context,
+        kIngredientsEditorPath,
+        arguments: ProductPhoto(
+          path: viewModel.imagePath,
+          info: viewModel.productInfo,
+        ),
+      );
+    } else if (viewModel is AnalyzingIngredientsState ||
+        viewModel is SavingLabelState ||
+        viewModel is MarkingNonFoodState ||
+        viewModel is UpdatingProductDetailsState) {
+      final String message = viewModel is SavingLabelState
+          ? translate('product_info.contributing_to_off')
+          : viewModel is MarkingNonFoodState
+          ? translate('product_info.marking_as_non_food')
+          : viewModel is UpdatingProductDetailsState
+          ? translate('product_info.updating_product_details')
+          : translate('product_info.analyzing_ingredients');
+
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const CircularProgressIndicator(),
+                  const SizedBox(width: 16),
+                  Flexible(
+                    child: Text(
+                      message,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },
-    transitionsBuilder:
-        (
-          BuildContext _,
-          Animation<double> animation,
-          Animation<double> _,
-          Widget child,
-        ) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-  );
-}
-
-void _homeViewModelListener(BuildContext context, HomeViewModel viewModel) {
-  final Language language = Language.fromIsoLanguageCode(
-    viewModel.language.isoLanguageCode,
-  );
-
-  if (viewModel is ScanState) {
-    Navigator.pushNamed<String>(context, kScanPath).then((String? barcode) {
-      if (context.mounted) {
-        _displayProductInfoOrHome(
-          context: context,
-          productInfo: ProductInfo(barcode: barcode ?? '', language: language),
-        );
-      }
-    });
-  } else if (viewModel is PhotoMakerState) {
-    Navigator.pushNamed<Language>(
-      context,
-      kPhotoPath,
-      arguments: viewModel.productInfo,
-    ).then((Language? language) {
-      if (context.mounted) {
-        context.read<HomePresenter>().add(
-          ClearProductInfoEvent(language ?? Language.en),
-        );
-      }
-    });
-  } else if (viewModel is ReadyToScanState) {
-    final Language currentLanguage = Language.fromIsoLanguageCode(
-      LocalizedApp.of(context).delegate.currentLocale.languageCode,
-    );
-    final Language savedLanguage = viewModel.language;
-
-    if (currentLanguage != savedLanguage) {
-      changeLocale(context, savedLanguage.isoLanguageCode)
-      // The returned value in `then` is always `null`.
-      .then((void _) {
-        if (context.mounted) {
-          context.read<HomePresenter>().add(ChangeLanguageEvent(savedLanguage));
-        }
-      });
+      );
+    } else if (viewModel is VegetarianCheckSuccessState) {
+      Navigator.of(context, rootNavigator: true).pop();
+      VegetarianCheckDialog.show(
+        context: context,
+        response: viewModel.response,
+        barcode: viewModel.productInfo.barcode,
+      );
+    } else if (viewModel is VegetarianLabelContributedState) {
+      Navigator.of(context, rootNavigator: true).pop();
+      _showActionResultDialog(
+        context: context,
+        title: translate('product_info.contributed_to_off_success'),
+      );
+    } else if (viewModel is NonFoodProductMarkedState) {
+      Navigator.of(context, rootNavigator: true).pop();
+      _showActionResultDialog(
+        context: context,
+        title: translate('product_info.marked_as_non_food_success'),
+      );
+    } else if (viewModel is ProductDetailsUpdatedState) {
+      Navigator.of(context, rootNavigator: true).pop();
+      _showActionResultDialog(
+        context: context,
+        title: translate('product_info.product_details_updated_success'),
+      );
+    } else if (viewModel is ActionErrorState) {
+      Navigator.of(context, rootNavigator: true).pop();
+      _showActionResultDialog(
+        context: context,
+        title:
+            '${translate('product_info.error_colon')} '
+            '${viewModel.errorMessage}',
+        isError: true,
+      );
     }
-  } else if (viewModel is IngredientsEditorState) {
-    Navigator.pushNamed(
-      context,
-      kIngredientsEditorPath,
-      arguments: ProductPhoto(
-        path: viewModel.imagePath,
-        info: viewModel.productInfo,
-      ),
-    );
-  } else if (viewModel is AnalyzingIngredientsState ||
-      viewModel is SavingLabelState ||
-      viewModel is MarkingNonFoodState ||
-      viewModel is UpdatingProductDetailsState) {
-    final String message = viewModel is SavingLabelState
-        ? translate('product_info.contributing_to_off')
-        : viewModel is MarkingNonFoodState
-        ? translate('product_info.marking_as_non_food')
-        : viewModel is UpdatingProductDetailsState
-        ? translate('product_info.updating_product_details')
-        : translate('product_info.analyzing_ingredients');
+  }
 
-    showDialog<void>(
+  static void _displayProductInfoOrHome({
+    required BuildContext context,
+    required ProductInfo productInfo,
+  }) {
+    if (productInfo.barcode.isNotEmpty) {
+      context.read<HomePresenter>().add(ShowProductInfoEvent(productInfo));
+    } else {
+      context.read<HomePresenter>().add(
+        ClearProductInfoEvent(productInfo.language),
+      );
+    }
+  }
+
+  static Future<void> _showActionResultDialog({
+    required BuildContext context,
+    required String title,
+    bool isError = false,
+  }) {
+    return showDialog<void>(
       context: context,
-      barrierDismissible: false,
       builder: (BuildContext dialogContext) {
-        return Dialog(
+        return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                const CircularProgressIndicator(),
-                const SizedBox(width: 16),
-                Flexible(
-                  child: Text(
-                    message,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ),
-              ],
+          title: Text(
+            isError ? translate('error') : translate('success'),
+            style: TextStyle(
+              color: isError ? Colors.red.shade800 : Colors.green.shade800,
+              fontWeight: FontWeight.bold,
             ),
           ),
+          content: Text(title),
+          actions: <Widget>[
+            TextButton(
+              onPressed: Navigator.of(dialogContext).pop,
+              child: Text(translate('ok')),
+            ),
+          ],
         );
       },
-    );
-  } else if (viewModel is VegetarianCheckSuccessState) {
-    Navigator.of(context, rootNavigator: true).pop();
-    VegetarianCheckDialog.show(
-      context: context,
-      response: viewModel.response,
-      barcode: viewModel.productInfo.barcode,
-    );
-  } else if (viewModel is VegetarianLabelContributedState) {
-    Navigator.of(context, rootNavigator: true).pop();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(translate('product_info.contributed_to_off_success')),
-        backgroundColor: Colors.green.shade800,
-      ),
-    );
-  } else if (viewModel is NonFoodProductMarkedState) {
-    Navigator.of(context, rootNavigator: true).pop();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(translate('product_info.marked_as_non_food_success')),
-      ),
-    );
-  } else if (viewModel is ProductDetailsUpdatedState) {
-    Navigator.of(context, rootNavigator: true).pop();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          translate('product_info.product_details_updated_success'),
-        ),
-      ),
-    );
-  } else if (viewModel is ActionErrorState) {
-    Navigator.of(context, rootNavigator: true).pop();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '${translate('product_info.error_colon')} ${viewModel.errorMessage}',
-        ),
-        backgroundColor: Colors.red.shade800,
-      ),
-    );
-  }
-}
-
-void _displayProductInfoOrHome({
-  required BuildContext context,
-  required ProductInfo productInfo,
-}) {
-  if (productInfo.barcode.isNotEmpty) {
-    context.read<HomePresenter>().add(ShowProductInfoEvent(productInfo));
-  } else {
-    context.read<HomePresenter>().add(
-      ClearProductInfoEvent(productInfo.language),
     );
   }
 }
