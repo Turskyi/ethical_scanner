@@ -244,32 +244,30 @@ class ProductInfoTile extends StatelessWidget {
                 ),
               )
             : type == ProductInfoType.countryAi
-            ? SelectionArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      value,
-                      style: TextStyle(
-                        fontStyle: FontStyle.italic,
-                        fontSize: textTheme.bodyLarge?.fontSize,
-                      ),
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    value,
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontSize: textTheme.bodyLarge?.fontSize,
                     ),
-                    if (info.infoAiModel.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child: Text(
-                          translate(
-                            'product_info.ai_model',
-                            args: <String, Object?>{'model': info.infoAiModel},
-                          ),
-                          style: textTheme.bodySmall?.copyWith(
-                            color: color.withValues(alpha: 0.7),
-                          ),
+                  ),
+                  if (info.infoAiModel.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        translate(
+                          'product_info.ai_model',
+                          args: <String, Object?>{'model': info.infoAiModel},
+                        ),
+                        style: textTheme.bodySmall?.copyWith(
+                          color: color.withValues(alpha: 0.7),
                         ),
                       ),
-                  ],
-                ),
+                    ),
+                ],
               )
             : type.isIngredients &&
                   value.isNotEmpty &&
