@@ -201,6 +201,32 @@ class AppRouter {
               );
             },
       ),
+      kAboutPath => PageRouteBuilder<String>(
+        settings: settings,
+        pageBuilder:
+            (
+              BuildContext context,
+              Animation<double> animation,
+              Animation<double> _,
+            ) {
+              return AboutView(initialLanguage: savedLanguage);
+            },
+        transitionsBuilder:
+            (
+              _,
+              Animation<double> animation,
+              Animation<double> _,
+              Widget child,
+            ) {
+              return FadeTransition(
+                opacity: CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeInOut,
+                ),
+                child: child,
+              );
+            },
+      ),
       kPrivacyPath => PageRouteBuilder<String>(
         settings: settings,
         pageBuilder:

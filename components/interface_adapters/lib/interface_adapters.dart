@@ -16,6 +16,7 @@ export 'src/gateways/product_info_gateway_impl.dart';
 export 'src/gateways/settings_gateway_impl.dart';
 export 'src/router/routes.dart';
 export 'src/ui/app/app.dart';
+export 'src/ui/modules/about/view/about_view.dart';
 export 'src/ui/modules/home/home_presenter.dart';
 export 'src/ui/modules/home/view/home_view.dart';
 export 'src/ui/modules/home/view/widgets/edit_product_details_dialog.dart';

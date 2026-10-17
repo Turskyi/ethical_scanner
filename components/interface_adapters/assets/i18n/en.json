@@ -175,5 +175,21 @@
     "website_suffix": " for more help.",
     "future_plans": "We're always working to improve Ethical Scanner. Offline functionality and support for personal ethical preferences are planned for 2025.",
     "back_to_home": "← Back to Home"
+  },
+  "about": {
+    "title": "Ethical Scanner",
+    "subtitle": "Empowering Consumers to Make Ethical Choices",
+    "scan_prompt": "Scan products to learn about their ethical information.",
+    "know_products": "Know your products better to make ethical choices!",
+    "description": "{appName} is a mobile app that helps you explore the ethical background of everyday products. Use it to better understand the impact of your purchases.",
+    "features_title": "App Features",
+    "feature_1": "Scan barcodes to discover ethical product info",
+    "feature_2": "Color-coded results: green (ethical), yellow (neutral), red (concerning)",
+    "feature_3": "Links to credible sources for transparency",
+    "feature_4": "Supports values-driven decision making while shopping",
+    "screenshots_title": "Screenshots",
+    "download_title": "Download Ethical Scanner",
+    "download_subtitle": "Available now on Google Play and the App Store!",
+    "footer_description": "{appName} is developed by a passionate team dedicated to promoting ethical consumerism."
   }
 }
