@@ -327,13 +327,31 @@ class AppRouter {
           duration: Duration(seconds: DurationSeconds.long.time),
         ),
       );
-      Navigator.of(context).pushReplacementNamed(
-        kIngredientsEditorPath,
-        arguments: ProductPhoto(
-          path: viewModel.imagePath,
-          info: viewModel.productInfo,
-        ),
-      );
+      final String selectedLanguageCode = viewModel.language.isoLanguageCode;
+      final String currentLanguageCode = LocalizedApp.of(
+        context,
+      ).delegate.currentLocale.languageCode;
+      if (currentLanguageCode == selectedLanguageCode) {
+        Navigator.of(context).pushReplacementNamed(
+          kIngredientsEditorPath,
+          arguments: ProductPhoto(
+            path: viewModel.imagePath,
+            info: viewModel.productInfo,
+          ),
+        );
+      } else {
+        changeLocale(context, selectedLanguageCode).then((Object? _) {
+          if (context.mounted) {
+            Navigator.of(context).pushReplacementNamed(
+              kIngredientsEditorPath,
+              arguments: ProductPhoto(
+                path: viewModel.imagePath,
+                info: viewModel.productInfo,
+              ),
+            );
+          }
+        });
+      }
     } else if (viewModel is CanceledPhotoState) {
       Navigator.of(context).pop(viewModel.language);
     }

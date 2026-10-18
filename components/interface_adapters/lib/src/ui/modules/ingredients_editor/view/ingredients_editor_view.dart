@@ -66,6 +66,7 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
           ),
           title: Text(
             translate('photo.extract_ingredients'),
+            maxLines: 2,
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
