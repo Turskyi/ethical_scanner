@@ -60,10 +60,13 @@ class ProductInfoTile extends StatelessWidget {
         (responseType.isBarcodeOnly || info.name.isEmpty);
 
     final bool isRedBackground =
-        info.isCompanyTerrorismSponsor || info.isFromRussia;
+        info.isCompanyTerrorismSponsor ||
+        info.isFromRussia ||
+        info.isFromBelarus;
     final bool isRed =
         info.isCompanyTerrorismSponsor ||
         info.isFromRussia ||
+        info.isFromBelarus ||
         info.isGs1CountryStateSponsorOfTerrorism;
     final bool isGreenBackground = info.isVegan || info.isVegetarian;
 

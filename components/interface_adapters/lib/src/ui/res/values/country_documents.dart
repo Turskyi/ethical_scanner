@@ -43,11 +43,30 @@ class CountryDocuments {
     ],
   );
 
+  // ── Belarus ───────────────────────────────────────────────────────────────
+
+  static const CountryDocuments _belarus = CountryDocuments(
+    documents: <SponsorDocument>[
+      SponsorDocument(
+        titleKey: 'terrorism_sponsor.belarus_resolution_title',
+        descriptionKey: 'terrorism_sponsor.belarus_resolution_desc',
+        assetPath: 'assets/documents/Belarus_2023.pdf',
+        fileName: 'Belarus_2023.pdf',
+      ),
+    ],
+    externalUrls: <String>[
+      'https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ:C_202300399',
+    ],
+  );
+
   // ── Factory ───────────────────────────────────────────────────────────────
 
   static CountryDocuments forProductInfo(ProductInfo info) {
     if (info.isFromRussia) {
       return _russia;
+    }
+    if (info.isFromBelarus) {
+      return _belarus;
     }
     return const CountryDocuments(
       documents: <SponsorDocument>[],

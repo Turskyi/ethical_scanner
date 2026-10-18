@@ -333,7 +333,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           }
         }
 
-        if (productInfo.isFromRussia) {
+        if (productInfo.isFromRussia || productInfo.isFromBelarus) {
           modifiableProductInfo[ProductInfoType.countryTerrorismSponsor] =
               translate('yes');
           if (state is LoadingProductInfoState) {

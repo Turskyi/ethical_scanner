@@ -178,7 +178,8 @@ class _FabState extends State<Fab> with TickerProviderStateMixin {
       gradient:
           viewModel is LoadedProductInfoState &&
               (viewModel.productInfo.isCompanyTerrorismSponsor ||
-                  viewModel.productInfo.isFromRussia)
+                  viewModel.productInfo.isFromRussia ||
+                  viewModel.productInfo.isFromBelarus)
           ? const LinearGradient(
               colors: <Color>[Colors.pinkAccent, Colors.red],
               // Set the begin and end points

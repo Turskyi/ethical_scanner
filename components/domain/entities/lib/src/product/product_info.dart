@@ -97,6 +97,10 @@ class ProductInfo {
   static const String russianBarcodePrefix = '46';
   static const String russianEanPrefix = '460';
 
+  /// EAN barcode prefix for Belarus (barcodes starting with '481').
+  static const String belarusianBarcodePrefix = '481';
+  static const String belarusianEanPrefix = '481';
+
   bool get isVegan => vegan == Vegan.positive;
 
   bool get isVegetarian => vegetarian == Vegetarian.positive;
@@ -109,6 +113,18 @@ class ProductInfo {
         countrySold.toLowerCase() == 'россия' ||
         origin.toLowerCase() == 'россия' ||
         barcode.startsWith(russianEanPrefix);
+  }
+
+  bool get isFromBelarus {
+    return countrySold.toLowerCase() == 'belarus' ||
+        countrySold.toLowerCase() == 'by' ||
+        origin.toLowerCase() == 'belarus' ||
+        origin.toLowerCase() == 'by' ||
+        countrySold.toLowerCase() == 'беларусь' ||
+        origin.toLowerCase() == 'беларусь' ||
+        countrySold.toLowerCase() == 'белоруссия' ||
+        origin.toLowerCase() == 'белоруссия' ||
+        barcode.startsWith(belarusianEanPrefix);
   }
 
   /// US State Department designated state sponsors of terrorism.

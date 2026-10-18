@@ -124,6 +124,29 @@ void main() {
       },
     );
 
+    test(
+      'barcode starting with 481 does NOT call Leave Russia lookup',
+      () async {
+        int callCount = 0;
+        final FakeProductInfoGateway fakeGateway = FakeProductInfoGateway(
+          offProduct: const ProductInfo(barcode: '4810123456789'),
+          onGetLeaveRussiaInfo: (String barcode, Language language) {
+            callCount++;
+          },
+        );
+
+        final GetProductInfoUseCase useCase = GetProductInfoUseCase(
+          fakeGateway,
+        );
+        final ProductInfo result = await useCase.call(
+          const LocalizedCode(code: '4810123456789', language: Language.en),
+        );
+
+        expect(callCount, equals(0));
+        expect(result.isFromBelarus, isTrue);
+      },
+    );
+
     test('exited or leave status is not marked red and allows OFF vegetarian '
         'to turn green', () async {
       final FakeProductInfoGateway fakeGateway = FakeProductInfoGateway(
