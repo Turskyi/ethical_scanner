@@ -77,6 +77,7 @@ class FakeProductInfoGateway implements ProductInfoGateway {
   Future<AiVegetarianCheckResponse> checkVegetarianWithAi({
     required String ingredients,
     required String barcode,
+    required Language language,
   }) async {
     return const AiVegetarianCheckResponse(
       isVegetarian: true,

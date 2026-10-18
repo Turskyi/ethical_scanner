@@ -6,10 +6,12 @@ class CheckVegetarianParams {
   const CheckVegetarianParams({
     required this.ingredients,
     required this.barcode,
+    required this.language,
   });
 
   final String ingredients;
   final String barcode;
+  final Language language;
 }
 
 class CheckVegetarianUseCase
@@ -24,11 +26,13 @@ class CheckVegetarianUseCase
     CheckVegetarianParams params = const CheckVegetarianParams(
       ingredients: '',
       barcode: '',
+      language: Language.en,
     ),
   ]) {
     return _productInfoGateway.checkVegetarianWithAi(
       ingredients: params.ingredients,
       barcode: params.barcode,
+      language: params.language,
     );
   }
 }

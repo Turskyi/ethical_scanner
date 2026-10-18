@@ -53,6 +53,7 @@ void main() {
       const CheckVegetarianParams params = CheckVegetarianParams(
         ingredients: 'Water, Sugar, Lemon Juice',
         barcode: '1234567890123',
+        language: Language.en,
       );
 
       final AiVegetarianCheckResponse response = await checkVegetarianUseCase(

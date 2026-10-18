@@ -42,7 +42,10 @@ abstract interface class RemoteDataSource {
 
   Future<String> getIngredientsText(LocalizedCode barcode);
 
-  Future<AiBarcodeInfoResponse> getInfoFromAiAsFuture(String barcode);
+  Future<AiBarcodeInfoResponse> getInfoFromAiAsFuture({
+    required String barcode,
+    required Language language,
+  });
 
   Future<void> addProduct(ProductInfo productInfo);
 
@@ -62,11 +65,13 @@ abstract interface class RemoteDataSource {
   ///
   /// - [ingredients]: The text string of product ingredients.
   /// - [barcode]: The product barcode.
+  /// - [language]: The user's target language.
   ///
   /// Returns an [AiVegetarianCheckResponse].
   Future<AiVegetarianCheckResponse> checkVegetarianWithAi({
     required String ingredients,
     required String barcode,
+    required Language language,
   });
 
   Future<void> addVegetarianLabel({required String barcode});

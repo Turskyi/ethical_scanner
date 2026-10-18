@@ -610,6 +610,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
               CheckVegetarianParams(
                 ingredients: event.ingredients,
                 barcode: event.barcode,
+                language: current.language,
               ),
             );
         emit(

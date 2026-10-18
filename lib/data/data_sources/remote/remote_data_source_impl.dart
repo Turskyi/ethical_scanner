@@ -132,9 +132,15 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<AiBarcodeInfoResponse> getInfoFromAiAsFuture(String barcode) async {
+  Future<AiBarcodeInfoResponse> getInfoFromAiAsFuture({
+    required String barcode,
+    required Language language,
+  }) async {
     final AiBarcodeInfoResponse response = await _restClient.getAiBarcodeInfo(
-      <String, String>{'barcode': barcode},
+      AiBarcodeInfoRequest(
+        barcode: barcode,
+        language: language.isoLanguageCode,
+      ),
     );
     if (response.info.trim().isNotEmpty) {
       return response;
@@ -147,11 +153,15 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   Future<AiVegetarianCheckResponse> checkVegetarianWithAi({
     required String ingredients,
     required String barcode,
+    required Language language,
   }) async {
-    return _restClient.checkVegetarianWithAi(<String, String>{
-      constants.apiKeyIngredients: ingredients,
-      if (barcode.isNotEmpty) constants.apiKeyBarcode: barcode,
-    });
+    return _restClient.checkVegetarianWithAi(
+      AiVegetarianCheckRequest(
+        ingredients: ingredients,
+        barcode: barcode,
+        language: language.isoLanguageCode,
+      ),
+    );
   }
 
   @override

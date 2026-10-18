@@ -61,12 +61,14 @@ abstract interface class ProductInfoGateway {
   ///
   /// - [ingredients]: The list or text string of product ingredients.
   /// - [barcode]: The product barcode (used for context or logging).
+  /// - [language]: The target user language for the AI reasoning response.
   ///
   /// Returns an [AiVegetarianCheckResponse] with the verification result and
   /// reasoning.
   Future<AiVegetarianCheckResponse> checkVegetarianWithAi({
     required String ingredients,
     required String barcode,
+    required Language language,
   });
 
   Future<void> addVegetarianLabel({required String barcode});

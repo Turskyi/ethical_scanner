@@ -17,13 +17,13 @@ abstract class RetrofitClient implements RestClient {
   @override
   @POST('ai/barcode-info')
   Future<AiBarcodeInfoResponse> getAiBarcodeInfo(
-    @Body() Map<String, String> request,
+    @Body() AiBarcodeInfoRequest request,
   );
 
   @override
   @POST('ai/vegetarian-check')
   Future<AiVegetarianCheckResponse> checkVegetarianWithAi(
-    @Body() Map<String, String> request,
+    @Body() AiVegetarianCheckRequest request,
   );
 
   @override

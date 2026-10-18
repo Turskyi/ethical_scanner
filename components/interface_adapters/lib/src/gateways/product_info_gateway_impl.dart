@@ -122,7 +122,10 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
               );
             } else {
               return _remoteDataSource
-                  .getInfoFromAiAsFuture(inputCode)
+                  .getInfoFromAiAsFuture(
+                    barcode: inputCode,
+                    language: input.language,
+                  )
                   .then(
                     (AiBarcodeInfoResponse response) => info.copyWith(
                       infoAi: response.info,
@@ -215,10 +218,12 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
   Future<AiVegetarianCheckResponse> checkVegetarianWithAi({
     required String ingredients,
     required String barcode,
+    required Language language,
   }) {
     return _remoteDataSource.checkVegetarianWithAi(
       ingredients: ingredients,
       barcode: barcode,
+      language: language,
     );
   }
 

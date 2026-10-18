@@ -1,4 +1,6 @@
+import 'package:entities/src/rest_client/ai_barcode_info_request.dart';
 import 'package:entities/src/rest_client/ai_barcode_info_response.dart';
+import 'package:entities/src/rest_client/ai_vegetarian_check_request.dart';
 import 'package:entities/src/rest_client/ai_vegetarian_check_response.dart';
 import 'package:entities/src/rest_client/leave_russia_response.dart';
 import 'package:entities/src/terrorism_sponsor/terrorism_sponsor.dart';
@@ -8,20 +10,15 @@ abstract interface class RestClient {
 
   Future<List<TerrorismSponsor>> getTerrorismSponsors();
 
-  Future<AiBarcodeInfoResponse> getAiBarcodeInfo(Map<String, String> request);
+  Future<AiBarcodeInfoResponse> getAiBarcodeInfo(AiBarcodeInfoRequest request);
 
   /// Sends a request to the backend AI endpoint to determine whether the
   /// product described by the provided ingredients is 100% vegetarian.
   ///
-  /// The [request] map expects:
-  /// - `'ingredients'` (required): The text string containing product
-  /// ingredients.
-  /// - `'barcode'` (optional): The product barcode for reference.
-  ///
   /// Returns an [AiVegetarianCheckResponse] containing whether it is
   /// vegetarian, confidence level, reasoning, and AI model metadata.
   Future<AiVegetarianCheckResponse> checkVegetarianWithAi(
-    Map<String, String> request,
+    AiVegetarianCheckRequest request,
   );
 
   /// Queries the Leave Russia / KSE Institute barcode lookup API for company
