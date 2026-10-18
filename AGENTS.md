@@ -18,8 +18,8 @@
   function or method takes more than one parameter.
 - **Class Member Ordering (Stepdown Rule)**: Sort class members logically so
   a class reads like a book from top to bottom—callers should be placed above
-  callees. For widget states, `dispose` should be placed below `build` to
-  match the lifecycle order.
+  callees. Never place a private method above a public method. For widget states,
+  `dispose` should be placed below `build` to match the lifecycle order.
 
 ### File Organization & Architecture
 

@@ -74,11 +74,7 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
           actions: <Widget>[
             LanguageSelector(
               currentLanguage: viewModel.language,
-              onLanguageSelected: (Language newLanguage) {
-                context.read<IngredientsEditorPresenter>().add(
-                  ChangeIngredientsLanguageEvent(newLanguage),
-                );
-              },
+              onLanguageSelected: _onLanguageChanged,
             ),
           ],
         ),
@@ -225,5 +221,12 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
     _ingredientsController.dispose();
     _ingredientsFocusNode.dispose();
     super.dispose();
+  }
+
+  void _onLanguageChanged(Language newLanguage) {
+    context.read<IngredientsEditorPresenter>().add(
+      ChangeIngredientsLanguageEvent(newLanguage),
+    );
+    setState(() {});
   }
 }
