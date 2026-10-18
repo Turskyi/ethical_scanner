@@ -98,12 +98,16 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         })
         .onError((Object? error, StackTrace stackTrace) {
           debugPrint('Error occurred while fetching product info: $error');
-          throw NotFoundException(
-            translate(
-              'product_info_not_found_for_barcode',
-              args: <String, Object?>{'barcode': code},
-            ),
-          );
+          if (error is SocketException) {
+            Error.throwWithStackTrace(error, stackTrace);
+          } else {
+            throw NotFoundException(
+              translate(
+                'product_info_not_found_for_barcode',
+                args: <String, Object?>{'barcode': code},
+              ),
+            );
+          }
         });
   }
 

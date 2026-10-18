@@ -4,6 +4,7 @@ enum ProductResponseType {
   websiteOnly,
   amazonAsinFallback,
   error,
+  offline,
   nonFoodProduct;
 
   bool get isSupportedByOpenFoodFacts {

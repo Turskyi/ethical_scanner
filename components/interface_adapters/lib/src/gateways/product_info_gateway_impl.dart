@@ -72,7 +72,13 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
 
           final Language inputLanguage = input.language;
           if (_isBarcode(inputCode)) {
-            return ProductInfo(barcode: inputCode, language: inputLanguage);
+            return ProductInfo(
+              barcode: inputCode,
+              language: inputLanguage,
+              responseType: _isNetworkError(error)
+                  ? ProductResponseType.offline
+                  : ProductResponseType.error,
+            );
           } else if (_isWebsite(inputCode)) {
             return ProductInfo(website: inputCode, language: inputLanguage);
           } else if (_isAmazonAsin(inputCode)) {
@@ -245,6 +251,10 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
       r'{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$',
     );
     return regex.hasMatch(input);
+  }
+
+  bool _isNetworkError(Object? error) {
+    return error is SocketException || error is ClientException;
   }
 
   /// Checks if the provided [barcode] is a valid Amazon ASIN.
