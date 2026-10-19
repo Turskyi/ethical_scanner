@@ -23,7 +23,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions, while build-number is used as the build
 # suffix.
-version: 0.2.8+28
+version: 0.2.9+29
 
 environment:
   sdk: '>=3.9.2 <4.0.0'
@@ -80,7 +80,7 @@ dependencies:
   json_annotation: ^4.12.0
 
   mobile_scanner: ^7.4.2
-  openfoodfacts: ^3.31.0
+  openfoodfacts: ^3.31.1
 
   package_info_plus: ^10.2.2
   path: ^1.9.1

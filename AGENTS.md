@@ -24,6 +24,9 @@
   as "Open Food Facts" or "Open Products Facts") in user-facing texts, dialogs,
   release notes, or UI copy, as end users are unaware of internal database
   implementations.
+- **No Real Remote Calls in Unit Tests**: Unit tests must never make actual
+  remote network queries or depend on external live services. Use mocks, fakes,
+  or local fixtures instead.
 
 ### File Organization & Architecture
 
