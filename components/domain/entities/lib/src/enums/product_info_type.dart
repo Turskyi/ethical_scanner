@@ -22,15 +22,19 @@ enum ProductInfoType {
 
   bool get isWebsite => this == ProductInfoType.website;
 
-  bool get isCompanyWarSponsor =>
-      this == ProductInfoType.companyTerrorismSponsor;
+  bool get isCompanyWarSponsor {
+    return this == ProductInfoType.companyTerrorismSponsor;
+  }
 
-  bool get isTerrorismSponsor =>
-      this == ProductInfoType.countryTerrorismSponsor;
+  bool get isTerrorismSponsor {
+    return this == ProductInfoType.countryTerrorismSponsor;
+  }
 
   bool get isCode => this == ProductInfoType.code;
 
   bool get isIngredients => this == ProductInfoType.ingredients;
 
   bool get isReportedOrigin => this == ProductInfoType.reportedOrigin;
+
+  bool get isProductName => this == ProductInfoType.productName;
 }

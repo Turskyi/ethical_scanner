@@ -8,6 +8,9 @@ const double kWideScreenThreshold = 600.0;
 const String kDomain = 'ethical-scanner.com';
 const String kWebsite = '$kHttpsProtocol$kDomain';
 const String kImagesPath = 'components/interface_adapters/assets/images/';
+const String kEvidenceBaseUrl =
+    '${kHttpsProtocol}raw.githubusercontent.com/Turskyi/ethical_scanner/master/'
+    '${kImagesPath}evidence/';
 const String kGooglePlayUrl =
     '${kHttpsProtocol}play.google.com/store/apps/details?id=com.turskyi.ethical_scanner';
 const String kAppStoreUrl =
@@ -16,3 +19,6 @@ const String kSubjectParameter = 'subject';
 const String kBodyParameter = 'body';
 const String kBrandParameter = 'brand';
 const String kTelegramChannel = '${kHttpsProtocol}t.me/+B5gN1BLsVPo3M2My';
+const String nonFoodCategoryTag = 'en:non-food';
+const String kOpenFoodFactsDomain = 'openfoodfacts.org';
+const String kOpenProductsFactsDomain = 'openproductsfacts.org';

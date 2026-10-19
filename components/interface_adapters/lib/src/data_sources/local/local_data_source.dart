@@ -11,7 +11,7 @@ abstract interface class LocalDataSource {
 
   String getReportedOriginFromBarcode(String barcode);
 
-  List<String> getReportedOriginPhotosFromBarcode(String barcode);
+  List<String> getReportedOriginPhotoFileNamesFromBarcode(String barcode);
 
   bool isEnglishBook(String barcode);
 

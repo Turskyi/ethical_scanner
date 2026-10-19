@@ -13,7 +13,10 @@ void main() {
       );
 
       final AiBarcodeInfoResponse response = await remoteDataSource
-          .getInfoFromAiAsFuture('0000000000000');
+          .getInfoFromAiAsFuture(
+            barcode: '0000000000000',
+            language: Language.en,
+          );
 
       expect(response.info.trim(), isNotEmpty);
       expect(response.provider.trim(), isNotEmpty);

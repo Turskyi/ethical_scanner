@@ -76,6 +76,17 @@ class Dependencies implements AppDependencies {
   }
 
   @override
+  UseCase<Future<void>, String> get saveNonFoodProductUseCase {
+    return SaveNonFoodProductUseCase(_productInfoGateway);
+  }
+
+  @override
+  UseCase<Future<void>, UpdateProductDetailsParams>
+  get updateProductDetailsUseCase {
+    return UpdateProductDetailsUseCase(_productInfoGateway);
+  }
+
+  @override
   GetSoundPreferenceUseCase get getSoundPreferenceUseCase {
     return GetSoundPreferenceUseCase(_settingsGateway);
   }

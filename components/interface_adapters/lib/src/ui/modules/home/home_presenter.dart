@@ -7,6 +7,7 @@ import 'package:feedback/feedback.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:interface_adapters/interface_adapters.dart' as constants;
 import 'package:interface_adapters/src/error_message_extractor.dart';
 import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -27,8 +28,13 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     required UseCase<Future<AiVegetarianCheckResponse>, CheckVegetarianParams>
     checkVegetarianUseCase,
     required UseCase<Future<void>, String> addVegetarianLabelUseCase,
+    required UseCase<Future<void>, String> saveNonFoodProductUseCase,
+    required UseCase<Future<void>, UpdateProductDetailsParams>
+    updateProductDetailsUseCase,
   }) : _checkVegetarianUseCase = checkVegetarianUseCase,
        _addVegetarianLabelUseCase = addVegetarianLabelUseCase,
+       _saveNonFoodProductUseCase = saveNonFoodProductUseCase,
+       _updateProductDetailsUseCase = updateProductDetailsUseCase,
        super(LoadingHomeState(language: _getLanguageUseCase.call())) {
     on<LoadHomeEvent>(_onLoadHomeEvent);
 
@@ -57,6 +63,10 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     on<CheckVegetarianWithAiEvent>(_onCheckVegetarianWithAi);
 
     on<ContributeVegetarianLabelEvent>(_onContributeVegetarianLabel);
+
+    on<MarkAsNonFoodProductEvent>(_onMarkAsNonFoodProduct);
+
+    on<UpdateProductDetailsEvent>(_onUpdateProductDetails);
   }
 
   final UseCase<Future<ProductInfo>, LocalizedCode> _getProductInfoUseCase;
@@ -64,9 +74,12 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
   final UseCase<bool, Null> _getPrecipitationStateUseCase;
   final UseCase<Future<bool>, String> _saveLanguageUseCase;
   final UseCase<Language, Object?> _getLanguageUseCase;
-  final UseCase<Future<AiVegetarianCheckResponse>, CheckVegetarianParams>?
+  final UseCase<Future<AiVegetarianCheckResponse>, CheckVegetarianParams>
   _checkVegetarianUseCase;
-  final UseCase<Future<void>, String>? _addVegetarianLabelUseCase;
+  final UseCase<Future<void>, String> _addVegetarianLabelUseCase;
+  final UseCase<Future<void>, String> _saveNonFoodProductUseCase;
+  final UseCase<Future<void>, UpdateProductDetailsParams>
+  _updateProductDetailsUseCase;
 
   FutureOr<void> _handleError(
     HomeErrorEvent event,
@@ -233,7 +246,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
       } else {
         modifiableProductInfo[ProductInfoType.code] = productInfo.barcode;
         if (state is LoadingProductInfoState) {
-          LoadingProductInfoState loadingState =
+          final LoadingProductInfoState loadingState =
               state as LoadingProductInfoState;
           emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
         }
@@ -249,7 +262,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
         if (productInfo.name.isNotEmpty) {
           modifiableProductInfo[ProductInfoType.productName] = productInfo.name;
           if (state is LoadingProductInfoState) {
-            LoadingProductInfoState loadingState =
+            final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
             emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
@@ -259,7 +272,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           modifiableProductInfo[ProductInfoType.originCountry] =
               productInfo.origin;
           if (state is LoadingProductInfoState) {
-            LoadingProductInfoState loadingState =
+            final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
             emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
@@ -269,7 +282,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           modifiableProductInfo[ProductInfoType.gs1Country] =
               productInfo.gs1Country;
           if (state is LoadingProductInfoState) {
-            LoadingProductInfoState loadingState =
+            final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
             emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
@@ -279,7 +292,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           modifiableProductInfo[ProductInfoType.reportedOrigin] =
               productInfo.reportedOrigin;
           if (state is LoadingProductInfoState) {
-            LoadingProductInfoState loadingState =
+            final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
             emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
@@ -289,7 +302,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           modifiableProductInfo[ProductInfoType.countryWhereSold] =
               productInfo.countrySold;
           if (state is LoadingProductInfoState) {
-            LoadingProductInfoState loadingState =
+            final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
             emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
@@ -298,7 +311,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
         if (productInfo.brand.isNotEmpty) {
           modifiableProductInfo[ProductInfoType.brand] = productInfo.brand;
           if (state is LoadingProductInfoState) {
-            LoadingProductInfoState loadingState =
+            final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
             emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
           }
@@ -320,7 +333,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           }
         }
 
-        if (productInfo.isFromRussia) {
+        if (productInfo.isFromRussia || productInfo.isFromBelarus) {
           modifiableProductInfo[ProductInfoType.countryTerrorismSponsor] =
               translate('yes');
           if (state is LoadingProductInfoState) {
@@ -372,7 +385,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           }
         }
 
-        if (!productInfo.isEnglishBook) {
+        if (productInfo.hasIngredients) {
           final String ingredientsText = stringBuffer.toString();
 
           modifiableProductInfo[ProductInfoType.ingredients] = ingredientsText;
@@ -581,21 +594,44 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     CheckVegetarianWithAiEvent event,
     Emitter<HomeViewModel> emit,
   ) async {
-    final UseCase<Future<AiVegetarianCheckResponse>, CheckVegetarianParams>?
-    useCase = _checkVegetarianUseCase;
-    if (useCase == null) {
-      event.onError('${translate('error_colon')} Service unavailable');
-    } else {
+    if (state is LoadedProductInfoState) {
+      final LoadedProductInfoState current = state as LoadedProductInfoState;
+      emit(
+        AnalyzingIngredientsState(
+          language: current.language,
+          productInfoMap: current.productInfoMap,
+          productInfo: current.productInfo,
+          isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+        ),
+      );
       try {
-        final AiVegetarianCheckResponse response = await useCase.call(
-          CheckVegetarianParams(
-            ingredients: event.ingredients,
-            barcode: event.barcode,
+        final AiVegetarianCheckResponse response = await _checkVegetarianUseCase
+            .call(
+              CheckVegetarianParams(
+                ingredients: event.ingredients,
+                barcode: event.barcode,
+                language: current.language,
+              ),
+            );
+        emit(
+          VegetarianCheckSuccessState(
+            response: response,
+            language: current.language,
+            productInfoMap: current.productInfoMap,
+            productInfo: current.productInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
           ),
         );
-        event.onResult(response);
       } catch (error) {
-        event.onError(error);
+        emit(
+          ActionErrorState(
+            errorMessage: '$error',
+            language: current.language,
+            productInfoMap: current.productInfoMap,
+            productInfo: current.productInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
       }
     }
   }
@@ -604,33 +640,158 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     ContributeVegetarianLabelEvent event,
     Emitter<HomeViewModel> emit,
   ) async {
-    final UseCase<Future<void>, String>? useCase = _addVegetarianLabelUseCase;
-    if (useCase == null) {
-      event.onError('${translate('error_colon')} Service unavailable');
-    } else {
+    if (state is LoadedProductInfoState) {
+      final LoadedProductInfoState current = state as LoadedProductInfoState;
+      emit(
+        SavingLabelState(
+          language: current.language,
+          productInfoMap: current.productInfoMap,
+          productInfo: current.productInfo,
+          isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+        ),
+      );
       try {
-        await useCase.call(event.barcode);
-        if (state is ProductInfoState) {
-          final ProductInfoState currentState = state as ProductInfoState;
-          final ProductInfo updatedInfo = currentState.productInfo.copyWith(
-            vegetarian: Vegetarian.positive,
-          );
-          final Map<ProductInfoType, String> updatedMap =
-              Map<ProductInfoType, String>.from(currentState.productInfoMap);
-          updatedMap[ProductInfoType.isVegetarian] = translate('yes');
+        await _addVegetarianLabelUseCase.call(event.barcode);
+        final ProductInfo updatedInfo = current.productInfo.copyWith(
+          vegetarian: Vegetarian.positive,
+        );
+        final Map<ProductInfoType, String> updatedMap =
+            Map<ProductInfoType, String>.from(current.productInfoMap);
+        updatedMap[ProductInfoType.isVegetarian] = translate('yes');
 
-          emit(
-            LoadedProductInfoState(
-              productInfo: updatedInfo,
-              productInfoMap: updatedMap,
-              language: state.language,
-              isSeasonalEffectEnabled: state.isSeasonalEffectEnabled,
-            ),
-          );
-        }
-        event.onSuccess();
+        emit(
+          VegetarianLabelContributedState(
+            language: current.language,
+            productInfoMap: updatedMap,
+            productInfo: updatedInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
       } catch (error) {
-        event.onError(error);
+        emit(
+          ActionErrorState(
+            errorMessage: '$error',
+            language: current.language,
+            productInfoMap: current.productInfoMap,
+            productInfo: current.productInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
+      }
+    }
+  }
+
+  FutureOr<void> _onMarkAsNonFoodProduct(
+    MarkAsNonFoodProductEvent event,
+    Emitter<HomeViewModel> emit,
+  ) async {
+    if (state is LoadedProductInfoState) {
+      final LoadedProductInfoState current = state as LoadedProductInfoState;
+      emit(
+        MarkingNonFoodState(
+          language: current.language,
+          productInfoMap: current.productInfoMap,
+          productInfo: current.productInfo,
+          isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+        ),
+      );
+      try {
+        await _saveNonFoodProductUseCase.call(event.barcode);
+        final ProductInfo updatedInfo = current.productInfo.copyWith(
+          categoryTags: <String>['en:non-food'],
+          responseType: ProductResponseType.nonFoodProduct,
+        );
+        final Map<ProductInfoType, String> updatedMap =
+            Map<ProductInfoType, String>.from(current.productInfoMap);
+        updatedMap.remove(ProductInfoType.ingredients);
+
+        emit(
+          NonFoodProductMarkedState(
+            language: current.language,
+            productInfoMap: updatedMap,
+            productInfo: updatedInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
+      } catch (error) {
+        emit(
+          ActionErrorState(
+            errorMessage: '$error',
+            language: current.language,
+            productInfoMap: current.productInfoMap,
+            productInfo: current.productInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
+      }
+    }
+  }
+
+  FutureOr<void> _onUpdateProductDetails(
+    UpdateProductDetailsEvent event,
+    Emitter<HomeViewModel> emit,
+  ) async {
+    if (state is LoadedProductInfoState) {
+      final LoadedProductInfoState current = state as LoadedProductInfoState;
+      emit(
+        UpdatingProductDetailsState(
+          language: current.language,
+          productInfoMap: current.productInfoMap,
+          productInfo: current.productInfo,
+          isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+        ),
+      );
+      try {
+        await _updateProductDetailsUseCase.call(
+          UpdateProductDetailsParams(
+            barcode: event.barcode,
+            productName: event.productName,
+            canHaveIngredients: event.canHaveIngredients,
+          ),
+        );
+        final ProductInfo updatedInfo = current.productInfo.copyWith(
+          name: event.productName,
+          categoryTags: event.canHaveIngredients
+              ? current.productInfo.categoryTags
+              : <String>[constants.nonFoodCategoryTag],
+          responseType: event.canHaveIngredients
+              ? ProductResponseType.openFoodFacts
+              : ProductResponseType.nonFoodProduct,
+        );
+        final Map<ProductInfoType, String> updatedMap =
+            Map<ProductInfoType, String>.from(current.productInfoMap);
+        if (event.productName.isNotEmpty) {
+          updatedMap[ProductInfoType.productName] = event.productName;
+        } else {
+          updatedMap.remove(ProductInfoType.productName);
+        }
+        if (event.canHaveIngredients) {
+          if (updatedInfo.ingredientList.isNotEmpty) {
+            updatedMap[ProductInfoType.ingredients] = updatedInfo.ingredientList
+                .join(', ');
+          }
+        } else {
+          updatedMap.remove(ProductInfoType.ingredients);
+        }
+
+        emit(
+          ProductDetailsUpdatedState(
+            language: current.language,
+            productInfoMap: updatedMap,
+            productInfo: updatedInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
+      } catch (error) {
+        emit(
+          ActionErrorState(
+            errorMessage: '$error',
+            language: current.language,
+            productInfoMap: current.productInfoMap,
+            productInfo: current.productInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
       }
     }
   }

@@ -16,9 +16,7 @@
 apps that scans the barcode of a product and tells you if the product meets
 your ethical standards.
 
-The app allows you to customize your preferences based on
-various criteria, such as human rights, environmental impact, animal well-being,
-and more.
+The app checks product barcodes against verified corporate responsibility and boycott lists to help you make informed purchasing decisions.
 
 The app uses the data from various sources, such as
 

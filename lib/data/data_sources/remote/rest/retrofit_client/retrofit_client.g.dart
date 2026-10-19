@@ -56,13 +56,13 @@ class _RetrofitClient implements RetrofitClient {
 
   @override
   Future<AiBarcodeInfoResponse> getAiBarcodeInfo(
-    Map<String, String> request,
+    AiBarcodeInfoRequest request,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    _data.addAll(request);
+    _data.addAll(request.toJson());
     final _options = _setStreamType<AiBarcodeInfoResponse>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
@@ -86,13 +86,13 @@ class _RetrofitClient implements RetrofitClient {
 
   @override
   Future<AiVegetarianCheckResponse> checkVegetarianWithAi(
-    Map<String, String> request,
+    AiVegetarianCheckRequest request,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    _data.addAll(request);
+    _data.addAll(request.toJson());
     final _options = _setStreamType<AiVegetarianCheckResponse>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(

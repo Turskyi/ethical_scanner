@@ -1,10 +1,12 @@
+import org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler
+
 //noinspection GrUnresolvedAccess
 pluginManagement {
     try {
-        org.gradle.api.artifacts.dsl.RepositoryHandler.metaClass.jcenter = { ->
+        RepositoryHandler.metaClass.jcenter = { ->
             delegate.mavenCentral()
         }
-        org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler.metaClass.jcenter = { ->
+        DefaultRepositoryHandler.metaClass.jcenter = { ->
             delegate.mavenCentral()
         }
     } catch (ignored) {
@@ -36,7 +38,7 @@ pluginManagement {
 plugins {
     id "dev.flutter.flutter-plugin-loader" version "1.0.0"
     id("com.android.application") version '9.4.1' apply false
-    id("org.jetbrains.kotlin.android") version "2.4.20" apply false
+    id("org.jetbrains.kotlin.android") version "2.4.21" apply false
 }
 
 include ":app"

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -27,12 +27,12 @@
 		33CC10F32044A3C60003C045 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F22044A3C60003C045 /* Assets.xcassets */; };
 		33CC10F62044A3C60003C045 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F42044A3C60003C045 /* MainMenu.xib */; };
 		33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11122044BFA00003C045 /* MainFlutterWindow.swift */; };
-		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
-		E4CCD2F7F690ABACACDB0E5E /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADF3C26BFA879DB6C28AE2DE /* Pods_Runner.framework */; };
-		EAB5EBC253CCD94C7CC25DE4 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24D79069516AF44F6C2C7DFD /* Pods_RunnerTests.framework */; };
 		66EC90052B93A1A0005B25C9 /* EthicalScannerWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 66EC90082B93A1A0005B25C9 /* EthicalScannerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		66EC90182B93A1A0005B25C9 /* EthicalScannerWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66EC900B2B93A1A0005B25C9 /* EthicalScannerWidgetBundle.swift */; };
 		66EC90192B93A1A0005B25C9 /* EthicalScannerWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66EC900C2B93A1A0005B25C9 /* EthicalScannerWidget.swift */; };
+		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
+		E4CCD2F7F690ABACACDB0E5E /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADF3C26BFA879DB6C28AE2DE /* Pods_Runner.framework */; };
+		EAB5EBC253CCD94C7CC25DE4 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24D79069516AF44F6C2C7DFD /* Pods_RunnerTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +60,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		33CC110E2044A8840003C045 /* Bundle Framework */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Bundle Framework";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		66EC90072B93A1A0005B25C9 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -69,16 +79,6 @@
 				66EC90052B93A1A0005B25C9 /* EthicalScannerWidgetExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		33CC110E2044A8840003C045 /* Bundle Framework */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Bundle Framework";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -104,6 +104,11 @@
 		33E51914231749380026EE4D /* Release.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Release.entitlements; sourceTree = "<group>"; };
 		33E5194F232828860026EE4D /* AppInfo.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppInfo.xcconfig; sourceTree = "<group>"; };
 		6158D75EBA6FE5219EFCC019 /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
+		66EC90082B93A1A0005B25C9 /* EthicalScannerWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = EthicalScannerWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		66EC900B2B93A1A0005B25C9 /* EthicalScannerWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EthicalScannerWidgetBundle.swift; sourceTree = "<group>"; };
+		66EC900C2B93A1A0005B25C9 /* EthicalScannerWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EthicalScannerWidget.swift; sourceTree = "<group>"; };
+		66EC900D2B93A1A0005B25C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		66EC90202B93A1A0005B25C9 /* EthicalScannerWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EthicalScannerWidget.entitlements; sourceTree = "<group>"; };
 		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
@@ -111,21 +116,9 @@
 		ADF3C26BFA879DB6C28AE2DE /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E820898951DDCDAF8FD98FE6 /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		FB46289A7F573DFFFF753FA5 /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
-		66EC90082B93A1A0005B25C9 /* EthicalScannerWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = EthicalScannerWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		66EC900B2B93A1A0005B25C9 /* EthicalScannerWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EthicalScannerWidgetBundle.swift; sourceTree = "<group>"; };
-		66EC900C2B93A1A0005B25C9 /* EthicalScannerWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EthicalScannerWidget.swift; sourceTree = "<group>"; };
-		66EC900D2B93A1A0005B25C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		66EC90202B93A1A0005B25C9 /* EthicalScannerWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EthicalScannerWidget.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		66EC90112B93A1A0005B25C9 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		331C80D2294CF70F00263BE5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -140,6 +133,13 @@
 			files = (
 				78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */,
 				E4CCD2F7F690ABACACDB0E5E /* Pods_Runner.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		66EC90112B93A1A0005B25C9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -188,17 +188,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		66EC900E2B93A1A0005B25C9 /* EthicalScannerWidget */ = {
-			isa = PBXGroup;
-			children = (
-				66EC900B2B93A1A0005B25C9 /* EthicalScannerWidgetBundle.swift */,
-				66EC900C2B93A1A0005B25C9 /* EthicalScannerWidget.swift */,
-				66EC900D2B93A1A0005B25C9 /* Info.plist */,
-				66EC90202B93A1A0005B25C9 /* EthicalScannerWidget.entitlements */,
-			);
-			path = EthicalScannerWidget;
-			sourceTree = "<group>";
-		};
 		33CC11242044D66E0003C045 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -233,6 +222,17 @@
 				33BA886A226E78AF003329D5 /* Configs */,
 			);
 			path = Runner;
+			sourceTree = "<group>";
+		};
+		66EC900E2B93A1A0005B25C9 /* EthicalScannerWidget */ = {
+			isa = PBXGroup;
+			children = (
+				66EC900B2B93A1A0005B25C9 /* EthicalScannerWidgetBundle.swift */,
+				66EC900C2B93A1A0005B25C9 /* EthicalScannerWidget.swift */,
+				66EC900D2B93A1A0005B25C9 /* Info.plist */,
+				66EC90202B93A1A0005B25C9 /* EthicalScannerWidget.entitlements */,
+			);
+			path = EthicalScannerWidget;
 			sourceTree = "<group>";
 		};
 		90BF157FB544E881A29B74F3 /* Pods */ = {
@@ -279,23 +279,6 @@
 			productReference = 331C80D5294CF71000263BE5 /* RunnerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		66EC900F2B93A1A0005B25C9 /* EthicalScannerWidgetExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 66EC90172B93A1A0005B25C9 /* Build configuration list for PBXNativeTarget "EthicalScannerWidgetExtension" */;
-			buildPhases = (
-				66EC90102B93A1A0005B25C9 /* Sources */,
-				66EC90112B93A1A0005B25C9 /* Frameworks */,
-				66EC90122B93A1A0005B25C9 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = EthicalScannerWidgetExtension;
-			productName = EthicalScannerWidgetExtension;
-			productReference = 66EC90082B93A1A0005B25C9 /* EthicalScannerWidgetExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 		33CC10EC2044A3C60003C045 /* Runner */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 33CC10FB2044A3C60003C045 /* Build configuration list for PBXNativeTarget "Runner" */;
@@ -323,6 +306,23 @@
 			productReference = 33CC10ED2044A3C60003C045 /* Ethical Scanner.app */;
 			productType = "com.apple.product-type.application";
 		};
+		66EC900F2B93A1A0005B25C9 /* EthicalScannerWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 66EC90172B93A1A0005B25C9 /* Build configuration list for PBXNativeTarget "EthicalScannerWidgetExtension" */;
+			buildPhases = (
+				66EC90102B93A1A0005B25C9 /* Sources */,
+				66EC90112B93A1A0005B25C9 /* Frameworks */,
+				66EC90122B93A1A0005B25C9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = EthicalScannerWidgetExtension;
+			productName = EthicalScannerWidgetExtension;
+			productReference = 66EC90082B93A1A0005B25C9 /* EthicalScannerWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -338,9 +338,6 @@
 						CreatedOnToolsVersion = 14.0;
 						TestTargetID = 33CC10EC2044A3C60003C045;
 					};
-					66EC900F2B93A1A0005B25C9 = {
-						CreatedOnToolsVersion = 15.2;
-					};
 					33CC10EC2044A3C60003C045 = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 1100;
@@ -354,6 +351,9 @@
 					33CC111A2044C6BA0003C045 = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Manual;
+					};
+					66EC900F2B93A1A0005B25C9 = {
+						CreatedOnToolsVersion = 15.2;
 					};
 				};
 			};
@@ -383,13 +383,6 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		66EC90122B93A1A0005B25C9 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		331C80D3294CF70F00263BE5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -403,6 +396,13 @@
 			files = (
 				33CC10F32044A3C60003C045 /* Assets.xcassets in Resources */,
 				33CC10F62044A3C60003C045 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		66EC90122B93A1A0005B25C9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -511,15 +511,6 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		66EC90102B93A1A0005B25C9 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				66EC90182B93A1A0005B25C9 /* EthicalScannerWidgetBundle.swift in Sources */,
-				66EC90192B93A1A0005B25C9 /* EthicalScannerWidget.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		331C80D1294CF70F00263BE5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -535,6 +526,15 @@
 				33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */,
 				33CC10F12044A3C60003C045 /* AppDelegate.swift in Sources */,
 				335BBD1B22A9A15E00E9071D /* GeneratedPluginRegistrant.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		66EC90102B93A1A0005B25C9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66EC90182B93A1A0005B25C9 /* EthicalScannerWidgetBundle.swift in Sources */,
+				66EC90192B93A1A0005B25C9 /* EthicalScannerWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -681,7 +681,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 27;
+				CURRENT_PROJECT_VERSION = 28;
 				DEVELOPMENT_TEAM = 26QZ8BPZFL;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -692,7 +692,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 0.2.7;
+				MARKETING_VERSION = 0.2.8;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 			};
@@ -825,7 +825,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 27;
+				CURRENT_PROJECT_VERSION = 28;
 				DEVELOPMENT_TEAM = 26QZ8BPZFL;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -836,7 +836,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 0.2.7;
+				MARKETING_VERSION = 0.2.8;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -854,7 +854,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 27;
+				CURRENT_PROJECT_VERSION = 28;
 				DEVELOPMENT_TEAM = 26QZ8BPZFL;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -865,7 +865,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 0.2.7;
+				MARKETING_VERSION = 0.2.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.turskyi.ethicalScanner;
 				PRODUCT_NAME = "Ethical Scanner";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -902,10 +902,10 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_ENTITLEMENTS = EthicalScannerWidget/EthicalScannerWidget.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 27;
+				CURRENT_PROJECT_VERSION = 28;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 26QZ8BPZFL;
 				FLUTTER_BUILD_NAME = 0.2.7;
@@ -914,13 +914,13 @@
 				INFOPLIST_FILE = EthicalScannerWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Ethical Scanner";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.2.7;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 0.2.8;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.turskyi.ethicalScanner.EthicalScannerWidget;
@@ -943,10 +943,10 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_ENTITLEMENTS = EthicalScannerWidget/EthicalScannerWidget.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 27;
+				CURRENT_PROJECT_VERSION = 28;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 26QZ8BPZFL;
 				FLUTTER_BUILD_NAME = 0.2.7;
@@ -955,13 +955,13 @@
 				INFOPLIST_FILE = EthicalScannerWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Ethical Scanner";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.2.7;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 0.2.8;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.turskyi.ethicalScanner.EthicalScannerWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -981,10 +981,10 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_ENTITLEMENTS = EthicalScannerWidget/EthicalScannerWidget.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 27;
+				CURRENT_PROJECT_VERSION = 28;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 26QZ8BPZFL;
 				FLUTTER_BUILD_NAME = 0.2.7;
@@ -993,13 +993,13 @@
 				INFOPLIST_FILE = EthicalScannerWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Ethical Scanner";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.2.7;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 0.2.8;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.turskyi.ethicalScanner.EthicalScannerWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1012,16 +1012,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		66EC90172B93A1A0005B25C9 /* Build configuration list for PBXNativeTarget "EthicalScannerWidgetExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				66EC90142B93A1A0005B25C9 /* Debug */,
-				66EC90152B93A1A0005B25C9 /* Release */,
-				66EC90162B93A1A0005B25C9 /* Profile */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		331C80DE294CF71000263BE5 /* Build configuration list for PBXNativeTarget "RunnerTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1058,6 +1048,16 @@
 				33CC111C2044C6BA0003C045 /* Debug */,
 				33CC111D2044C6BA0003C045 /* Release */,
 				338D0CEB231458BD00FA5F75 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		66EC90172B93A1A0005B25C9 /* Build configuration list for PBXNativeTarget "EthicalScannerWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				66EC90142B93A1A0005B25C9 /* Debug */,
+				66EC90152B93A1A0005B25C9 /* Release */,
+				66EC90162B93A1A0005B25C9 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

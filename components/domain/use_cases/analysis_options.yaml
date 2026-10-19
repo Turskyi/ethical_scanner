@@ -41,6 +41,7 @@ linter:
     sort_pub_dependencies: true
     avoid_classes_with_only_static_members: true
     sort_constructors_first: true
+    prefer_final_locals: true
 
 # Uncomment the following section to specify additional rules.
 # analyzer:

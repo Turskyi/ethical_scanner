@@ -66,6 +66,7 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
           ),
           title: Text(
             translate('photo.extract_ingredients'),
+            maxLines: 2,
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -74,11 +75,7 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
           actions: <Widget>[
             LanguageSelector(
               currentLanguage: viewModel.language,
-              onLanguageSelected: (Language newLanguage) {
-                context.read<IngredientsEditorPresenter>().add(
-                  ChangeIngredientsLanguageEvent(newLanguage),
-                );
-              },
+              onLanguageSelected: _onLanguageChanged,
             ),
           ],
         ),
@@ -225,5 +222,12 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
     _ingredientsController.dispose();
     _ingredientsFocusNode.dispose();
     super.dispose();
+  }
+
+  void _onLanguageChanged(Language newLanguage) {
+    context.read<IngredientsEditorPresenter>().add(
+      ChangeIngredientsLanguageEvent(newLanguage),
+    );
+    setState(() {});
   }
 }

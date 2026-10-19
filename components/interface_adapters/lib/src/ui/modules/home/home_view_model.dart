@@ -229,3 +229,125 @@ final class FeedbackFailed extends LoadedProductInfoState {
         ')';
   }
 }
+
+class AnalyzingIngredientsState extends LoadedProductInfoState {
+  const AnalyzingIngredientsState({
+    required super.language,
+    super.productInfoMap,
+    super.productInfo,
+    super.isSeasonalEffectEnabled,
+  });
+
+  @override
+  String toString() => 'AnalyzingIngredientsState(${super.toString()})';
+}
+
+class SavingLabelState extends LoadedProductInfoState {
+  const SavingLabelState({
+    required super.language,
+    super.productInfoMap,
+    super.productInfo,
+    super.isSeasonalEffectEnabled,
+  });
+
+  @override
+  String toString() => 'SavingLabelState(${super.toString()})';
+}
+
+class MarkingNonFoodState extends LoadedProductInfoState {
+  const MarkingNonFoodState({
+    required super.language,
+    super.productInfoMap,
+    super.productInfo,
+    super.isSeasonalEffectEnabled,
+  });
+
+  @override
+  String toString() => 'MarkingNonFoodState(${super.toString()})';
+}
+
+class UpdatingProductDetailsState extends LoadedProductInfoState {
+  const UpdatingProductDetailsState({
+    required super.language,
+    super.productInfoMap,
+    super.productInfo,
+    super.isSeasonalEffectEnabled,
+  });
+
+  @override
+  String toString() => 'UpdatingProductDetailsState(${super.toString()})';
+}
+
+class ProductDetailsUpdatedState extends LoadedProductInfoState {
+  const ProductDetailsUpdatedState({
+    required super.language,
+    super.productInfoMap,
+    super.productInfo,
+    super.isSeasonalEffectEnabled,
+  });
+
+  @override
+  String toString() => 'ProductDetailsUpdatedState(${super.toString()})';
+}
+
+class VegetarianCheckSuccessState extends LoadedProductInfoState {
+  const VegetarianCheckSuccessState({
+    required this.response,
+    required super.language,
+    super.productInfoMap,
+    super.productInfo,
+    super.isSeasonalEffectEnabled,
+  });
+
+  final AiVegetarianCheckResponse response;
+
+  @override
+  String toString() {
+    return 'VegetarianCheckSuccessState('
+        'response: $response, '
+        ')';
+  }
+}
+
+class VegetarianLabelContributedState extends LoadedProductInfoState {
+  const VegetarianLabelContributedState({
+    required super.language,
+    super.productInfoMap,
+    super.productInfo,
+    super.isSeasonalEffectEnabled,
+  });
+
+  @override
+  String toString() => 'VegetarianLabelContributedState(${super.toString()})';
+}
+
+class NonFoodProductMarkedState extends LoadedProductInfoState {
+  const NonFoodProductMarkedState({
+    required super.language,
+    super.productInfoMap,
+    super.productInfo,
+    super.isSeasonalEffectEnabled,
+  });
+
+  @override
+  String toString() => 'NonFoodProductMarkedState(${super.toString()})';
+}
+
+class ActionErrorState extends LoadedProductInfoState {
+  const ActionErrorState({
+    required this.errorMessage,
+    required super.language,
+    super.productInfoMap,
+    super.productInfo,
+    super.isSeasonalEffectEnabled,
+  });
+
+  final String errorMessage;
+
+  @override
+  String toString() {
+    return 'ActionErrorState('
+        'errorMessage: $errorMessage, '
+        ')';
+  }
+}

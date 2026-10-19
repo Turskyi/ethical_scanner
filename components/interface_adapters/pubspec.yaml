@@ -33,8 +33,7 @@ dependencies:
   # Built to be used with the `bloc` state management package
   flutter_bloc: ^9.1.1
 
-  # localization / internationalization (i18n) library
-  flutter_email_sender: ^11.1.0
+  flutter_email_sender: ^11.2.0
   flutter_pdfview: ^1.4.5
   flutter_translate:
     git:
@@ -45,8 +44,7 @@ dependencies:
 
   http: ^1.6.0
   image_picker: ^1.2.4
-  # Because every version of flutter_test from sdk depends on meta 1.16.0 and
-  # every version of interface_adapters from path depends on meta ^1.17.0.
+
   meta: ^1.19.0
   mobile_scanner: ^7.4.2
 
@@ -88,7 +86,6 @@ flutter:
     - assets/i18n/
     - assets/audio/
     - assets/images/
-    - assets/images/evidence/
   #
   # For details regarding assets in packages, see
   # https://flutter.dev/assets-and-images/#from-packages

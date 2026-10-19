@@ -14,9 +14,10 @@ class GetProductInfoUseCase
     final String code = barcode.code;
     final Language language = barcode.language;
 
-    // Step 1: Barcode starts with 46: keep the existing Russian-product
-    // result. Do not call Leave Russia.
-    if (code.startsWith(ProductInfo.russianBarcodePrefix)) {
+    // Step 1: Barcode starts with 46 or 481: keep the existing Russian or
+    // Belarusian product result. Do not call Leave Russia.
+    if (code.startsWith(ProductInfo.russianBarcodePrefix) ||
+        code.startsWith(ProductInfo.belarusianBarcodePrefix)) {
       return _getStandardProductInfo(barcode);
     } else {
       // If the code starts with 0, drop that first digit, then send the rest.

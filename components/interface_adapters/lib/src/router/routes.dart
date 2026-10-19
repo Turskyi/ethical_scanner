@@ -4,5 +4,6 @@ const String kPhotoPath = '${kHomePath}photo';
 const String kSettingsPath = '${kHomePath}settings';
 const String kPrivacyPath = '${kHomePath}privacy';
 const String kSupportPath = '${kHomePath}support';
+const String kAboutPath = '${kHomePath}about';
 const String kPdfViewerPath = '${kHomePath}pdf';
 const String kIngredientsEditorPath = '${kHomePath}ingredients_editor';

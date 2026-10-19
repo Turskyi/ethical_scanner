@@ -51,8 +51,8 @@ class ScanPresenter extends Bloc<ScanEvent, ScanViewModel> {
     Emitter<ScanViewModel> emit,
   ) async {
     if (state is ScanningState) {
-      bool isSoundOn = !(state as ScanningState).isSoundOn;
-      bool isSaved = await _saveSoundPreferenceUseCase.call(isSoundOn);
+      final bool isSoundOn = !(state as ScanningState).isSoundOn;
+      final bool isSaved = await _saveSoundPreferenceUseCase.call(isSoundOn);
       if (isSaved) {
         emit((state as ScanningState).copyWith(isSoundOn: isSoundOn));
       } else {

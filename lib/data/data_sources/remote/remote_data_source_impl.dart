@@ -26,47 +26,89 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         language.toOpenFoodFactsLanguage;
 
     return OpenFoodAPIClient.getProductV3(
-      ProductQueryConfiguration(
-        code,
-        language: openFoodFactsLanguage,
-        fields: <ProductField>[ProductField.ALL],
-        version: ProductQueryVersion.latestVersion,
-      ),
-    ).then((ProductResultV3 result) {
-      final Product? resultProduct = result.product;
-      if (resultProduct != null && result.hasSuccessfulStatus) {
-        final ProductInfo product = resultProduct.toProductInfo(language);
-        return product;
-      } else if (result.status == ProductResultV3.statusFailure) {
-        if (_isBarcode(code)) {
-          final bool cannotHaveIngredients =
+          ProductQueryConfiguration(
+            code,
+            language: openFoodFactsLanguage,
+            fields: <ProductField>[ProductField.ALL],
+            version: ProductQueryVersion.latestVersion,
+          ),
+        )
+        .then((ProductResultV3 result) async {
+          final Product? resultProduct = result.product;
+          final bool isDifferentProductType =
               result.result?.id ==
               'product_found_with_a_different_product_type';
-          return ProductInfo(
-            barcode: code,
-            responseType: cannotHaveIngredients
-                ? ProductResponseType.error
-                : ProductResponseType.barcodeOnly,
+
+          if (isDifferentProductType) {
+            try {
+              final ProductResultV3 opfResult =
+                  await OpenFoodAPIClient.getProductV3(
+                    ProductQueryConfiguration(
+                      code,
+                      language: openFoodFactsLanguage,
+                      fields: <ProductField>[ProductField.ALL],
+                      version: ProductQueryVersion.latestVersion,
+                    ),
+                    uriHelper: const UriProductHelper(
+                      domain: constants.openProductsFactsDomain,
+                    ),
+                  );
+
+              final Product? opfProduct = opfResult.product;
+              if (opfProduct != null && opfResult.hasSuccessfulStatus) {
+                final ProductInfo info = opfProduct.toProductInfo(language);
+                return info.copyWith(
+                  responseType: ProductResponseType.nonFoodProduct,
+                );
+              }
+            } catch (e) {
+              debugPrint('Failed to fetch from Open Products Facts: $e');
+            }
+            return ProductInfo(
+              barcode: code,
+              responseType: ProductResponseType.nonFoodProduct,
+            );
+          } else if (resultProduct != null && result.hasSuccessfulStatus) {
+            final ProductInfo product = resultProduct.toProductInfo(language);
+            return product;
+          } else if (result.status == ProductResultV3.statusFailure) {
+            if (_isBarcode(code)) {
+              return ProductInfo(
+                barcode: code,
+                responseType: ProductResponseType.barcodeOnly,
+              );
+            } else if (_isWebsite(code)) {
+              return ProductInfo(
+                website: code,
+                responseType: ProductResponseType.websiteOnly,
+              );
+            } else if (_isAmazonAsin(code)) {
+              return const ProductInfo(
+                brand: 'Amazon',
+                responseType: ProductResponseType.amazonAsinFallback,
+              );
+            }
+          }
+          throw NotFoundException(
+            translate(
+              'product_info_not_found_for_barcode',
+              args: <String, Object?>{'barcode': code},
+            ),
           );
-        } else if (_isWebsite(code)) {
-          return ProductInfo(
-            website: code,
-            responseType: ProductResponseType.websiteOnly,
-          );
-        } else if (_isAmazonAsin(code)) {
-          return const ProductInfo(
-            brand: 'Amazon',
-            responseType: ProductResponseType.amazonAsinFallback,
-          );
-        }
-      }
-      throw NotFoundException(
-        translate(
-          'product_info_not_found_for_barcode',
-          args: <String, Object?>{'barcode': code},
-        ),
-      );
-    });
+        })
+        .onError((Object? error, StackTrace stackTrace) {
+          debugPrint('Error occurred while fetching product info: $error');
+          if (error is SocketException) {
+            Error.throwWithStackTrace(error, stackTrace);
+          } else {
+            throw NotFoundException(
+              translate(
+                'product_info_not_found_for_barcode',
+                args: <String, Object?>{'barcode': code},
+              ),
+            );
+          }
+        });
   }
 
   @override
@@ -90,9 +132,15 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<AiBarcodeInfoResponse> getInfoFromAiAsFuture(String barcode) async {
+  Future<AiBarcodeInfoResponse> getInfoFromAiAsFuture({
+    required String barcode,
+    required Language language,
+  }) async {
     final AiBarcodeInfoResponse response = await _restClient.getAiBarcodeInfo(
-      <String, String>{'barcode': barcode},
+      AiBarcodeInfoRequest(
+        barcode: barcode,
+        language: language.isoLanguageCode,
+      ),
     );
     if (response.info.trim().isNotEmpty) {
       return response;
@@ -105,11 +153,15 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   Future<AiVegetarianCheckResponse> checkVegetarianWithAi({
     required String ingredients,
     required String barcode,
+    required Language language,
   }) async {
-    return _restClient.checkVegetarianWithAi(<String, String>{
-      constants.apiKeyIngredients: ingredients,
-      if (barcode.isNotEmpty) constants.apiKeyBarcode: barcode,
-    });
+    return _restClient.checkVegetarianWithAi(
+      AiVegetarianCheckRequest(
+        ingredients: ingredients,
+        barcode: barcode,
+        language: language.isoLanguageCode,
+      ),
+    );
   }
 
   @override
@@ -195,6 +247,178 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         throw Exception(
           'Could not save vegetarian label: '
           '${result.error ?? result.statusVerbose ?? 'Unknown error'}',
+        );
+      }
+    }
+  }
+
+  @override
+  Future<void> saveNonFoodProduct({required String barcode}) async {
+    final Map<String, Object?> productParameters = <String, Object?>{
+      'product_type': 'product',
+      'ingredients_text': '',
+      for (final OpenFoodFactsLanguage offLang in OpenFoodFactsLanguage.values)
+        'ingredients_text_${offLang.code}': '',
+      'ingredients': <Object?>[],
+      'categories_tags': <String>[constants.nonFoodCategoryTag],
+      'labels_tags': <String>[constants.nonFoodCategoryTag],
+    };
+
+    final User openFoodUser =
+        OpenFoodAPIConfiguration.globalUser ??
+        const User(
+          userId: Env.openFoodUserId,
+          password: Env.openFoodPassword,
+          comment: constants.openFoodUserComment,
+        );
+
+    final User backupUser = const User(
+      userId: Env.openFoodBackupUserId,
+      password: Env.openFoodPassword,
+      comment: constants.openFoodUserComment,
+    );
+
+    try {
+      await OpenFoodAPIClient.patchProductV3(
+        barcode: barcode,
+        productParameters: productParameters,
+        user: openFoodUser,
+        uriHelper: const UriProductHelper(
+          domain: constants.openFoodFactsDomain,
+        ),
+      );
+    } catch (e) {
+      debugPrint('OFF patch on openfoodfacts.org skipped/failed: $e');
+    }
+
+    try {
+      debugPrint(
+        'OFF saveNonFoodProduct sending patch for barcode: $barcode...',
+      );
+      final ProductResultV3 result = await OpenFoodAPIClient.patchProductV3(
+        barcode: barcode,
+        productParameters: productParameters,
+        user: openFoodUser,
+        uriHelper: const UriProductHelper(
+          domain: constants.openProductsFactsDomain,
+        ),
+      );
+      debugPrint(
+        'OPF saveNonFoodProduct primary response: status=${result.status}, '
+        'hasSuccessfulStatus=${result.hasSuccessfulStatus}, '
+        'result=${result.result}',
+      );
+      if (!result.hasSuccessfulStatus) {
+        throw Exception(
+          'Could not save non-food status: status=${result.status}',
+        );
+      }
+    } catch (error) {
+      debugPrint(
+        'OPF saveNonFoodProduct primary failed: $error, trying backup user',
+      );
+      final ProductResultV3 result = await OpenFoodAPIClient.patchProductV3(
+        barcode: barcode,
+        productParameters: productParameters,
+        user: backupUser,
+        uriHelper: const UriProductHelper(
+          domain: constants.openProductsFactsDomain,
+        ),
+      );
+      debugPrint(
+        'OPF saveNonFoodProduct backup response: status=${result.status}, '
+        'hasSuccessfulStatus=${result.hasSuccessfulStatus}, '
+        'result=${result.result}',
+      );
+      if (!result.hasSuccessfulStatus) {
+        throw Exception(
+          'Could not save non-food status with backup user: $error',
+        );
+      }
+    }
+  }
+
+  @override
+  Future<void> updateProductDetails({
+    required String barcode,
+    required String productName,
+    required bool canHaveIngredients,
+  }) async {
+    final Map<String, Object?> productParameters = <String, Object?>{
+      'product_name': productName,
+      for (final OpenFoodFactsLanguage offLang in OpenFoodFactsLanguage.values)
+        'product_name_${offLang.code}': productName,
+      'product_type': canHaveIngredients ? 'food' : 'product',
+      if (!canHaveIngredients) ...<String, Object?>{
+        'ingredients_text': '',
+        for (final OpenFoodFactsLanguage offLang
+            in OpenFoodFactsLanguage.values)
+          'ingredients_text_${offLang.code}': '',
+        'ingredients': <Object?>[],
+        'categories_tags': <String>[constants.nonFoodCategoryTag],
+      },
+    };
+
+    final UriProductHelper uriHelper = canHaveIngredients
+        ? const UriProductHelper(domain: constants.openFoodFactsDomain)
+        : const UriProductHelper(domain: constants.openProductsFactsDomain);
+
+    final User openFoodUser =
+        OpenFoodAPIConfiguration.globalUser ??
+        const User(
+          userId: Env.openFoodUserId,
+          password: Env.openFoodPassword,
+          comment: constants.openFoodUserComment,
+        );
+
+    final User backupUser = const User(
+      userId: Env.openFoodBackupUserId,
+      password: Env.openFoodPassword,
+      comment: constants.openFoodUserComment,
+    );
+
+    if (!canHaveIngredients) {
+      try {
+        await OpenFoodAPIClient.patchProductV3(
+          barcode: barcode,
+          productParameters: productParameters,
+          user: openFoodUser,
+          uriHelper: const UriProductHelper(
+            domain: constants.openFoodFactsDomain,
+          ),
+        );
+      } catch (e) {
+        debugPrint('OFF patch on openfoodfacts.org skipped/failed: $e');
+      }
+    }
+
+    try {
+      final ProductResultV3 result = await OpenFoodAPIClient.patchProductV3(
+        barcode: barcode,
+        productParameters: productParameters,
+        user: openFoodUser,
+        uriHelper: uriHelper,
+      );
+
+      if (!result.hasSuccessfulStatus) {
+        throw Exception(
+          'Could not update product details: status=${result.status}',
+        );
+      }
+    } catch (error) {
+      debugPrint(
+        'OFF updateProductDetails primary failed: $error, trying backup user',
+      );
+      final ProductResultV3 result = await OpenFoodAPIClient.patchProductV3(
+        barcode: barcode,
+        productParameters: productParameters,
+        user: backupUser,
+        uriHelper: uriHelper,
+      );
+
+      if (!result.hasSuccessfulStatus) {
+        throw Exception(
+          'Could not update product details with backup user: $error',
         );
       }
     }

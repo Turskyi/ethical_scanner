@@ -9,6 +9,7 @@ import 'package:http/http.dart';
 import 'package:interface_adapters/src/data_sources/local/local_data_source.dart';
 import 'package:interface_adapters/src/data_sources/remote/remote_data_source.dart';
 import 'package:interface_adapters/src/error_message_extractor.dart';
+import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:use_cases/use_cases.dart';
 
 class ProductInfoGatewayImpl implements ProductInfoGateway {
@@ -16,16 +17,6 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
 
   final RemoteDataSource _remoteDataSource;
   final LocalDataSource _localDataSource;
-
-  String _normalizeBarcode(String barcode) {
-    final String normalized;
-    if (barcode.length == 13 && barcode.startsWith('0')) {
-      normalized = barcode.substring(1);
-    } else {
-      normalized = barcode;
-    }
-    return normalized;
-  }
 
   @override
   Future<ProductInfo> getProductInfoAsFuture(LocalizedCode input) {
@@ -81,7 +72,13 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
 
           final Language inputLanguage = input.language;
           if (_isBarcode(inputCode)) {
-            return ProductInfo(barcode: inputCode, language: inputLanguage);
+            return ProductInfo(
+              barcode: inputCode,
+              language: inputLanguage,
+              responseType: _isNetworkError(error)
+                  ? ProductResponseType.offline
+                  : ProductResponseType.error,
+            );
           } else if (_isWebsite(inputCode)) {
             return ProductInfo(website: inputCode, language: inputLanguage);
           } else if (_isAmazonAsin(inputCode)) {
@@ -112,8 +109,11 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
             );
             final String reportedOrigin = _localDataSource
                 .getReportedOriginFromBarcode(inputCode);
-            final List<String> reportedOriginPhotos = _localDataSource
-                .getReportedOriginPhotosFromBarcode(inputCode);
+            final List<String> photoFileNames = _localDataSource
+                .getReportedOriginPhotoFileNamesFromBarcode(inputCode);
+            final List<String> reportedOriginPhotos = photoFileNames
+                .map((String fileName) => '$kEvidenceBaseUrl$fileName')
+                .toList();
             if (gs1Country.isNotEmpty || reportedOrigin.isNotEmpty) {
               return info.copyWith(
                 gs1Country: gs1Country,
@@ -122,7 +122,10 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
               );
             } else {
               return _remoteDataSource
-                  .getInfoFromAiAsFuture(inputCode)
+                  .getInfoFromAiAsFuture(
+                    barcode: inputCode,
+                    language: input.language,
+                  )
                   .then(
                     (AiBarcodeInfoResponse response) => info.copyWith(
                       infoAi: response.info,
@@ -215,16 +218,36 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
   Future<AiVegetarianCheckResponse> checkVegetarianWithAi({
     required String ingredients,
     required String barcode,
+    required Language language,
   }) {
     return _remoteDataSource.checkVegetarianWithAi(
       ingredients: ingredients,
       barcode: barcode,
+      language: language,
     );
   }
 
   @override
   Future<void> addVegetarianLabel({required String barcode}) {
     return _remoteDataSource.addVegetarianLabel(barcode: barcode);
+  }
+
+  @override
+  Future<void> saveNonFoodProduct({required String barcode}) {
+    return _remoteDataSource.saveNonFoodProduct(barcode: barcode);
+  }
+
+  @override
+  Future<void> updateProductDetails({
+    required String barcode,
+    required String productName,
+    required bool canHaveIngredients,
+  }) {
+    return _remoteDataSource.updateProductDetails(
+      barcode: barcode,
+      productName: productName,
+      canHaveIngredients: canHaveIngredients,
+    );
   }
 
   bool _isWebsite(String input) {
@@ -235,6 +258,10 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
     return regex.hasMatch(input);
   }
 
+  bool _isNetworkError(Object? error) {
+    return error is SocketException || error is ClientException;
+  }
+
   /// Checks if the provided [barcode] is a valid Amazon ASIN.
   ///
   /// Amazon ASINs typically follow the pattern: A followed by 10 characters,
@@ -243,7 +270,7 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
   /// Returns `true` if [barcode] is a valid Amazon ASIN, and `false` otherwise.
   bool _isAmazonAsin(String barcode) {
     // ASIN pattern: A followed by 10 characters, typically alphanumeric
-    RegExp asinPattern = RegExp(r'^[A-Z0-9]{10}$');
+    final RegExp asinPattern = RegExp(r'^[A-Z0-9]{10}$');
     return asinPattern.hasMatch(barcode);
   }
 
@@ -251,14 +278,25 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
     // Typical barcodes are between 8 and 14 digits long
     if (input.length < 8 || input.length > 14) {
       return false;
-    }
-    // Check if the string contains only digits
-    for (int i = 0; i < input.length; i++) {
-      if (input.codeUnitAt(i) < '0'.codeUnitAt(0) ||
-          input.codeUnitAt(i) > '9'.codeUnitAt(0)) {
-        return false;
+    } else {
+      // Check if the string contains only digits
+      for (int i = 0; i < input.length; i++) {
+        if (input.codeUnitAt(i) < '0'.codeUnitAt(0) ||
+            input.codeUnitAt(i) > '9'.codeUnitAt(0)) {
+          return false;
+        }
       }
+      return true;
     }
-    return true;
+  }
+
+  String _normalizeBarcode(String barcode) {
+    final String normalized;
+    if (barcode.length == 13 && barcode.startsWith('0')) {
+      normalized = barcode.substring(1);
+    } else {
+      normalized = barcode;
+    }
+    return normalized;
   }
 }

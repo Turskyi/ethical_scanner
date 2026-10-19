@@ -1,12 +1,14 @@
+import org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler
+
 // Redirect jcenter() calls from older plugins to mavenCentral()
 try {
-    org.gradle.api.artifacts.dsl.RepositoryHandler.metaClass.jcenter = { ->
+    RepositoryHandler.metaClass.jcenter = { ->
         delegate.mavenCentral()
     }
 } catch (ignored) {
 }
 try {
-    org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler.metaClass.jcenter = { ->
+    DefaultRepositoryHandler.metaClass.jcenter = { ->
         delegate.mavenCentral()
     }
 } catch (ignored) {
@@ -108,5 +110,6 @@ subprojects {
 }
 
 tasks.register("clean", Delete) {
+    //noinspection GrDeprecatedAPIUsage
     delete rootProject.buildDir
 }

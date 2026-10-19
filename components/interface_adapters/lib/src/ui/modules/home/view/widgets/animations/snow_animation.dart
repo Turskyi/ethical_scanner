@@ -106,7 +106,7 @@ class _SnowAnimationState extends State<SnowAnimation>
 
   Offset _randomOffset() {
     if (mounted) {
-      Size size = MediaQuery.sizeOf(context);
+      final Size size = MediaQuery.sizeOf(context);
       return Offset(
         _random.nextDouble() * size.width,
         _random.nextDouble() * size.height,

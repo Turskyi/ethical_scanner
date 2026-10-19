@@ -69,3 +69,4 @@ coverage
 .metadata
 android/.kotlin/sessions
 /components/interface_adapters/coverage/
+/.artifacts/

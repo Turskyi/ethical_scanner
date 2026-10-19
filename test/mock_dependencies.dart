@@ -44,8 +44,19 @@ class MockDependencies extends Mock implements Dependencies {
   get checkVegetarianUseCase => CheckVegetarianUseCase(_productInfoGateway);
 
   @override
-  UseCase<Future<void>, String> get addVegetarianLabelUseCase =>
-      AddVegetarianLabelUseCase(_productInfoGateway);
+  UseCase<Future<void>, String> get addVegetarianLabelUseCase {
+    return AddVegetarianLabelUseCase(_productInfoGateway);
+  }
+
+  @override
+  UseCase<Future<void>, String> get saveNonFoodProductUseCase {
+    return SaveNonFoodProductUseCase(_productInfoGateway);
+  }
+
+  @override
+  UseCase<Future<void>, UpdateProductDetailsParams>
+  get updateProductDetailsUseCase =>
+      UpdateProductDetailsUseCase(_productInfoGateway);
 
   RestClient get _restClient {
     final Dio dio = Dio();

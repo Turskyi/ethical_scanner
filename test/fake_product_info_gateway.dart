@@ -77,6 +77,7 @@ class FakeProductInfoGateway implements ProductInfoGateway {
   Future<AiVegetarianCheckResponse> checkVegetarianWithAi({
     required String ingredients,
     required String barcode,
+    required Language language,
   }) async {
     return const AiVegetarianCheckResponse(
       isVegetarian: true,
@@ -89,4 +90,14 @@ class FakeProductInfoGateway implements ProductInfoGateway {
 
   @override
   Future<void> addVegetarianLabel({required String barcode}) async {}
+
+  @override
+  Future<void> saveNonFoodProduct({required String barcode}) async {}
+
+  @override
+  Future<void> updateProductDetails({
+    required String barcode,
+    required String productName,
+    required bool canHaveIngredients,
+  }) async {}
 }

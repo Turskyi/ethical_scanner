@@ -3,10 +3,17 @@ enum ProductResponseType {
   barcodeOnly,
   websiteOnly,
   amazonAsinFallback,
-  error;
+  error,
+  offline,
+  nonFoodProduct;
 
-  bool get isSupportedByOpenFoodFacts =>
-      this == openFoodFacts || this == barcodeOnly;
+  bool get isSupportedByOpenFoodFacts {
+    return this == openFoodFacts || this == barcodeOnly;
+  }
 
   bool get isNotSupportedByOpenFoodFacts => !isSupportedByOpenFoodFacts;
+
+  bool get isBarcodeOnly => this == barcodeOnly;
+
+  bool get isNonFoodProduct => this == nonFoodProduct;
 }
