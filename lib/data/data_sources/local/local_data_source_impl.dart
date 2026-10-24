@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:entities/entities.dart';
+import 'package:ethical_scanner/data/data_sources/local/reported_origins.g.dart';
 import 'package:ethical_scanner/data/data_sources/remote/models/russia_sponsors_response/russia_sponsor_response.dart';
 import 'package:ethical_scanner/res/enums/settings.dart';
 import 'package:flutter/foundation.dart';
@@ -744,54 +745,12 @@ class LocalDataSourceImpl implements LocalDataSource {
         '';
   }
 
-  /// Evidence-based country of origin observations tied to specific GS1
-  /// barcode prefixes, gathered from physically observed products.
-  /// One country per prefix. Add new entries as products are physically
-  /// verified.
-  static const Map<String, String> _reportedOriginMap = <String, String>{
-    '057': 'China',
-    '060': 'Switzerland',
-    '061': 'Greece',
-    '066': 'Colombia',
-    '191': 'China',
-    '194': 'Bangladesh',
-    '195': 'China',
-    '197': 'Cambodia, Bangladesh, Vietnam',
-    '198': 'China',
-    '336': 'China',
-    '360': 'United States',
-    '620': 'China',
-    '626': 'Canada',
-    '627': 'China',
-    '632': 'China',
-    '641': 'United Kingdom (England)',
-    '655': 'China',
-    '665': 'China',
-    '667': 'Vietnam',
-    '762': 'Canada',
-    '773': 'China',
-    '837': 'China, Canada',
-    '850': 'United States',
-    '852': 'Poland',
-    '856': 'Colombia',
-    '874': 'Canada',
-    '879': 'Cambodia',
-  };
-
-  static const Map<String, List<String>> _reportedOriginPhotoFileNamesMap =
-      <String, List<String>>{
-        '195': <String>['195_china.jpg'],
-        '641': <String>['641_england.jpg'],
-        '852': <String>['852_poland.jpg'],
-        '879': <String>['879_cambodia.jpg'],
-      };
-
   @override
   String getReportedOriginFromBarcode(String barcode) {
     if (barcode.length < 3) {
       return '';
     } else {
-      return _reportedOriginMap[barcode.substring(0, 3)] ?? '';
+      return kReportedOriginMap[barcode.substring(0, 3)] ?? '';
     }
   }
 
@@ -800,7 +759,7 @@ class LocalDataSourceImpl implements LocalDataSource {
     if (barcode.length < 3) {
       return const <String>[];
     } else {
-      return _reportedOriginPhotoFileNamesMap[barcode.substring(0, 3)] ??
+      return kReportedOriginPhotoFileNamesMap[barcode.substring(0, 3)] ??
           const <String>[];
     }
   }
