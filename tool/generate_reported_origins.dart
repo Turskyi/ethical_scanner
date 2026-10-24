@@ -63,7 +63,16 @@ void generateReportedOriginsFile() {
       'lib/data/data_sources/local/reported_origins.g.dart',
     );
     outputFile.writeAsStringSync(generatedContent);
-    stdout.writeln('Successfully generated ${outputFile.path}');
+
+    try {
+      Process.runSync('dart', <String>['format', outputFile.path]);
+    } catch (e) {
+      stderr.writeln(
+        'Warning: Could not run dart format on generated file: $e',
+      );
+    }
+
+    stdout.writeln('Successfully generated and formatted ${outputFile.path}');
   }
 }
 
