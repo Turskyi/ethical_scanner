@@ -21,11 +21,12 @@ void generateReportedOriginsFile() {
     final Map<String, List<String>> photoMap = <String, List<String>>{};
     final Map<String, Set<String>> originSetMap = <String, Set<String>>{};
 
-    final List<File> files = entities
-        .whereType<File>()
-        .where((File file) => !file.path.split('/').last.startsWith('.'))
-        .toList()
-      ..sort((File a, File b) => a.path.compareTo(b.path));
+    final List<File> files =
+        entities
+            .whereType<File>()
+            .where((File file) => !file.path.split('/').last.startsWith('.'))
+            .toList()
+          ..sort((File a, File b) => a.path.compareTo(b.path));
 
     for (final File file in files) {
       final String fileName = file.path.split('/').last;
@@ -114,9 +115,7 @@ String buildGeneratedContent({
   buffer
     ..writeln('};')
     ..writeln()
-    ..writeln(
-      '/// Map of GS1 prefix to list of evidence photo file names.',
-    )
+    ..writeln('/// Map of GS1 prefix to list of evidence photo file names.')
     ..writeln(
       'const Map<String, List<String>> kReportedOriginPhotoFileNamesMap =',
     )
