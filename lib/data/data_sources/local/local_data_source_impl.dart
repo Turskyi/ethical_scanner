@@ -768,6 +768,7 @@ class LocalDataSourceImpl implements LocalDataSource {
     '655': 'China',
     '665': 'China',
     '667': 'Vietnam',
+    '746': 'China',
     '762': 'Canada',
     '773': 'China',
     '837': 'China, Canada',
@@ -782,6 +783,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       <String, List<String>>{
         '195': <String>['195_china.jpg'],
         '641': <String>['641_england.jpg'],
+        '746': <String>['746_china.jpg'],
         '852': <String>['852_poland.jpg'],
         '879': <String>['879_cambodia.jpg'],
       };
