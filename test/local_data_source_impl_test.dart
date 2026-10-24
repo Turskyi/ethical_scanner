@@ -32,12 +32,10 @@ void main() {
 
     test('getReportedOriginFromBarcode should return the reported origin', () {
       final Map<String, String> testCases = <String, String>{
-        '0571234567890': 'China',
-        '0611234567890': 'Greece',
-        '6321234567890': 'China',
-        '6671234567890': 'Vietnam',
-        '7621234567890': 'Canada',
-        '8741234567890': 'Canada',
+        '1951234567890': 'China',
+        '6411234567890': 'United Kingdom (England)',
+        '7461234567890': 'China',
+        '8521234567890': 'Poland',
         '8791234567890': 'Cambodia',
       };
 

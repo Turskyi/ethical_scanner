@@ -1,5 +1,6 @@
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/data/data_sources/local/local_data_source_impl.dart';
+import 'package:ethical_scanner/data/data_sources/local/reported_origins.g.dart';
 import 'package:ethical_scanner/res/enums/settings.dart';
 import 'package:mockito/mockito.dart';
 
@@ -740,57 +741,19 @@ class MockLocalDataSourceImpl extends Mock implements LocalDataSourceImpl {
 
   @override
   String getReportedOriginFromBarcode(String barcode) {
-    const Map<String, String> reportedOriginMap = <String, String>{
-      '057': 'China',
-      '060': 'Switzerland',
-      '061': 'Greece',
-      '066': 'Colombia',
-      '191': 'China',
-      '194': 'Bangladesh',
-      '195': 'China',
-      '197': 'Cambodia, Bangladesh, Vietnam',
-      '198': 'China',
-      '336': 'China',
-      '360': 'United States',
-      '620': 'China',
-      '626': 'Canada',
-      '627': 'China',
-      '632': 'China',
-      '641': 'United Kingdom (England)',
-      '655': 'China',
-      '665': 'China',
-      '667': 'Vietnam',
-      '746': 'China',
-      '762': 'Canada',
-      '773': 'China',
-      '837': 'China',
-      '850': 'United States',
-      '852': 'Poland',
-      '856': 'Colombia',
-      '874': 'Canada',
-      '879': 'Cambodia',
-    };
     if (barcode.length < 3) {
       return '';
     } else {
-      return reportedOriginMap[barcode.substring(0, 3)] ?? '';
+      return kReportedOriginMap[barcode.substring(0, 3)] ?? '';
     }
   }
 
   @override
   List<String> getReportedOriginPhotoFileNamesFromBarcode(String barcode) {
-    const Map<String, List<String>> reportedOriginPhotoFileNamesMap =
-        <String, List<String>>{
-          '195': <String>['195_china.jpg'],
-          '641': <String>['641_england.jpg'],
-          '746': <String>['746_china.jpg'],
-          '852': <String>['852_poland.jpg'],
-          '879': <String>['879_cambodia.jpg'],
-        };
     if (barcode.length < 3) {
       return const <String>[];
     } else {
-      return reportedOriginPhotoFileNamesMap[barcode.substring(0, 3)] ??
+      return kReportedOriginPhotoFileNamesMap[barcode.substring(0, 3)] ??
           const <String>[];
     }
   }
