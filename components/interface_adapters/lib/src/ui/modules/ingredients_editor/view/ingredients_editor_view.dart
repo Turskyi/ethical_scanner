@@ -32,6 +32,18 @@ class _IngredientsEditorViewState extends State<IngredientsEditorView> {
   @override
   void initState() {
     super.initState();
+
+    final Language selectedLanguage = context
+        .read<IngredientsEditorPresenter>()
+        .state
+        .language;
+    final String currentLanguageCode = LocalizedApp.of(
+      context,
+    ).delegate.currentLocale.languageCode;
+    if (currentLanguageCode != selectedLanguage.isoLanguageCode) {
+      changeLocale(context, selectedLanguage.isoLanguageCode);
+    }
+
     // Trigger OCR automatically.
     WidgetsBinding.instance.addPostFrameCallback((Duration _) {
       if (mounted) {
