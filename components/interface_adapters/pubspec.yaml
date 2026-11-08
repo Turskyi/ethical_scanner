@@ -21,7 +21,7 @@ dependencies:
   # state management package that helps implement the Business Logic Component design pattern.
   bloc: ^9.2.1
 
-  camera: ^0.12.1
+  camera: ^0.12.2
   entities:
     path: ../domain/entities
 
@@ -46,7 +46,7 @@ dependencies:
   image_picker: ^1.2.4
 
   meta: ^1.19.0
-  mobile_scanner: ^7.4.2
+  mobile_scanner: ^7.5.0
 
   # For launching a URL. Supports web, phone, SMS, and email schemes.
   package_info_plus: ^10.2.2
