@@ -321,6 +321,20 @@ class VegetarianLabelContributedState extends LoadedProductInfoState {
   String toString() => 'VegetarianLabelContributedState(${super.toString()})';
 }
 
+class NonVegetarianLabelContributedState extends LoadedProductInfoState {
+  const NonVegetarianLabelContributedState({
+    required super.language,
+    super.productInfoMap,
+    super.productInfo,
+    super.isSeasonalEffectEnabled,
+  });
+
+  @override
+  String toString() {
+    return 'NonVegetarianLabelContributedState(${super.toString()})';
+  }
+}
+
 class NonFoodProductMarkedState extends LoadedProductInfoState {
   const NonFoodProductMarkedState({
     required super.language,

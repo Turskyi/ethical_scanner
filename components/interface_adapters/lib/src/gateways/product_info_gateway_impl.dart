@@ -233,6 +233,11 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
   }
 
   @override
+  Future<void> addNonVegetarianLabel({required String barcode}) {
+    return _remoteDataSource.addNonVegetarianLabel(barcode: barcode);
+  }
+
+  @override
   Future<void> saveNonFoodProduct({required String barcode}) {
     return _remoteDataSource.saveNonFoodProduct(barcode: barcode);
   }

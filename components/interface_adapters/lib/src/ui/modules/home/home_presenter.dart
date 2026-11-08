@@ -28,11 +28,13 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     required UseCase<Future<AiVegetarianCheckResponse>, CheckVegetarianParams>
     checkVegetarianUseCase,
     required UseCase<Future<void>, String> addVegetarianLabelUseCase,
+    required UseCase<Future<void>, String> addNonVegetarianLabelUseCase,
     required UseCase<Future<void>, String> saveNonFoodProductUseCase,
     required UseCase<Future<void>, UpdateProductDetailsParams>
     updateProductDetailsUseCase,
   }) : _checkVegetarianUseCase = checkVegetarianUseCase,
        _addVegetarianLabelUseCase = addVegetarianLabelUseCase,
+       _addNonVegetarianLabelUseCase = addNonVegetarianLabelUseCase,
        _saveNonFoodProductUseCase = saveNonFoodProductUseCase,
        _updateProductDetailsUseCase = updateProductDetailsUseCase,
        super(LoadingHomeState(language: _getLanguageUseCase.call())) {
@@ -64,6 +66,8 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
     on<ContributeVegetarianLabelEvent>(_onContributeVegetarianLabel);
 
+    on<ContributeNonVegetarianLabelEvent>(_onContributeNonVegetarianLabel);
+
     on<MarkAsNonFoodProductEvent>(_onMarkAsNonFoodProduct);
 
     on<UpdateProductDetailsEvent>(_onUpdateProductDetails);
@@ -77,6 +81,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
   final UseCase<Future<AiVegetarianCheckResponse>, CheckVegetarianParams>
   _checkVegetarianUseCase;
   final UseCase<Future<void>, String> _addVegetarianLabelUseCase;
+  final UseCase<Future<void>, String> _addNonVegetarianLabelUseCase;
   final UseCase<Future<void>, String> _saveNonFoodProductUseCase;
   final UseCase<Future<void>, UpdateProductDetailsParams>
   _updateProductDetailsUseCase;
@@ -661,6 +666,51 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
         emit(
           VegetarianLabelContributedState(
+            language: current.language,
+            productInfoMap: updatedMap,
+            productInfo: updatedInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
+      } catch (error) {
+        emit(
+          ActionErrorState(
+            errorMessage: '$error',
+            language: current.language,
+            productInfoMap: current.productInfoMap,
+            productInfo: current.productInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
+      }
+    }
+  }
+
+  FutureOr<void> _onContributeNonVegetarianLabel(
+    ContributeNonVegetarianLabelEvent event,
+    Emitter<HomeViewModel> emit,
+  ) async {
+    if (state is LoadedProductInfoState) {
+      final LoadedProductInfoState current = state as LoadedProductInfoState;
+      emit(
+        SavingLabelState(
+          language: current.language,
+          productInfoMap: current.productInfoMap,
+          productInfo: current.productInfo,
+          isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+        ),
+      );
+      try {
+        await _addNonVegetarianLabelUseCase.call(event.barcode);
+        final ProductInfo updatedInfo = current.productInfo.copyWith(
+          vegetarian: Vegetarian.negative,
+        );
+        final Map<ProductInfoType, String> updatedMap =
+            Map<ProductInfoType, String>.from(current.productInfoMap);
+        updatedMap[ProductInfoType.isVegetarian] = translate('no');
+
+        emit(
+          NonVegetarianLabelContributedState(
             language: current.language,
             productInfoMap: updatedMap,
             productInfo: updatedInfo,

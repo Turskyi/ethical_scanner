@@ -80,6 +80,12 @@ final class ContributeVegetarianLabelEvent extends HomeEvent {
   final String barcode;
 }
 
+final class ContributeNonVegetarianLabelEvent extends HomeEvent {
+  const ContributeNonVegetarianLabelEvent({required this.barcode});
+
+  final String barcode;
+}
+
 final class MarkAsNonFoodProductEvent extends HomeEvent {
   const MarkAsNonFoodProductEvent({required this.barcode});
 

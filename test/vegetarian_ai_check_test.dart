@@ -42,11 +42,13 @@ void main() {
     late FakeProductInfoGateway fakeGateway;
     late CheckVegetarianUseCase checkVegetarianUseCase;
     late AddVegetarianLabelUseCase addVegetarianLabelUseCase;
+    late AddNonVegetarianLabelUseCase addNonVegetarianLabelUseCase;
 
     setUp(() {
       fakeGateway = const FakeProductInfoGateway();
       checkVegetarianUseCase = CheckVegetarianUseCase(fakeGateway);
       addVegetarianLabelUseCase = AddVegetarianLabelUseCase(fakeGateway);
+      addNonVegetarianLabelUseCase = AddNonVegetarianLabelUseCase(fakeGateway);
     });
 
     test('CheckVegetarianUseCase returns response from gateway', () async {
@@ -66,6 +68,13 @@ void main() {
 
     test('AddVegetarianLabelUseCase executes without error', () async {
       await expectLater(addVegetarianLabelUseCase('1234567890123'), completes);
+    });
+
+    test('AddNonVegetarianLabelUseCase executes without error', () async {
+      await expectLater(
+        addNonVegetarianLabelUseCase('1234567890123'),
+        completes,
+      );
     });
   });
 }

@@ -115,28 +115,34 @@ class VegetarianCheckDialog extends StatelessWidget {
                   ),
                 ],
                 const SizedBox(height: 20),
-                if (isVegetarian) ...<Widget>[
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () => _onContributePressed(context),
-                      icon: const Icon(Icons.cloud_upload_outlined),
-                      label: Text(translate('product_info.contribute_to_off')),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green.shade700,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 12,
-                          horizontal: 16,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () => _onContributePressed(context),
+                    icon: const Icon(Icons.cloud_upload_outlined),
+                    label: Text(
+                      isVegetarian
+                          ? translate('product_info.contribute_to_off')
+                          : translate(
+                              'product_info.confirm_non_vegetarian_status',
+                            ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isVegetarian
+                          ? Colors.green.shade700
+                          : Colors.red.shade700,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 16,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8),
-                ],
+                ),
+                const SizedBox(height: 8),
                 TextButton(
                   onPressed: Navigator.of(context).pop,
                   child: Text(translate('close')),
@@ -152,6 +158,10 @@ class VegetarianCheckDialog extends StatelessWidget {
   void _onContributePressed(BuildContext context) {
     final HomePresenter homePresenter = context.read<HomePresenter>();
     Navigator.of(context).pop();
-    homePresenter.add(ContributeVegetarianLabelEvent(barcode: barcode));
+    if (response.isVegetarian) {
+      homePresenter.add(ContributeVegetarianLabelEvent(barcode: barcode));
+    } else {
+      homePresenter.add(ContributeNonVegetarianLabelEvent(barcode: barcode));
+    }
   }
 }

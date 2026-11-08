@@ -253,6 +253,98 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
+  Future<void> addNonVegetarianLabel({required String barcode}) async {
+    final User user =
+        OpenFoodAPIConfiguration.globalUser ??
+        const User(
+          userId: Env.openFoodUserId,
+          password: Env.openFoodPassword,
+          comment: constants.openFoodUserComment,
+        );
+
+    // 1. Fetch existing product to preserve its data and ingredients
+    Product? existingProduct;
+    try {
+      final ProductResultV3 result = await OpenFoodAPIClient.getProductV3(
+        ProductQueryConfiguration(
+          barcode,
+          language: OpenFoodFactsLanguage.ENGLISH,
+          fields: <ProductField>[ProductField.ALL],
+          version: ProductQueryVersion.latestVersion,
+        ),
+      );
+      if (result.hasSuccessfulStatus) {
+        existingProduct = result.product;
+      }
+    } catch (e) {
+      debugPrint(
+        'Failed to fetch product before adding non-vegetarian label: $e',
+      );
+    }
+
+    final List<String> updatedLabelsTags = <String>[
+      ...?existingProduct?.labelsTags,
+    ];
+    if (!updatedLabelsTags.contains('en:non-vegetarian')) {
+      updatedLabelsTags.add('en:non-vegetarian');
+    }
+    // Remove conflicting vegetarian label if present
+    updatedLabelsTags.remove('en:vegetarian');
+
+    final List<Ingredient>? updatedIngredients = existingProduct?.ingredients
+        ?.map((Ingredient ing) {
+          return Ingredient(
+            rank: ing.rank,
+            id: ing.id,
+            text: ing.text,
+            isInTaxonomy: ing.isInTaxonomy,
+            percent: ing.percent,
+            percentEstimate: ing.percentEstimate,
+            vegan: ing.vegan,
+            vegetarian: IngredientSpecialPropertyStatus.NEGATIVE,
+            fromPalmOil: ing.fromPalmOil,
+            ingredients: ing.ingredients,
+            bold: ing.bold,
+          );
+        })
+        .toList();
+
+    final Product editedProduct = Product(
+      barcode: barcode,
+      productName: existingProduct?.productName,
+      brands: existingProduct?.brands,
+      brandsTags: existingProduct?.brandsTags,
+      ingredientsText: existingProduct?.ingredientsText,
+      ingredients: updatedIngredients,
+      labels: 'Non-Vegetarian',
+      labelsTags: updatedLabelsTags,
+    );
+
+    Status result = await OpenFoodAPIClient.saveProduct(user, editedProduct);
+
+    if (result.status != 1) {
+      // Try backup user if primary user fails
+      final User backupUser = const User(
+        userId: Env.openFoodBackupUserId,
+        password: Env.openFoodPassword,
+        comment: constants.openFoodUserComment,
+      );
+      result = await OpenFoodAPIClient.saveProduct(backupUser, editedProduct);
+      debugPrint(
+        'OFF backup saveProduct response: status=${result.status}, '
+        'statusVerbose=${result.statusVerbose}, error=${result.error}, '
+        'body=${result.body}',
+      );
+      if (result.status != 1) {
+        throw Exception(
+          'Could not save non-vegetarian label: '
+          '${result.error ?? result.statusVerbose ?? 'Unknown error'}',
+        );
+      }
+    }
+  }
+
+  @override
   Future<void> saveNonFoodProduct({required String barcode}) async {
     final Map<String, Object?> productParameters = <String, Object?>{
       'product_type': 'product',

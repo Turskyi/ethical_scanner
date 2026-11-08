@@ -9,6 +9,7 @@ library;
 export 'src/gateways/product_info_gateway.dart';
 export 'src/gateways/settings_gateway.dart';
 export 'src/use_cases/add_ingredients_use_case.dart';
+export 'src/use_cases/add_non_vegetarian_label_use_case.dart';
 export 'src/use_cases/add_vegetarian_label_use_case.dart';
 export 'src/use_cases/check_vegetarian_use_case.dart';
 export 'src/use_cases/extract_ingredients_use_case.dart';
