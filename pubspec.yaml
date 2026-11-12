@@ -80,7 +80,7 @@ dependencies:
   json_annotation: ^4.12.0
 
   mobile_scanner: ^7.5.0
-  openfoodfacts: ^3.31.1
+  openfoodfacts: ^3.32.0
 
   package_info_plus: ^10.2.2
   path: ^1.9.1
