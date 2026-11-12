@@ -82,4 +82,10 @@ abstract interface class ProductInfoGateway {
     required String productName,
     required bool canHaveIngredients,
   });
+
+  Future<void> addOrigin({
+    required String barcode,
+    required String origin,
+    required String photoPath,
+  });
 }

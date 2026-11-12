@@ -255,6 +255,19 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
     );
   }
 
+  @override
+  Future<void> addOrigin({
+    required String barcode,
+    required String origin,
+    required String photoPath,
+  }) {
+    return _remoteDataSource.addOrigin(
+      barcode: barcode,
+      origin: origin,
+      photoPath: photoPath,
+    );
+  }
+
   bool _isWebsite(String input) {
     final RegExp regex = RegExp(
       r'^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]'

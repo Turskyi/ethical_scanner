@@ -103,3 +103,15 @@ final class UpdateProductDetailsEvent extends HomeEvent {
   final String productName;
   final bool canHaveIngredients;
 }
+
+final class AddOriginEvent extends HomeEvent {
+  const AddOriginEvent({
+    required this.barcode,
+    required this.origin,
+    required this.photoPath,
+  });
+
+  final String barcode;
+  final String origin;
+  final String photoPath;
+}

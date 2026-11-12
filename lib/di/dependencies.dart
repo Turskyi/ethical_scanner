@@ -92,6 +92,11 @@ class Dependencies implements AppDependencies {
   }
 
   @override
+  UseCase<Future<void>, AddOriginParams> get addOriginUseCase {
+    return AddOriginUseCase(_productInfoGateway);
+  }
+
+  @override
   GetSoundPreferenceUseCase get getSoundPreferenceUseCase {
     return GetSoundPreferenceUseCase(_settingsGateway);
   }

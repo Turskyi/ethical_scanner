@@ -103,4 +103,11 @@ class FakeProductInfoGateway implements ProductInfoGateway {
     required String productName,
     required bool canHaveIngredients,
   }) async {}
+
+  @override
+  Future<void> addOrigin({
+    required String barcode,
+    required String origin,
+    required String photoPath,
+  }) async {}
 }

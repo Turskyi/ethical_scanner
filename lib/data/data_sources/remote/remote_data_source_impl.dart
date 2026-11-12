@@ -652,6 +652,61 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
+  Future<void> addOrigin({
+    required String barcode,
+    required String origin,
+    required String photoPath,
+  }) async {
+    final User openFoodUser =
+        OpenFoodAPIConfiguration.globalUser ??
+        const User(
+          userId: Env.openFoodUserId,
+          password: Env.openFoodPassword,
+          comment: constants.openFoodUserComment,
+        );
+
+    if (photoPath.isNotEmpty) {
+      final SendImage image = SendImage(
+        barcode: barcode,
+        imageUri: Uri.parse(photoPath),
+        imageField: ImageField.OTHER,
+      );
+      await _uploadProductImageToOpenFoodFacts(
+        image: image,
+        openFoodUser: openFoodUser,
+      );
+    }
+
+    if (origin.isNotEmpty) {
+      final Product editedProduct = Product()
+        ..barcode = barcode
+        ..origins = origin;
+
+      final Status result = await OpenFoodAPIClient.saveProduct(
+        openFoodUser,
+        editedProduct,
+      );
+
+      if (result.status != 1) {
+        final User backupUser = const User(
+          userId: Env.openFoodBackupUserId,
+          password: Env.openFoodPassword,
+          comment: constants.openFoodUserComment,
+        );
+        final Status backupResult = await OpenFoodAPIClient.saveProduct(
+          backupUser,
+          editedProduct,
+        );
+        if (backupResult.status != 1) {
+          throw Exception(
+            'Could not save origin: ${result.error ?? backupResult.error}',
+          );
+        }
+      }
+    }
+  }
+
+  @override
   Future<String> extractIngredients(ProductPhoto productPhoto) async {
     final User user =
         OpenFoodAPIConfiguration.globalUser ??

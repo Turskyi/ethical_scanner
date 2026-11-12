@@ -26,6 +26,7 @@ export 'src/exceptions/not_found_exception.dart';
 export 'src/feedback_details.dart';
 export 'src/localized_code/localized_code.dart';
 export 'src/logging_interceptor/logging_interceptor.dart';
+export 'src/product/add_origin_params.dart';
 export 'src/product/product_info.dart';
 export 'src/product/product_photo.dart';
 export 'src/rest_client/ai_barcode_info_request.dart';

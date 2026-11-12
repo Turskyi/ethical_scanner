@@ -88,7 +88,19 @@
     "yale_list": "Yale list",
     "initial_book_code_description": "The initial {eanPrefix} in this barcode is the Book-land EAN prefix, indicating that it is a book. The {eanPrefix} prefix, in this case, is assigned to the English language, but it doesn't specify a particular country.",
     "russian": "russian",
-    "view_evidence_photo": "View evidence photo"
+    "view_evidence_photo": "View product photo",
+    "user_submitted_photo": "User-submitted product photo",
+    "add_origin_title": "Add Country of Origin",
+    "add_origin_description": "Take or choose a photo of the product package showing country text and enter the country name.",
+    "origin_country_label": "Country of Origin",
+    "origin_country_hint": "e.g. Netherlands, China, Ukraine",
+    "take_photo": "Take photo",
+    "choose_gallery": "Gallery",
+    "enter_country_warning": "Please enter a country name",
+    "missing_photo_add_one": "Missing photo with country? Add one",
+    "update_origin_title": "Update Country of Origin",
+    "update_origin_description": "Review existing product photos, update the country of origin, or add a new photo.",
+    "existing_photos": "Existing Photos"
   },
   "terrorism_sponsor": {
     "tap_for_documents": " (Tap to view official documents)",

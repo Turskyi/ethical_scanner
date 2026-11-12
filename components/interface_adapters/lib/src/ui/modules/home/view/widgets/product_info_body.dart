@@ -84,7 +84,10 @@ class ProductInfoBody extends StatelessWidget {
                   return DelayedAnimation(
                     delay: index * animationDelay,
                     child: type.isCode
-                        ? CodeTile(value: value)
+                        ? CodeTile(
+                            value: value,
+                            hasOrigin: viewModel.productInfo.origin.isNotEmpty,
+                          )
                         : ProductInfoTile(
                             type: type,
                             value: value,

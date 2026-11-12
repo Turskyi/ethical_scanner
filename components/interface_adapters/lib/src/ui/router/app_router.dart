@@ -129,6 +129,7 @@ class AppRouter {
                           dependencies.saveNonFoodProductUseCase,
                       updateProductDetailsUseCase:
                           dependencies.updateProductDetailsUseCase,
+                      addOriginUseCase: dependencies.addOriginUseCase,
                     )..add(const LoadHomeEvent());
                   },
                   child: const BlocListener<HomePresenter, HomeViewModel>(
@@ -407,6 +408,7 @@ class AppRouter {
                       dependencies.updateProductDetailsUseCase,
                   addNonVegetarianLabelUseCase:
                       dependencies.addNonVegetarianLabelUseCase,
+                  addOriginUseCase: dependencies.addOriginUseCase,
                 );
                 final Object? arguments = settings.arguments;
 

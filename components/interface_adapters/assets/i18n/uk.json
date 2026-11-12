@@ -88,7 +88,19 @@
     "yale_list": "Список Yale",
     "initial_book_code_description": "Початковий {eanPrefix} у цьому штрих-коді є книжковим EAN-префіксом, що вказує на те, що це книга. Префікс {eanPrefix} у цьому випадку призначено для англійської мови, але він не вказує на конкретну країну.",
     "russian": "російськe",
-    "view_evidence_photo": "Переглянути фотопідтвердження"
+    "view_evidence_photo": "Переглянути фото продукту",
+    "user_submitted_photo": "Фото продукту від користувача",
+    "add_origin_title": "Додати країну походження",
+    "add_origin_description": "Зробіть або виберіть фото упаковки з написом країни та вкажіть назву країни.",
+    "origin_country_label": "Країна походження",
+    "origin_country_hint": "напр. Нідерланди, Китай, Україна",
+    "take_photo": "Зробити фото",
+    "choose_gallery": "Галерея",
+    "enter_country_warning": "Будь ласка, вкажіть назву країни",
+    "missing_photo_add_one": "Немає фото з країною? Додати",
+    "update_origin_title": "Оновити країну походження",
+    "update_origin_description": "Перегляньте наявні фото продукту, оновіть країну походження або додайте нове фото.",
+    "existing_photos": "Наявні фото"
   },
   "terrorism_sponsor": {
     "tap_for_documents": " (Натисніть, щоб переглянути офіційні документи)",

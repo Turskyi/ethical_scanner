@@ -11,6 +11,7 @@ import 'package:interface_adapters/src/ui/modules/home/view/widgets/edit_product
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/evidence_photo_dialog.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/remove_ingredients_dialog.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/terrorism_documents_bottom_sheet.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/update_origin_dialog.dart';
 import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/country_documents.dart';
@@ -89,7 +90,11 @@ class ProductInfoTile extends StatelessWidget {
       return ListTile(
         textColor: color,
         iconColor: color,
-        leading: (type.isProductName || type.isIngredients) && value.isNotEmpty
+        leading:
+            (type.isProductName ||
+                    type.isIngredients ||
+                    type == ProductInfoType.originCountry) &&
+                value.isNotEmpty
             ? Material(
                 color: Colors.transparent,
                 child: InkWell(
@@ -98,7 +103,9 @@ class ProductInfoTile extends StatelessWidget {
                   customBorder: const CircleBorder(),
                   onTap: () => type.isProductName
                       ? _onLongPressProductName(context)
-                      : _onLongPressIngredients(context),
+                      : type.isIngredients
+                      ? _onLongPressIngredients(context)
+                      : _onLongPressOrigin(context),
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Icon(
@@ -458,11 +465,24 @@ class ProductInfoTile extends StatelessWidget {
     );
   }
 
+  void _onLongPressOrigin(BuildContext context) {
+    UpdateOriginDialog.show(
+      context: context,
+      barcode: info.barcode,
+      initialCountry: value,
+      existingPhotos: info.reportedOriginPhotos,
+    );
+  }
+
   Future<void> _onViewEvidencePhotoTap({
     required BuildContext context,
     required String photoPath,
   }) {
-    return EvidencePhotoDialog.show(context: context, photoUrl: photoPath);
+    return EvidencePhotoDialog.show(
+      context: context,
+      photoUrl: photoPath,
+      barcode: info.barcode,
+    );
   }
 
   bool get _isCustomerServiceText {

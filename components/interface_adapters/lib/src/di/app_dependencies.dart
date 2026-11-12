@@ -20,6 +20,7 @@ abstract interface class AppDependencies {
   UseCase<Future<void>, String> get saveNonFoodProductUseCase;
   UseCase<Future<void>, UpdateProductDetailsParams>
   get updateProductDetailsUseCase;
+  UseCase<Future<void>, AddOriginParams> get addOriginUseCase;
   GetSoundPreferenceUseCase get getSoundPreferenceUseCase;
   SaveSoundPreferenceUseCase get saveSoundPreferenceUseCase;
 }

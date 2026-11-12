@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/add_origin_dialog.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EvidencePhotoDialog extends StatelessWidget {
-  const EvidencePhotoDialog({required this.photoUrl, super.key});
+  const EvidencePhotoDialog({
+    required this.photoUrl,
+    required this.barcode,
+    super.key,
+  });
 
   final String photoUrl;
+  final String barcode;
 
   static const double _maxDialogWidth = 600.0;
   static const double _maxDialogHeight = 600.0;
@@ -21,11 +27,12 @@ class EvidencePhotoDialog extends StatelessWidget {
   static Future<void> show({
     required BuildContext context,
     required String photoUrl,
+    required String barcode,
   }) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext _) {
-        return EvidencePhotoDialog(photoUrl: photoUrl);
+        return EvidencePhotoDialog(photoUrl: photoUrl, barcode: barcode);
       },
     );
   }
@@ -58,6 +65,15 @@ class EvidencePhotoDialog extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
+                Text(
+                  translate('product_info.user_submitted_photo'),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: _spacingHeight),
                 Expanded(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(_imageBorderRadius),
@@ -136,6 +152,23 @@ class EvidencePhotoDialog extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: _spacingHeight),
+                if (barcode.isNotEmpty) ...<Widget>[
+                  TextButton.icon(
+                    icon: const Icon(
+                      Icons.add_a_photo_outlined,
+                      color: Colors.white,
+                    ),
+                    label: Text(
+                      translate('product_info.missing_photo_add_one'),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      AddOriginDialog.show(context: context, barcode: barcode);
+                    },
+                  ),
+                  const SizedBox(height: 4),
+                ],
                 TextButton(
                   onPressed: Navigator.of(context).pop,
                   child: Text(translate('close')),

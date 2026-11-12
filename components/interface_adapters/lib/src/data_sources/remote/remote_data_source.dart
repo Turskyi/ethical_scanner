@@ -85,4 +85,10 @@ abstract interface class RemoteDataSource {
     required String productName,
     required bool canHaveIngredients,
   });
+
+  Future<void> addOrigin({
+    required String barcode,
+    required String origin,
+    required String photoPath,
+  });
 }

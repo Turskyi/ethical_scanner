@@ -32,11 +32,13 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     required UseCase<Future<void>, String> saveNonFoodProductUseCase,
     required UseCase<Future<void>, UpdateProductDetailsParams>
     updateProductDetailsUseCase,
+    required UseCase<Future<void>, AddOriginParams> addOriginUseCase,
   }) : _checkVegetarianUseCase = checkVegetarianUseCase,
        _addVegetarianLabelUseCase = addVegetarianLabelUseCase,
        _addNonVegetarianLabelUseCase = addNonVegetarianLabelUseCase,
        _saveNonFoodProductUseCase = saveNonFoodProductUseCase,
        _updateProductDetailsUseCase = updateProductDetailsUseCase,
+       _addOriginUseCase = addOriginUseCase,
        super(LoadingHomeState(language: _getLanguageUseCase.call())) {
     on<LoadHomeEvent>(_onLoadHomeEvent);
 
@@ -71,6 +73,8 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     on<MarkAsNonFoodProductEvent>(_onMarkAsNonFoodProduct);
 
     on<UpdateProductDetailsEvent>(_onUpdateProductDetails);
+
+    on<AddOriginEvent>(_onAddOrigin);
   }
 
   final UseCase<Future<ProductInfo>, LocalizedCode> _getProductInfoUseCase;
@@ -85,6 +89,7 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
   final UseCase<Future<void>, String> _saveNonFoodProductUseCase;
   final UseCase<Future<void>, UpdateProductDetailsParams>
   _updateProductDetailsUseCase;
+  final UseCase<Future<void>, AddOriginParams> _addOriginUseCase;
 
   FutureOr<void> _handleError(
     HomeErrorEvent event,
@@ -836,6 +841,57 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
         emit(
           ActionErrorState(
             errorMessage: '$error',
+            language: current.language,
+            productInfoMap: current.productInfoMap,
+            productInfo: current.productInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
+      }
+    }
+  }
+
+  FutureOr<void> _onAddOrigin(
+    AddOriginEvent event,
+    Emitter<HomeViewModel> emit,
+  ) async {
+    if (state is LoadedProductInfoState) {
+      final LoadedProductInfoState current = state as LoadedProductInfoState;
+      emit(
+        UpdatingProductDetailsState(
+          language: current.language,
+          productInfoMap: current.productInfoMap,
+          productInfo: current.productInfo,
+          isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+        ),
+      );
+      try {
+        await _addOriginUseCase.call(
+          AddOriginParams(
+            barcode: event.barcode,
+            origin: event.origin,
+            photoPath: event.photoPath,
+          ),
+        );
+        final ProductInfo updatedInfo = current.productInfo.copyWith(
+          origin: event.origin,
+        );
+        final Map<ProductInfoType, String> updatedMap =
+            Map<ProductInfoType, String>.from(current.productInfoMap);
+        updatedMap[ProductInfoType.originCountry] = event.origin;
+
+        emit(
+          ProductDetailsUpdatedState(
+            language: current.language,
+            productInfoMap: updatedMap,
+            productInfo: updatedInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
+      } catch (error) {
+        emit(
+          ActionErrorState(
+            errorMessage: extractErrorMessage(error.toString()),
             language: current.language,
             productInfoMap: current.productInfoMap,
             productInfo: current.productInfo,
