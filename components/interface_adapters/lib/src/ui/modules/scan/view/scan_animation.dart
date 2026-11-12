@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:interface_adapters/src/ui/modules/scan/view/scan_painter.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ScanAnimation extends StatefulWidget {
   const ScanAnimation({super.key});

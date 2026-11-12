@@ -1,9 +1,9 @@
 import 'package:entities/entities.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
+import 'package:material_ui/material_ui.dart';
 
 class VegetarianCheckDialog extends StatelessWidget {
   const VegetarianCheckDialog({

@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:interface_adapters/interface_adapters.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DelayedAnimation extends StatefulWidget {
   const DelayedAnimation({required this.delay, required this.child, super.key});

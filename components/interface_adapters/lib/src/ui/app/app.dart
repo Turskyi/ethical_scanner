@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/di/app_dependencies.dart';
 import 'package:interface_adapters/src/ui/app/ethical_scanner_app.dart';
+import 'package:material_ui/material_ui.dart';
 
 abstract interface class App extends StatelessWidget {
   const App({super.key});

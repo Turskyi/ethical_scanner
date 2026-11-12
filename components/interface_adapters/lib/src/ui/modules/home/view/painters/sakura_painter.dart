@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:interface_adapters/src/ui/models/sakura_petal.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SakuraPainter extends CustomPainter {
   const SakuraPainter(this.petals);

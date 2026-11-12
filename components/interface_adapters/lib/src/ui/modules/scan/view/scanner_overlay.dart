@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ScannerOverlay extends CustomPainter {
   const ScannerOverlay(this.scanWindow);

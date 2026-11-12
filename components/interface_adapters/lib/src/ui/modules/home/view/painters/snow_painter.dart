@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:interface_adapters/src/ui/models/snowflake.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SnowPainter extends CustomPainter {
   const SnowPainter(this.snowflakes);

@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:interface_adapters/src/ui/models/sakura_petal.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/painters/sakura_painter.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SakuraPetalAnimation extends StatefulWidget {
   const SakuraPetalAnimation({super.key});

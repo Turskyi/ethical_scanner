@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:audiofileplayer/audiofileplayer.dart';
 import 'package:entities/entities.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/scanner_error_widget.dart';
@@ -20,6 +19,7 @@ import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
 import 'package:interface_adapters/src/ui/res/widgets/leading_widget.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class ScanView extends StatefulWidget {

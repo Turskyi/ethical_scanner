@@ -45,7 +45,9 @@ dependencies:
   http: ^1.6.0
   image_picker: ^1.2.4
 
+  material_ui: any
   meta: ^1.19.0
+
   mobile_scanner: ^7.5.0
 
   openfoodfacts: ^3.32.0

@@ -1,5 +1,4 @@
 import 'package:entities/entities.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/ingredients_editor/ingredients_editor_event.dart';
@@ -9,6 +8,7 @@ import 'package:interface_adapters/src/ui/modules/ingredients_editor/view/widget
 import 'package:interface_adapters/src/ui/res/color/gradients.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/widgets/language_selector.dart';
+import 'package:material_ui/material_ui.dart';
 
 class IngredientsEditorView extends StatefulWidget {
   const IngredientsEditorView({

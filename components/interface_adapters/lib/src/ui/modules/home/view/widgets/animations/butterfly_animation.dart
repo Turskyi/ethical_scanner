@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:interface_adapters/src/ui/models/butterfly.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/painters/butterfly_painter.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ButterflyAnimation extends StatefulWidget {
   const ButterflyAnimation({super.key});

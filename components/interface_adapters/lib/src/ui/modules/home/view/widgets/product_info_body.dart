@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:entities/entities.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/animations/delayed_animation.dart';
@@ -11,6 +10,7 @@ import 'package:interface_adapters/src/ui/modules/home/view/widgets/loading_indi
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/product_info_tile.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ProductInfoBody extends StatelessWidget {
   const ProductInfoBody({super.key});

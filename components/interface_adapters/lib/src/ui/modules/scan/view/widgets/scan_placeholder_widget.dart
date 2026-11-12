@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/scan/view/scan_animation.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ScanPlaceholderWidget extends StatelessWidget {
   const ScanPlaceholderWidget({super.key});

@@ -3,11 +3,11 @@ import 'package:ethical_scanner/di/dependencies.dart';
 import 'package:ethical_scanner/di/injector.dart';
 import 'package:ethical_scanner/services/home_widget_navigation_service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/interface_adapters.dart' as route;
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:use_cases/use_cases.dart';
 
 /// The [main] is the ultimate detail — the lowest-level policy.

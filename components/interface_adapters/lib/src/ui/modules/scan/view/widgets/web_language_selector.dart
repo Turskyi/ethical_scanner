@@ -1,8 +1,8 @@
 import 'package:entities/entities.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:interface_adapters/src/ui/widgets/language_selector.dart';
+import 'package:material_ui/material_ui.dart';
 
 class WebLanguageSelector extends StatelessWidget {
   const WebLanguageSelector({required this.onLanguageChanged, super.key});

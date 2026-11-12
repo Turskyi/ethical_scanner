@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:interface_adapters/src/ui/models/butterfly.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ButterflyPainter extends CustomPainter {
   const ButterflyPainter(this.butterflies, this.frameCount);
