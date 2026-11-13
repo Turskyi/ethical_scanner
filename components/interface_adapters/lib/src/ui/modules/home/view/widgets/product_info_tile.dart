@@ -8,6 +8,7 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/edit_product_details_dialog.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/evidence_photo_dialog.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/mark_as_non_food_dialog.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/remove_ingredients_dialog.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/terrorism_documents_bottom_sheet.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/update_origin_dialog.dart';
@@ -459,10 +460,8 @@ class ProductInfoTile extends StatelessWidget {
     );
   }
 
-  void _onMarkAsNonFood(BuildContext context) {
-    return context.read<HomePresenter>().add(
-      MarkAsNonFoodProductEvent(barcode: info.barcode),
-    );
+  Future<void> _onMarkAsNonFood(BuildContext context) {
+    return MarkAsNonFoodDialog.show(context: context, barcode: info.barcode);
   }
 
   void _onLongPressOrigin(BuildContext context) {
