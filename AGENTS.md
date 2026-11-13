@@ -10,6 +10,7 @@
 - **Null Safety & Safe Accessors**: Prefer safe accessors (such as
   `.firstOrNull` instead of `.first` or direct indexing) to avoid runtime
   exceptions on empty collections.
+- **No Non-Null Assertions (`!`)**: Never use the `!` non-null assertion operator in code; always handle null safety explicitly via safe accessors, conditionals, or defaults.
 - **Type Safety & Avoiding `dynamic`**: Prefer strong typing (such as `Object?`)
   over `dynamic` to maintain compile-time type checks.
 - **Avoiding `as` Type Casts**: Prefer `is` / `is!` type checks with Dart type
@@ -34,6 +35,7 @@
 - **One Class Per File:** Maintain one class per file, except for obvious
   exceptions such as state classes for stateful widgets, or enum-like classes
   such as events and states for BLoC/Cubit.
+- **Strict Scope Adherence**: Do not make changes to code, UI, or files that nobody asked you to modify. Only perform actions and edits directly requested by the user.
 
 ### File Maintenance & Guidelines Limit
 
