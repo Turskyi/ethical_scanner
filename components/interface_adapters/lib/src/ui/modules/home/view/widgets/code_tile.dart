@@ -48,18 +48,20 @@ class _CodeTileState extends State<CodeTile> {
 
   @override
   Widget build(BuildContext context) {
-    final Color primary = Theme.of(context).colorScheme.primary;
+    final ThemeData theme = Theme.of(context);
+    final Color primary = theme.colorScheme.primary;
+    final Color starColor = widget.hasOrigin ? theme.disabledColor : primary;
     return ListTile(
       textColor: _colors.cetaceanBlue,
       iconColor: _colors.cetaceanBlue,
       leading: ValueListenableBuilder<bool>(
         valueListenable: _editNotifier,
-        child: Icon(Icons.star, color: primary),
+        child: Icon(Icons.star, color: starColor),
         builder: (BuildContext _, bool isEdited, Widget? defaultIcon) {
           return IconButton(
             icon: isEdited
                 ? const Icon(Icons.save)
-                : (defaultIcon ?? Icon(Icons.star, color: primary)),
+                : (defaultIcon ?? Icon(Icons.star, color: starColor)),
             onPressed: isEdited
                 ? _saveAndShowProductInfo
                 : (widget.hasOrigin
