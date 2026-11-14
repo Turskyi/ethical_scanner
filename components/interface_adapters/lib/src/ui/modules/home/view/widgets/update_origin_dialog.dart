@@ -7,6 +7,7 @@ import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/evidence_photo_dialog.dart';
 import 'package:interface_adapters/src/ui/res/color/gradients.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
+import 'package:interface_adapters/src/ui/res/values/country_localizer.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 
@@ -58,19 +59,26 @@ class _UpdateOriginDialogState extends State<UpdateOriginDialog> {
   @override
   void initState() {
     super.initState();
-    for (final OpenFoodFactsCountry country in OpenFoodFactsCountry.values) {
-      if (_formatCountryName(country).toLowerCase() ==
-          widget.initialCountry.toLowerCase()) {
-        _selectedCountry = country;
-        break;
-      }
-    }
+    _selectedCountry = CountryLocalizer.findMatchingCountry(
+      widget.initialCountry,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final Gradients gradients = Resources.of(context).gradients;
+
+    final OpenFoodFactsCountry? currentCountry = _selectedCountry;
+    final String initialCountryText;
+    if (currentCountry != null) {
+      initialCountryText = CountryLocalizer.getLocalizedName(
+        currentCountry,
+        localeCode: Localizations.localeOf(context).languageCode,
+      );
+    } else {
+      initialCountryText = widget.initialCountry;
+    }
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -159,23 +167,24 @@ class _UpdateOriginDialogState extends State<UpdateOriginDialog> {
                   ),
                   const SizedBox(height: 8),
                   Autocomplete<OpenFoodFactsCountry>(
-                    initialValue: TextEditingValue(
-                      text: _selectedCountry != null
-                          ? _formatCountryName(_selectedCountry!)
-                          : widget.initialCountry,
-                    ),
+                    initialValue: TextEditingValue(text: initialCountryText),
                     displayStringForOption: (OpenFoodFactsCountry country) =>
                         _formatCountryName(country),
                     optionsBuilder: (TextEditingValue textEditingValue) {
                       if (textEditingValue.text.isEmpty) {
                         return OpenFoodFactsCountry.values;
                       } else {
+                        final String localeCode = Localizations.localeOf(
+                          context,
+                        ).languageCode;
                         return OpenFoodFactsCountry.values.where((
                           OpenFoodFactsCountry country,
                         ) {
-                          return _formatCountryName(country)
-                              .toLowerCase()
-                              .contains(textEditingValue.text.toLowerCase());
+                          return CountryLocalizer.matches(
+                            country,
+                            textEditingValue.text,
+                            localeCode: localeCode,
+                          );
                         });
                       }
                     },
@@ -322,28 +331,20 @@ class _UpdateOriginDialogState extends State<UpdateOriginDialog> {
   }
 
   String _formatCountryName(OpenFoodFactsCountry country) {
-    final String name = country.name.replaceAll('_', ' ').toLowerCase();
-    return name
-        .split(' ')
-        .map((String word) {
-          if (word.isEmpty) {
-            return '';
-          } else {
-            return word[0].toUpperCase() + word.substring(1);
-          }
-        })
-        .join(' ');
+    final String localeCode = Localizations.localeOf(context).languageCode;
+    return CountryLocalizer.getLocalizedName(country, localeCode: localeCode);
   }
 
   void _onSavePressed() {
-    if (_selectedCountry == null) {
+    final OpenFoodFactsCountry? country = _selectedCountry;
+    if (country == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(translate('product_info.enter_country_warning')),
         ),
       );
     } else {
-      final String countryName = _formatCountryName(_selectedCountry!);
+      final String countryName = _formatCountryName(country);
       Navigator.of(context).pop();
       context.read<HomePresenter>().add(
         AddOriginEvent(

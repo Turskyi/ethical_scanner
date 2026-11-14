@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
 import 'package:interface_adapters/src/ui/res/color/gradients.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
+import 'package:interface_adapters/src/ui/res/values/country_localizer.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 
@@ -101,12 +102,17 @@ class _AddOriginDialogState extends State<AddOriginDialog> {
                         if (textEditingValue.text.isEmpty) {
                           return OpenFoodFactsCountry.values;
                         } else {
+                          final String localeCode = Localizations.localeOf(
+                            context,
+                          ).languageCode;
                           return OpenFoodFactsCountry.values.where((
                             OpenFoodFactsCountry country,
                           ) {
-                            return _formatCountryName(country)
-                                .toLowerCase()
-                                .contains(textEditingValue.text.toLowerCase());
+                            return CountryLocalizer.matches(
+                              country,
+                              textEditingValue.text,
+                              localeCode: localeCode,
+                            );
                           });
                         }
                       },
@@ -257,28 +263,20 @@ class _AddOriginDialogState extends State<AddOriginDialog> {
   }
 
   String _formatCountryName(OpenFoodFactsCountry country) {
-    final String name = country.name.replaceAll('_', ' ').toLowerCase();
-    return name
-        .split(' ')
-        .map((String word) {
-          if (word.isEmpty) {
-            return '';
-          } else {
-            return word[0].toUpperCase() + word.substring(1);
-          }
-        })
-        .join(' ');
+    final String localeCode = Localizations.localeOf(context).languageCode;
+    return CountryLocalizer.getLocalizedName(country, localeCode: localeCode);
   }
 
   void _onSavePressed() {
-    if (_selectedCountry == null) {
+    final OpenFoodFactsCountry? country = _selectedCountry;
+    if (country == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(translate('product_info.enter_country_warning')),
         ),
       );
     } else {
-      final String countryName = _formatCountryName(_selectedCountry!);
+      final String countryName = _formatCountryName(country);
       Navigator.of(context).pop();
       context.read<HomePresenter>().add(
         AddOriginEvent(
