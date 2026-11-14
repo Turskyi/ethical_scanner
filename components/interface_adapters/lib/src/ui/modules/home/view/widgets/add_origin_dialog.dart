@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'dart:math' as math;
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
@@ -9,6 +12,7 @@ import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/country_localizer.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
+import 'package:path_provider/path_provider.dart';
 
 class AddOriginDialog extends StatefulWidget {
   const AddOriginDialog({required this.barcode, super.key});
@@ -41,14 +45,17 @@ class _AddOriginDialogState extends State<AddOriginDialog> {
   final ImagePicker _picker = ImagePicker();
   String? _selectedPhotoPath;
   OpenFoodFactsCountry? _selectedCountry;
+  int _rotationTurns = 0;
+  bool _isSaving = false;
 
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final Gradients gradients = Resources.of(context).gradients;
 
+    final String? selectedPhotoPath = _selectedPhotoPath;
     final bool showCountryAndSave =
-        _selectedPhotoPath != null && _selectedPhotoPath!.isNotEmpty;
+        selectedPhotoPath != null && selectedPhotoPath.isNotEmpty;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -169,10 +176,18 @@ class _AddOriginDialogState extends State<AddOriginDialog> {
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
-                        onPressed: _selectedCountry != null
+                        onPressed: _selectedCountry != null && !_isSaving
                             ? _onSavePressed
                             : null,
-                        child: Text(translate('save')),
+                        child: _isSaving
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : Text(translate('save')),
                       ),
                     ),
                   ],
@@ -191,27 +206,48 @@ class _AddOriginDialogState extends State<AddOriginDialog> {
   }
 
   Widget _buildPhotoSection(BuildContext context) {
-    if (_selectedPhotoPath != null && _selectedPhotoPath!.isNotEmpty) {
+    final String? selectedPhotoPath = _selectedPhotoPath;
+    if (selectedPhotoPath != null && selectedPhotoPath.isNotEmpty) {
       return Stack(
-        alignment: Alignment.topRight,
         children: <Widget>[
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.file(
-              File(_selectedPhotoPath!),
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
+            child: RotatedBox(
+              quarterTurns: _rotationTurns,
+              child: Image.file(
+                File(selectedPhotoPath),
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.cancel, color: Colors.white),
-            onPressed: () {
-              setState(() {
-                _selectedPhotoPath = null;
-                _selectedCountry = null;
-              });
-            },
+          Positioned(
+            top: 0,
+            left: 0,
+            child: IconButton(
+              tooltip: translate('photo.rotate_photo'),
+              icon: const Icon(Icons.rotate_right, color: Colors.white),
+              onPressed: () {
+                setState(() {
+                  _rotationTurns = (_rotationTurns + 1) % 4;
+                });
+              },
+            ),
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: IconButton(
+              icon: const Icon(Icons.cancel, color: Colors.white),
+              onPressed: () {
+                setState(() {
+                  _selectedPhotoPath = null;
+                  _selectedCountry = null;
+                  _rotationTurns = 0;
+                });
+              },
+            ),
           ),
         ],
       );
@@ -258,6 +294,7 @@ class _AddOriginDialogState extends State<AddOriginDialog> {
     if (image != null) {
       setState(() {
         _selectedPhotoPath = image.path;
+        _rotationTurns = 0;
       });
     }
   }
@@ -267,24 +304,98 @@ class _AddOriginDialogState extends State<AddOriginDialog> {
     return CountryLocalizer.getLocalizedName(country, localeCode: localeCode);
   }
 
-  void _onSavePressed() {
+  Future<void> _onSavePressed() async {
     final OpenFoodFactsCountry? country = _selectedCountry;
+    final String? photoPath = _selectedPhotoPath;
     if (country == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(translate('product_info.enter_country_warning')),
         ),
       );
+    } else if (_isSaving) {
+      return;
     } else {
-      final String countryName = _formatCountryName(country);
-      Navigator.of(context).pop();
-      context.read<HomePresenter>().add(
-        AddOriginEvent(
-          barcode: widget.barcode,
-          origin: countryName,
-          photoPath: _selectedPhotoPath ?? '',
-        ),
-      );
+      setState(() {
+        _isSaving = true;
+      });
+      final String? rotatedPhotoPath = photoPath == null || photoPath.isEmpty
+          ? photoPath
+          : await _rotatePhotoFile(photoPath);
+      if (!mounted) {
+        return;
+      }
+      if (photoPath != null && rotatedPhotoPath == null) {
+        setState(() {
+          _isSaving = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(translate('photo.failed_to_load_image'))),
+        );
+      } else {
+        final String countryName = _formatCountryName(country);
+        final HomePresenter presenter = context.read<HomePresenter>();
+        Navigator.of(context).pop();
+        presenter.add(
+          AddOriginEvent(
+            barcode: widget.barcode,
+            origin: countryName,
+            photoPath: rotatedPhotoPath ?? '',
+          ),
+        );
+      }
+    }
+  }
+
+  Future<String?> _rotatePhotoFile(String originalPath) async {
+    if (_rotationTurns == 0) {
+      return originalPath;
+    } else {
+      try {
+        final Uint8List bytes = await File(originalPath).readAsBytes();
+        final ui.Codec codec = await ui.instantiateImageCodec(bytes);
+        final ui.FrameInfo frameInfo = await codec.getNextFrame();
+        final ui.Image image = frameInfo.image;
+        final bool isQuarterTurn = _rotationTurns.isOdd;
+        final int outputWidth = isQuarterTurn ? image.height : image.width;
+        final int outputHeight = isQuarterTurn ? image.width : image.height;
+        final ui.PictureRecorder recorder = ui.PictureRecorder();
+        final ui.Canvas canvas = ui.Canvas(recorder);
+
+        if (_rotationTurns == 1) {
+          canvas.translate(outputWidth.toDouble(), 0);
+          canvas.rotate(math.pi / 2);
+        } else if (_rotationTurns == 2) {
+          canvas.translate(outputWidth.toDouble(), outputHeight.toDouble());
+          canvas.rotate(math.pi);
+        } else {
+          canvas.translate(0, outputHeight.toDouble());
+          canvas.rotate(3 * math.pi / 2);
+        }
+
+        canvas.drawImage(image, ui.Offset.zero, ui.Paint());
+        final ui.Picture picture = recorder.endRecording();
+        final ui.Image rotatedImage = await picture.toImage(
+          outputWidth,
+          outputHeight,
+        );
+        final ByteData? byteData = await rotatedImage.toByteData(
+          format: ui.ImageByteFormat.png,
+        );
+        if (byteData == null) {
+          return null;
+        } else {
+          final Directory tempDirectory = await getTemporaryDirectory();
+          final String rotatedPath =
+              '${tempDirectory.path}/rotated_'
+              '${DateTime.now().millisecondsSinceEpoch}.png';
+          await File(rotatedPath).writeAsBytes(byteData.buffer.asUint8List());
+          return rotatedPath;
+        }
+      } catch (e) {
+        debugPrint('Failed to rotate photo: $e');
+        return null;
+      }
     }
   }
 }
