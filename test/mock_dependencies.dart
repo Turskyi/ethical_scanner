@@ -32,6 +32,10 @@ class MockDependencies extends Mock implements Dependencies {
   }
 
   @override
+  UseCase<Future<bool>, String> get saveLanguageUseCase =>
+      SaveLanguageUseCase(_settingsGateway);
+
+  @override
   UseCase<Future<bool>, bool> get savePrecipitationStateUseCase =>
       SavePrecipitationStateUseCase(_settingsGateway);
 
@@ -62,6 +66,30 @@ class MockDependencies extends Mock implements Dependencies {
   UseCase<Future<void>, UpdateProductDetailsParams>
   get updateProductDetailsUseCase =>
       UpdateProductDetailsUseCase(_productInfoGateway);
+
+  @override
+  UseCase<Future<void>, AddOriginParams> get addOriginUseCase =>
+      AddOriginUseCase(_productInfoGateway);
+
+  @override
+  UseCase<Future<void>, ProductPhoto> get addIngredientsUseCase =>
+      AddIngredientsUseCase(_productInfoGateway);
+
+  @override
+  UseCase<Future<String>, ProductPhoto> get extractIngredientsUseCase =>
+      ExtractIngredientsUseCase(_productInfoGateway);
+
+  @override
+  UseCase<Future<void>, SaveIngredientsParams> get saveIngredientsUseCase =>
+      SaveIngredientsUseCase(_productInfoGateway);
+
+  @override
+  GetSoundPreferenceUseCase get getSoundPreferenceUseCase =>
+      GetSoundPreferenceUseCase(_settingsGateway);
+
+  @override
+  SaveSoundPreferenceUseCase get saveSoundPreferenceUseCase =>
+      SaveSoundPreferenceUseCase(_settingsGateway);
 
   RestClient get _restClient {
     final Dio dio = Dio();

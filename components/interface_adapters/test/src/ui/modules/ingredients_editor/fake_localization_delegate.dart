@@ -10,6 +10,21 @@ class FakeLocalizationDelegate extends Mock implements LocalizationDelegate {
   Locale get currentLocale => _currentLocale;
 
   @override
+  Type get type => Localization;
+
+  @override
+  bool isSupported(Locale? locale) => true;
+
+  @override
+  List<Locale> get supportedLocales => <Locale>[
+    Locale(Language.en.isoLanguageCode),
+    Locale(Language.uk.isoLanguageCode),
+  ];
+
+  @override
+  Future<Localization> load(Locale locale) async => Localization.instance;
+
+  @override
   Future<void> changeLocale(Locale newLocale) async {
     _currentLocale = newLocale;
   }

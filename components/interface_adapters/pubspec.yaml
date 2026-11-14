@@ -22,6 +22,7 @@ dependencies:
   bloc: ^9.2.1
 
   camera: ^0.12.2
+  cupertino_ui: any
   entities:
     path: ../domain/entities
 
@@ -29,11 +30,10 @@ dependencies:
   feedback: ^3.2.0
   flutter:
     sdk: flutter
-
-  # Built to be used with the `bloc` state management package
   flutter_bloc: ^9.1.1
-
   flutter_email_sender: ^11.2.0
+  flutter_localizations:
+    sdk: flutter
   flutter_pdfview: ^1.4.5
   flutter_translate:
     git:

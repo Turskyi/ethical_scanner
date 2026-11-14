@@ -1,4 +1,7 @@
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:feedback/feedback.dart';
+import 'package:flutter_localizations/flutter_localizations.dart'
+    hide GlobalMaterialLocalizations, GlobalCupertinoLocalizations;
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:interface_adapters/src/ui/res/color/gradients.dart';
@@ -23,6 +26,13 @@ class EthicalScannerApp extends StatelessWidget implements App {
   @override
   Widget build(BuildContext _) {
     return BetterFeedback(
+      localizationsDelegates: <LocalizationsDelegate<Object>>[
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        localizationDelegate,
+      ],
+      localeOverride: localizationDelegate.currentLocale,
       feedbackBuilder:
           (
             BuildContext _,
@@ -47,6 +57,14 @@ class EthicalScannerApp extends StatelessWidget implements App {
               debugShowCheckedModeBanner: false,
               title: translate('title'),
               onGenerateRoute: onGenerateRoute,
+              locale: localizationDelegate.currentLocale,
+              supportedLocales: localizationDelegate.supportedLocales,
+              localizationsDelegates: <LocalizationsDelegate<Object>>[
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+                localizationDelegate,
+              ],
               theme: ThemeData(
                 colorScheme: ColorScheme.fromSeed(
                   seedColor: MaterialColors.primarySwatch,
