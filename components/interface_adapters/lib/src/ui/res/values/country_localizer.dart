@@ -30,17 +30,24 @@ abstract final class CountryLocalizer {
 
   /// Returns the English title-case name for [country].
   static String getEnglishName(OpenFoodFactsCountry country) {
-    final String name = country.name.replaceAll('_', ' ').toLowerCase();
-    return name
-        .split(' ')
-        .map((String word) {
-          if (word.isEmpty) {
-            return '';
-          } else {
-            return word[0].toUpperCase() + word.substring(1);
-          }
-        })
-        .join(' ');
+    final String? englishOverride = _englishNames[country];
+    if (englishOverride != null && englishOverride.isNotEmpty) {
+      return englishOverride;
+    } else {
+      final String name = country.name.replaceAll('_', ' ').toLowerCase();
+      return name
+          .split(' ')
+          .map((String word) {
+            if (word.isEmpty) {
+              return '';
+            } else if (word == 'usa' || word == 'us') {
+              return word.toUpperCase();
+            } else if (word.isNotEmpty) {
+              return word[0].toUpperCase() + word.substring(1);
+            }
+          })
+          .join(' ');
+    }
   }
 
   /// Checks if [country] matches [query] in Ukrainian name, English name,
@@ -89,6 +96,12 @@ abstract final class CountryLocalizer {
       }).firstOrNull;
     }
   }
+
+  static const Map<OpenFoodFactsCountry, String> _englishNames =
+      <OpenFoodFactsCountry, String>{
+        OpenFoodFactsCountry.USA: 'USA',
+        OpenFoodFactsCountry.US_VIRGIN_ISLANDS: 'US Virgin Islands',
+      };
 
   static const Map<OpenFoodFactsCountry, String> _ukrainianNames =
       <OpenFoodFactsCountry, String>{

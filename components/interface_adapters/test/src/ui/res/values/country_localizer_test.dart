@@ -43,6 +43,21 @@ void main() {
         ),
         'Netherlands',
       );
+      expect(
+        CountryLocalizer.getLocalizedName(
+          OpenFoodFactsCountry.USA,
+          localeCode: 'en',
+        ),
+        'USA',
+      );
+    });
+
+    test('returns correct English name for USA and acronyms', () {
+      expect(CountryLocalizer.getEnglishName(OpenFoodFactsCountry.USA), 'USA');
+      expect(
+        CountryLocalizer.getEnglishName(OpenFoodFactsCountry.US_VIRGIN_ISLANDS),
+        'US Virgin Islands',
+      );
     });
 
     test('matches Ukrainian, English, offTag, and iso3Code queries', () {
@@ -94,6 +109,14 @@ void main() {
         expect(
           CountryLocalizer.findMatchingCountry('ua'),
           OpenFoodFactsCountry.UKRAINE,
+        );
+        expect(
+          CountryLocalizer.findMatchingCountry('USA'),
+          OpenFoodFactsCountry.USA,
+        );
+        expect(
+          CountryLocalizer.findMatchingCountry('Usa'),
+          OpenFoodFactsCountry.USA,
         );
         expect(
           CountryLocalizer.findMatchingCountry('Нідерланди'),
