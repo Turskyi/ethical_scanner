@@ -25,39 +25,45 @@ class OriginPhotoPickerSection extends StatelessWidget {
     final String? currentPhotoPath = photoPath;
     if (currentPhotoPath != null && currentPhotoPath.isNotEmpty) {
       final VoidCallback? rotateCallback = onRotatePhoto;
-      return Stack(
-        children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: RotatedBox(
-              quarterTurns: rotationTurns,
-              child: Image.file(
-                File(currentPhotoPath),
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
+      return SizedBox(
+        height: 200,
+        width: double.infinity,
+        child: Stack(
+          children: <Widget>[
+            Positioned.fill(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: RotatedBox(
+                  quarterTurns: rotationTurns,
+                  child: Image.file(
+                    File(currentPhotoPath),
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
+                ),
               ),
             ),
-          ),
-          if (rotateCallback != null)
+            if (rotateCallback != null)
+              Positioned(
+                top: 0,
+                left: 0,
+                child: IconButton(
+                  tooltip: translate('photo.rotate_photo'),
+                  icon: const Icon(Icons.rotate_right, color: Colors.white),
+                  onPressed: rotateCallback,
+                ),
+              ),
             Positioned(
               top: 0,
-              left: 0,
+              right: 0,
               child: IconButton(
-                tooltip: translate('photo.rotate_photo'),
-                icon: const Icon(Icons.rotate_right, color: Colors.white),
-                onPressed: rotateCallback,
+                icon: const Icon(Icons.cancel, color: Colors.white),
+                onPressed: onRemovePhoto,
               ),
             ),
-          Positioned(
-            top: 0,
-            right: 0,
-            child: IconButton(
-              icon: const Icon(Icons.cancel, color: Colors.white),
-              onPressed: onRemovePhoto,
-            ),
-          ),
-        ],
+          ],
+        ),
       );
     } else {
       return Row(
