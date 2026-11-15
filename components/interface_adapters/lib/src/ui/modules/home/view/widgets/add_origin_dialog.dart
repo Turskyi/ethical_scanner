@@ -122,13 +122,33 @@ class _AddOriginDialogState extends State<AddOriginDialog> {
                     Autocomplete<OpenFoodFactsCountry>(
                       displayStringForOption: _formatCountryName,
                       optionsBuilder: (TextEditingValue textEditingValue) {
+                        final String localeCode = LocalizedApp.of(
+                          context,
+                        ).delegate.currentLocale.languageCode;
+                        final List<OpenFoodFactsCountry> countries =
+                            List<OpenFoodFactsCountry>.from(
+                              OpenFoodFactsCountry.values,
+                            );
+                        countries.sort((
+                          OpenFoodFactsCountry a,
+                          OpenFoodFactsCountry b,
+                        ) {
+                          final String nameA =
+                              CountryLocalizer.getLocalizedName(
+                                a,
+                                localeCode: localeCode,
+                              );
+                          final String nameB =
+                              CountryLocalizer.getLocalizedName(
+                                b,
+                                localeCode: localeCode,
+                              );
+                          return nameA.compareTo(nameB);
+                        });
                         if (textEditingValue.text.isEmpty) {
-                          return OpenFoodFactsCountry.values;
+                          return countries;
                         } else {
-                          final String localeCode = Localizations.localeOf(
-                            context,
-                          ).languageCode;
-                          return OpenFoodFactsCountry.values.where((
+                          return countries.where((
                             OpenFoodFactsCountry country,
                           ) {
                             return CountryLocalizer.matches(
@@ -237,7 +257,9 @@ class _AddOriginDialogState extends State<AddOriginDialog> {
   }
 
   String _formatCountryName(OpenFoodFactsCountry country) {
-    final String localeCode = Localizations.localeOf(context).languageCode;
+    final String localeCode = LocalizedApp.of(
+      context,
+    ).delegate.currentLocale.languageCode;
     return CountryLocalizer.getLocalizedName(country, localeCode: localeCode);
   }
 

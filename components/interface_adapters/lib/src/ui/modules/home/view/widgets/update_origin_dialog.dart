@@ -73,7 +73,9 @@ class _UpdateOriginDialogState extends State<UpdateOriginDialog> {
     if (currentCountry != null) {
       initialCountryText = CountryLocalizer.getLocalizedName(
         currentCountry,
-        localeCode: Localizations.localeOf(context).languageCode,
+        localeCode: LocalizedApp.of(
+          context,
+        ).delegate.currentLocale.languageCode,
       );
     } else {
       initialCountryText = widget.initialCountry;
@@ -178,15 +180,31 @@ class _UpdateOriginDialogState extends State<UpdateOriginDialog> {
                     displayStringForOption: (OpenFoodFactsCountry country) =>
                         _formatCountryName(country),
                     optionsBuilder: (TextEditingValue textEditingValue) {
+                      final String localeCode = LocalizedApp.of(
+                        context,
+                      ).delegate.currentLocale.languageCode;
+                      final List<OpenFoodFactsCountry> countries =
+                          List<OpenFoodFactsCountry>.from(
+                            OpenFoodFactsCountry.values,
+                          );
+                      countries.sort((
+                        OpenFoodFactsCountry a,
+                        OpenFoodFactsCountry b,
+                      ) {
+                        final String nameA = CountryLocalizer.getLocalizedName(
+                          a,
+                          localeCode: localeCode,
+                        );
+                        final String nameB = CountryLocalizer.getLocalizedName(
+                          b,
+                          localeCode: localeCode,
+                        );
+                        return nameA.compareTo(nameB);
+                      });
                       if (textEditingValue.text.isEmpty) {
-                        return OpenFoodFactsCountry.values;
+                        return countries;
                       } else {
-                        final String localeCode = Localizations.localeOf(
-                          context,
-                        ).languageCode;
-                        return OpenFoodFactsCountry.values.where((
-                          OpenFoodFactsCountry country,
-                        ) {
+                        return countries.where((OpenFoodFactsCountry country) {
                           return CountryLocalizer.matches(
                             country,
                             textEditingValue.text,
@@ -281,7 +299,9 @@ class _UpdateOriginDialogState extends State<UpdateOriginDialog> {
   }
 
   String _formatCountryName(OpenFoodFactsCountry country) {
-    final String localeCode = Localizations.localeOf(context).languageCode;
+    final String localeCode = LocalizedApp.of(
+      context,
+    ).delegate.currentLocale.languageCode;
     return CountryLocalizer.getLocalizedName(country, localeCode: localeCode);
   }
 
