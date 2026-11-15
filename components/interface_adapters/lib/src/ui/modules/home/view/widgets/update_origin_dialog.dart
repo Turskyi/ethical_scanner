@@ -1,10 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/evidence_photo_dialog.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/origin_photo_picker_section.dart';
 import 'package:interface_adapters/src/ui/res/color/gradients.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/country_localizer.dart';
@@ -156,7 +155,15 @@ class _UpdateOriginDialogState extends State<UpdateOriginDialog> {
                     ),
                     const SizedBox(height: 16),
                   ],
-                  _buildPhotoSection(context),
+                  OriginPhotoPickerSection(
+                    photoPath: _selectedPhotoPath,
+                    onPickImage: _pickImage,
+                    onRemovePhoto: () {
+                      setState(() {
+                        _selectedPhotoPath = null;
+                      });
+                    },
+                  ),
                   const SizedBox(height: 24),
                   Text(
                     translate('product_info.origin_country_label'),
@@ -257,63 +264,6 @@ class _UpdateOriginDialogState extends State<UpdateOriginDialog> {
   @override
   void dispose() {
     super.dispose();
-  }
-
-  Widget _buildPhotoSection(BuildContext context) {
-    if (_selectedPhotoPath != null && _selectedPhotoPath!.isNotEmpty) {
-      return Stack(
-        alignment: Alignment.topRight,
-        children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.file(
-              File(_selectedPhotoPath!),
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.cancel, color: Colors.white),
-            onPressed: () {
-              setState(() {
-                _selectedPhotoPath = null;
-              });
-            },
-          ),
-        ],
-      );
-    } else {
-      return Row(
-        children: <Widget>[
-          Expanded(
-            child: OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.white,
-                side: const BorderSide(color: Colors.white70),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-              ),
-              icon: const Icon(Icons.photo_camera),
-              label: Text(translate('product_info.take_photo')),
-              onPressed: () => _pickImage(ImageSource.camera),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.white,
-                side: const BorderSide(color: Colors.white70),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-              ),
-              icon: const Icon(Icons.photo_library),
-              label: Text(translate('product_info.choose_gallery')),
-              onPressed: () => _pickImage(ImageSource.gallery),
-            ),
-          ),
-        ],
-      );
-    }
   }
 
   Future<void> _pickImage(ImageSource source) async {

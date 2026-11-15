@@ -21,6 +21,9 @@
   a class reads like a book from top to bottom—callers should be placed above
   callees. Never place a private method above a public method. For widget states,
   `dispose` should be placed below `build` to match the lifecycle order.
+- **Widget Classes Over Helper Methods**: Avoid helper methods for building UI
+  (such as `_buildPhotoSection`). Follow Flutter style guidelines by creating
+  independent widget classes in separate files instead.
 - **User-Facing Copy & Terminology**: Never include backend database names (such
   as "Open Food Facts" or "Open Products Facts") in user-facing texts, dialogs,
   release notes, or UI copy, as end users are unaware of internal database

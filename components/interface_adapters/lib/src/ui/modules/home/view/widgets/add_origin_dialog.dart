@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/origin_photo_picker_section.dart';
 import 'package:interface_adapters/src/ui/res/color/gradients.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/country_localizer.dart';
@@ -91,7 +92,23 @@ class _AddOriginDialogState extends State<AddOriginDialog> {
                     style: textTheme.bodyLarge?.copyWith(color: Colors.white70),
                   ),
                   const SizedBox(height: 24),
-                  _buildPhotoSection(context),
+                  OriginPhotoPickerSection(
+                    photoPath: _selectedPhotoPath,
+                    rotationTurns: _rotationTurns,
+                    onPickImage: _pickImage,
+                    onRotatePhoto: () {
+                      setState(() {
+                        _rotationTurns = (_rotationTurns + 1) % 4;
+                      });
+                    },
+                    onRemovePhoto: () {
+                      setState(() {
+                        _selectedPhotoPath = null;
+                        _selectedCountry = null;
+                        _rotationTurns = 0;
+                      });
+                    },
+                  ),
                   if (showCountryAndSave) ...<Widget>[
                     const SizedBox(height: 24),
                     Text(
@@ -103,8 +120,7 @@ class _AddOriginDialogState extends State<AddOriginDialog> {
                     ),
                     const SizedBox(height: 8),
                     Autocomplete<OpenFoodFactsCountry>(
-                      displayStringForOption: (OpenFoodFactsCountry country) =>
-                          _formatCountryName(country),
+                      displayStringForOption: _formatCountryName,
                       optionsBuilder: (TextEditingValue textEditingValue) {
                         if (textEditingValue.text.isEmpty) {
                           return OpenFoodFactsCountry.values;
@@ -130,10 +146,10 @@ class _AddOriginDialogState extends State<AddOriginDialog> {
                       },
                       fieldViewBuilder:
                           (
-                            BuildContext context,
+                            BuildContext _,
                             TextEditingController textEditingController,
                             FocusNode focusNode,
-                            VoidCallback onFieldSubmitted,
+                            VoidCallback _,
                           ) {
                             return TextField(
                               controller: textEditingController,
@@ -205,85 +221,6 @@ class _AddOriginDialogState extends State<AddOriginDialog> {
     super.dispose();
   }
 
-  Widget _buildPhotoSection(BuildContext context) {
-    final String? selectedPhotoPath = _selectedPhotoPath;
-    if (selectedPhotoPath != null && selectedPhotoPath.isNotEmpty) {
-      return Stack(
-        children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: RotatedBox(
-              quarterTurns: _rotationTurns,
-              child: Image.file(
-                File(selectedPhotoPath),
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Positioned(
-            top: 0,
-            left: 0,
-            child: IconButton(
-              tooltip: translate('photo.rotate_photo'),
-              icon: const Icon(Icons.rotate_right, color: Colors.white),
-              onPressed: () {
-                setState(() {
-                  _rotationTurns = (_rotationTurns + 1) % 4;
-                });
-              },
-            ),
-          ),
-          Positioned(
-            top: 0,
-            right: 0,
-            child: IconButton(
-              icon: const Icon(Icons.cancel, color: Colors.white),
-              onPressed: () {
-                setState(() {
-                  _selectedPhotoPath = null;
-                  _selectedCountry = null;
-                  _rotationTurns = 0;
-                });
-              },
-            ),
-          ),
-        ],
-      );
-    } else {
-      return Row(
-        children: <Widget>[
-          Expanded(
-            child: OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.white,
-                side: const BorderSide(color: Colors.white70),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-              ),
-              icon: const Icon(Icons.photo_camera),
-              label: Text(translate('product_info.take_photo')),
-              onPressed: () => _pickImage(ImageSource.camera),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.white,
-                side: const BorderSide(color: Colors.white70),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-              ),
-              icon: const Icon(Icons.photo_library),
-              label: Text(translate('product_info.choose_gallery')),
-              onPressed: () => _pickImage(ImageSource.gallery),
-            ),
-          ),
-        ],
-      );
-    }
-  }
-
   Future<void> _pickImage(ImageSource source) async {
     final XFile? image = await _picker.pickImage(
       source: source,
@@ -322,27 +259,26 @@ class _AddOriginDialogState extends State<AddOriginDialog> {
       final String? rotatedPhotoPath = photoPath == null || photoPath.isEmpty
           ? photoPath
           : await _rotatePhotoFile(photoPath);
-      if (!mounted) {
-        return;
-      }
-      if (photoPath != null && rotatedPhotoPath == null) {
-        setState(() {
-          _isSaving = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(translate('photo.failed_to_load_image'))),
-        );
-      } else {
-        final String countryName = _formatCountryName(country);
-        final HomePresenter presenter = context.read<HomePresenter>();
-        Navigator.of(context).pop();
-        presenter.add(
-          AddOriginEvent(
-            barcode: widget.barcode,
-            origin: countryName,
-            photoPath: rotatedPhotoPath ?? '',
-          ),
-        );
+      if (mounted) {
+        if (photoPath != null && rotatedPhotoPath == null) {
+          setState(() {
+            _isSaving = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(translate('photo.failed_to_load_image'))),
+          );
+        } else {
+          final String countryName = _formatCountryName(country);
+          final HomePresenter presenter = context.read<HomePresenter>();
+          Navigator.of(context).pop();
+          presenter.add(
+            AddOriginEvent(
+              barcode: widget.barcode,
+              origin: countryName,
+              photoPath: rotatedPhotoPath ?? '',
+            ),
+          );
+        }
       }
     }
   }
