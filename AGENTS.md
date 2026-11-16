@@ -31,6 +31,7 @@
 - **No Real Remote Calls in Unit Tests**: Unit tests must never make actual
   remote network queries or depend on external live services. Use mocks, fakes,
   or local fixtures instead.
+- **Comment Style**: Avoid using words like "Note:" in comments per the Flutter style guide; write clear, declarative sentences instead.
 
 ### File Organization & Architecture
 

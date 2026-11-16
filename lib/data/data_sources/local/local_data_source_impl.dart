@@ -38,6 +38,10 @@ class LocalDataSourceImpl implements LocalDataSource {
     // List of countries with corresponding barcode prefixes.
     final Map<String, String> countryCodeMap = <String, String>{
       '0': 'USA / Canada',
+      // '000' covers both the US and Canada due to the historical
+      // shared North American UPC numbering system administered by GS1 US/UCC—
+      // this is strictly a technical GS1 administrative prefix assignment,
+      // not a trade agreement or sharing pact during trade disputes!
       '000': 'United States and Canada',
       '001': 'United States',
       '002': 'United States',
