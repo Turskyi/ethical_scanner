@@ -196,6 +196,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       ...?existingProduct?.labelsTags,
     ];
     if (!updatedLabelsTags.contains('en:vegetarian')) {
+      // The en prefix is part of the canonical taxonomy ID, independent of
+      // the display language selected in the app.
       updatedLabelsTags.add('en:vegetarian');
     }
 
