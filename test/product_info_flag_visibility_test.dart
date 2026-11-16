@@ -23,6 +23,19 @@ void main() {
           reason: country,
         );
       }
+      for (final IsoCountry country in <IsoCountry>[
+        IsoCountry.cuba,
+        IsoCountry.northKorea,
+        IsoCountry.iran,
+      ]) {
+        expect(
+          ProductInfo(
+            gs1CountryCodes: <IsoCountry>{country},
+          ).isGs1CountryStateSponsorOfTerrorism,
+          isTrue,
+          reason: country.name,
+        );
+      }
     });
 
     test('returns false for non-designated countries', () {

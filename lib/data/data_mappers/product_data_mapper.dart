@@ -20,6 +20,7 @@ extension ProductExtension on Product {
       vegan: _vegan,
       vegetarian: _vegetarian,
       website: website ?? '',
+      language: language,
       imageIngredientsUrl: imageIngredientsUrl ?? '',
     );
   }

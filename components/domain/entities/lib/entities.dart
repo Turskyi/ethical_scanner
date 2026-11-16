@@ -12,6 +12,7 @@ library;
 
 export 'src/enums/feedback_rating.dart';
 export 'src/enums/feedback_type.dart';
+export 'src/enums/iso_country.dart';
 export 'src/enums/language.dart';
 export 'src/enums/product_info_type.dart';
 export 'src/enums/product_response_type.dart';

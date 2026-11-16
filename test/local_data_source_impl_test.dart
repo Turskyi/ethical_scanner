@@ -1,3 +1,4 @@
+import 'package:entities/entities.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -29,6 +30,24 @@ void main() {
         expect(result, equals(expectedCountry));
       });
     });
+
+    test(
+      'getIsoCountryCodesFromBarcode should return expected IsoCountry sets',
+      () {
+        expect(
+          localDataSource.getIsoCountryCodesFromBarcode('0001234567890'),
+          equals(<IsoCountry>{IsoCountry.unitedStates, IsoCountry.canada}),
+        );
+        expect(
+          localDataSource.getIsoCountryCodesFromBarcode('4821234567890'),
+          equals(<IsoCountry>{IsoCountry.ukraine}),
+        );
+        expect(
+          localDataSource.getIsoCountryCodesFromBarcode('6261234567890'),
+          equals(<IsoCountry>{IsoCountry.iran}),
+        );
+      },
+    );
 
     test('getReportedOriginFromBarcode should return the reported origin', () {
       final Map<String, String> testCases = <String, String>{

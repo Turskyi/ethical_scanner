@@ -10,6 +10,7 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/interface_adapters.dart' as constants;
 import 'package:interface_adapters/src/error_message_extractor.dart';
 import 'package:interface_adapters/src/ui/res/values/constants.dart';
+import 'package:interface_adapters/src/ui/res/values/reported_origin_localizer.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -288,7 +289,18 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           }
         }
 
-        if (productInfo.gs1Country.isNotEmpty) {
+        if (productInfo.gs1CountryCodes.isNotEmpty) {
+          final String localizedCountries = productInfo.gs1CountryCodes
+              .map((IsoCountry c) => c.localizedName(productInfo.language))
+              .join(' / ');
+          modifiableProductInfo[ProductInfoType.gs1Country] =
+              localizedCountries;
+          if (state is LoadingProductInfoState) {
+            final LoadingProductInfoState loadingState =
+                state as LoadingProductInfoState;
+            emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
+          }
+        } else if (productInfo.gs1Country.isNotEmpty) {
           modifiableProductInfo[ProductInfoType.gs1Country] =
               productInfo.gs1Country;
           if (state is LoadingProductInfoState) {
@@ -300,7 +312,10 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
         if (productInfo.reportedOrigin.isNotEmpty) {
           modifiableProductInfo[ProductInfoType.reportedOrigin] =
-              productInfo.reportedOrigin;
+              ReportedOriginLocalizer.getLocalizedName(
+                productInfo.reportedOrigin,
+                language: productInfo.language,
+              );
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
