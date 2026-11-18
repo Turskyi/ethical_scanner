@@ -855,9 +855,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         // This means the upload was forbidden EVEN FOR THE BACKUP USER.
         // This is a critical failure for this operation. Log and throw a
         // specific error.
-        final String errorMessage =
-            'Image upload failed: Forbidden for both primary user and backup '
-            "user ('${Env.openFoodBackupUserId}').";
+        const String errorMessage =
+            'Image upload failed. Please try again later.';
         final String debugMessage =
             """
         ===============================================================
