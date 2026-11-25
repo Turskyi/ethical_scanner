@@ -11,6 +11,11 @@
   "success": "Success",
   "error": "Error",
 
+  "languages": {
+    "en": "English",
+    "uk": "Ukrainian"
+  },
+
   "feedback_type": "Feedback Type",
   "rating": "Rating",
   "app_id": "App ID",
@@ -22,11 +27,15 @@
   "menu": {
     "home": "Home",
     "scan": "Scan",
-    "settings": "Settings"
+    "settings": "Settings",
+    "language": "Language",
+    "pin_widget": "Pin Widget"
   },
   "home": {
     "scan_barcode": "Please scan barcode",
-    "fab": "Floating action button"
+    "fab": "Floating action button",
+    "pin_widget_success": "Widget pin request sent",
+    "pin_widget_not_supported": "Widget pinning is not supported on this device"
   },
   "product_info": {
     "click_to_know": " (Click to know more)",
