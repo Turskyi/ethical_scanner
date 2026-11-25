@@ -8,6 +8,30 @@ abstract final class CountryLocalizer {
   /// Language code for Ukrainian.
   static const String ukrainianLanguageCode = 'uk';
 
+  static const String _originsSeparator = ', ';
+
+  /// Localizes free-text country origin strings (e.g., "Украина", "en:ukraine")
+  /// into the target locale.
+  static String localizeOrigin(String origin, {String? localeCode}) {
+    final String trimmedOrigin = origin.trim();
+    if (trimmedOrigin.isEmpty) {
+      return '';
+    } else {
+      final List<String> parts = trimmedOrigin.split(_originsSeparator);
+      final List<String> localizedParts = parts.map((String part) {
+        final String trimmedPart = part.trim();
+        final OpenFoodFactsCountry? country = findMatchingCountry(trimmedPart);
+        if (country != null) {
+          return getLocalizedName(country, localeCode: localeCode);
+        } else {
+          return trimmedPart;
+        }
+      }).toList();
+
+      return localizedParts.join(_originsSeparator);
+    }
+  }
+
   /// Returns the localized country name based on [localeCode].
   ///
   /// Defaults to Ukrainian if [localeCode] starts with 'uk',
@@ -76,23 +100,38 @@ abstract final class CountryLocalizer {
 
   /// Finds an [OpenFoodFactsCountry] matching [input] string.
   ///
-  /// Matches against English name, Ukrainian name, offTag, or iso3Code.
+  /// Matches against English name, Ukrainian name, Russian name, offTag,
+  /// ISO codes, or prefixed tags (e.g. `en:ukraine`).
   static OpenFoodFactsCountry? findMatchingCountry(String input) {
     final String normalizedInput = input.trim().toLowerCase();
     if (normalizedInput.isEmpty) {
       return null;
     } else {
+      final String strippedInput = normalizedInput.contains(':')
+          ? normalizedInput.split(':').last.trim()
+          : normalizedInput;
+
       return OpenFoodFactsCountry.values.where((OpenFoodFactsCountry country) {
         final String ukrainianName =
             _ukrainianNames[country]?.toLowerCase() ?? '';
+        final String russianName = _russianNames[country]?.toLowerCase() ?? '';
         final String englishName = getEnglishName(country).toLowerCase();
+        final String rawName = country.name.replaceAll('_', ' ').toLowerCase();
         final String offTag = country.offTag.toLowerCase();
         final String iso3Code = country.iso3Code.toLowerCase();
 
         return ukrainianName == normalizedInput ||
+            ukrainianName == strippedInput ||
+            russianName == normalizedInput ||
+            russianName == strippedInput ||
             englishName == normalizedInput ||
+            englishName == strippedInput ||
+            rawName == normalizedInput ||
+            rawName == strippedInput ||
             offTag == normalizedInput ||
-            iso3Code == normalizedInput;
+            offTag == strippedInput ||
+            iso3Code == normalizedInput ||
+            iso3Code == strippedInput;
       }).firstOrNull;
     }
   }
@@ -101,6 +140,55 @@ abstract final class CountryLocalizer {
       <OpenFoodFactsCountry, String>{
         OpenFoodFactsCountry.USA: 'USA',
         OpenFoodFactsCountry.US_VIRGIN_ISLANDS: 'US Virgin Islands',
+      };
+
+  static const Map<OpenFoodFactsCountry, String> _russianNames =
+      <OpenFoodFactsCountry, String>{
+        OpenFoodFactsCountry.UKRAINE: 'Украина',
+        OpenFoodFactsCountry.RUSSIA: 'Россия',
+        OpenFoodFactsCountry.BELARUS: 'Беларусь',
+        OpenFoodFactsCountry.GERMANY: 'Германия',
+        OpenFoodFactsCountry.FRANCE: 'Франция',
+        OpenFoodFactsCountry.POLAND: 'Польша',
+        OpenFoodFactsCountry.ITALY: 'Италия',
+        OpenFoodFactsCountry.SPAIN: 'Испания',
+        OpenFoodFactsCountry.CHINA: 'Китай',
+        OpenFoodFactsCountry.USA: 'США',
+        OpenFoodFactsCountry.TURKEY: 'Турция',
+        OpenFoodFactsCountry.CZECHIA: 'Чехия',
+        OpenFoodFactsCountry.NETHERLANDS: 'Нидерланды',
+        OpenFoodFactsCountry.UNITED_KINGDOM: 'Великобритания',
+        OpenFoodFactsCountry.AUSTRIA: 'Австрия',
+        OpenFoodFactsCountry.BELGIUM: 'Бельгия',
+        OpenFoodFactsCountry.SWITZERLAND: 'Швейцария',
+        OpenFoodFactsCountry.CANADA: 'Канада',
+        OpenFoodFactsCountry.JAPAN: 'Япония',
+        OpenFoodFactsCountry.GEORGIA: 'Грузия',
+        OpenFoodFactsCountry.ARMENIA: 'Армения',
+        OpenFoodFactsCountry.AZERBAIJAN: 'Азербайджан',
+        OpenFoodFactsCountry.KAZAKHSTAN: 'Казахстан',
+        OpenFoodFactsCountry.MOLDOVA: 'Молдавия',
+        OpenFoodFactsCountry.LITHUANIA: 'Литва',
+        OpenFoodFactsCountry.LATVIA: 'Латвия',
+        OpenFoodFactsCountry.ESTONIA: 'Эстония',
+        OpenFoodFactsCountry.GREECE: 'Греция',
+        OpenFoodFactsCountry.ISRAEL: 'Израиль',
+        OpenFoodFactsCountry.EGYPT: 'Египет',
+        OpenFoodFactsCountry.HUNGARY: 'Венгрия',
+        OpenFoodFactsCountry.ROMANIA: 'Румыния',
+        OpenFoodFactsCountry.SLOVAKIA: 'Словакия',
+        OpenFoodFactsCountry.BULGARIA: 'Болгария',
+        OpenFoodFactsCountry.DENMARK: 'Дания',
+        OpenFoodFactsCountry.FINLAND: 'Финляндия',
+        OpenFoodFactsCountry.NORWAY: 'Норвегия',
+        OpenFoodFactsCountry.SWEDEN: 'Швеция',
+        OpenFoodFactsCountry.PORTUGAL: 'Португалия',
+        OpenFoodFactsCountry.BRAZIL: 'Бразилия',
+        OpenFoodFactsCountry.ARGENTINA: 'Аргентина',
+        OpenFoodFactsCountry.INDIA: 'Индия',
+        OpenFoodFactsCountry.VIET_NAM: 'Вьетнам',
+        OpenFoodFactsCountry.THAILAND: 'Таиланд',
+        OpenFoodFactsCountry.SOUTH_KOREA: 'Южная Корея',
       };
 
   static const Map<OpenFoodFactsCountry, String> _ukrainianNames =

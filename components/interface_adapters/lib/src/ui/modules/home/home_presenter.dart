@@ -10,6 +10,7 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/interface_adapters.dart' as constants;
 import 'package:interface_adapters/src/error_message_extractor.dart';
 import 'package:interface_adapters/src/ui/res/values/constants.dart';
+import 'package:interface_adapters/src/ui/res/values/country_localizer.dart';
 import 'package:interface_adapters/src/ui/res/values/reported_origin_localizer.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -281,7 +282,10 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
         if (productInfo.origin.isNotEmpty) {
           modifiableProductInfo[ProductInfoType.originCountry] =
-              productInfo.origin;
+              CountryLocalizer.localizeOrigin(
+                productInfo.origin,
+                localeCode: productInfo.language.isoLanguageCode,
+              );
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
@@ -878,12 +882,16 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
             photoPath: event.photoPath,
           ),
         );
+        final String localizedOrigin = CountryLocalizer.localizeOrigin(
+          event.origin,
+          localeCode: current.language.isoLanguageCode,
+        );
         final ProductInfo updatedInfo = current.productInfo.copyWith(
-          origin: event.origin,
+          origin: localizedOrigin,
         );
         final Map<ProductInfoType, String> updatedMap =
             Map<ProductInfoType, String>.from(current.productInfoMap);
-        updatedMap[ProductInfoType.originCountry] = event.origin;
+        updatedMap[ProductInfoType.originCountry] = localizedOrigin;
 
         emit(
           ProductDetailsUpdatedState(

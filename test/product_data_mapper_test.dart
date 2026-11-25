@@ -44,5 +44,18 @@ void main() {
       expect(productInfo.vegan, Vegan.positive);
       expect(productInfo.vegetarian, Vegetarian.unknown);
     });
+
+    test('To ProductInfo localizes origin from Russian to target language', () {
+      final Product product = Product(
+        barcode: '4820290220041',
+        productName: 'Bread Bruschetta',
+      )..origins = 'Украина';
+
+      final ProductInfo englishInfo = product.toProductInfo(Language.en);
+      expect(englishInfo.origin, 'Ukraine');
+
+      final ProductInfo ukrainianInfo = product.toProductInfo(Language.uk);
+      expect(ukrainianInfo.origin, 'Україна');
+    });
   });
 }

@@ -107,6 +107,18 @@ void main() {
           OpenFoodFactsCountry.UKRAINE,
         );
         expect(
+          CountryLocalizer.findMatchingCountry('Украина'),
+          OpenFoodFactsCountry.UKRAINE,
+        );
+        expect(
+          CountryLocalizer.findMatchingCountry('ru:украина'),
+          OpenFoodFactsCountry.UKRAINE,
+        );
+        expect(
+          CountryLocalizer.findMatchingCountry('en:ukraine'),
+          OpenFoodFactsCountry.UKRAINE,
+        );
+        expect(
           CountryLocalizer.findMatchingCountry('ua'),
           OpenFoodFactsCountry.UKRAINE,
         );
@@ -123,9 +135,43 @@ void main() {
           OpenFoodFactsCountry.NETHERLANDS,
         );
         expect(
+          CountryLocalizer.findMatchingCountry('Россия'),
+          OpenFoodFactsCountry.RUSSIA,
+        );
+        expect(
           CountryLocalizer.findMatchingCountry('invalid_country_xyz'),
           isNull,
         );
+      },
+    );
+
+    test(
+      'localizeOrigin translates free-text origins into target language',
+      () {
+        expect(
+          CountryLocalizer.localizeOrigin('Украина', localeCode: 'en'),
+          'Ukraine',
+        );
+        expect(
+          CountryLocalizer.localizeOrigin('Украина', localeCode: 'uk'),
+          'Україна',
+        );
+        expect(
+          CountryLocalizer.localizeOrigin('en:ukraine', localeCode: 'en'),
+          'Ukraine',
+        );
+        expect(
+          CountryLocalizer.localizeOrigin('en:ukraine', localeCode: 'uk'),
+          'Україна',
+        );
+        expect(
+          CountryLocalizer.localizeOrigin(
+            'Украина, Германия',
+            localeCode: 'en',
+          ),
+          'Ukraine, Germany',
+        );
+        expect(CountryLocalizer.localizeOrigin('', localeCode: 'en'), '');
       },
     );
   });
