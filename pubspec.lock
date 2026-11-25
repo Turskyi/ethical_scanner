@@ -45,18 +45,18 @@ packages:
     dependency: "direct main"
     description:
       name: bloc
-      sha256: e03b235924e4f509c27b5d6b2f949200e0a91149a9818b4f65eeb56662b75413
+      sha256: c3e0f19010c7a337d789b17993863563e6847f17871bcd0b96232cded59d675c
       url: "https://pub.dev"
     source: hosted
-    version: "9.2.1"
+    version: "9.2.2"
   bloc_lint:
     dependency: "direct dev"
     description:
       name: bloc_lint
-      sha256: "7cbbc0de0ee041d1efcb522148b9add1b660e55a4d60242a023de0ffd2c60fe2"
+      sha256: "59f63985a04031530f7575404fb48d2290889762de3f97eed52c0cd6e4f737b0"
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.3"
+    version: "0.4.4"
   boolean_selector:
     dependency: transitive
     description:
@@ -776,10 +776,10 @@ packages:
     dependency: "direct main"
     description:
       name: material_ui
-      sha256: "474c135fd46b56ff1d35ca982155e8863d28fbc6464d1192acf4ee53a738680e"
+      sha256: a6b19012df437a356cbc01f8ea22a105e07194c47c9a6009da0032a0ce35c4ab
       url: "https://pub.dev"
     source: hosted
-    version: "1.11.0"
+    version: "1.11.1"
   meta:
     dependency: transitive
     description:

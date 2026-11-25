@@ -19,10 +19,10 @@ environment:
 dependencies:
   audiofileplayer: ^2.1.1
   # state management package that helps implement the Business Logic Component design pattern.
-  bloc: ^9.2.1
+  bloc: ^9.2.2
 
   camera: ^0.12.2
-  cupertino_ui: any
+  cupertino_ui: ^1.1.7
   entities:
     path: ../domain/entities
 
@@ -45,7 +45,7 @@ dependencies:
   http: ^1.6.0
   image_picker: ^1.2.4
 
-  material_ui: any
+  material_ui: ^1.11.1
   meta: ^1.19.0
 
   mobile_scanner: ^7.5.0
