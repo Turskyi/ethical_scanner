@@ -100,4 +100,26 @@ void main() {
       expect(_showGreenFlag(info), isFalse);
     });
   });
+
+  group('isFromRussia and isFromBelarus behavior', () {
+    test('countrySold Russia does not trigger isFromRussia', () {
+      final ProductInfo info = ProductInfo(
+        countrySold: 'Russia',
+        gs1Country: 'Ukraine',
+        barcode: '4820290220041',
+      );
+      expect(info.isFromRussia, isFalse);
+      expect(info.isFromBelarus, isFalse);
+    });
+
+    test('origin Russia triggers isFromRussia', () {
+      final ProductInfo info = ProductInfo(origin: 'Russia');
+      expect(info.isFromRussia, isTrue);
+    });
+
+    test('barcode starting with 460 triggers isFromRussia', () {
+      final ProductInfo info = ProductInfo(barcode: '4601234567890');
+      expect(info.isFromRussia, isTrue);
+    });
+  });
 }

@@ -112,23 +112,16 @@ class ProductInfo {
   bool get isVegetarian => vegetarian == Vegetarian.positive;
 
   bool get isFromRussia {
-    return countrySold.toLowerCase() == 'russia' ||
-        countrySold.toLowerCase() == 'ru' ||
-        origin.toLowerCase() == 'russia' ||
+    return origin.toLowerCase() == 'russia' ||
         origin.toLowerCase() == 'ru' ||
-        countrySold.toLowerCase() == 'россия' ||
         origin.toLowerCase() == 'россия' ||
         barcode.startsWith(russianEanPrefix);
   }
 
   bool get isFromBelarus {
-    return countrySold.toLowerCase() == 'belarus' ||
-        countrySold.toLowerCase() == 'by' ||
-        origin.toLowerCase() == 'belarus' ||
+    return origin.toLowerCase() == 'belarus' ||
         origin.toLowerCase() == 'by' ||
-        countrySold.toLowerCase() == 'беларусь' ||
         origin.toLowerCase() == 'беларусь' ||
-        countrySold.toLowerCase() == 'белоруссия' ||
         origin.toLowerCase() == 'белоруссия' ||
         barcode.startsWith(belarusianEanPrefix);
   }

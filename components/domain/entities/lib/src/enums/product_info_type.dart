@@ -4,7 +4,6 @@ enum ProductInfoType {
   originCountry('product_info.origin_country_colon'),
   gs1Country('product_info.gs1_country_colon'),
   reportedOrigin('product_info.reported_origin_colon'),
-  countryWhereSold('product_info.country_where_sold_colon'),
   brand('product_info.brand_colon'),
   companyTerrorismSponsor('product_info.is_company_terrorism_sponsor'),
   countryTerrorismSponsor('product_info.is_country_terrorism_sponsor'),
