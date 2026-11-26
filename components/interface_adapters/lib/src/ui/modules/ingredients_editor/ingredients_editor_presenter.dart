@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:entities/entities.dart';
-import 'package:flutter/material.dart';
 import 'package:interface_adapters/src/ui/modules/ingredients_editor/ingredients_editor_event.dart';
 import 'package:interface_adapters/src/ui/modules/ingredients_editor/ingredients_editor_view_model.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:use_cases/use_cases.dart';
 
 class IngredientsEditorPresenter

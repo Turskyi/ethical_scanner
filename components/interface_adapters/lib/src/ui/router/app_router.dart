@@ -1,10 +1,10 @@
 import 'package:entities/entities.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:interface_adapters/src/ui/res/camera_descriptions.dart'
     as cameras;
+import 'package:material_ui/material_ui.dart';
 
 /// The [AppRouter] is located in the `ui` directory because it serves as a
 /// **Navigation Presenter**.
@@ -123,10 +123,13 @@ class AppRouter {
                           dependencies.checkVegetarianUseCase,
                       addVegetarianLabelUseCase:
                           dependencies.addVegetarianLabelUseCase,
+                      addNonVegetarianLabelUseCase:
+                          dependencies.addNonVegetarianLabelUseCase,
                       saveNonFoodProductUseCase:
                           dependencies.saveNonFoodProductUseCase,
                       updateProductDetailsUseCase:
                           dependencies.updateProductDetailsUseCase,
+                      addOriginUseCase: dependencies.addOriginUseCase,
                     )..add(const LoadHomeEvent());
                   },
                   child: const BlocListener<HomePresenter, HomeViewModel>(
@@ -403,6 +406,9 @@ class AppRouter {
                       dependencies.saveNonFoodProductUseCase,
                   updateProductDetailsUseCase:
                       dependencies.updateProductDetailsUseCase,
+                  addNonVegetarianLabelUseCase:
+                      dependencies.addNonVegetarianLabelUseCase,
+                  addOriginUseCase: dependencies.addOriginUseCase,
                 );
                 final Object? arguments = settings.arguments;
 
@@ -551,6 +557,12 @@ class AppRouter {
       _showActionResultDialog(
         context: context,
         title: translate('product_info.contributed_to_off_success'),
+      );
+    } else if (viewModel is NonVegetarianLabelContributedState) {
+      Navigator.of(context, rootNavigator: true).pop();
+      _showActionResultDialog(
+        context: context,
+        title: translate('product_info.non_vegetarian_contributed_success'),
       );
     } else if (viewModel is NonFoodProductMarkedState) {
       Navigator.of(context, rootNavigator: true).pop();

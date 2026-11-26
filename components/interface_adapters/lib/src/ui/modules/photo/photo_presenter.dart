@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:entities/entities.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/error_message_extractor.dart';
 import 'package:interface_adapters/src/ui/modules/photo/photo_event.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:use_cases/use_cases.dart';
 
 part 'photo_view_model.dart';
@@ -77,7 +78,7 @@ class PhotoPresenter extends Bloc<PhotoEvent, PhotoViewModel> {
       emit(
         AddIngredientsErrorState(
           barcode: event.productPhoto.info.barcode,
-          errorMessage: error.message,
+          errorMessage: translate('photo.image_upload_failed'),
           language: state.language,
         ),
       );

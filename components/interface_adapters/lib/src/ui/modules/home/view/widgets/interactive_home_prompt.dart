@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:interface_adapters/interface_adapters.dart';
 import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
+import 'package:material_ui/material_ui.dart';
 
 class InteractiveHomePrompt extends StatelessWidget {
   const InteractiveHomePrompt({required this.displayText, super.key});

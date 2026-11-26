@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:interface_adapters/src/ui/modules/ingredients_editor/ingredients_editor_view_model.dart';
+import 'package:material_ui/material_ui.dart';
 
 class IngredientsImagePreview extends StatelessWidget {
   const IngredientsImagePreview({required this.state, super.key});

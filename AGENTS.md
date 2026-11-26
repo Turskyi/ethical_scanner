@@ -10,6 +10,7 @@
 - **Null Safety & Safe Accessors**: Prefer safe accessors (such as
   `.firstOrNull` instead of `.first` or direct indexing) to avoid runtime
   exceptions on empty collections.
+- **No Non-Null Assertions (`!`)**: Never use the `!` non-null assertion operator in code; always handle null safety explicitly via safe accessors, conditionals, or defaults.
 - **Type Safety & Avoiding `dynamic`**: Prefer strong typing (such as `Object?`)
   over `dynamic` to maintain compile-time type checks.
 - **Avoiding `as` Type Casts**: Prefer `is` / `is!` type checks with Dart type
@@ -20,6 +21,9 @@
   a class reads like a book from top to bottom—callers should be placed above
   callees. Never place a private method above a public method. For widget states,
   `dispose` should be placed below `build` to match the lifecycle order.
+- **Widget Classes Over Helper Methods**: Avoid helper methods for building UI
+  (such as `_buildPhotoSection`). Follow Flutter style guidelines by creating
+  independent widget classes in separate files instead.
 - **User-Facing Copy & Terminology**: Never include backend database names (such
   as "Open Food Facts" or "Open Products Facts") in user-facing texts, dialogs,
   release notes, or UI copy, as end users are unaware of internal database
@@ -27,6 +31,7 @@
 - **No Real Remote Calls in Unit Tests**: Unit tests must never make actual
   remote network queries or depend on external live services. Use mocks, fakes,
   or local fixtures instead.
+- **Comment Style**: Avoid using words like "Note:" in comments per the Flutter style guide; write clear, declarative sentences instead.
 
 ### File Organization & Architecture
 
@@ -34,6 +39,7 @@
 - **One Class Per File:** Maintain one class per file, except for obvious
   exceptions such as state classes for stateful widgets, or enum-like classes
   such as events and states for BLoC/Cubit.
+- **Strict Scope Adherence**: Do not make changes to code, UI, or files that nobody asked you to modify. Only perform actions and edits directly requested by the user.
 
 ### File Maintenance & Guidelines Limit
 

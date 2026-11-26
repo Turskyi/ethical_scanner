@@ -1,8 +1,9 @@
 import 'package:entities/entities.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/android_home_app_bar_actions.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/animations/butterfly_animation.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/animations/maple_leaf_animation.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/animations/sakura_petal_animation.dart';
@@ -12,6 +13,7 @@ import 'package:interface_adapters/src/ui/modules/home/view/widgets/product_info
 import 'package:interface_adapters/src/ui/res/color/app_color.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/widgets/language_selector.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'widgets/interactive_home_prompt.dart';
 
@@ -46,14 +48,25 @@ class HomeView extends StatelessWidget {
           actions: <Widget>[
             BlocBuilder<HomePresenter, HomeViewModel>(
               builder: (BuildContext context, HomeViewModel viewModel) {
-                return LanguageSelector(
-                  currentLanguage: viewModel.language,
-                  onLanguageSelected: (Language newLanguage) {
-                    context.read<HomePresenter>().add(
-                      ChangeLanguageEvent(newLanguage),
-                    );
-                  },
-                );
+                if (defaultTargetPlatform == TargetPlatform.android) {
+                  return AndroidHomeAppBarActions(
+                    currentLanguage: viewModel.language,
+                    onLanguageSelected: (Language newLanguage) {
+                      context.read<HomePresenter>().add(
+                        ChangeLanguageEvent(newLanguage),
+                      );
+                    },
+                  );
+                } else {
+                  return LanguageSelector(
+                    currentLanguage: viewModel.language,
+                    onLanguageSelected: (Language newLanguage) {
+                      context.read<HomePresenter>().add(
+                        ChangeLanguageEvent(newLanguage),
+                      );
+                    },
+                  );
+                }
               },
             ),
           ],

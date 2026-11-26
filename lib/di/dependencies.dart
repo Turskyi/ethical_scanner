@@ -76,6 +76,11 @@ class Dependencies implements AppDependencies {
   }
 
   @override
+  UseCase<Future<void>, String> get addNonVegetarianLabelUseCase {
+    return AddNonVegetarianLabelUseCase(_productInfoGateway);
+  }
+
+  @override
   UseCase<Future<void>, String> get saveNonFoodProductUseCase {
     return SaveNonFoodProductUseCase(_productInfoGateway);
   }
@@ -84,6 +89,11 @@ class Dependencies implements AppDependencies {
   UseCase<Future<void>, UpdateProductDetailsParams>
   get updateProductDetailsUseCase {
     return UpdateProductDetailsUseCase(_productInfoGateway);
+  }
+
+  @override
+  UseCase<Future<void>, AddOriginParams> get addOriginUseCase {
+    return AddOriginUseCase(_productInfoGateway);
   }
 
   @override

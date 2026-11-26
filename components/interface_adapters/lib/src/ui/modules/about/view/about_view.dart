@@ -1,6 +1,5 @@
 import 'package:entities/entities.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/router/routes.dart';
 import 'package:interface_adapters/src/ui/modules/scan/view/widgets/store_badge.dart';
@@ -8,6 +7,7 @@ import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/constants.dart';
 import 'package:interface_adapters/src/ui/widgets/home_app_bar_button.dart';
 import 'package:interface_adapters/src/ui/widgets/language_selector.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AboutView extends StatefulWidget {
   const AboutView({required this.initialLanguage, super.key});

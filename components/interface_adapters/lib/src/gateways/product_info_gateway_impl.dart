@@ -107,6 +107,8 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
             final String gs1Country = _localDataSource.getGs1CountryFromBarcode(
               inputCode,
             );
+            final Set<IsoCountry> gs1CountryCodes = _localDataSource
+                .getIsoCountryCodesFromBarcode(inputCode);
             final String reportedOrigin = _localDataSource
                 .getReportedOriginFromBarcode(inputCode);
             final List<String> photoFileNames = _localDataSource
@@ -114,9 +116,12 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
             final List<String> reportedOriginPhotos = photoFileNames
                 .map((String fileName) => '$kEvidenceBaseUrl$fileName')
                 .toList();
-            if (gs1Country.isNotEmpty || reportedOrigin.isNotEmpty) {
+            if (gs1Country.isNotEmpty ||
+                gs1CountryCodes.isNotEmpty ||
+                reportedOrigin.isNotEmpty) {
               return info.copyWith(
                 gs1Country: gs1Country,
+                gs1CountryCodes: gs1CountryCodes,
                 reportedOrigin: reportedOrigin,
                 reportedOriginPhotos: reportedOriginPhotos,
               );
@@ -233,6 +238,11 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
   }
 
   @override
+  Future<void> addNonVegetarianLabel({required String barcode}) {
+    return _remoteDataSource.addNonVegetarianLabel(barcode: barcode);
+  }
+
+  @override
   Future<void> saveNonFoodProduct({required String barcode}) {
     return _remoteDataSource.saveNonFoodProduct(barcode: barcode);
   }
@@ -247,6 +257,19 @@ class ProductInfoGatewayImpl implements ProductInfoGateway {
       barcode: barcode,
       productName: productName,
       canHaveIngredients: canHaveIngredients,
+    );
+  }
+
+  @override
+  Future<void> addOrigin({
+    required String barcode,
+    required String origin,
+    required String photoPath,
+  }) {
+    return _remoteDataSource.addOrigin(
+      barcode: barcode,
+      origin: origin,
+      photoPath: photoPath,
     );
   }
 

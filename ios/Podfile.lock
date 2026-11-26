@@ -2,26 +2,20 @@ PODS:
   - audiofileplayer (0.0.1):
     - Flutter
   - Flutter (1.0.0)
-  - objective_c (0.0.1):
-    - Flutter
 
 DEPENDENCIES:
   - audiofileplayer (from `.symlinks/plugins/audiofileplayer/ios`)
   - Flutter (from `Flutter`)
-  - objective_c (from `.symlinks/plugins/objective_c/ios`)
 
 EXTERNAL SOURCES:
   audiofileplayer:
     :path: ".symlinks/plugins/audiofileplayer/ios"
   Flutter:
     :path: Flutter
-  objective_c:
-    :path: ".symlinks/plugins/objective_c/ios"
 
 SPEC CHECKSUMS:
   audiofileplayer: 4aaff759a721ec3a850a682e0d9ec554e5f9e86f
   Flutter: 71a624a5bc0c04062bf19101d501e466baf2fb47
-  objective_c: 77e887b5ba1827970907e10e832eec1683f3431d
 
 PODFILE CHECKSUM: 94e1974a37bba7cfaccb0d7ad8c84fa4e948cfea
 

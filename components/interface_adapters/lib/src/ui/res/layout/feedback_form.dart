@@ -1,7 +1,7 @@
 import 'package:entities/entities.dart';
 import 'package:feedback/feedback.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A form that prompts the user for the type of feedback they want to give,
 /// free form text feedback, and a sentiment rating.

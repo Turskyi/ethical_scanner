@@ -9,6 +9,8 @@ abstract interface class LocalDataSource {
 
   String getGs1CountryFromBarcode(String barcode);
 
+  Set<IsoCountry> getIsoCountryCodesFromBarcode(String barcode);
+
   String getReportedOriginFromBarcode(String barcode);
 
   List<String> getReportedOriginPhotoFileNamesFromBarcode(String barcode);

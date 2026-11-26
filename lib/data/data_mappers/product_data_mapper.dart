@@ -2,13 +2,15 @@ import 'package:collection/collection.dart';
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/data/data_mappers/language_data_mapper.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:interface_adapters/interface_adapters.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 
 extension ProductExtension on Product {
   ProductInfo toProductInfo(Language language) {
     return ProductInfo(
       barcode: barcode ?? '',
-      origin: _origin,
+      origin: _getOrigin(language),
+      reportedOriginPhotos: _otherImages,
       countrySold: _countryName,
       countryTags: _countryNames,
       name: _getProductName(language),
@@ -19,16 +21,61 @@ extension ProductExtension on Product {
       vegan: _vegan,
       vegetarian: _vegetarian,
       website: website ?? '',
+      language: language,
       imageIngredientsUrl: imageIngredientsUrl ?? '',
     );
   }
 
-  String get _origin {
-    return ((origins == null || origins?.isEmpty == true) &&
-            (barcode?.isNotEmpty == true) &&
-            (barcode?.startsWith('460') == true))
-        ? translate('product_info.russian')
-        : origins ?? '';
+  List<String> get _otherImages {
+    if (images != null &&
+        images!.isNotEmpty &&
+        barcode != null &&
+        barcode!.isNotEmpty) {
+      final Map<String, String> uniqueImageUrls = <String, String>{};
+      for (final ProductImage img in images!) {
+        final bool isExcludedField =
+            img.field == ImageField.FRONT ||
+            img.field == ImageField.INGREDIENTS ||
+            img.field == ImageField.NUTRITION ||
+            img.field == ImageField.PACKAGING;
+
+        if (!isExcludedField) {
+          final String key = img.imgid ?? img.url ?? '';
+          if (key.isNotEmpty) {
+            final String url = img.getUrl(
+              barcode!,
+              imageSize: ImageSize.DISPLAY,
+            );
+            if (url.isNotEmpty) {
+              uniqueImageUrls[key] = url;
+            }
+          }
+        }
+      }
+      return uniqueImageUrls.values.toList();
+    } else {
+      return const <String>[];
+    }
+  }
+
+  String _getOrigin(Language language) {
+    final String? currentOrigins = origins;
+    final String? currentBarcode = barcode;
+
+    final String rawOrigin;
+    if (currentOrigins != null && currentOrigins.isNotEmpty) {
+      rawOrigin = currentOrigins;
+    } else if (currentBarcode != null &&
+        currentBarcode.isNotEmpty &&
+        currentBarcode.startsWith('460')) {
+      return translate('product_info.russian');
+    } else {
+      return '';
+    }
+    return CountryLocalizer.localizeOrigin(
+      rawOrigin,
+      localeCode: language.isoLanguageCode,
+    );
   }
 
   String _getProductName(Language language) {

@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:interface_adapters/src/ui/models/maple_leaf.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/painters/maple_leaf_painter.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MapleLeafAnimation extends StatefulWidget {
   const MapleLeafAnimation({super.key});

@@ -92,6 +92,9 @@ class FakeProductInfoGateway implements ProductInfoGateway {
   Future<void> addVegetarianLabel({required String barcode}) async {}
 
   @override
+  Future<void> addNonVegetarianLabel({required String barcode}) async {}
+
+  @override
   Future<void> saveNonFoodProduct({required String barcode}) async {}
 
   @override
@@ -99,5 +102,12 @@ class FakeProductInfoGateway implements ProductInfoGateway {
     required String barcode,
     required String productName,
     required bool canHaveIngredients,
+  }) async {}
+
+  @override
+  Future<void> addOrigin({
+    required String barcode,
+    required String origin,
+    required String photoPath,
   }) async {}
 }

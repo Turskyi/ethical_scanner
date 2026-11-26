@@ -73,11 +73,19 @@ abstract interface class ProductInfoGateway {
 
   Future<void> addVegetarianLabel({required String barcode});
 
+  Future<void> addNonVegetarianLabel({required String barcode});
+
   Future<void> saveNonFoodProduct({required String barcode});
 
   Future<void> updateProductDetails({
     required String barcode,
     required String productName,
     required bool canHaveIngredients,
+  });
+
+  Future<void> addOrigin({
+    required String barcode,
+    required String origin,
+    required String photoPath,
   });
 }

@@ -16,9 +16,11 @@ abstract interface class AppDependencies {
   UseCase<Future<AiVegetarianCheckResponse>, CheckVegetarianParams>
   get checkVegetarianUseCase;
   UseCase<Future<void>, String> get addVegetarianLabelUseCase;
+  UseCase<Future<void>, String> get addNonVegetarianLabelUseCase;
   UseCase<Future<void>, String> get saveNonFoodProductUseCase;
   UseCase<Future<void>, UpdateProductDetailsParams>
   get updateProductDetailsUseCase;
+  UseCase<Future<void>, AddOriginParams> get addOriginUseCase;
   GetSoundPreferenceUseCase get getSoundPreferenceUseCase;
   SaveSoundPreferenceUseCase get saveSoundPreferenceUseCase;
 }

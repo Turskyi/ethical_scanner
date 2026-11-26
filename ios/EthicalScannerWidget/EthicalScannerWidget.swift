@@ -91,8 +91,6 @@ struct EthicalScannerWidgetEntryView : View {
 
     var body: some View {
         ZStack {
-            sunriseGradient
-
             seasonalDecoration
 
             if family == .systemMedium {
@@ -192,6 +190,16 @@ extension View {
     }
 }
 
+extension WidgetConfiguration {
+    func disableContentMarginsIfNeeded() -> some WidgetConfiguration {
+        if #available(iOS 17.0, macOS 14.0, *) {
+            return self.contentMarginsDisabled()
+        } else {
+            return self
+        }
+    }
+}
+
 struct EthicalScannerWidget: Widget {
     let kind: String = "EthicalScannerWidget"
 
@@ -203,5 +211,6 @@ struct EthicalScannerWidget: Widget {
         .configurationDisplayName("Ethical Scanner")
         .description("Tap to scan a product.")
         .supportedFamilies([.systemSmall, .systemMedium])
+        .disableContentMarginsIfNeeded()
     }
 }

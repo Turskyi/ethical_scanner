@@ -3,17 +3,19 @@ import 'dart:io';
 import 'package:entities/entities.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/modules/home/home_presenter.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/edit_product_details_dialog.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/evidence_photo_dialog.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/mark_as_non_food_dialog.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/remove_ingredients_dialog.dart';
 import 'package:interface_adapters/src/ui/modules/home/view/widgets/terrorism_documents_bottom_sheet.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/update_origin_dialog.dart';
 import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/country_documents.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProductInfoTile extends StatelessWidget {
@@ -89,7 +91,11 @@ class ProductInfoTile extends StatelessWidget {
       return ListTile(
         textColor: color,
         iconColor: color,
-        leading: (type.isProductName || type.isIngredients) && value.isNotEmpty
+        leading:
+            (type.isProductName ||
+                    type.isIngredients ||
+                    type == ProductInfoType.originCountry) &&
+                value.isNotEmpty
             ? Material(
                 color: Colors.transparent,
                 child: InkWell(
@@ -98,7 +104,9 @@ class ProductInfoTile extends StatelessWidget {
                   customBorder: const CircleBorder(),
                   onTap: () => type.isProductName
                       ? _onLongPressProductName(context)
-                      : _onLongPressIngredients(context),
+                      : type.isIngredients
+                      ? _onLongPressIngredients(context)
+                      : _onLongPressOrigin(context),
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Icon(
@@ -452,9 +460,16 @@ class ProductInfoTile extends StatelessWidget {
     );
   }
 
-  void _onMarkAsNonFood(BuildContext context) {
-    return context.read<HomePresenter>().add(
-      MarkAsNonFoodProductEvent(barcode: info.barcode),
+  Future<void> _onMarkAsNonFood(BuildContext context) {
+    return MarkAsNonFoodDialog.show(context: context, barcode: info.barcode);
+  }
+
+  void _onLongPressOrigin(BuildContext context) {
+    UpdateOriginDialog.show(
+      context: context,
+      barcode: info.barcode,
+      initialCountry: value,
+      existingPhotos: info.reportedOriginPhotos,
     );
   }
 
@@ -462,7 +477,11 @@ class ProductInfoTile extends StatelessWidget {
     required BuildContext context,
     required String photoPath,
   }) {
-    return EvidencePhotoDialog.show(context: context, photoUrl: photoPath);
+    return EvidencePhotoDialog.show(
+      context: context,
+      photoUrl: photoPath,
+      barcode: info.barcode,
+    );
   }
 
   bool get _isCustomerServiceText {

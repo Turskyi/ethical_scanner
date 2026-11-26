@@ -1,3 +1,4 @@
+import 'package:entities/src/enums/iso_country.dart';
 import 'package:entities/src/enums/language.dart';
 import 'package:entities/src/enums/product_response_type.dart';
 import 'package:entities/src/enums/vegan.dart';
@@ -8,6 +9,7 @@ class ProductInfo {
     this.barcode = '',
     this.origin = '',
     this.gs1Country = '',
+    this.gs1CountryCodes = const <IsoCountry>{},
     this.reportedOrigin = '',
     this.reportedOriginPhotos = const <String>[],
     this.countryTags = const <String>[],
@@ -41,6 +43,10 @@ class ProductInfo {
   /// of the barcode. It indicates which GS1 Member Organization's country
   /// registered the barcode — not where the product was manufactured.
   final String gs1Country;
+
+  /// The [gs1CountryCodes] parameter represents the set of ISO country codes
+  /// associated with the GS1 prefix.
+  final Set<IsoCountry> gs1CountryCodes;
 
   /// The [reportedOrigin] parameter is a manually curated, evidence-based
   /// country of origin derived from physical product observations tied to
@@ -106,23 +112,16 @@ class ProductInfo {
   bool get isVegetarian => vegetarian == Vegetarian.positive;
 
   bool get isFromRussia {
-    return countrySold.toLowerCase() == 'russia' ||
-        countrySold.toLowerCase() == 'ru' ||
-        origin.toLowerCase() == 'russia' ||
+    return origin.toLowerCase() == 'russia' ||
         origin.toLowerCase() == 'ru' ||
-        countrySold.toLowerCase() == 'россия' ||
         origin.toLowerCase() == 'россия' ||
         barcode.startsWith(russianEanPrefix);
   }
 
   bool get isFromBelarus {
-    return countrySold.toLowerCase() == 'belarus' ||
-        countrySold.toLowerCase() == 'by' ||
-        origin.toLowerCase() == 'belarus' ||
+    return origin.toLowerCase() == 'belarus' ||
         origin.toLowerCase() == 'by' ||
-        countrySold.toLowerCase() == 'беларусь' ||
         origin.toLowerCase() == 'беларусь' ||
-        countrySold.toLowerCase() == 'белоруссия' ||
         origin.toLowerCase() == 'белоруссия' ||
         barcode.startsWith(belarusianEanPrefix);
   }
@@ -135,14 +134,19 @@ class ProductInfo {
     'Iran',
   };
 
+  static const Set<IsoCountry> _stateSponsoredTerrorismIsoCountries =
+      <IsoCountry>{IsoCountry.cuba, IsoCountry.northKorea, IsoCountry.iran};
+
   bool get isGs1CountryStateSponsorOfTerrorism {
-    return _stateSponsoredTerrorismCountries.contains(gs1Country);
+    return _stateSponsoredTerrorismCountries.contains(gs1Country) ||
+        gs1CountryCodes.any(_stateSponsoredTerrorismIsoCountries.contains);
   }
 
   ProductInfo copyWith({
     String? barcode,
     String? origin,
     String? gs1Country,
+    Set<IsoCountry>? gs1CountryCodes,
     String? reportedOrigin,
     List<String>? reportedOriginPhotos,
     List<String>? countryTags,
@@ -168,6 +172,7 @@ class ProductInfo {
       barcode: barcode ?? this.barcode,
       origin: origin ?? this.origin,
       gs1Country: gs1Country ?? this.gs1Country,
+      gs1CountryCodes: gs1CountryCodes ?? this.gs1CountryCodes,
       reportedOrigin: reportedOrigin ?? this.reportedOrigin,
       reportedOriginPhotos: reportedOriginPhotos ?? this.reportedOriginPhotos,
       countryTags: countryTags ?? this.countryTags,

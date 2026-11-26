@@ -1,6 +1,6 @@
 import 'package:entities/entities.dart';
 import 'package:ethical_scanner/di/dependencies.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:test/test.dart';
 import 'package:use_cases/use_cases.dart';
 

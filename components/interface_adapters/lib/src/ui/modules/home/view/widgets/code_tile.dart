@@ -1,16 +1,18 @@
 import 'package:entities/entities.dart';
 import 'package:feedback/feedback.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/interface_adapters.dart';
+import 'package:interface_adapters/src/ui/modules/home/view/widgets/add_origin_dialog.dart';
 import 'package:interface_adapters/src/ui/res/color/material_colors.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CodeTile extends StatefulWidget {
-  const CodeTile({required this.value, super.key});
+  const CodeTile({required this.value, this.hasOrigin = false, super.key});
 
   final String value;
+  final bool hasOrigin;
 
   @override
   State<CodeTile> createState() => _CodeTileState();
@@ -46,18 +48,27 @@ class _CodeTileState extends State<CodeTile> {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final Color primary = theme.colorScheme.primary;
+    final Color starColor = widget.hasOrigin ? theme.disabledColor : primary;
     return ListTile(
       textColor: _colors.cetaceanBlue,
       iconColor: _colors.cetaceanBlue,
       leading: ValueListenableBuilder<bool>(
         valueListenable: _editNotifier,
-        child: const Icon(Icons.star),
+        child: Icon(Icons.star, color: starColor),
         builder: (BuildContext _, bool isEdited, Widget? defaultIcon) {
           return IconButton(
             icon: isEdited
                 ? const Icon(Icons.save)
-                : (defaultIcon ?? const SizedBox()),
-            onPressed: isEdited ? _saveAndShowProductInfo : null,
+                : (defaultIcon ?? Icon(Icons.star, color: starColor)),
+            onPressed: isEdited
+                ? _saveAndShowProductInfo
+                : (widget.hasOrigin
+                      ? null
+                      : (_codeController.text.isNotEmpty
+                            ? _onStarPressed
+                            : null)),
           );
         },
       ),
@@ -159,5 +170,11 @@ class _CodeTileState extends State<CodeTile> {
         ProductInfo(barcode: _codeController.text, language: language),
       ),
     );
+  }
+
+  void _onStarPressed() {
+    if (_codeController.text.isNotEmpty) {
+      AddOriginDialog.show(context: context, barcode: _codeController.text);
+    }
   }
 }

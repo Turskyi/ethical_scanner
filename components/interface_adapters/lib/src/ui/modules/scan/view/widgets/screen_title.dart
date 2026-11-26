@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/src/ui/res/resources.dart';
 import 'package:interface_adapters/src/ui/res/values/dimens.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ScreenTitle extends StatelessWidget {
   const ScreenTitle({super.key});

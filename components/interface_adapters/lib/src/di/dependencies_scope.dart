@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:interface_adapters/src/di/app_dependencies.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// {@template dependencies_scope}
 /// A widget which is responsible for providing the dependencies.

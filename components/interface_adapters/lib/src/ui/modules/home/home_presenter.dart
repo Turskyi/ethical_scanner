@@ -10,6 +10,8 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:interface_adapters/interface_adapters.dart' as constants;
 import 'package:interface_adapters/src/error_message_extractor.dart';
 import 'package:interface_adapters/src/ui/res/values/constants.dart';
+import 'package:interface_adapters/src/ui/res/values/country_localizer.dart';
+import 'package:interface_adapters/src/ui/res/values/reported_origin_localizer.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -28,13 +30,17 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     required UseCase<Future<AiVegetarianCheckResponse>, CheckVegetarianParams>
     checkVegetarianUseCase,
     required UseCase<Future<void>, String> addVegetarianLabelUseCase,
+    required UseCase<Future<void>, String> addNonVegetarianLabelUseCase,
     required UseCase<Future<void>, String> saveNonFoodProductUseCase,
     required UseCase<Future<void>, UpdateProductDetailsParams>
     updateProductDetailsUseCase,
+    required UseCase<Future<void>, AddOriginParams> addOriginUseCase,
   }) : _checkVegetarianUseCase = checkVegetarianUseCase,
        _addVegetarianLabelUseCase = addVegetarianLabelUseCase,
+       _addNonVegetarianLabelUseCase = addNonVegetarianLabelUseCase,
        _saveNonFoodProductUseCase = saveNonFoodProductUseCase,
        _updateProductDetailsUseCase = updateProductDetailsUseCase,
+       _addOriginUseCase = addOriginUseCase,
        super(LoadingHomeState(language: _getLanguageUseCase.call())) {
     on<LoadHomeEvent>(_onLoadHomeEvent);
 
@@ -64,9 +70,13 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
     on<ContributeVegetarianLabelEvent>(_onContributeVegetarianLabel);
 
+    on<ContributeNonVegetarianLabelEvent>(_onContributeNonVegetarianLabel);
+
     on<MarkAsNonFoodProductEvent>(_onMarkAsNonFoodProduct);
 
     on<UpdateProductDetailsEvent>(_onUpdateProductDetails);
+
+    on<AddOriginEvent>(_onAddOrigin);
   }
 
   final UseCase<Future<ProductInfo>, LocalizedCode> _getProductInfoUseCase;
@@ -77,9 +87,11 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
   final UseCase<Future<AiVegetarianCheckResponse>, CheckVegetarianParams>
   _checkVegetarianUseCase;
   final UseCase<Future<void>, String> _addVegetarianLabelUseCase;
+  final UseCase<Future<void>, String> _addNonVegetarianLabelUseCase;
   final UseCase<Future<void>, String> _saveNonFoodProductUseCase;
   final UseCase<Future<void>, UpdateProductDetailsParams>
   _updateProductDetailsUseCase;
+  final UseCase<Future<void>, AddOriginParams> _addOriginUseCase;
 
   FutureOr<void> _handleError(
     HomeErrorEvent event,
@@ -270,7 +282,10 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
         if (productInfo.origin.isNotEmpty) {
           modifiableProductInfo[ProductInfoType.originCountry] =
-              productInfo.origin;
+              CountryLocalizer.localizeOrigin(
+                productInfo.origin,
+                localeCode: productInfo.language.isoLanguageCode,
+              );
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
@@ -278,7 +293,18 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
           }
         }
 
-        if (productInfo.gs1Country.isNotEmpty) {
+        if (productInfo.gs1CountryCodes.isNotEmpty) {
+          final String localizedCountries = productInfo.gs1CountryCodes
+              .map((IsoCountry c) => c.localizedName(productInfo.language))
+              .join(' / ');
+          modifiableProductInfo[ProductInfoType.gs1Country] =
+              localizedCountries;
+          if (state is LoadingProductInfoState) {
+            final LoadingProductInfoState loadingState =
+                state as LoadingProductInfoState;
+            emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
+          }
+        } else if (productInfo.gs1Country.isNotEmpty) {
           modifiableProductInfo[ProductInfoType.gs1Country] =
               productInfo.gs1Country;
           if (state is LoadingProductInfoState) {
@@ -290,17 +316,10 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
 
         if (productInfo.reportedOrigin.isNotEmpty) {
           modifiableProductInfo[ProductInfoType.reportedOrigin] =
-              productInfo.reportedOrigin;
-          if (state is LoadingProductInfoState) {
-            final LoadingProductInfoState loadingState =
-                state as LoadingProductInfoState;
-            emit(loadingState.copyWith(productInfoMap: modifiableProductInfo));
-          }
-        }
-
-        if (productInfo.countrySold.isNotEmpty) {
-          modifiableProductInfo[ProductInfoType.countryWhereSold] =
-              productInfo.countrySold;
+              ReportedOriginLocalizer.getLocalizedName(
+                productInfo.reportedOrigin,
+                language: productInfo.language,
+              );
           if (state is LoadingProductInfoState) {
             final LoadingProductInfoState loadingState =
                 state as LoadingProductInfoState;
@@ -681,6 +700,51 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
     }
   }
 
+  FutureOr<void> _onContributeNonVegetarianLabel(
+    ContributeNonVegetarianLabelEvent event,
+    Emitter<HomeViewModel> emit,
+  ) async {
+    if (state is LoadedProductInfoState) {
+      final LoadedProductInfoState current = state as LoadedProductInfoState;
+      emit(
+        SavingLabelState(
+          language: current.language,
+          productInfoMap: current.productInfoMap,
+          productInfo: current.productInfo,
+          isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+        ),
+      );
+      try {
+        await _addNonVegetarianLabelUseCase.call(event.barcode);
+        final ProductInfo updatedInfo = current.productInfo.copyWith(
+          vegetarian: Vegetarian.negative,
+        );
+        final Map<ProductInfoType, String> updatedMap =
+            Map<ProductInfoType, String>.from(current.productInfoMap);
+        updatedMap[ProductInfoType.isVegetarian] = translate('no');
+
+        emit(
+          NonVegetarianLabelContributedState(
+            language: current.language,
+            productInfoMap: updatedMap,
+            productInfo: updatedInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
+      } catch (error) {
+        emit(
+          ActionErrorState(
+            errorMessage: '$error',
+            language: current.language,
+            productInfoMap: current.productInfoMap,
+            productInfo: current.productInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
+      }
+    }
+  }
+
   FutureOr<void> _onMarkAsNonFoodProduct(
     MarkAsNonFoodProductEvent event,
     Emitter<HomeViewModel> emit,
@@ -786,6 +850,61 @@ class HomePresenter extends Bloc<HomeEvent, HomeViewModel> {
         emit(
           ActionErrorState(
             errorMessage: '$error',
+            language: current.language,
+            productInfoMap: current.productInfoMap,
+            productInfo: current.productInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
+      }
+    }
+  }
+
+  FutureOr<void> _onAddOrigin(
+    AddOriginEvent event,
+    Emitter<HomeViewModel> emit,
+  ) async {
+    if (state is LoadedProductInfoState) {
+      final LoadedProductInfoState current = state as LoadedProductInfoState;
+      emit(
+        UpdatingProductDetailsState(
+          language: current.language,
+          productInfoMap: current.productInfoMap,
+          productInfo: current.productInfo,
+          isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+        ),
+      );
+      try {
+        await _addOriginUseCase.call(
+          AddOriginParams(
+            barcode: event.barcode,
+            origin: event.origin,
+            photoPath: event.photoPath,
+          ),
+        );
+        final String localizedOrigin = CountryLocalizer.localizeOrigin(
+          event.origin,
+          localeCode: current.language.isoLanguageCode,
+        );
+        final ProductInfo updatedInfo = current.productInfo.copyWith(
+          origin: localizedOrigin,
+        );
+        final Map<ProductInfoType, String> updatedMap =
+            Map<ProductInfoType, String>.from(current.productInfoMap);
+        updatedMap[ProductInfoType.originCountry] = localizedOrigin;
+
+        emit(
+          ProductDetailsUpdatedState(
+            language: current.language,
+            productInfoMap: updatedMap,
+            productInfo: updatedInfo,
+            isSeasonalEffectEnabled: current.isSeasonalEffectEnabled,
+          ),
+        );
+      } catch (error) {
+        emit(
+          ActionErrorState(
+            errorMessage: extractErrorMessage(error.toString()),
             language: current.language,
             productInfoMap: current.productInfoMap,
             productInfo: current.productInfo,
