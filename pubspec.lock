@@ -409,10 +409,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_bloc
-      sha256: cf51747952201a455a1c840f8171d273be009b932c75093020f9af64f2123e38
+      sha256: "340acf8bb63ac20b452b7f90c228d6136d112d1d0ede934055d24b90fc2a8511"
       url: "https://pub.dev"
     source: hosted
-    version: "9.1.1"
+    version: "9.1.2"
   flutter_email_sender:
     dependency: transitive
     description:

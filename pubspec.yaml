@@ -61,7 +61,7 @@ dependencies:
     sdk: flutter
 
   # Built to be used with the `bloc` state management package.
-  flutter_bloc: ^9.1.1
+  flutter_bloc: ^9.1.2
   flutter_pdfview: ^1.4.5
 
   # Localization / internationalization (i18n) library.
